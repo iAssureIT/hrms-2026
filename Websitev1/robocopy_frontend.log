@@ -1,0 +1,106 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:59:34
+   Source : C:\iAssureit\Lupin\Websitev1\app\
+     Dest : C:\iAssureit\hrms-2026\Websitev1\app\
+
+    Files : *.*
+	    
+Exc Files : *.js
+	    
+  Options : *.* /V /NDL /NFL /S /DCOPY:DA /COPY:DAT /NP /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :       228       169        59         0         0         0
+   Files :       181         3       178         0         0         0
+   Bytes :   174.3 k    38.0 k   136.2 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           97,48,000 Bytes/sec.
+   Speed :             557.785 MegaBytes/min.
+   Ended : 07 April 2026 15:59:34
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:59:34
+   Source : C:\iAssureit\Lupin\Websitev1\app\
+     Dest : C:\iAssureit\hrms-2026\Websitev1\app\
+
+    Files : *.js
+	    
+  Options : /V /NDL /NFL /DCOPY:DA /COPY:DAT /NP /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         2         2         0         0         0         0
+   Bytes :    14.4 k    14.4 k         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           49,27,333 Bytes/sec.
+   Speed :             281.944 MegaBytes/min.
+   Ended : 07 April 2026 15:59:34
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:59:34
+   Source : C:\iAssureit\Lupin\Websitev1\app\admin\
+     Dest : C:\iAssureit\hrms-2026\Websitev1\app\admin\
+
+    Files : *.js
+	    
+  Options : /V /NDL /NFL /DCOPY:DA /COPY:DAT /NP /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         2         1         1         0         0         0
+   Bytes :    19.9 k    19.6 k       307         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           1,00,62,500 Bytes/sec.
+   Speed :               575.781 MegaBytes/min.
+   Ended : 07 April 2026 15:59:34
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:59:35
+   Source : C:\iAssureit\Lupin\Websitev1\app\login\
+     Dest : C:\iAssureit\hrms-2026\Websitev1\app\login\
+
+    Files : *.*
+	    
+  Options : *.* /V /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /Z /NP /MT:8 /R:3 /W:5 
+
+------------------------------------------------------------------------------
+
+2026/04/07 15:59:35 ERROR 2 (0x00000002) Accessing Source Directory C:\iAssureit\Lupin\Websitev1\app\login\
+The system cannot find the file specified.

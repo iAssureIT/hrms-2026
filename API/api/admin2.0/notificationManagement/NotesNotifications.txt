@@ -1,0 +1,152 @@
+Status : 
+		YTS 	: Yet to Start, 
+		WIP 	: Can be used with limitations
+		TIP		: Testing in process
+		Done	: Tested and can be used
+
+API : 
+
+1. Insert Notification Details 								- Done
+2. Fetch Notification Details								- Done
+3. Update Notification Details								- Done
+4. Delete Notification Details								- Done
+5. List All the documents									- Done
+6. Delete all Notifications 								- Done
+
+=====================================================================================
+1. Insert Notification Details
+=====================================================================================
+
+Method  : POST
+
+URL 	: '/api/notifications/post'
+
+Input	: 
+			{
+			    "masternotificationId"  : String,
+		        "event"                 : String,
+		        "toMailId"              : String,
+		        "toUserId"              : String,
+		        "notifBody"             : String,
+			    "createdBy"   	  		: String,
+			}
+
+Output	: If Successfully
+			{
+				message : "Notification Details Added",
+				ID 		: String //_id of the document
+			}
+
+=====================================================================================
+2. Fetch Notification Details
+=====================================================================================
+
+Method  : GET
+
+URL 	: '/api/notifications/get/:ID'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			{
+			    "masternotificationId"  : String,
+		        "event"                 : String,
+		        "toMailId"              : String,
+		        "toUserId"              : String,
+		        "notifBody"             : String,
+			    "createdBy"   	  		: String,
+			    createdAt   			: Date,
+			}
+		  If not successful
+		  	{
+		  		message : "ROLE_NOT_FOUND",
+		  	}
+
+=====================================================================================
+3. Update Notification Details
+=====================================================================================
+
+Method  : PUT
+
+URL 	: '/api/notifications/put/:ID'
+
+Input	: 
+			{
+			    "templateType"    : String,	
+                "templateName"    : String,
+                "subject"         : String,
+                "content"         : String,	
+			}
+
+Output	: If Successfully
+			{
+				message : "ROLE_UPDATED",
+			}
+		  If not successful
+		  	{
+		  		message : "ROLE_NOT_UPDATED",
+		  	}
+
+=====================================================================================
+4. Delete Notification Details
+=====================================================================================
+
+Method  : DELETE
+
+URL 	: '/api/notifications/delete/:ID'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			{
+			    message : "Role_DATA_DELETE",
+			}
+		  If not successful
+		  	{
+		  		message : "DATA_NOT_FOUND",
+		  	}
+
+=====================================================================================
+5. List All the documents
+=====================================================================================
+
+Method  : GET
+
+URL 	: '/api/notifications/get/:pageno'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			[{
+			    _id			: String,
+			    role        : String,
+			    createdAt   : Date,
+			    createdBy   : String
+			}]
+		  If not successful
+		  	{
+		  		message : "DATA_NOT_FOUND",
+		  	}
+
+=====================================================================================
+6. Delete all Notification
+=====================================================================================
+
+Method  : DELETE
+
+URL 	: '/api/notifications/delete/all'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			{
+			    message : "Role_DELETE",
+			}
+		  If not successful
+		  	{
+		  		message : "DATA_NOT_FOUND",
+		  	}

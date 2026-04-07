@@ -1,0 +1,104 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:58:36
+   Source : C:\iAssureit\Lupin\API\api\lupin\failedRecords\
+     Dest : C:\iAssureit\hrms-2026\API\api\lupin\failedRecords\
+
+    Files : *.*
+	    
+  Options : *.* /V /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /Z /NP /MT:8 /R:3 /W:5 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         1         0         0         0
+   Files :         3         0         3         0         0         0
+   Bytes :       335         0       335         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : 07 April 2026 15:58:36
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:58:36
+   Source : C:\iAssureit\Lupin\API\api\lupin\SubactivityMapping\
+     Dest : C:\iAssureit\hrms-2026\API\api\lupin\SubactivityMapping\
+
+    Files : *.*
+	    
+  Options : *.* /V /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /Z /NP /MT:8 /R:3 /W:5 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         1         0         0         0
+   Files :         3         0         3         0         0         0
+   Bytes :    33.1 k         0    33.1 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : 07 April 2026 15:58:36
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:58:36
+   Source : C:\iAssureit\Lupin\API\api\lupin\approval-details\
+     Dest : C:\iAssureit\hrms-2026\API\api\lupin\approval-details\
+
+    Files : *.*
+	    
+  Options : *.* /V /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /Z /NP /MT:8 /R:3 /W:5 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :         4         4         0         0         0         0
+   Bytes :   107.5 k   107.5 k         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           1,83,61,833 Bytes/sec.
+   Speed :             1,050.672 MegaBytes/min.
+   Ended : 07 April 2026 15:58:36
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 07 April 2026 15:58:37
+   Source : C:\iAssureit\Lupin\API\api\lupin\utilization-approval-level\
+     Dest : C:\iAssureit\hrms-2026\API\api\lupin\utilization-approval-level\
+
+    Files : *.*
+	    
+  Options : *.* /V /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /Z /NP /MT:8 /R:3 /W:5 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         1         0         0         0
+   Files :         3         0         3         0         0         0
+   Bytes :    14.2 k         0    14.2 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : 07 April 2026 15:58:37
+

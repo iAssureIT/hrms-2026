@@ -1,0 +1,213 @@
+Status : 
+		YTS 	: Yet to Start, 
+		WIP 	: Can be used with limitations
+		TIP		: Testing in process
+		Done	: Tested and can be used
+
+Pending List : 1. Before creating the user check for the role
+			   2. Role Adding check if role already added
+
+API : 
+
+01. Update User (name and mobile) 				- Done
+02. Update Status of the User 					- Done
+03. Update Role of the User 					- Done
+04. Details of Particular User using _id		- Done
+05. Details of Particular User using email 		- YTS
+06. List all the users 							- Done
+07. List all the users role wise				- Done
+08. List all the users status wise				- Done
+09. Delete User using _id						- Done
+10. Search 										- YTS
+
+=====================================================================================
+01. Update User (name and mobile)
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/users/patch/:ID'
+
+	Input	: 
+				{
+					"firstname" : String,
+					"lastname"	: String,
+					"mobNumber" : String,
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_NOT_UPDATED",	
+		  	}
+
+=====================================================================================
+02. Update Status of the User
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/users/patch/status/:ID'
+
+	Input	: 
+				{
+					"status" : String, //Either "Active" or "Inactive"
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_STATUS_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_STATUS_NOT_UPDATED",	
+			  	}
+
+=====================================================================================
+03. Update Role of the User
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/users/patch/role/:action/:ID'
+
+	Note 	: action can be "assign" or "remove"
+
+	Input	: 
+				{
+					"role" : String, 
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_ROLE_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_ROLE_NOT_UPDATED",	
+			  	}
+
+=====================================================================================
+04. Details of Particular User using _id
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/users/get/:ID'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				{
+					"firstname" : String,
+					"lastname"	: String,
+					"email"		: String, //Mandatory 
+					"mobNumber" : String,
+					"role"      : String, //Mandatory
+					"status"	: String, //Either "Active" or "Inactive"
+					"fullName"	: String, //If firstname and lastname is not collected then
+				}
+			  If not
+			  	{
+			  		message : "USER_NOT_FOUND",	
+		  	}
+
+=====================================================================================
+06. List all the users
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/users/get/list/:pageno'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				[{
+					"firstname" : String,
+					"lastname"	: String,
+					"email"		: String, //Mandatory 
+					"mobNumber" : String,
+					"role"      : String, //Mandatory
+					"status"	: String, //Either "Active" or "Inactive"
+					"fullName"	: String, //If firstname and lastname is not collected then
+				}]
+			  If not
+			  	{
+			  		message : "USER_NOT_FOUND",	
+			  	}
+		  	
+=====================================================================================
+07. List all the users role wise
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/users/get/list/role/:role/:pageno'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				[{
+					"firstname" : String,
+					"lastname"	: String,
+					"email"		: String, //Mandatory 
+					"mobNumber" : String,
+					"role"      : String, //Mandatory
+					"status"	: String, //Either "Active" or "Inactive"
+					"fullName"	: String, //If firstname and lastname is not collected then
+				}]
+			  If not
+			  	{
+			  		message : "USER_NOT_FOUND",	
+			  	}
+		  	
+=====================================================================================
+08. List all the users status wise
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/users/get/list/status/:status/:pageno'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				[{
+					"firstname" : String,
+					"lastname"	: String,
+					"email"		: String, //Mandatory 
+					"mobNumber" : String,
+					"role"      : String, //Mandatory
+					"status"	: String, //Either "Active" or "Inactive"
+					"fullName"	: String, //If firstname and lastname is not collected then
+				}]
+			  If not
+			  	{
+			  		message : "USER_NOT_FOUND",	
+		  	}
+		  	
+=====================================================================================
+14. Delete User using _id
+=====================================================================================
+
+	Method  : DELETE
+
+	URL 	: '/api/users/delete/:ID'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				{
+			  		message : "USER_DELETED",	
+			  	}
+			  If not
+			  	{
+			  		message : "USER_NOT_DELETED",	
+			  	}
+
+
+

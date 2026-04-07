@@ -1,0 +1,113 @@
+  const [branchList, setBranchList] = useState([]);
+  const [accNumberList, setAccNumberList] = useState([]);
+ 
+ useEffect(() => {
+    fetchBankBranches();
+    fetchBankAccountNos();
+  }, [bank_id]);
+
+  const fetchBankBranches = () => {
+    const selectedBranch = bankDataList.filter(
+      (lhwrfBank) => lhwrfBank._id === bank_id
+    );
+    setBranchList(selectedBranch);
+    // selectedBranch.map((sb) => {
+    //   console.log(sb.branchName);
+    // });
+  };
+
+   const fetchBankAccountNos = () => {
+    const selectedAccountNumber = bankDataList.filter(
+      (lhwrfBank) => lhwrfBank._id === bank_id
+    );
+    setAccNumberList(selectedAccountNumber);
+    // selectedBranch.map((sb) => {
+    //   console.log(sb.branchName);
+    // });
+  };
+
+<div className="flex-1 me-2 lg:me-4 my-2">
+                    <label htmlFor="center-name" className="inputLabel">
+                      LHWRF Bank Account <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative mt-2 rounded-md shadow-sm">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+                          <CiBank className="icon" />
+                        </span>
+                      </div>
+                      <select
+                        name="subactivityName"
+                        id="subactivityName"
+                        className={`
+                          ${
+                            error.lhwrfBankNameError
+                              ? "stdSelectField font-normal"
+                              : "stdSelectField font-normal"
+                          } ${lhwrfBankName ? "text-black" : "text-gray-400"}
+                    `}
+                        // value={lhwrfBankName}
+                        value={bank_id ? `${bank_id}|${lhwrfBankName}` : ""}
+                        onChange={(e) => {
+                          const [bankName_id, bankName] =
+                            e.target.value.split("|");
+                          setBank_id(bankName_id);
+                          setLhwrfBankName(bankName);
+                          setError((prevState) => ({
+                            ...prevState,
+                            lhwrfBankNameError: "",
+                          }));
+                        }}
+                      >
+                        <option
+                          value=""
+                          selected
+                          disabled
+                          className="text-gray-400"
+                        >
+                          Select LHWRF Bank Account
+                        </option>
+                        {/* {lhwrfBankNameList?.map((lhwrfBankName, i) => (
+                          <option
+                            className="text-black"
+                            key={i}
+                            value={lhwrfBankName}
+                          >
+                            {lhwrfBankName}
+                          </option>
+                        ))} */}
+                        {bankDataList?.map((lhwrfBank, i) => (
+                          <option
+                            className="text-black"
+                            key={i}
+                            value={`${lhwrfBank._id}|${lhwrfBank.bankName}`}
+                          >
+                            {lhwrfBank.bankName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div
+                      className="text-red-700"
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "normal",
+                      }}
+                    >
+                      {error.lhwrfBranchNameError}
+                    </div>
+                  </div>
+
+                  {branchList.map((branch, i) => (
+                          <option
+                            className="text-black"
+                            key={i}
+                            value={branch.branchName}
+                          >
+                            {branch.branchName}
+                          </option>
+                        ))}
+
+                        setBank_id(response.data[0].bank_id);
+
+                        bank_id,

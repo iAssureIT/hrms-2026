@@ -1,0 +1,300 @@
+Status : 
+		YTS 	: Yet to Start, 
+		WIP 	: Can be used with limitations
+		TIP		: Testing in process
+		Done	: Tested and can be used
+
+API : 
+
+01. Create User 															- Done
+02. Create User with Send Email OTP 										- Done 
+03. Create User with Send Mobile OTP 										- YTS 
+04. Create User with Send Email OTP and Mobile OTP							- YTS 
+05. User Login (email and password)											- YTS
+06. Reset the password of the user using ID	without otp verified			- Done
+07. Reset the password of the user using username without otp verified		- Done
+08. Reset the password of the user using ID	with Email otp verified			- YTS
+09. Reset the password of the user using username with Email otp verified	- YTS
+10. Check Email OTP  (_id and OTP)											- Done
+11. Check Email OTP  (username and OTP)										- Done
+12. Resend OTP (_id)														- Done
+13. Resend OTP (email)														- Done
+
+=====================================================================================
+01. Create User
+=====================================================================================
+
+	Method  : POST
+
+	URL 	: '/api/auth/post/signup/user'
+
+	Input	: 
+				{
+					"firstname" : String,
+					"lastname"	: String,
+					"email"		: String, //Mandatory 
+					"mobNumber" : String,
+					"pwd"		: String, //Mandatory
+					"role"      : String, //Mandatory
+					"status"	: String, //Either "Active" or "Inactive"
+					"fullName"	: String, //If firstname and lastname is not collected then
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_CREATED",
+					ID 		: String //_id of the user
+				}
+			  If Mandatory is missing then
+			  	{
+			  		message : "Email, pwd and role are mandatory",
+			  	}
+			  If Role is not added the Role Collection then
+			  	{
+			  		message: "Role does not exits"
+			  	}
+
+=====================================================================================
+02. Create User with Send Email OTP
+=====================================================================================
+
+	Method  : POST
+
+	URL 	: '/api/auth/post/signup/user/emailotp'
+
+	Input	: 
+				{
+					"firstname" 	: String,
+					"lastname"		: String,
+					"email"			: String, //Mandatory 
+					"mobNumber" 	: String,
+					"pwd"			: String, //Mandatory
+					"role"      	: String, //Mandatory
+					"status"		: String, //Either "Active" or "Inactive"
+					"fullName"		: String, //If firstname and lastname is not collected then
+					"emailSubject"	: String, //Email Subject line,
+					"emailContent"  : String,
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_CREATED",
+					ID 		: String //_id of the user
+				}
+			  If Mandatory is missing then
+			  	{
+			  		message : "Email, pwd and role are mandatory",
+			  	}
+			  If Role is not added the Role Collection then
+			  	{
+			  		message: "Role does not exits"
+			  	}
+
+=====================================================================================
+05. User Login (email and password)
+=====================================================================================
+
+	Method  : POST
+
+	URL 	: '/api/auth/post/login'
+
+	Input	: 
+				{
+					"email"		: String, //Mandatory 
+					"password"	: String, //Mandatory
+					"role" 		: String,
+				}
+
+	Output	: If Successfully
+				{
+					"message"	: "Auth successful",
+	    			"token"		: String,
+				    "ID"		: String
+				}
+			  If user is not found 
+			  	{
+			  		message : "Either User not found or Role is not matching Also Make sure User is not Block"
+			  	}
+
+=====================================================================================
+06. Reset the password of the user using ID without otp verified
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/auth/patch/change_password_withoutotp/id/:ID'
+
+	Input	: 
+				{
+					"pwd" : String, 
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_ROLE_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_ROLE_NOT_UPDATED",	
+			  	}
+
+=====================================================================================
+07. Reset the password of the user using username without otp verified
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/auth/patch/change_password_withoutotp/username/:username'
+
+	Input	: 
+				{
+					"pwd" : String, 
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_ROLE_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_ROLE_NOT_UPDATED",	
+			  	}
+		  		  	
+=====================================================================================
+08. Reset the password of the user using ID	with Email otp verified
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/auth/patch/change_password_with_emailotp/id/:ID'
+
+	Input	: 
+				{
+					"pwd" 		: String, 
+					"emailOTP"	: String
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_ROLE_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_ROLE_NOT_UPDATED",	
+			  	}
+
+=====================================================================================
+09. Reset the password of the user using username with Email otp verified
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/auth/patch/change_password_with_emailotp/id/:ID'
+
+	Input	: 
+				{
+					"pwd" 		: String, 
+					"emailOTP"	: String
+				}
+
+	Output	: If Successfully
+				{
+					message : "USER_ROLE_UPDATED",
+				}
+			  If not
+			  	{
+			  		message : "USER_ROLE_NOT_UPDATED",	
+			  	}
+
+=====================================================================================
+10. Check Email OTP  (_id and OTP)
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/auth/get/checkemailotp/usingID/:ID/:emailotp'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				{
+			  		message : "SUCCESS",	
+			  	}
+			  If not
+			  	{
+			  		message : "FAILED",	
+			  	}
+			  If not able to Reset Email OTP
+			  	{
+			  		message : "SUCCESS_OTP_NOT_RESET"
+			  	}
+
+=====================================================================================
+11. Check Email OTP  (username and OTP)
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/auth/get/checkemailotp/usingUsername/:username/:emailotp'
+
+	Input	: - NA -
+
+	Output	: If Successfully
+				{
+			  		message : "SUCCESS",	
+			  	}
+			  If not
+			  	{
+			  		message : "FAILED",	
+			  	}
+			  If not able to Reset Email OTP
+			  	{
+			  		message : "SUCCESS_OTP_NOT_RESET"
+			  	}
+
+=====================================================================================
+12. Resend OTP (_id)
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/auth/patch/set_send_emailotp_usingID/:ID'
+
+	Input	: 
+			  {
+				  	"emailSubject"	: String, //Email Subject line,
+					"emailContent"  : String,
+			  }
+
+	Output	: If Successfully
+				{
+			  		message : "OTP_UPDATED",	
+			  	}
+			  If not
+			  	{
+			  		message : "USER_NOT_UPDATED",	
+			  	}
+
+=====================================================================================
+13. Resend OTP (email)
+=====================================================================================
+
+	Method  : PATCH
+
+	URL 	: '/api/auth/patch/set_send_emailotp_usingEmail/:emailId'
+
+	Input	: 
+			  {
+				  	"emailSubject"	: String, //Email Subject line,
+					"emailContent"  : String,
+			  }
+
+	Output	: If Successfully
+				{
+			  		message : "OTP_UPDATED",	
+			  	}
+			  If not
+			  	{
+			  		message : "USER_NOT_UPDATED",	
+			  	}
+

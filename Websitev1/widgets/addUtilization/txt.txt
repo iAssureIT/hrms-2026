@@ -1,0 +1,1636 @@
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
+import moment from "moment";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+// const html2pdf = dynamic(() => Promise.resolve(require("html2pdf")), {
+//   ssr: false,
+// });
+// import html2pdf from "html2pdf.js";
+import rejectedStamp from "@/public/images/specific/rejected-stamp.png";
+import approvedStamp from "@/public/images/specific/approved-stamp.png";
+import pendingStamp from "@/public/images/specific/pending-stamp.png";
+import validator from "validator";
+
+import { FaIndianRupeeSign } from "react-icons/fa6";
+import { MdOutlineDateRange, MdOutlineEdit } from "react-icons/md";
+import { CiViewList } from "react-icons/ci";
+import Swal from "sweetalert2";
+import { Tooltip } from "flowbite-react";
+import { FaFileDownload, FaRegFileAlt, FaSpinner } from "react-icons/fa";
+
+import { usePathname } from "next/navigation";
+import ls from "localstorage-slim";
+import { ImListNumbered } from "react-icons/im";
+import { LiaRupeeSignSolid } from "react-icons/lia";
+import { response } from "express";
+
+const ApprovalDetails = () => {
+  const pathname = usePathname();
+  const [loggedInRole, setLoggedInRole] = useState("");
+  const [userDetails, setUserDetails] = useState(
+    ls.get("userDetails", { decrypt: true })
+  );
+  // console.log("userDetails  =>", userDetails);
+
+  const [status, setStatus] = useState("");
+  // const [initialStatus, setInitialStatus] = useState("");
+  const [stamp, setStamp] = useState("");
+  const [user_id, setUser_id] = useState("");
+  const [center_id, setCenter_id] = useState("all");
+  const [update, setUpdate] = useState(false);
+  const [approvalAuthName, setApprovalAuthName] = useState("");
+  const [approvalAuthRole, setApprovalAuthRole] = useState("");
+  const [financeAuthName, setFinanceAuthName] = useState("");
+  const [financeAuthRole, setFinanceAuthRole] = useState("");
+  const [financeAuthEmail, setFinanceAuthEmail] = useState("");
+  const [financeAuthMobile, setFinanceAuthMobile] = useState("");
+  const [UTRNumber, setUTRNumber] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("pending");
+  const [roles, setRoles] = useState([]);
+  const [utilizationData, setUtilizationData] = useState([]);
+  const [utilizationAttachments, setUtilizationAttachments] = useState([]);
+  const [approvalAuthoritiesUpdated, setApprovalAuthoritiesUpdated] =
+    useState(false);
+  const [financeAuthoritiesUpdated, setFinanceAuthoritiesUpdated] =
+    useState(false);
+  const [approved, setApproved] = useState(false);
+  const [rejected, setRejected] = useState(false);
+  const [approverLevelList, setApproverLevelList] = useState([]);
+  const [approverIndex, setApproverIndex] = useState("");
+  const [rejectedIndex, setRejectedIndex] = useState("");
+  const [approvalAuthorities, setApprovalAuthorities] = useState({});
+  const [approvalLevel, setApprovalLevel] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(true);
+  const [loading3, setLoading3] = useState(false);
+  const [remarks, setRemarks] = useState("");
+  const [error, setError] = useState({});
+
+  const params = useParams();
+  const router = useRouter();
+  const contentRef = useRef();
+
+  useEffect(() => {
+    if (pathname.includes("admin")) {
+      setLoggedInRole("admin");
+      setCenter_id("all");
+    } else if (pathname.includes("center")) {
+      setLoggedInRole("center");
+      setCenter_id(userDetails.center_id);
+    } else if (pathname.includes("account")) {
+      setLoggedInRole("account");
+      setCenter_id(userDetails.center_id);
+    } else {
+      setLoggedInRole("executive");
+      setCenter_id("all");
+      // console.log("userDetails.roles", userDetails.roles);
+
+      if (userDetails.roles.includes("senior-manager")) {
+        // const allCenter_idsBYSM = getCenterDetailsBySM(userDetails?.user_id)
+        // seniorManagerDetails.email
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    getUtilizationData();
+  }, [status, approvalAuthoritiesUpdated, financeAuthoritiesUpdated]);
+
+  // const getCenterDetailsBySM = (user_id) => {
+  //   axios
+  //   .get("/api/centers/get/centersBySM/" + user_id)
+  //   .then((response) => {
+  //     console.log("response", response.data);
+  //     return response.data.profile.seniorManagerDetails
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   })
+  // }
+  const getUtilizationData = () => {
+    axios
+      .get("/api/utilization-details/get/one/" + params._id)
+      .then((response) => {
+        var utilizationData = response.data[0];
+        console.log("response", response);
+        if (utilizationData?.approvalAuthourities) {
+          setApprovalAuthoritiesUpdated(true);
+        }
+        if (utilizationData?.financeAuthorities) {
+          setFinanceAuthoritiesUpdated(true);
+        }
+        setUtilizationData(utilizationData);
+        // const combinedAttachmentData = utilizationData?.documentName?.map(
+        //   (name, index) => {
+        //     return {
+        //       name: name,
+        //       url: utilizationData?.documentUrl[index],
+        //     };
+        //   }
+        // );
+
+        const combinedAttachmentData = [
+          {
+            type: "voucher",
+            documentUrl: utilizationData?.voucherDocumentUrl,
+            documentName: utilizationData?.voucherDocumentName,
+          },
+          {
+            type: "convergence",
+            documentUrl: utilizationData?.convergenceDocumentUrl,
+            documentName: utilizationData?.S3ConvergenceDocumentName,
+          },
+        ];
+
+        // const combinedAttachmentData = {
+        //   vouchername: name,
+        //   voucher: utilizationData?.documentUrl[index],
+        // };
+
+        setUtilizationAttachments(combinedAttachmentData);
+
+        if (userDetails) {
+          const user_id = userDetails?.user_id;
+          const parseAuthName =
+            userDetails.firstName + " " + userDetails.lastName;
+          const parseAuthRole = userDetails.roles;
+          const parseAuthEmail = userDetails.email;
+          const parseAuthMobile = userDetails.mobile;
+          // console.log("parseAuthRole",parseAuthRole)
+
+          setUser_id(user_id);
+          setApprovalAuthName(parseAuthName);
+          setFinanceAuthName(parseAuthName);
+          setRoles(parseAuthRole);
+          console.log(
+            "utilizationData?.approvalAuthourities-------------------------------------",
+            utilizationData?.approvalAuthourities
+          );
+          console.log(
+            "approvalAuthName-------------------------------------",
+            approvalAuthName
+          );
+
+          const getAuthRole = (roles) => {
+            const authority = utilizationData?.approvalAuthourities?.find(
+              (authority) => {
+                return roles.includes(authority.approvalAuthRole);
+              }
+            );
+            return authority ? authority.approvalAuthRole : null;
+          };
+
+          const authRole = getAuthRole(parseAuthRole);
+          setApprovalAuthRole(authRole);
+
+          const getFinanceAuthRole = (roles) => {
+            const authority = utilizationData?.financeAuthorities?.find(
+              (authority) => {
+                return roles.includes(authority.financeAuthRole);
+              }
+            );
+            return authority ? authority.financeAuthRole : null;
+          };
+
+          const financeAuthRole = getFinanceAuthRole(parseAuthRole);
+          setFinanceAuthRole(financeAuthRole);
+
+          setFinanceAuthEmail(parseAuthEmail);
+          setFinanceAuthMobile(parseAuthMobile);
+          // console.log("authRole-------------------------------------",authRole)
+          // console.log("approvalAuthRole-------------------------------------",approvalAuthRole)
+        }
+      })
+      .catch((error) => {
+        console.log("Error Message => ", error);
+        //   Swal.fire("Oops", "Something Went Wrong", "error");
+      })
+      .finally(() => {
+        setLoading2(false);
+      });
+  };
+
+  const validation = (st) => {
+    let inputIsValid = true;
+    let errorMsg = {};
+    // console.log("2 status => ", st);
+
+    if (st === "rejected" && validator.isEmpty(remarks)) {
+      // console.log("3 status => ", st);
+      inputIsValid = false;
+      errorMsg.remarksError = "This field is required.";
+      setError(errorMsg);
+    }
+    return inputIsValid;
+  };
+
+  const handleSubmit = (st) => {
+    // event.preventDefault();
+
+    let formValues = {
+      approvalAuthRole: approvalAuthRole,
+      approvalAuthName: approvalAuthName,
+      status: st,
+      remark: remarks,
+      updatedBy: user_id,
+    };
+
+    if (params._id && validation(st)) {
+      formValues.ID = params._id;
+      axios
+        .patch("/api/utilization-details/patch/status", formValues)
+        .then((response) => {
+          console.log("5 status => ", st);
+          if (st === "approved") {
+            Swal.fire(
+              "Approved!",
+              "This 'Approval Request' is Approved by you and Notification is sent to respective authourity!"
+            );
+          } else {
+            Swal.fire(
+              "Rejected!",
+              "This 'Approval Request' is Rejected by you and Notification is sent to respective authourity!"
+            );
+          }
+          setRemarks("");
+          getUtilizationData();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  // const paymentValidation = () => {
+  //   let inputIsValid = true;
+  //   let errorMsg = {};
+  //   // console.log("2 status => ", st);
+
+  //   if (validator.isEmpty(UTRNumber)) {
+  //     // console.log("3 status => ", st);
+  //     inputIsValid = false;
+  //     errorMsg.UTRNumberError = "This field is required.";
+  //     setError(errorMsg);
+  //   }
+
+  //   if (validator.isEmpty(paymentDate)) {
+  //     // console.log("3 status => ", st);
+  //     inputIsValid = false;
+  //     errorMsg.paymentDateError = "This field is required.";
+  //     setError(errorMsg);
+  //   }
+
+  //   if (validator.isEmpty(paymentStatus)) {
+  //     // console.log("3 status => ", st);
+  //     inputIsValid = false;
+  //     errorMsg.paymentStatusError = "This field is required.";
+  //     setError(errorMsg);
+  //   }
+
+  //   return inputIsValid;
+  // };
+
+  const handlePaymentDetailsSubmit = (e) => {
+    e.preventDefault();
+
+    let formValues = {
+      financeAuthRole: financeAuthRole,
+      financeAuthName: financeAuthName,
+      UTRNumber: UTRNumber,
+      paymentDate: paymentDate,
+      paymentStatus: paymentStatus,
+      updatedBy: user_id,
+    };
+
+    // if (paymentValidation()) {
+    formValues.ID = params._id;
+    axios
+      .patch("/api/utilization-details/patch/payment-status", formValues)
+      .then((response) => {
+        console.log("response", response);
+
+        getUtilizationData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // }
+  };
+
+  console.log("role", loggedInRole);
+
+  const isUserAuthourised = (approvalAuthName, approvalAuthRole) => {
+    let authorizedIndex = -1; // Default value if no match is found
+    utilizationData?.approvalAuthourities?.some((authority, index) => {
+      console.log(
+        "isUserAuthourised===========================",
+        authority.approvalAuthName,
+        approvalAuthName,
+        approvalAuthRole,
+        authority.approvalAuthRole
+      );
+      console.log(
+        "isUserAuthourised===========================",
+        authority.approvalAuthName === approvalAuthName,
+        approvalAuthRole === authority.approvalAuthRole
+      );
+      if (
+        authority.approvalAuthName === approvalAuthName &&
+        approvalAuthRole === authority.approvalAuthRole
+      ) {
+        authorizedIndex = index; // Capture the index of the matching authority
+        console.log(
+          "Authorized at index:",
+          index,
+          "with level:",
+          authority.approvalLevel
+        );
+        return true; // Stop iteration when a match is found
+      }
+      return false;
+    });
+
+    if (authorizedIndex !== -1) {
+      //   authorizedIndex,
+      //   utilizationData.approvalAuthourities[authorizedIndex].approvalLevel
+
+      if (authorizedIndex === 0) {
+        if (
+          utilizationData.approvalAuthourities[authorizedIndex + 1]?.status !==
+            "approved" &&
+          utilizationData.approvalAuthourities[authorizedIndex + 1]?.status !==
+            "rejected"
+        ) {
+          return {
+            showActionButtons: true,
+          };
+        } else {
+          return true;
+        }
+      } else if (
+        utilizationData.approvalAuthourities[authorizedIndex - 1]?.status ===
+        "approved"
+      ) {
+        if (
+          utilizationData.approvalAuthourities[authorizedIndex + 1]?.status !==
+            "approved" &&
+          utilizationData.approvalAuthourities[authorizedIndex + 1]?.status !==
+            "rejected"
+        ) {
+          return {
+            showActionButtons: true,
+          };
+        } else {
+          return true;
+        }
+      } else {
+        return false; // If any previous level is not approved, return false
+      }
+    } else {
+      return false; // If any previous level is not approved, return false
+    }
+  };
+  // Function to check if all previous levels are approved
+  function arePreviousLevelsApproved(currentIndex, approvalAuthourities) {
+    // for (let i = 0; i < currentIndex; i++) {
+    //     if (approvalAuthourities[i].status !== "approved") {
+    //         return false; // If any previous level is not approved, return false
+    //     }
+    // }
+    // return true; // All previous levels are approved
+  }
+
+  // const isAccountPersonAuthorized = (center_id) => {
+  //   const formValues = {
+  //     center_id: center_id,
+  //     user_id: user_id,
+  //   };
+  //   if (center_id && userDetails?.roles[0] === "account-person") {
+  //     axios
+  //       .post("/api/utilization-details/get/account-person/", formValues)
+  //       .then((response) => {
+  //         console.log("response account person", response);
+  //         setFinanceAuthName(response.data.financeAuth.financeAuthName);
+  //         setFinanceAuthEmail(response.data.financeAuth.financeAuthEmail);
+  //         setFinanceAuthMobile(response.data.financeAuth.financeAuthMobile);
+  //       })
+  //       .catch((error) => {
+  //         console.log("Account Person not Assigned", error);
+  //       });
+  //   } else {
+  //     console.log("You are not account person for this center");
+  //   }
+  // };
+
+  const hideElements = () => {
+    const elementsToHide = document.querySelectorAll(".hide-in-pdf");
+    const elementsToAdjust = document.querySelectorAll(".adjust-in-pdf");
+    elementsToHide.forEach((element) => {
+      element.style.display = "none";
+    });
+    elementsToAdjust.forEach((element) => {
+      element.style.marginTop = "10px";
+      element.style.marginBottom = "10px";
+    });
+  };
+
+  // Function to show elements again after PDF generation
+  const showElements = () => {
+    const elementsToHide = document.querySelectorAll(".hide-in-pdf");
+    elementsToHide.forEach((element) => {
+      element.style.display = "";
+    });
+  };
+
+  const downloadPDF = async () => {
+    let element = document.getElementById("pdf-content");
+
+    hideElements();
+
+    const options = {
+      margin: 1,
+      filename: "utilization-approval-details.pdf",
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "A4", orientation: "portrait" },
+    };
+
+    const html2pdf = (await import("html2pdf.js")).default;
+
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save()
+      .then(() => {
+        showElements();
+      });
+  };
+
+  const formatToINR = (num) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })
+      .format(num)
+      .replace(/^(\D+)/, "$1 ");
+  };
+
+  const formatNumberToCommas = (num) => {
+    return new Intl.NumberFormat("en-IN").format(num);
+  };
+
+  const imageExtensions = [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "gif",
+    "psd",
+    "tiff",
+    "jfif",
+  ];
+  const excelExtensions = ["xls", "xlsx"];
+
+  const renderDocumentList = (type) => {
+    return utilizationAttachments
+      .filter((doc) => doc.type === type && doc.documentName && doc.documentUrl)
+      .map((document, index) => {
+        const fileExt = document?.documentName?.split(".").pop()?.toLowerCase();
+        let previewDiv;
+
+        if (imageExtensions.includes(fileExt)) {
+          previewDiv = (
+            <img src={document?.documentUrl} className="h-14 w-14" />
+          );
+        } else if (excelExtensions.includes(fileExt)) {
+          previewDiv = (
+            <img
+              src="/images/generic/Excel-download-icon.png"
+              className="h-14 w-14"
+            />
+          );
+        } else if (fileExt === "pdf") {
+          previewDiv = (
+            <img
+              src="/images/generic/pdf-file-icon.png"
+              className="h-10 w-10"
+            />
+          );
+        } else {
+          previewDiv = <FaRegFileAlt className="text-xs text-green" />;
+        }
+
+        return (
+          <div key={index} className="flex gap-3 mt-2">
+            <Tooltip
+              content="Download file"
+              className="bg-green"
+              placement="bottom"
+              arrow={false}
+            >
+              <div className="text-center border border-dashed border-gray-400 px-1.5 py-2 rounded-md relative">
+                <div className="flex justify-center">
+                  <a
+                    target="_blank" href={document?.documentUrl}
+                    className="hover:scale-110 min-h-14"
+                    download
+                  >
+                    {previewDiv}
+                  </a>
+                </div>
+                <div className="flex gap-2">
+                  <a
+                    target="_blank" href={document?.documentUrl}
+                    className="hover:underline font-medium"
+                    download
+                  >
+                    {document?.documentName}
+                  </a>
+                </div>
+              </div>
+            </Tooltip>
+          </div>
+        );
+      });
+  };
+
+  return (
+    <section className="section">
+      <div className="box border-2 rounded-md shadow-md" id="pdf-content">
+        <div className="uppercase text-xl font-semibold">
+          <div className="border-b-2 border-gray-300 flex justify-between">
+            <h1 className="heading">Utilization Details</h1>
+
+            <div className="flex gap-3 my-5 me-10 hide-in-pdf">
+              <Tooltip
+                content="Download as PDF"
+                placement="bottom"
+                className="bg-green"
+                arrow={false}
+              >
+                {loading3 ? (
+                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                ) : (
+                  <FaFileDownload
+                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    onClick={downloadPDF}
+                  />
+                )}
+              </Tooltip>
+              {loggedInRole === "admin" || loggedInRole === "center" ? (
+                <Tooltip
+                  content="Edit"
+                  placement="bottom"
+                  className="bg-green"
+                  arrow={false}
+                >
+                  {loading3 ? (
+                    <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                  ) : (
+                    <MdOutlineEdit
+                      className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                      onClick={() => {
+                        setLoading3(true);
+                        router.push(
+                          `/${loggedInRole}/utilization-management/utilization-submission/${params._id}`
+                        );
+                        setUpdate(true);
+                      }}
+                    />
+                  )}
+                </Tooltip>
+              ) : null}
+              <Tooltip
+                content="Utilization List"
+                placement="bottom"
+                className="bg-green"
+                arrow={false}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                ) : (
+                  <CiViewList
+                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    onClick={() => {
+                      setLoading(true);
+                      router.push(
+                        "/" +
+                          loggedInRole +
+                          "/utilization-management/utilization-list"
+                      );
+                    }}
+                  />
+                )}
+              </Tooltip>
+            </div>
+          </div>
+        </div>
+        <div className="px-10 py-6">
+          <div className="bg-white text-secondary">
+            <div className="me-2 rounded-md">
+              <div className="mt-5 mb-5 w-full grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 adjust-in-pdf">
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="centerName" className="inputLabel">
+                    Center Name
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.centerName ? (
+                      utilizationData?.centerName
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+                {utilizationData?.finalStatus === "approved" ? (
+                  <div className="flex-1 lg:me-4">
+                    <label
+                      htmlFor="approvalSubmissionDate"
+                      className="inputLabel"
+                    >
+                      Approval Date
+                    </label>
+
+                    <div className="relative mt-2 font-normal text-[15px]">
+                      {utilizationData?.approvalDate ? (
+                        moment(utilizationData?.approvalDate).format(
+                          "DD-MM-YYYY"
+                        )
+                      ) : loading2 ? (
+                        <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                      ) : (
+                        "NA"
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div className="mt-5 mb-5 w-full grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2">
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="centerName" className="inputLabel">
+                    Approval Number
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.approvalNo ? (
+                      utilizationData?.approvalNo
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 lg:me-4">
+                  <label
+                    htmlFor="approvalSubmissionDate"
+                    className="inputLabel"
+                  >
+                    Approval Date
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.approvalDate ? (
+                      moment(utilizationData?.approvalDate).format("DD-MM-YYYY")
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="centerName" className="inputLabel">
+                    Voucher Number
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.voucherNumber ? (
+                      utilizationData?.voucherNumber
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 lg:me-4">
+                  <label
+                    htmlFor="approvalSubmissionDate"
+                    className="inputLabel"
+                  >
+                    Voucher Date
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.voucherDate ? (
+                      moment(utilizationData?.voucherDate).format("DD-MM-YYYY")
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 mb-5 w-full grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2">
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="program" className="inputLabel">
+                    Program
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.program ? (
+                      utilizationData?.program
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="project" className="inputLabel">
+                    Project
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.project ? (
+                      utilizationData?.project
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="activityName" className="inputLabel">
+                    Activity
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.activityName ? (
+                      utilizationData?.activityName
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 lg:me-4">
+                  <label htmlFor="subactivityName" className="inputLabel">
+                    Subactivity
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.subactivityName ? (
+                      utilizationData?.subactivityName
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 mt-6 lg:me-4">
+                  <div>
+                    <label htmlFor="quantity" className="inputLabel">
+                      Quantity
+                    </label>
+                    <div className="relative mt-2 font-normal text-[15px]">
+                      {utilizationData?.quantity ? (
+                        formatNumberToCommas(utilizationData?.quantity)
+                      ) : loading2 ? (
+                        <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                      ) : (
+                        0
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-1 mt-5 flex w-full gap-2 lg:me-4">
+                  <div>
+                    <label htmlFor="quantity" className="inputLabel">
+                      Unit
+                    </label>
+                    <div className="relative mt-2 font-normal text-[15px]">
+                      {utilizationData?.unit ? (
+                        utilizationData?.unit
+                      ) : loading2 ? (
+                        <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                      ) : (
+                        "NA"
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-1 mt-5 lg:me-4">
+                  <label htmlFor="unitCost" className="inputLabel">
+                    Unit Cost
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.unitCost ? (
+                      formatToINR(utilizationData?.unitCost)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5 lg:me-4 ">
+                  <label htmlFor="noOfHouseholds" className="inputLabel">
+                    Impacted Households
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.noOfHouseholds ? (
+                      formatNumberToCommas(utilizationData?.noOfHouseholds)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5 lg:me-4 adjust-in-pdf">
+                  <label htmlFor="noOfBeneficiaries" className="inputLabel">
+                    Reach (Beneficiaries)
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.noOfBeneficiaries ? (
+                      formatNumberToCommas(utilizationData?.noOfBeneficiaries)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 mt-5  lg:me-4 w-1/2">
+                  <label htmlFor="totalCost" className="inputLabel">
+                    Total Cost
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.totalCost ? (
+                      formatToINR(utilizationData?.totalCost)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="grant" className="inputLabel">
+                    External Grant
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.sourceofFund?.grant ? (
+                      formatToINR(utilizationData?.sourceofFund?.grant)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="CC" className="inputLabel">
+                    CC
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.sourceofFund?.CC ? (
+                      formatToINR(utilizationData?.sourceofFund?.CC)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="LHWRF" className="inputLabel">
+                    LHWRF
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.sourceofFund?.LHWRF ? (
+                      formatToINR(utilizationData?.sourceofFund?.LHWRF)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="LHWRF" className="inputLabel">
+                    Status
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.status ? (
+                      utilizationData?.status
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="LHWRF" className="inputLabel">
+                    Convergence
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.convergence ? (
+                      formatToINR(utilizationData?.convergence)
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="LHWRF" className="inputLabel">
+                    Convergence Agency
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.convergenceAgencyName ? (
+                      utilizationData?.convergenceAgencyName
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="LHWRF" className="inputLabel">
+                    Convergence Document
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.convergenceDocumentName ? (
+                      utilizationData?.convergenceDocumentName
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      0
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1 mt-5  lg:me-4">
+                  <label htmlFor="LHWRF" className="inputLabel">
+                    Remarks
+                  </label>
+                  <div className="relative mt-2 font-normal text-[15px]">
+                    {utilizationData?.convergenceNote ? (
+                      utilizationData?.convergenceNote
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      "NA"
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 mb-6 flex lg:flex-row md:flex-row flex-col hide-in-pdf">
+                <div className="flex-1 lg:me-4 w-1/2">
+                  <label htmlFor="totalCost" className="inputLabel">
+                    Voucher Attachment
+                  </label>
+                  <div
+                    className={`relative font-normal ${
+                      utilizationAttachments?.length > 4
+                        ? "grid grid-cols-4"
+                        : "flex"
+                    } gap-4 text-[15px]`}
+                  >
+                    {renderDocumentList("voucher").length > 0 ? (
+                      renderDocumentList("voucher")
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      <div className="relative mt-2 font-medium">
+                        No data found
+                      </div>
+                    )}
+                    {/* {utilizationAttachments &&
+                                 utilizationAttachments?.length > 0 ? (
+                                   utilizationAttachments?.map((document, index) => {
+                                     const imageExt =
+                                       "jpg" ||
+                                       "jpeg" ||
+                                       "png" ||
+                                       "webp" ||
+                                       "gif" ||
+                                       "psd" ||
+                                       "tiff" ||
+                                       "jfif";
+             
+                                     let previewDiv = "";
+             
+                                     if (
+                                       document?.name.split(".").pop() === "png" ||
+                                       document?.name.split(".").pop() === "jpg" ||
+                                       document?.name.split(".").pop() === "jpeg" ||
+                                       document?.name.split(".").pop() === "jfif" ||
+                                       document?.name.split(".").pop() === "webp" ||
+                                       document?.name.split(".").pop() === "psd" ||
+                                       document?.name.split(".").pop() === "tiff" ||
+                                       document?.name.split(".").pop() === "jfif" ||
+                                       document?.name.split(".").pop() === "gif"
+                                     ) {
+                                       previewDiv = (
+                                         <img
+                                           src={document?.url}
+                                           className="text-2xl h-14 w-14 content-center z-[1]"
+                                         />
+                                       );
+                                     } else if (
+                                       document?.name.split(".").pop() === "xls" ||
+                                       document?.name.split(".").pop() === "xlsx"
+                                     ) {
+                                       previewDiv = (
+                                         <img
+                                           src="/images/generic/Excel-download-icon.png"
+                                           className="text-2xl h-14 w-14 content-center"
+                                         />
+                                       );
+                                     } else if (document?.name.split(".").pop() === "pdf") {
+                                       previewDiv = (
+                                         <img
+                                           src="/images/generic/pdf-file-icon.png"
+                                           className="text-2xl h-10 w-10 content-center"
+                                         />
+                                       );
+                                     } else {
+                                       previewDiv = (
+                                         <FaRegFileAlt className="text-xs text-green content-center z-[1]" />
+                                       );
+                                     }
+             
+                                     return (
+                                       <div
+                                         className={`flex col-span-1 gap-3 ${
+                                           document.name !== "" ||
+                                           utilizationAttachments?.length > 0
+                                             ? "mt-2"
+                                             : "mt-0"
+                                         }`}
+                                       >
+                                         {document?.name !== "" && document?.name !== "" ? (
+                                           <div>{++index}.</div>
+                                         ) : (
+                                           ""
+                                         )}
+                                         {document?.name !== "" && document?.url !== "" ? (
+                                           <Tooltip
+                                             content="Download file"
+                                             className="bg-green"
+                                             placement="bottom"
+                                             arrow={false}
+                                           >
+                                             <div className="text-center w-full border border-dashed border-gray-400 px-1.5 py-2 rounded-md relative">
+                                               <div className="flex justify-center">
+                                                 <a
+                                                   target="_blank" href={
+                                                     document?.url !== "" && document?.url
+                                                   }
+                                                   className="hover:scale-110 min-h-14 content-center"
+                                                   download
+                                                 >
+                                                   {previewDiv}
+                                                 </a>
+                                               </div>
+                                               <div className="flex gap-2">
+                                                 <a
+                                                   target="_blank" href={
+                                                     document?.url !== "" && document?.url
+                                                   }
+                                                   className="hover:underline underline hover:font-medium"
+                                                   download
+                                                 >
+                                                   {document?.name !== "" && document?.name}
+                                                 </a>
+                                               </div>
+                                             </div>
+                                           </Tooltip>
+                                         ) : (
+                                           "No data found"
+                                         )}
+                                       </div>
+                                     );
+                                   })
+                                 ) : loading2 ? (
+                                   <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                                 ) : (
+                                   <div className="relative mt-2 font-medium">
+                                     No data found
+                                   </div>
+                                 )} */}
+                  </div>
+                </div>
+                <div className="flex-1 lg:me-4 w-1/2">
+                  <label htmlFor="totalCost" className="inputLabel">
+                    Convergence Attachment
+                  </label>
+                  <div
+                    className={
+                      `relative font-normal flex
+                                   gap-4 text-[15px]`
+                      //   ${
+                      //   utilizationAttachments?.length > 4
+                      //     ? "grid grid-cols-4"
+                      //     : "flex"
+                      // }
+                    }
+                  >
+                    {renderDocumentList("convergence").length > 0 ? (
+                      renderDocumentList("convergence")
+                    ) : loading2 ? (
+                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                    ) : (
+                      <div className="relative mt-2 font-medium">
+                        No data found
+                      </div>
+                    )}
+                    {/* {utilizationAttachments &&
+                                 utilizationAttachments?.length > 0 ? (
+                                   utilizationAttachments?.map((document, index) => {
+                                     const imageExt =
+                                       "jpg" ||
+                                       "jpeg" ||
+                                       "png" ||
+                                       "webp" ||
+                                       "gif" ||
+                                       "psd" ||
+                                       "tiff" ||
+                                       "jfif";
+             
+                                     let previewDiv = "";
+             
+                                     if (
+                                       document?.name.split(".").pop() === "png" ||
+                                       document?.name.split(".").pop() === "jpg" ||
+                                       document?.name.split(".").pop() === "jpeg" ||
+                                       document?.name.split(".").pop() === "jfif" ||
+                                       document?.name.split(".").pop() === "webp" ||
+                                       document?.name.split(".").pop() === "psd" ||
+                                       document?.name.split(".").pop() === "tiff" ||
+                                       document?.name.split(".").pop() === "jfif" ||
+                                       document?.name.split(".").pop() === "gif"
+                                     ) {
+                                       previewDiv = (
+                                         <img
+                                           src={document?.url}
+                                           className="text-2xl h-14 w-14 content-center z-[1]"
+                                         />
+                                       );
+                                     } else if (
+                                       document?.name.split(".").pop() === "xls" ||
+                                       document?.name.split(".").pop() === "xlsx"
+                                     ) {
+                                       previewDiv = (
+                                         <img
+                                           src="/images/generic/Excel-download-icon.png"
+                                           className="text-2xl h-14 w-14 content-center"
+                                         />
+                                       );
+                                     } else if (document?.name.split(".").pop() === "pdf") {
+                                       previewDiv = (
+                                         <img
+                                           src="/images/generic/pdf-file-icon.png"
+                                           className="text-2xl h-10 w-10 content-center"
+                                         />
+                                       );
+                                     } else {
+                                       previewDiv = (
+                                         <FaRegFileAlt className="text-xs text-green content-center z-[1]" />
+                                       );
+                                     }
+             
+                                     return (
+                                       <div
+                                         className={`flex col-span-1 gap-3 ${
+                                           document.name !== "" ||
+                                           utilizationAttachments?.length > 0
+                                             ? "mt-2"
+                                             : "mt-0"
+                                         }`}
+                                       >
+                                         {document?.name !== "" && document?.name !== "" ? (
+                                           <div>{++index}.</div>
+                                         ) : (
+                                           ""
+                                         )}
+                                         {document?.name !== "" && document?.url !== "" ? (
+                                           <Tooltip
+                                             content="Download file"
+                                             className="bg-green"
+                                             placement="bottom"
+                                             arrow={false}
+                                           >
+                                             <div className="text-center w-full border border-dashed border-gray-400 px-1.5 py-2 rounded-md relative">
+                                               <div className="flex justify-center">
+                                                 <a
+                                                   target="_blank" href={
+                                                     document?.url !== "" && document?.url
+                                                   }
+                                                   className="hover:scale-110 min-h-14 content-center"
+                                                   download
+                                                 >
+                                                   {previewDiv}
+                                                 </a>
+                                               </div>
+                                               <div className="flex gap-2">
+                                                 <a
+                                                   target="_blank" href={
+                                                     document?.url !== "" && document?.url
+                                                   }
+                                                   className="hover:underline underline hover:font-medium"
+                                                   download
+                                                 >
+                                                   {document?.name !== "" && document?.name}
+                                                 </a>
+                                               </div>
+                                             </div>
+                                           </Tooltip>
+                                         ) : (
+                                           "No data found"
+                                         )}
+                                       </div>
+                                     );
+                                   })
+                                 ) : loading2 ? (
+                                   <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                                 ) : (
+                                   <div className="relative mt-2 font-medium">
+                                     No data found
+                                   </div>
+                                 )} */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {console.log(
+            "isUserAuthourised(approvalAuthName, approvalAuthRole)",
+            approvalAuthName,
+            approvalAuthRole,
+            isUserAuthourised(approvalAuthName, approvalAuthRole)
+          )}
+          {isUserAuthourised(approvalAuthName, approvalAuthRole) ||
+          loggedInRole === "admin" ||
+          loggedInRole === "account" ||
+          userDetails?.roles[0] === "finance-manager" ? (
+            <div className="border-t-2">
+              <h3 className="subHeading font-bold mt-4">
+                Approval Authorities
+              </h3>
+
+              <div className="flex gap-10 justify-between mt-5 mb-6 w-full">
+                <div className="w-1/2">
+                  <table className="table-auto border-separate border-spacing-y-4">
+                    <thead></thead>
+                    <tbody>
+                      {utilizationData?.approvalAuthourities?.map(
+                        (item, index) => {
+                          // Check if user is authorized and previous levels are approved
+                          return (
+                            <>
+                              <tr
+                                key={index}
+                                className={
+                                  "py-6 " +
+                                  (item.approvalAuthName === approvalAuthName &&
+                                  approvalAuthRole === item.approvalAuthRole
+                                    ? "border border-2 bg-lightBlue text-Green"
+                                    : "")
+                                }
+                              >
+                                <td
+                                  className={
+                                    "pb-6 pe-4 inputLabel font-semibold " +
+                                    (item.approvalAuthName ===
+                                      approvalAuthName &&
+                                    approvalAuthRole === item.approvalAuthRole
+                                      ? "text-Green"
+                                      : "")
+                                  }
+                                >
+                                  {item.approvalLevel}
+                                </td>
+                                <td
+                                  className={
+                                    "ps-2 pe-4 " +
+                                    (item.approvalAuthName ===
+                                      approvalAuthName &&
+                                    approvalAuthRole === item.approvalAuthRole
+                                      ? "text-Green"
+                                      : "")
+                                  }
+                                >
+                                  <b>{item.approvalAuthName}</b> <br />
+                                  <div className="inputLabel font-semibold">
+                                    {item.approvalAuthRole}
+                                  </div>
+                                  <div className="inputLabel font-semibold">
+                                    {item.approvalAuthEmail}
+                                  </div>
+                                  <div className="inputLabel font-semibold">
+                                    {item.approvalAuthMobile}
+                                  </div>
+                                </td>
+                                <td>
+                                  <Image
+                                    src={
+                                      item.status === "approved"
+                                        ? approvedStamp
+                                        : item.status === "rejected"
+                                        ? rejectedStamp
+                                        : pendingStamp
+                                    }
+                                    className="w-20"
+                                    alt={item.status}
+                                  />
+                                  <div className="mt-1 text-gray-600 text-xs">
+                                    {moment(item.updatedAt).format(
+                                      "DD/MM/yyyy"
+                                    )}
+                                    <br />
+                                    {moment(item.updatedAt).format("hh:mm a")}
+                                  </div>
+                                </td>
+                              </tr>
+                              {item.remark && (
+                                <tr className="py-6">
+                                  <td
+                                    colSpan={3}
+                                    className="text-center text-red-500 text-sm"
+                                  >
+                                    {item.remark}
+                                  </td>
+                                </tr>
+                              )}
+                            </>
+                          );
+                        }
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                {console.log("userDetails.role", userDetails?.roles[0])}
+                {console.log("loggedInRole", loggedInRole)}
+                {isUserAuthourised(approvalAuthName, approvalAuthRole)
+                  ?.showActionButtons ||
+                loggedInRole !== "admin" ||
+                loggedInRole !== "account" ? (
+                  userDetails?.roles[0] !== "finance-manager" &&
+                  loggedInRole === "executive" ? (
+                    <div className="w-1/2 hide-in-pdf">
+                      <div className="flex justify-end gap-6">
+                        <button
+                          className="formButtons w-2/5"
+                          onClick={(e) => {
+                            handleSubmit("approved");
+                          }}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="formButtons w-2/5 bg-red-500 hover:bg-red-700"
+                          onClick={(e) => {
+                            handleSubmit("rejected");
+                          }}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                      <div>
+                        <div className="inputLabel">
+                          Remarks{" "}
+                          {rejected && <span className="text-red-500">*</span>}
+                        </div>
+
+                        <textarea
+                          className="ps-2 w-full font-normal"
+                          rows={3}
+                          cols={53}
+                          value={remarks}
+                          onChange={(e) => {
+                            setRemarks(e.target.value);
+                            setError((prevState) => ({
+                              ...prevState,
+                              remarksError: "",
+                            }));
+                          }}
+                        ></textarea>
+
+                        <div
+                          className="text-red-700 "
+                          style={{ fontSize: "12px", fontWeight: "normal" }}
+                        >
+                          {error.remarksError}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    " "
+                  )
+                ) : (
+                  ""
+                )}
+
+                {userDetails.roles[0] === "finance-manager" ? (
+                  <div className="w-1/2">
+                    <table className="table-auto border-separate border-spacing-y-4">
+                      <thead></thead>
+                      <tbody>
+                        {/* {utilizationData?.financeAuthorities?.map( */}
+                        {/* (item, index) => { */}
+                        {/* // Check if user is authorized and previous levels are
+                      approved return ( */}
+                        <>
+                          <tr
+                            className={
+                              "py-6 " +
+                              (financeAuthName && financeAuthRole
+                                ? "border border-2 bg-lightBlue text-Green"
+                                : "")
+                            }
+                          >
+                            <td
+                              className={
+                                "ps-2 pe-4 " +
+                                (financeAuthName && financeAuthRole
+                                  ? "text-Green"
+                                  : "")
+                              }
+                            >
+                              <b>{financeAuthName}</b> <br />
+                              <div className="inputLabel font-semibold">
+                                {financeAuthRole}
+                              </div>
+                              <div className="inputLabel font-semibold">
+                                {financeAuthEmail}
+                              </div>
+                              <div className="inputLabel font-semibold">
+                                {financeAuthMobile}
+                              </div>
+                            </td>
+                          </tr>
+                          {utilizationData?.paymentDetails?.paymentStatus ===
+                            "payment-released" && (
+                            <tr className="py-6">
+                              <td
+                                colSpan={3}
+                                className="text-center text-green text-sm"
+                              >
+                                {utilizationData?.paymentDetails?.paymentStatus}
+                              </td>
+                            </tr>
+                          )}
+                        </>
+                        {/* ); } // )} */}
+                      </tbody>
+                    </table>
+                    {userDetails?.roles[0] === "finance-manager" ||
+                    loggedInRole === "account" ? (
+                      <div className="hide-in-pdf w-2/3">
+                        <div className="w-full mt-4 lg:mt-0">
+                          <label htmlFor="UTRNumber" className="inputLabel">
+                            UTR Number
+                          </label>
+                          <div className="relative mt-2 rounded-md shadow-sm">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                              <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+                                <ImListNumbered className="icon" />
+                              </span>
+                            </div>
+                            <input
+                              type="text"
+                              name="UTRNumber"
+                              id="UTRNumber"
+                              className={
+                                error.UTRNumberError
+                                  ? "stdInputField"
+                                  : "stdInputField"
+                              }
+                              placeholder="Enter UTR Number"
+                              value={UTRNumber}
+                              onChange={(e) => {
+                                setUTRNumber(e.target.value);
+                                setError((prevState) => ({
+                                  ...prevState,
+                                  UTRNumberError: "",
+                                }));
+                              }}
+                            />
+                            <div className="absolute inset-y-0 right-0 flex items-center"></div>
+                          </div>
+                          <div
+                            className="text-red-500"
+                            style={{ fontSize: "12px", fontWeight: "normal" }}
+                          >
+                            {/* {error.quantityError} */}
+                            {error.UTRNumberError && (
+                              <span>{error.UTRNumberError}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="w-full mt-4">
+                          <label htmlFor="paymentDate" className="inputLabel">
+                            Payment Date
+                          </label>
+                          <div className="relative mt-2 rounded-md shadow-sm">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                              <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+                                <MdOutlineDateRange className="icon" />
+                              </span>
+                            </div>
+                            <input
+                              type="date"
+                              name="paymentDate"
+                              id="paymentDate"
+                              max={moment().format("YYYY-MM-DD")}
+                              className={`
+                                  ${
+                                    error.paymentDateError
+                                      ? "stdSelectField"
+                                      : "stdSelectField"
+                                  }
+                                  ${
+                                    paymentDate ? "text-black" : "text-gray-400"
+                                  }
+                                `}
+                              value={paymentDate}
+                              onChange={(e) => {
+                                setPaymentDate(e.target.value);
+                                setError((prevState) => ({
+                                  ...prevState,
+                                  paymentDateError: "",
+                                }));
+                              }}
+                            />
+                          </div>
+                          <div
+                            className="text-red-500"
+                            style={{ fontSize: "12px", fontWeight: "normal" }}
+                          >
+                            {error.paymentDateError}
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end mb-6 mt-2">
+                          <button
+                            type="submit"
+                            onClick={handlePaymentDetailsSubmit}
+                            className="formButtons"
+                            style={{ transition: "background-color 0.3s" }}
+                          >
+                            {loading3 ? (
+                              <span>
+                                Submit
+                                <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
+                              </span>
+                            ) : (
+                              <span>Submit</span>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {/* ) : ( "" )} */}
+              </div>
+            </div>
+          ) : null}
+
+          {/* {authorizedAccountPerson ||
+          userDetails?.roles[0] === "finance-manager" ? (
+       
+          ) : (
+            ""
+          )} */}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default ApprovalDetails;

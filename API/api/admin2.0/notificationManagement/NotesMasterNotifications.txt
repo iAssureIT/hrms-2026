@@ -1,0 +1,154 @@
+Status : 
+		YTS 	: Yet to Start, 
+		WIP 	: Can be used with limitations
+		TIP		: Testing in process
+		Done	: Tested and can be used
+
+API : 
+
+1. Insert Masternotification Details 				- Done
+2. Fetch Masternotification Details					- Done
+3. Update Masternotification Details				- Done
+4. Delete Masternotification Details				- Done
+5. List All the documents							- Done
+6. Delete all Masternotifications 					- Done
+
+=====================================================================================
+1. Insert Masternotification Details
+=====================================================================================
+
+Method  : POST
+
+URL 	: '/api/notifications/post'
+
+Input	: 
+			{
+			    "templateType"    : String,	
+                "templateName"    : String,
+                "subject"         : String,
+                "content"         : String,	
+			    "createdBy"   	  : String,
+			}
+
+Output	: If Successfully
+			{
+				message : "Notification Details Added",
+				ID 		: String //_id of the document
+			}
+
+=====================================================================================
+2. Fetch Masternotification Details
+=====================================================================================
+
+Method  : GET
+
+URL 	: '/api/notifications/get/:ID'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			{
+			    "_id"					: String,
+		        "masternotificationId"	: String,
+		        "toMailId"				: String,
+		        "toUserId"				: String,
+		        "notifBody"				: String,
+		        "status"				: String,
+		        "createdAt"				: Date,
+		        "date"					: Date,
+		        "createdBy"				: String,
+			}
+		  If not successful
+		  	{
+		  		message : "ROLE_NOT_FOUND",
+		  	}
+
+=====================================================================================
+3. Update Masternotification Details
+=====================================================================================
+
+Method  : PUT
+
+URL 	: '/api/notifications/put/:ID'
+
+Input	: 
+			{
+			    "masternotificationId"	: String,
+		        "toMailId"				: String,
+		        "toUserId"				: String,
+		        "notifBody"				: String,
+		        "status"				: String,
+			}
+
+Output	: If Successfully
+			{
+				message : "ROLE_UPDATED",
+			}
+		  If not successful
+		  	{
+		  		message : "ROLE_NOT_UPDATED",
+		  	}
+
+=====================================================================================
+4. Delete Masternotification Details
+=====================================================================================
+
+Method  : DELETE
+
+URL 	: '/api/notifications/delete/:ID'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			{
+			    message : "Role_DATA_DELETE",
+			}
+		  If not successful
+		  	{
+		  		message : "DATA_NOT_FOUND",
+		  	}
+
+=====================================================================================
+5. List All the documents
+=====================================================================================
+
+Method  : GET
+
+URL 	: '/api/notifications/get/:pageno'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			[{
+			    _id			: String,
+			    role        : String,
+			    createdAt   : Date,
+			    createdBy   : String
+			}]
+		  If not successful
+		  	{
+		  		message : "DATA_NOT_FOUND",
+		  	}
+
+=====================================================================================
+6. Delete all Masternotification
+=====================================================================================
+
+Method  : DELETE
+
+URL 	: '/api/notifications/delete/all'
+
+Input	: - NA -
+			
+
+Output	: If Successfully
+			{
+			    message : "Role_DELETE",
+			}
+		  If not successful
+		  	{
+		  		message : "DATA_NOT_FOUND",
+		  	}

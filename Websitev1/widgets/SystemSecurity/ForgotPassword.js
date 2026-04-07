@@ -1,0 +1,257 @@
+"use client";
+import React, { Component } from "react";
+import Axios from "axios";
+import Swal from "sweetalert2";
+import { Modal } from "flowbite-react";
+import { MdClose } from "react-icons/md";
+import validator from "validator";
+import { FaSpinner } from "react-icons/fa";
+
+class ForgotPassword extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      btnLoading: false,
+      userName: "",
+      fields: {},
+      errors: {},
+      loading: false,
+    };
+  }
+
+  validateForm = () => {
+    let fields = this.state;
+    let errors = {};
+    let formIsValid = true;
+
+    if (!fields["userName"]) {
+      formIsValid = false;
+      errors["userName"] = "Please enter your Email ID";
+    } else if (!validator.isEmail(fields["userName"])) {
+      errors["userName"] = "Invalid Email ID.";
+      formIsValid = false;
+    }
+
+    this.setState({
+      errors: errors,
+    });
+    return formIsValid;
+  };
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  sendOTP(event) {
+    event.preventDefault();
+    var userName = this.state.userName;
+
+    var formValues = {
+      userName: userName,
+      // role: [
+      //   "admin",
+      //   "center-incharge",
+      //   "executive-manager",
+      //   "senior-manager",
+      //   "head-csr",
+      //   "head-livelihood",
+      // ],
+    };
+
+    if (this.validateForm()) {
+      this.setState({ btnLoading: true });
+
+      Axios.post(
+        "/api/auth/post/send-otp-forgot-password",
+        // "/api/auth/post/send-otp-forgot-password-without-notification",
+        formValues
+      )
+        .then((forgotPassResponse) => {
+          this.setState({ btnLoading: false });
+          var msg = forgotPassResponse.data.message;
+
+          if (
+            forgotPassResponse.data.message ===
+            "OTP sent on your registered email"
+          ) {
+            Swal.fire(
+              " ",
+              forgotPassResponse.data.message +
+                "<br/>" +
+                "Use this OTP to verify your account!"
+            ).then(() => {
+              window.location.replace(
+                "/auth/forgot-password-confirm-otp?username=" +
+                  this.state.userName
+              );
+            });
+
+            // this.setState({ successModal: true, msg: msg });
+            // setSuccessModal(true);
+          } else {
+            this.setState({ btnLoading: false });
+            Swal.fire(" ", forgotPassResponse.data.message);
+            // this.setState({ errorModal: true, msg: msg });
+          }
+        })
+        .catch((error) => {
+          this.setState({ btnLoading: false });
+          console.log("error post send-otp-using-username ==> ", error);
+        });
+    }
+  }
+  render() {
+    return (
+      <section className="bg-white rounded shadow-md w-full max-w-sm m-10">
+        <div className="w-full">
+          <div className="w-full bg-lightgreen border border-2 border-t-green py-6 h-20">
+            <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
+              Forgot Password
+            </h1>
+          </div>
+          <p className="text-sm text-center px-5 mt-5">
+            Please enter your registered email address below to receive an OTP.
+          </p>
+
+          <form className="mt-4 p-8">
+            <div className="space-y-2 md:space-y-2 mb-4">
+              <label className="inputLabel font-semibold">Email:</label>
+              <div className="mb-4 relative">
+                <label
+                  htmlFor="Email ID"
+                  className="block text-sm font-medium dark:text-white"
+                >
+                  <span className="sr-only">Email ID</span>
+                </label>
+                <div className="insideIcon">
+                  <i className="fa-regular fa-envelope w-5 h-5 pt-1 mr-16"></i>
+                </div>
+                <input
+                  type="text"
+                  name="userName"
+                  id="userName"
+                  value={this.state.userName}
+                  placeholder="Enter your email address"
+                  // className="stdInput2"
+                  className="w-full p-2 border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
+                  autoFocus
+                  autoComplete
+                  required
+                  onChange={this.handleChange.bind(this)}
+                />
+              </div>
+              <div className=" text-left pl-0 errorMsg text-sm mt-1">
+                {this.state.errors.userName}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <a
+                href="/auth/login"
+                className="underline underline-offset-2 pt-5 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
+                onClick={() => {
+                  this.setState({ loading: true });
+                }}
+                // className="text-blue-700 hover:text-blue-900 cursor-pointer font-sm"
+              >
+                {this.state.loading ? (
+                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                    Back to Login
+                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
+                  </span>
+                ) : (
+                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                    Back to Login
+                  </span>
+                )}
+              </a>
+              {this.state.btnLoading ? (
+                <button type="submit" className="formButtons mt-4">
+                  Sending OTP
+                  <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="formButtons px-10 mt-4"
+                  onClick={this.sendOTP.bind(this)}
+                >
+                  <span>Send&nbsp;OTP</span>
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* <Modal
+          show={this.state.successModal}
+          size="md"
+          onClose={() => this.setState({ successModal: false })}
+          popup
+        >
+          <Modal.Header className="modalHeader justify-end">
+            <div
+              className="modalCloseButton"
+              onClick={() => this.setState({ successModal: false })}
+            >
+              <MdClose className="icon text-white font-medium" />
+            </div>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="modalBody">
+              <h3 className="modalText">{this.state.msg}</h3>
+              <div className="modelText">
+                Use this OTP to verify your account!
+              </div>
+              <div className="flex justify-center gap-4">
+                <button
+                  className="modalSuccessBtn"
+                  onClick={() => {
+                    this.setState({ successModal: false });
+                    window.location.replace(
+                      "/auth/forgot-password-confirm-otp?username=" +
+                        this.state.userName
+                    );
+                  }}
+                >
+                  Ok
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          show={this.state.errorModal}
+          size="md"
+          onClose={() => this.setState({ errorModal: false })}
+          popup
+        >
+          <Modal.Header className="modalHeader justify-end">
+            <div
+              className="modalCloseButton"
+              onClick={() => this.setState({ errorModal: false })}
+            >
+              <MdClose className="icon text-white font-medium" />
+            </div>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="modalBody">
+              <h3 className="modalText">{this.state.msg}</h3>
+            
+              <div className="flex justify-center gap-4">
+                <button
+                  className="modalSuccessBtn"
+                  onClick={() => this.setState({ errorModal: false })}
+                >
+                  Ok
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal> */}
+      </section>
+    );
+  }
+}
+export default ForgotPassword;

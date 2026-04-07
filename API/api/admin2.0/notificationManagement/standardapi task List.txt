@@ -1,0 +1,7 @@
+1. Roles								- Done
+2. Project Settings						- Done
+3. System Securities					- 
+4. User Management						- 
+5. Master Notification Template			-
+6. Notification 						-
+7. Company Settings 					-

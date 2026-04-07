@@ -1,0 +1,146 @@
+Status : 
+		YTS 	: Yet to Start, 
+		WIP 	: Can be used with limitations
+		TIP		: Testing in process
+		Done	: Tested and can be used
+
+API : 
+
+1. Insert Role Details 								- Done
+2. Fetch Role Details								- Done
+3. Update Role Details								- Done
+4. Delete Role Details								- Done
+5. List All the Roles 								- Done
+6. Delete all Roles 								- Done
+
+=====================================================================================
+1. Insert Role Details
+=====================================================================================
+
+	Method  : POST
+
+	URL 	: '/api/roles/post'
+
+	Input	: 
+				{
+				    "role"        : String,
+				    "createdBy"   : String,
+				}
+
+	Output	: If Successfully
+				{
+					message : "ROLE_ADDED",
+					ID 		: String //_id of the document
+				}
+			  If not successful
+			  	{
+			  		message : "ALL_ARE_REQUIRED_FIELDS:keys,secret,bucket,region",
+			  	}
+
+=====================================================================================
+2. Fetch Role Details
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/roles/get/:ID'
+
+	Input	: - NA -
+				
+
+	Output	: If Successfully
+				{
+				    _id			: String,
+				    role        : String,
+				    createdAt   : Date,
+				    createdBy   : String
+				}
+			  If not successful
+			  	{
+			  		message : "ROLE_NOT_FOUND",
+			  	}
+
+=====================================================================================
+3. Update Role Details
+=====================================================================================
+
+	Method  : PUT
+
+	URL 	: '/api/roles/put/:ID'
+
+	Input	: 
+				{
+				    "role"         : String,
+				}
+
+	Output	: If Successfully
+				{
+					message : "ROLE_UPDATED",
+				}
+			  If not successful
+			  	{
+			  		message : "ROLE_NOT_UPDATED",
+			  	}
+
+=====================================================================================
+4. Delete Role Details
+=====================================================================================
+
+	Method  : DELETE
+
+	URL 	: '/api/roles/delete/:ID'
+
+	Input	: - NA -
+				
+
+	Output	: If Successfully
+				{
+				    message : "Role_DATA_DELETE",
+				}
+			  If not successful
+			  	{
+			  		message : "DATA_NOT_FOUND",
+			  	}
+
+=====================================================================================
+5. List All the Roles
+=====================================================================================
+
+	Method  : GET
+
+	URL 	: '/api/roles/get/list'
+
+	Input	: - NA -
+				
+
+	Output	: If Successfully
+				[{
+				    _id			: String,
+				    role        : String,
+				    createdAt   : Date,
+				    createdBy   : String
+				}]
+			  If not successful
+			  	{
+			  		message : "DATA_NOT_FOUND",
+			  	}
+
+=====================================================================================
+6. Delete all Roles
+=====================================================================================
+
+	Method  : DELETE
+
+	URL 	: '/api/roles/delete/all'
+
+	Input	: - NA -
+				
+
+	Output	: If Successfully
+				{
+				    message : "Role_DELETE",
+				}
+			  If not successful
+			  	{
+			  		message : "DATA_NOT_FOUND",
+			  	}
