@@ -32,6 +32,9 @@ const employeeManagementRoutes = require("./api/hrms-2026/employeeManagement/rou
 // const unitRoutes = require("./api/hrms-2026/oneFieldModules/unitManagement/routesNew.js");
 // const utilizationApprovalLevelRoutes = require("./api/hrms-2026/utilization-approval-level/routes.js");
 
+//LeaveRoute
+const leaveTypeRoutes = require("./api/hrms-2026/leaveManagement/leaveTypes/route.js");
+
 const appRoutes = (app) => {
   //lupin api
   app.use("/api/centers", centersRoutes);
@@ -64,8 +67,8 @@ const appRoutes = (app) => {
   app.use("/api/roles", rolesRoutes);
   app.use("/api/masternotifications", notificationTemplatesRoutes);
   app.use("/api/notifications", sendNotificationRoutes);
+  //leaveRoutes
+  app.use("/api/leave-types", leaveTypeRoutes);
 };
-
-module.exports = appRoutes;
 
 module.exports = appRoutes;

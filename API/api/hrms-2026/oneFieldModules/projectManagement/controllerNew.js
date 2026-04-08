@@ -142,11 +142,7 @@ exports.updateProject = async (req, res) => {
           ),
           Utilization.updateMany(
             { project_id: result._id },
-<<<<<<< Updated upstream
             { $set: { project: result.fieldValue } },
-=======
-            { $set: { project: result.fieldValue } }
->>>>>>> Stashed changes
           ),
           FundManagement.updateMany(
             { project_id: result._id },
