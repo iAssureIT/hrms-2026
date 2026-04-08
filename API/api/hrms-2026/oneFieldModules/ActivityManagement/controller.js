@@ -1,13 +1,13 @@
 const Activity = require("./model.js");
 const mongoose = require("mongoose");
 const FailedRecords = require("../../failedRecords/model.js");
-const SubactivityMapping = require("../../SubactivityMapping/model.js");
-const AnnualPlan = require("../../annual-plan/model.js");
-const Approval = require("../../approval-details/model.js");
-const Utilization = require("../../utilization-details/model.js");
-const FundManagement = require("../../fund-management/model.js");
-const Plantation = require("../../plantation/model.js");
-const WRD = require("../../wrd/model.js");
+// const SubactivityMapping = require("../../SubactivityMapping/model.js");
+// const AnnualPlan = require("../../annual-plan/model.js");
+// const Approval = require("../../approval-details/model.js");
+// const Utilization = require("../../utilization-details/model.js");
+// const FundManagement = require("../../fund-management/model.js");
+// const Plantation = require("../../plantation/model.js");
+// const WRD = require("../../wrd/model.js");
 
 exports.createActivity = async (req, res) => {
   try {
@@ -124,35 +124,38 @@ exports.updateActivity = async (req, res) => {
         await Promise.all([
           SubactivityMapping.updateMany(
             { field3_id: result._id },
-            { $set: { field3Value: result.fieldValue } }
+            { $set: { field3Value: result.fieldValue } },
           ),
           AnnualPlan.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           Approval.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           Utilization.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
-          ),        
+            { $set: { activityName: result.fieldValue } },
+          ),
           FundManagement.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           Plantation.updateMany(
             { activity_id: result._id },
-            { $set: { activity: result.fieldValue } }
+            { $set: { activity: result.fieldValue } },
           ),
           WRD.updateMany(
             { activity_id: result._id },
-            { $set: { activity: result.fieldValue } }
+            { $set: { activity: result.fieldValue } },
           ),
         ]);
       } catch (updateError) {
-        console.error("activityName updated, but cascading update failed:", updateError);
+        console.error(
+          "activityName updated, but cascading update failed:",
+          updateError,
+        );
       }
       return res.status(200).json({ result, updated: true });
     } else {
@@ -300,7 +303,7 @@ exports.bulkUpload_Activity = (req, res, next) => {
 
       // Check if the activity already exists in the system (database)
       let activityExists = allActivities?.some(
-        (item) => item.fieldValue === currentActivity
+        (item) => item.fieldValue === currentActivity,
       );
 
       // If activity doesn't exist in the system, it's valid
@@ -337,7 +340,7 @@ exports.bulkUpload_Activity = (req, res, next) => {
 
       const failedData = await insertFailedRecords(
         failedRecords,
-        req.body.updateBadData
+        req.body.updateBadData,
       );
       // console.log("Failed data", failedData);
     }
@@ -365,7 +368,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
             if (updateBadData) {
               FailedRecords.updateOne(
                 { fileName: invalidData.fileName },
-                { $set: { failedRecords: [] } }
+                { $set: { failedRecords: [] } },
               )
                 .then((data) => {
                   if (data.modifiedCount == 1) {
@@ -377,7 +380,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                           // 'failedRecords' : invalidData.FailedRecords
                         },
                         $push: { failedRecords: invalidData.FailedRecords },
-                      }
+                      },
                     )
                       .then((data) => {
                         if (data.modifiedCount == 1) {
@@ -405,7 +408,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                     // 'failedRecords' : invalidData.FailedRecords
                   },
                   $push: { failedRecords: invalidData.FailedRecords },
-                }
+                },
               )
                 .then((data) => {
                   if (data.modifiedCount == 1) {
@@ -427,7 +430,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                   // 'failedRecords' : invalidData.FailedRecords
                 },
                 $push: { failedRecords: invalidData.FailedRecords },
-              }
+              },
             )
               .then((data) => {
                 if (data.modifiedCount == 1) {

@@ -9,7 +9,7 @@ const moment = require("moment-timezone");
 const User = require("./ModelUsers.js");
 const Role = require("../rolesManagement/model.js");
 // const Approval = require("../../lupin/approval-details/model.js");
-const Centers = require("../../lupin/centers/model.js");
+const Centers = require("../../hrms-2026/centers/model.js");
 const globalVariable = require("../../../nodemonConfig.js");
 // const sendNotification = require("../notificationManagement/SendNotification.js");
 const { sendNotification } = require("../common/globalFunctions");
@@ -128,7 +128,7 @@ exports.add_user_details = (req, res, next) => {
                               mobile: user.profile.mobile,
                               role: user.roles[0],
                               createdAt: moment(result.createdAt).format(
-                                "MMMM Do YYYY, h:mm:ss a"
+                                "MMMM Do YYYY, h:mm:ss a",
                               ),
                               centerName: user.profile.centerName,
                             },
@@ -155,7 +155,7 @@ exports.add_user_details = (req, res, next) => {
                               mobileNumber: admin.profile.mobile,
                               loginID: admin.username,
                               signupDate: moment(admin.createdAt).format(
-                                "MMMM Do YYYY, h:mm:ss a"
+                                "MMMM Do YYYY, h:mm:ss a",
                               ),
                             },
                           };
@@ -274,7 +274,7 @@ exports.update_user_details = (req, res, next) => {
               "profile.email": req.body?.email,
               username: req.body?.email,
             },
-          }
+          },
         )
           .exec()
           .then(async (data) => {
@@ -341,7 +341,7 @@ exports.update_user_details = (req, res, next) => {
 
               const admin = await getAdmin();
               const seniorManager = await getSeniorManager(
-                userData.profile.centerName
+                userData.profile.centerName,
               );
               const headLivelihood = await getHeadLivelihood();
               const headCSR = await getHeadCSR();
@@ -354,21 +354,21 @@ exports.update_user_details = (req, res, next) => {
                     userData,
                     seniorManager,
                     "senior-manager",
-                    changedFields
+                    changedFields,
                   ),
                   createNotificationPayload(
                     "User Management - Edit User",
                     userData,
                     headLivelihood,
                     "head-livelihood",
-                    changedFields
+                    changedFields,
                   ),
                   createNotificationPayload(
                     "User Management - Edit User",
                     userData,
                     headCSR,
                     "head-csr",
-                    changedFields
+                    changedFields,
                   ),
                 ],
                 "senior-manager": [
@@ -377,14 +377,14 @@ exports.update_user_details = (req, res, next) => {
                     userData,
                     headLivelihood,
                     "head-livelihood",
-                    changedFields
+                    changedFields,
                   ),
                   createNotificationPayload(
                     "User Management - Edit User",
                     userData,
                     headCSR,
                     "head-csr",
-                    changedFields
+                    changedFields,
                   ),
                 ],
                 "head-livelihood": [
@@ -393,7 +393,7 @@ exports.update_user_details = (req, res, next) => {
                     userData,
                     headCSR,
                     "head-csr",
-                    changedFields
+                    changedFields,
                   ),
                 ],
               };
@@ -404,7 +404,7 @@ exports.update_user_details = (req, res, next) => {
                   const result = await sendNotification(notification);
                   console.log(
                     `Notification sent to ${notification.toUserRole}:`,
-                    result
+                    result,
                   );
                 }
               }
@@ -415,7 +415,7 @@ exports.update_user_details = (req, res, next) => {
                 userData,
                 userData,
                 userData.roles[0],
-                changedFields
+                changedFields,
               );
               await sendNotification(userNotificationValues);
 
@@ -425,7 +425,7 @@ exports.update_user_details = (req, res, next) => {
                 userData,
                 admin,
                 "admin",
-                changedFields
+                changedFields,
               );
               await sendNotification(adminNotification);
 
@@ -656,7 +656,7 @@ function createNotificationPayload(
   userData,
   recipient,
   role,
-  changedFields
+  changedFields,
 ) {
   return {
     event: event,
@@ -1059,7 +1059,7 @@ exports.user_login = (req, res, next) => {
                 globalVariable.JWT_KEY,
                 {
                   expiresIn: "365d",
-                }
+                },
               );
               User.updateOne(
                 { emails: { $elemMatch: { address: req.body.email } } },
@@ -1071,7 +1071,7 @@ exports.user_login = (req, res, next) => {
                       logoutTimeStamp: null,
                     },
                   },
-                }
+                },
               )
                 .exec()
                 .then((updateUser) => {
@@ -1157,7 +1157,7 @@ exports.admin_login = (req, res, next) => {
                 globalVariable.JWT_KEY,
                 {
                   expiresIn: "1h",
-                }
+                },
               );
               User.updateOne(
                 { emails: { $elemMatch: { address: req.body.email } } },
@@ -1169,7 +1169,7 @@ exports.admin_login = (req, res, next) => {
                       logoutTimeStamp: null,
                     },
                   },
-                }
+                },
               )
                 .exec()
                 .then((updateUser) => {
@@ -1281,7 +1281,7 @@ exports.user_update_name_mobile1 = (req, res, next) => {
               },
               roles: ["user"],
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -1375,7 +1375,7 @@ exports.user_update_name_mobile = (req, res, next) => {
                       },
                       roles: [role],
                     },
-                  }
+                  },
                 )
                   .exec()
                   .then((data) => {
@@ -1431,7 +1431,7 @@ exports.user_update_name_mobile = (req, res, next) => {
                 },
                 roles: role,
               },
-            }
+            },
           )
             .exec()
             .then((data) => {
@@ -1484,7 +1484,7 @@ exports.user_update_name_mobile_profile = (req, res, next) => {
               designation: req.body.designation,
               reporting_id: req.body.reporting_id,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -1531,7 +1531,7 @@ exports.user_update_name_mobile_profile = (req, res, next) => {
               role: req.body.role,
               "profile.email": req.body.email,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -1573,7 +1573,7 @@ exports.user_update_status = (req, res, next) => {
             $set: {
               "profile.status": req.body.status,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -1590,7 +1590,7 @@ exports.user_update_status = (req, res, next) => {
                       },
                     ],
                   },
-                }
+                },
               )
                 .exec()
                 .then((data) => {
@@ -1645,7 +1645,7 @@ exports.user_update_delete_status = (req, res, next) => {
             $set: {
               "profile.status": newstatus,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -1663,7 +1663,7 @@ exports.user_update_delete_status = (req, res, next) => {
                       },
                     ],
                   },
-                }
+                },
               )
                 .exec()
                 .then((data) => {
@@ -1714,7 +1714,7 @@ exports.user_update_recover_status = (req, res, next) => {
             $set: {
               "profile.status": newstatus,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -1731,7 +1731,7 @@ exports.user_update_recover_status = (req, res, next) => {
                       },
                     ],
                   },
-                }
+                },
               )
                 .exec()
                 .then((data) => {
@@ -1768,7 +1768,7 @@ exports.user_update_many_status = (req, res, next) => {
       $set: {
         "profile.status": req.body.status,
       },
-    }
+    },
   )
     .exec()
     .then((data) => {
@@ -1786,7 +1786,7 @@ exports.user_update_many_status = (req, res, next) => {
                 },
               ],
             },
-          }
+          },
         )
           .exec()
           .then(async (user) => {
@@ -1806,7 +1806,7 @@ exports.user_update_many_status = (req, res, next) => {
                 },
               };
               var send_notification_to_user = await sendNotification(
-                userNotificationValues
+                userNotificationValues,
               );
               // console.log(
               //   "send_notification_to_user",
@@ -1827,7 +1827,7 @@ exports.user_update_many_status = (req, res, next) => {
                 },
               };
               var send_notification_to_user = await sendNotification(
-                userNotificationValues
+                userNotificationValues,
               );
               // console.log(
               //   "send_notification_to_user",
@@ -1894,7 +1894,7 @@ exports.user_update_many_role = (req, res, next) => {
                         },
                       ],
                     },
-                  }
+                  },
                 )
                   .exec()
                   .then((datas) => {
@@ -1941,7 +1941,7 @@ exports.user_update_many_role = (req, res, next) => {
                   },
                 ],
               },
-            }
+            },
           )
             .exec()
             .then((datas) => {
@@ -2047,7 +2047,7 @@ exports.user_update_role = (req, res, next) => {
                 $push: {
                   roles: req.body.role,
                 },
-              }
+              },
             )
               .exec()
               .then((data) => {
@@ -2083,7 +2083,7 @@ exports.user_update_role = (req, res, next) => {
                 $pull: {
                   roles: req.body.role,
                 },
-              }
+              },
             )
               .exec()
               .then((data) => {
@@ -2127,7 +2127,7 @@ exports.user_update_password_ID = (req, res, next) => {
                   },
                 },
               },
-            }
+            },
           )
             .exec()
             .then((data) => {
@@ -2347,7 +2347,7 @@ exports.post_list_deleted_users = async (req, res, next) => {
     // Fetch users based on the constructed selector
     const data = await User.find(selector)
       .select(
-        "profile.firstname profile.lastname profile.status profile.fullName roles profile.email profile.mobile createdAt services.resume.loginTokens statusLog"
+        "profile.firstname profile.lastname profile.status profile.fullName roles profile.email profile.mobile createdAt services.resume.loginTokens statusLog",
       )
       .sort({ createdAt: -1 })
       .skip(req.body.startRange)
@@ -2430,7 +2430,7 @@ exports.user_update_password_withoutotp_ID = (req, res, next) => {
                   },
                 },
               },
-            }
+            },
           )
             .exec()
             .then((data) => {
@@ -3644,7 +3644,7 @@ exports.check_EmailOTP = (req, res, next) => {
             $set: {
               "profile.optEmail": 0,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -3678,7 +3678,7 @@ exports.update_email_otp = (req, res, next) => {
       $set: {
         "profile.optEmail": optEmail,
       },
-    }
+    },
   )
     .exec()
     .then((data) => {
@@ -3723,7 +3723,7 @@ exports.update_email_otp_email = (req, res, next) => {
       $set: {
         "profile.optEmail": optEmail,
       },
-    }
+    },
   )
     .exec()
     .then((data) => {
@@ -4198,7 +4198,7 @@ exports.search_text_delete = (req, res, next) => {
       ],
     })
       .select(
-        "profile.firstname profile.lastname profile.status profile.companyID profile.companyName profile.fullName roles profile.email profile.mobile profile.clientId createdAt services.resume.loginTokens statusLog"
+        "profile.firstname profile.lastname profile.status profile.companyID profile.companyName profile.fullName roles profile.email profile.mobile profile.clientId createdAt services.resume.loginTokens statusLog",
       )
       .skip(req.body.startRange)
       .limit(req.body.limitRange)
@@ -4272,7 +4272,7 @@ exports.user_update_img = (req, res, next) => {
             $set: {
               "profile.image": req.body.userImg,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -4334,7 +4334,7 @@ exports.getUserList = (req, res, next) => {
       roles: req.body.role,
     },
 
-    { services: 0, subscriptionDetails: 0, otherInfo: 0, documents: 0 }
+    { services: 0, subscriptionDetails: 0, otherInfo: 0, documents: 0 },
   )
     .exec()
     .then((data) => {
@@ -4399,7 +4399,7 @@ exports.update_user_company = (req, res, next) => {
             $set: {
               "profile.companyID": req.body.companyID,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -4500,7 +4500,7 @@ exports.update_user_profile = (req, res, next) => {
               $set: {
                 "profile.otpMobile": otpMobile,
               },
-            }
+            },
           )
             .exec()
             .then(async (data) => {
@@ -4518,7 +4518,7 @@ exports.update_user_profile = (req, res, next) => {
               };
               var send_notification_to_user =
                 await sendNotification.send_notification_function(
-                  userNotificationValues
+                  userNotificationValues,
                 );
               res.status(200).json({
                 messageCode: true,
@@ -4564,7 +4564,7 @@ exports.update_user_profile = (req, res, next) => {
                       $set: {
                         "profile.email": req.body.email,
                       },
-                    }
+                    },
                   )
                     .then((data) => {
                       // console.log("data => ", data);
@@ -4595,7 +4595,7 @@ exports.update_user_profile = (req, res, next) => {
                     messageCode: false,
                   });
                 }
-              }
+              },
             );
           } else {
             console.log("Something went wrong");
@@ -4614,7 +4614,7 @@ exports.update_user_profile = (req, res, next) => {
                 "profile.fullName": req.body.fullName,
                 image: req.body.image,
               },
-            }
+            },
           )
             .then((data) => {
               console.log("data => ", data);
@@ -4690,7 +4690,7 @@ exports.verify_user_otp = (req, res, next) => {
                 "profile.isdCode": req.body.isdCode,
                 "profile.status": "active",
               },
-            }
+            },
           )
             .exec()
             .then((data) => {
@@ -4814,7 +4814,7 @@ exports.update_user_company = (req, res, next) => {
             $set: {
               "profile.companyID": req.body.companyID,
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -4853,7 +4853,7 @@ exports.getSeniorManagerList = async (req, res) => {
     // Fetch users with role 'senior-manager' from the database
     const seniorManagers = await User.find(
       { roles: "senior-manager" },
-      "profile.firstname profile.lastname profile.email profile.mobile"
+      "profile.firstname profile.lastname profile.email profile.mobile",
     );
 
     // Map the data to the desired format
@@ -4875,7 +4875,7 @@ exports.getAccountPersonList = async (req, res) => {
     // Fetch users with role 'senior-manager' from the database
     const accountPersons = await User.find(
       { roles: "account-person" },
-      "profile.firstname profile.lastname profile.email profile.mobile"
+      "profile.firstname profile.lastname profile.email profile.mobile",
     );
 
     // Map the data to the desired format
@@ -4897,7 +4897,7 @@ exports.getCenterInchargeList = async (req, res) => {
     // Fetch users with role 'senior-manager' from the database
     const centerIncharge = await User.find(
       { roles: "center-incharge" },
-      "profile.firstname profile.lastname profile.email profile.mobile"
+      "profile.firstname profile.lastname profile.email profile.mobile",
     );
 
     // Map the data to the desired format

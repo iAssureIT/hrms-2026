@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 var moment = require("moment");
 
 const Centers = require("./model");
-const Subactivity = require("../SubactivityMapping/model.js");
+// const Subactivity = require("../SubactivityMapping/model.js");
 const FailedRecords = require("../failedRecords/model.js");
 
 exports.create_centers = (req, res, next) => {
@@ -109,7 +109,7 @@ exports.bulkUpload_Geographical_Data = (req, res, next) => {
                 village.village === excelData[k].village &&
                 village.block === excelData[k].block &&
                 village.district === excelData[k].district &&
-                village.state === excelData[k].state
+                village.state === excelData[k].state,
             );
 
             if (existingVillage) {
@@ -148,7 +148,7 @@ exports.bulkUpload_Geographical_Data = (req, res, next) => {
       if (validData.length > 0) {
         await Centers.updateMany(
           { centerName: req.body.data[0].centerName },
-          { $push: { villagesCovered: { $each: validData } } }
+          { $push: { villagesCovered: { $each: validData } } },
         );
       }
 
@@ -198,7 +198,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
             if (updateBadData) {
               FailedRecords.updateOne(
                 { fileName: invalidData.fileName },
-                { $set: { failedRecords: [] } }
+                { $set: { failedRecords: [] } },
               )
                 .then((data) => {
                   if (data.modifiedCount == 1) {
@@ -210,7 +210,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                           // 'failedRecords' : invalidData.FailedRecords
                         },
                         $push: { failedRecords: invalidData.FailedRecords },
-                      }
+                      },
                     )
                       .then((data) => {
                         if (data.modifiedCount == 1) {
@@ -238,7 +238,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                     // 'failedRecords' : invalidData.FailedRecords
                   },
                   $push: { failedRecords: invalidData.FailedRecords },
-                }
+                },
               )
                 .then((data) => {
                   if (data.modifiedCount == 1) {
@@ -260,7 +260,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                   // 'failedRecords' : invalidData.FailedRecords
                 },
                 $push: { failedRecords: invalidData.FailedRecords },
-              }
+              },
             )
               .then((data) => {
                 if (data.modifiedCount == 1) {
@@ -364,7 +364,7 @@ exports.update_centers = (req, res, next) => {
         totalEmp: req.body.totalEmp,
         assetManagementCenterCode: req.body.assetManagementCenterCode,
       },
-    }
+    },
   )
     .exec()
     .then((data) => {
@@ -378,7 +378,7 @@ exports.update_centers = (req, res, next) => {
                 { updatedAt: new Date(), updatedBy: req.body.user_id },
               ],
             },
-          }
+          },
         )
           .exec()
           .then((data) => {
@@ -433,7 +433,7 @@ exports.add_center_incharge = (req, res, next) => {
             "accountPersonDetails.email": req.body.accountPersonEmail,
             updateLog: updateLog,
           },
-        }
+        },
       )
         .then((data) => {
           // console.log("data => ",data);

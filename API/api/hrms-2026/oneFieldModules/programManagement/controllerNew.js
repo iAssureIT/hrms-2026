@@ -1,14 +1,13 @@
 const Program = require("./modelNew");
 const mongoose = require("mongoose");
 const FailedRecords = require("../../failedRecords/model.js");
-const SubactivityMapping = require("../../SubactivityMapping/model.js");
-const AnnualPlan = require("../../annual-plan/model.js");
-const Approval = require("../../approval-details/model.js");
-const Utilization = require("../../utilization-details/model.js");
-const FundManagement = require("../../fund-management/model.js");
-const Plantation = require("../../plantation/model.js");
-const WRD = require("../../wrd/model.js");
-
+// const SubactivityMapping = require("../../SubactivityMapping/model.js");
+// const AnnualPlan = require("../../annual-plan/model.js");
+// const Approval = require("../../approval-details/model.js");
+// const Utilization = require("../../utilization-details/model.js");
+// const FundManagement = require("../../fund-management/model.js");
+// const Plantation = require("../../plantation/model.js");
+// const WRD = require("../../wrd/model.js");
 
 exports.createProgram = async (req, res) => {
   // console.log("Creating Program", req.body);
@@ -129,39 +128,42 @@ exports.updateProgram = async (req, res) => {
 
       const result = await program.save();
       try {
-      // 🔁 Cascade update to related collections
+        // 🔁 Cascade update to related collections
         await Promise.all([
           SubactivityMapping.updateMany(
             { field1_id: program._id },
-            { $set: { field1Value: program.fieldValue } }
+            { $set: { field1Value: program.fieldValue } },
           ),
           AnnualPlan.updateMany(
             { program_id: program._id },
-            { $set: { program: program.fieldValue } }
+            { $set: { program: program.fieldValue } },
           ),
           Approval.updateMany(
             { program_id: program._id },
-            { $set: { program: program.fieldValue } }
+            { $set: { program: program.fieldValue } },
           ),
           Utilization.updateMany(
             { program_id: program._id },
-            { $set: { program: program.fieldValue } }
-          ),        
+            { $set: { program: program.fieldValue } },
+          ),
           FundManagement.updateMany(
             { program_id: program._id },
-            { $set: { program: program.fieldValue } }
+            { $set: { program: program.fieldValue } },
           ),
           Plantation.updateMany(
             { program_id: program._id },
-            { $set: { program: program.fieldValue } }
+            { $set: { program: program.fieldValue } },
           ),
           WRD.updateMany(
             { program_id: program._id },
-            { $set: { program: program.fieldValue } }
+            { $set: { program: program.fieldValue } },
           ),
         ]);
       } catch (updateError) {
-        console.error("program updated, but cascading update failed:", updateError);
+        console.error(
+          "program updated, but cascading update failed:",
+          updateError,
+        );
       }
       return res.status(200).json({ result, updated: true });
     } else {
@@ -246,7 +248,7 @@ exports.bulkUpload_Program = (req, res, next) => {
 
       // Check if the program already exists in the system (database)
       let programExists = allPrograms?.some(
-        (item) => item.fieldValue === currentProgram
+        (item) => item.fieldValue === currentProgram,
       );
 
       // If the program doesn't exist in the system, it's valid
@@ -283,7 +285,7 @@ exports.bulkUpload_Program = (req, res, next) => {
 
       const failedData = await insertFailedRecords(
         failedRecords,
-        req.body.updateBadData
+        req.body.updateBadData,
       );
       console.log("Failed data", failedData);
     }
@@ -311,7 +313,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
             if (updateBadData) {
               FailedRecords.updateOne(
                 { fileName: invalidData.fileName },
-                { $set: { failedRecords: [] } }
+                { $set: { failedRecords: [] } },
               )
                 .then((data) => {
                   if (data.modifiedCount == 1) {
@@ -323,7 +325,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                           // 'failedRecords' : invalidData.FailedRecords
                         },
                         $push: { failedRecords: invalidData.FailedRecords },
-                      }
+                      },
                     )
                       .then((data) => {
                         if (data.modifiedCount == 1) {
@@ -351,7 +353,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                     // 'failedRecords' : invalidData.FailedRecords
                   },
                   $push: { failedRecords: invalidData.FailedRecords },
-                }
+                },
               )
                 .then((data) => {
                   if (data.modifiedCount == 1) {
@@ -373,7 +375,7 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                   // 'failedRecords' : invalidData.FailedRecords
                 },
                 $push: { failedRecords: invalidData.FailedRecords },
-              }
+              },
             )
               .then((data) => {
                 if (data.modifiedCount == 1) {

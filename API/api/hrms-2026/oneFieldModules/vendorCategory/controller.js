@@ -1,12 +1,12 @@
 const VendorCategoryModal = require("./model.js");
 const mongoose = require("mongoose");
 const FailedRecords = require("../../failedRecords/model.js");
-const SubactivityMapping = require("../../SubactivityMapping/model.js");
-const AnnualPlan = require("../../annual-plan/model.js");
-const Approval = require("../../approval-details/model.js");
-const Utilization = require("../../utilization-details/model.js");
-const FundManagement = require("../../fund-management/model.js");
-const Plantation = require("../../plantation/model.js");
+// const SubactivityMapping = require("../../SubactivityMapping/model.js");
+// const AnnualPlan = require("../../annual-plan/model.js");
+// const Approval = require("../../approval-details/model.js");
+// const Utilization = require("../../utilization-details/model.js");
+// const FundManagement = require("../../fund-management/model.js");
+// const Plantation = require("../../plantation/model.js");
 // const WRD = require("../../wrd/model.js");
 
 exports.createVendorCategory = async (req, res) => {
@@ -16,7 +16,9 @@ exports.createVendorCategory = async (req, res) => {
     });
 
     if (existingVendorCategory) {
-      return res.status(409).json({ message: "Vendor Category already exists" });
+      return res
+        .status(409)
+        .json({ message: "Vendor Category already exists" });
     }
 
     const vendors = new VendorCategoryModal({
@@ -121,27 +123,27 @@ exports.updateVendorCategory = async (req, res) => {
         await Promise.all([
           SubactivityMapping.updateMany(
             { field3_id: result._id },
-            { $set: { field3Value: result.fieldValue } }
+            { $set: { field3Value: result.fieldValue } },
           ),
           AnnualPlan.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           Approval.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           Utilization.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           FundManagement.updateMany(
             { activityName_id: result._id },
-            { $set: { activityName: result.fieldValue } }
+            { $set: { activityName: result.fieldValue } },
           ),
           Plantation.updateMany(
             { activity_id: result._id },
-            { $set: { activity: result.fieldValue } }
+            { $set: { activity: result.fieldValue } },
           ),
           // WRD.updateMany(
           //   { activity_id: result._id },
@@ -149,7 +151,10 @@ exports.updateVendorCategory = async (req, res) => {
           // ),
         ]);
       } catch (updateError) {
-        console.error("VendorName updated, but cascading update failed:", updateError);
+        console.error(
+          "VendorName updated, but cascading update failed:",
+          updateError,
+        );
       }
       return res.status(200).json({ result, updated: true });
     } else {
@@ -296,7 +301,7 @@ exports.bulkUpload_VendorCategory = (req, res, next) => {
 
       // Check if the activity already exists in the system (database)
       let vendorCategoryExists = allVendorCategories?.some(
-        (item) => item.fieldValue === currentVendorCategory
+        (item) => item.fieldValue === currentVendorCategory,
       );
 
       // If activity doesn't exist in the system, it's valid
@@ -333,7 +338,7 @@ exports.bulkUpload_VendorCategory = (req, res, next) => {
 
       const failedData = await insertFailedRecords(
         failedRecords,
-        req.body.updateBadData
+        req.body.updateBadData,
       );
       // console.log("Failed data", failedData);
     }
