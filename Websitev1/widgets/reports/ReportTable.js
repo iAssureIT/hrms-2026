@@ -1617,7 +1617,7 @@ const GenericReport = ({
                   recsPerPage
                 )} */}
                   {numOfPages.length > 1 && totalRecs > recsPerPage ? (
-                    <ul className="pagination mx-auto flex flex-wrap justify-center gap-1 md:gap-px mb-4">
+                    <ul className="pagination mx-auto flex flex-nowrap justify-center ps-0 overflow-x-auto no-scrollbar whitespace-nowrap mb-4 gap-1 md:gap-px">
                       {pageNumber !== 1 ? (
                         <li
                           className="page-item hover border border-gray-400 cursor-pointer text-center flex items-center justify-center min-w-[32px] md:min-w-[40px] h-8 md:h-10 px-1 md:px-2"

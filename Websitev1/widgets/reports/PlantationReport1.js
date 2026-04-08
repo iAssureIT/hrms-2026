@@ -688,7 +688,7 @@ function PlantationReport() {
         </div>
 
         <div className="px-10">
-          <div className="mt-4 mb-0 lg:mb-5 w-full grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="mt-4 mb-0 lg:mb-5 w-full grid lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-4">
             {loggedInRole === "admin" || loggedInRole === "executive" ? (
               <div className="">
                 <label htmlFor="centerName" className="inputLabel">

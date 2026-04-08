@@ -1,7 +1,14 @@
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import S3FileUpload from "react-s3";
 import { useRouter, useParams, usePathname } from "next/navigation";
+import { Buffer } from "buffer";
+
+if (typeof window !== "undefined") {
+    window.Buffer = window.Buffer || Buffer;
+}
 import {
     MdWidgets,
     MdLabel,
@@ -24,9 +31,11 @@ import {
     MdClose,
     MdImage,
     MdAssignmentTurnedIn,
-    MdOutlineFactCheck
+    MdOutlineFactCheck,
+    MdInfoOutline
 } from "react-icons/md";
-import { FaFileUpload, FaSpinner, FaTools, FaRupeeSign } from "react-icons/fa";
+import { FaFileUpload, FaSpinner, FaTools, FaRupeeSign, FaListUl, FaUserPlus } from "react-icons/fa";
+import { BsPlusSquare } from "react-icons/bs";
 import { CiViewList } from "react-icons/ci";
 import { Tooltip } from "flowbite-react";
 import ls from "localstorage-slim";
@@ -43,13 +52,20 @@ const AddAsset = () => {
     // ── Core Hierarchy ──
     const [assetCategory, setAssetCategory] = useState("");
     const [assetSubCategory, setAssetSubCategory] = useState("");
+    const [center, setCenter] = useState("");
+    const [centerList, setCenterList] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isAssetIncharge, setIsAssetIncharge] = useState(false);
 
     // ── Basic Information ──
     const [assetName, setAssetName] = useState("");
+    const [assetID, setAssetID] = useState("");
     const [assetImage, setAssetImage] = useState("");
     const [brand, setBrand] = useState("");
     const [model, setModel] = useState("");
     const [serialNo, setSerialNo] = useState("");
+    const [quantity, setQuantity] = useState("1");
+    const [serialNumbers, setSerialNumbers] = useState([""]);
     const [description, setDescription] = useState("");
 
     // ── Specifications ──
@@ -59,15 +75,14 @@ const AddAsset = () => {
 
     // ── Purchase Details ──
     const [vendor, setVendor] = useState("");
+    const [vendorID, setVendorID] = useState("");
+    const [vendorDropdownOptions, setVendorDropdownOptions] = useState([]);
     const [cost, setCost] = useState("");
     const [warrantyDate, setWarrantyDate] = useState("");
     const [purchaseDate, setPurchaseDate] = useState("");
     const [invoiceNumber, setInvoiceNumber] = useState("");
 
-    // ── Financial Details ──
-    const [residualValue, setResidualValue] = useState("");
-    const [usefulLife, setUsefulLife] = useState("");
-    const [monthlyDepreciation, setMonthlyDepreciation] = useState("0.00");
+
 
     // ── Document Upload ──
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -79,23 +94,22 @@ const AddAsset = () => {
 
     const buttonText = params._id ? "Update" : "Submit";
 
-    // ── Depreciation auto-calculation ──
-    useEffect(() => {
-        const c = parseFloat(cost) || 0;
-        const r = parseFloat(residualValue) || 0;
-        const u = parseFloat(usefulLife) || 0;
-        if (u > 0) {
-            setMonthlyDepreciation(((c - r) / (u * 12)).toFixed(2));
-        } else {
-            setMonthlyDepreciation("0.00");
-        }
-    }, [cost, residualValue, usefulLife]);
+
 
     useEffect(() => {
+        const userDetails = ls.get("userDetails", { decrypt: true });
+        const roles = userDetails?.roles || [];
+        setIsAdmin(roles.includes("admin") || roles.includes("asset-admin"));
+        setIsAssetIncharge(roles.includes("asset-incharge"));
+
         if (pathname.includes("admin")) {
             setLoggedInRole("admin");
         } else if (pathname.includes("center")) {
             setLoggedInRole("center");
+        } else if (pathname.includes("asset")) {
+            setLoggedInRole("asset");
+        } else if (pathname.includes("account")) {
+            setLoggedInRole("account");
         } else {
             setLoggedInRole("executive");
         }
@@ -103,44 +117,72 @@ const AddAsset = () => {
 
     useEffect(() => {
         getAssetCategoryList();
+        getVendorsList();
+        getCentersList();
     }, []);
 
     useEffect(() => {
         if (params._id) {
-            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management/get/${params._id}`).then((res) => {
-                if (res.data.category && res.data.category_id) {
-                    setAssetCategory(res.data.category + "|" + res.data.category_id);
-                    getAssetSubCategoryList(res.data.category_id);
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management-new/get/${params._id}`).then((res) => {
+                const data = res.data;
+                if (data.category) {
+                    const catId = data.category_id || data.assetCategory_id;
+                    if (catId) {
+                        setAssetCategory(data.category + "|" + catId);
+                        getAssetSubCategoryList(catId);
+                    }
                 }
-                if (res.data.subCategory) {
-                    setAssetSubCategory(res.data.subCategory);
+                if (data.subCategory) {
+                    setAssetSubCategory(data.subCategory);
                 }
-                setAssetName(res.data.assetName || "");
-                setAssetImage(res.data.assetImage?.[0]?.url || "");
-                setBrand(res.data.brand || "");
-                setModel(res.data.model || "");
-                setSerialNo(res.data.serialNo || "");
-                setVendor(res.data.vendorName || "");
-                setCost(res.data.purchaseCost || "");
-                setDescription(res.data.description || "");
-                setInvoiceNumber(res.data.invoiceNumber || "");
-                setResidualValue(res.data.residualValue || "");
-                setUsefulLife(res.data.usefulLife || "");
-                setSpecifications(res.data.specifications || []);
+                setAssetName(data.assetName || "");
+                setAssetID(data.assetID || "");
+                setAssetImage(data.assetImage?.[0]?.url || "");
+                setBrand(data.brand || "");
+                setModel(data.model || "");
+                setSerialNo(data.serialNumber || "");
+                setSerialNumbers([data.serialNumber || ""]);
+                setVendor(data.vendor?.name || "");
+                setVendorID(data.vendor?.id || "");
+                setCost(data.purchaseCost || "");
+                setDescription(data.description || "");
+                setInvoiceNumber(data.invoiceNumber || "");
 
+                setSpecifications(data.specifications || []);
 
-                if (res.data.docs && Array.isArray(res.data.docs)) {
-                    setUploadedFiles(res.data.docs.map(name => ({ fileName: name, fileData: "", isExisting: true })));
+                if (data.docs && Array.isArray(data.docs)) {
+                    setUploadedFiles(data.docs.map(name => ({ fileName: name, fileData: name, isExisting: true })));
                 }
-                if (res.data.warrantyDate) {
-                    setWarrantyDate(new Date(res.data.warrantyDate).toISOString().split('T')[0]);
+                if (data.warrantyDate) {
+                    setWarrantyDate(new Date(data.warrantyDate).toISOString().split('T')[0]);
                 }
-                if (res.data.purchaseDate) {
-                    setPurchaseDate(new Date(res.data.purchaseDate).toISOString().split('T')[0]);
+                if (data.purchaseDate) {
+                    setPurchaseDate(new Date(data.purchaseDate).toISOString().split('T')[0]);
+                }
+                if (data.currentAllocation?.center) {
+                    setCenter(data.currentAllocation.center.name + "|" + data.currentAllocation.center._id);
                 }
             });
         }
     }, [params._id]);
+
+    const s3Config = {
+        bucketName: process.env.BUCKETNAME || process.env.NEXT_PUBLIC_BUCKET_NAME,
+        region: process.env.REGION || process.env.NEXT_PUBLIC_REGION,
+        accessKeyId: process.env.ACCESSKEYID || process.env.NEXT_PUBLIC_ACCESS_KEY,
+        secretAccessKey: process.env.SECRETACCESSKEY || process.env.NEXT_PUBLIC_SECRET_KEY,
+    };
+
+    const s3upload = (file) => {
+        return new Promise((resolve, reject) => {
+            S3FileUpload.uploadFile(file, s3Config)
+                .then((data) => resolve(data.location))
+                .catch((error) => {
+                    console.error("S3 Upload Error:", error);
+                    reject(error);
+                });
+        });
+    };
 
     const handleAssetCategoryChange = (e) => {
         const value = e.target.value;
@@ -169,6 +211,62 @@ const AddAsset = () => {
             .catch(() => setAssetSubCategoryList([]));
     };
 
+    const getCentersList = () => {
+        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`)
+            .then((res) => {
+                setCenterList(Array.isArray(res.data) ? res.data : []);
+
+                // For Incharge, pre-fill center from userDetails
+                const userDetails = ls.get("userDetails", { decrypt: true });
+                const roles = userDetails?.roles || [];
+                if (roles.includes("asset-incharge") && userDetails.center_id) {
+                    setCenter(userDetails.centerName + "|" + userDetails.center_id);
+                }
+            })
+            .catch(() => setCenterList([]));
+    };
+
+    const getVendorsList = async () => {
+        try {
+            const userDetails = ls.get("userDetails", { decrypt: true });
+            const centerId = userDetails?.center_id;
+
+            const url = (centerId && centerId !== "all")
+                ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/vendor-master/get/vendors/list/${centerId}`
+                : `${process.env.NEXT_PUBLIC_BASE_URL}/api/vendor-master/get/vendors/list`;
+
+            const res = await axios.get(url);
+            setVendorDropdownOptions(res.data.data || []);
+        } catch (error) {
+            console.error("Error fetching vendors:", error);
+            setVendorDropdownOptions([]);
+        }
+    };
+
+    const handleQuantityChange = (e) => {
+        const val = e.target.value.replace(/\D/g, ""); // Allow only digits
+        setQuantity(val);
+        const numVal = parseInt(val) || 0;
+        if (numVal >= 0) {
+            const newSerials = [...serialNumbers];
+            if (numVal > newSerials.length) {
+                for (let i = newSerials.length; i < numVal; i++) {
+                    newSerials.push("");
+                }
+            } else {
+                newSerials.length = numVal;
+            }
+            setSerialNumbers(newSerials);
+        }
+    };
+
+    const handleSerialNoChange = (index, value) => {
+        const newSerials = [...serialNumbers];
+        newSerials[index] = value;
+        setSerialNumbers(newSerials);
+        if (index === 0) setSerialNo(value); // Keep legacy serialNo in sync for single entry
+    };
+
 
     // ── Specification Helpers ──
     const addSpecification = () => {
@@ -192,29 +290,37 @@ const AddAsset = () => {
     };
 
     // ── File Upload Helpers ──
-    const processFiles = (files) => {
+    const processFiles = async (files) => {
         const maxSize = 10 * 1024 * 1024;
-        const allowedTypes = ["application/pdf", "image/png", "image/jpeg", "image/jpg"];
-        Array.from(files).forEach((file) => {
+        const allowedTypes = ["application/pdf", "image/png", "image/jpeg", "image/jpg", "image/webp", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
             if (!allowedTypes.includes(file.type)) {
-                Swal.fire(" ", `File type not supported: ${file.name}. Only PDF, PNG, JPG allowed.`);
-                return;
+                Swal.fire(" ", `File type not supported: ${file.name}. Only PDF, Word, Excel, PNG, JPG allowed.`);
+                continue;
             }
             if (file.size > maxSize) {
                 Swal.fire(" ", `File too large: ${file.name}. Max 10MB per file.`);
-                return;
+                continue;
             }
-            const reader = new FileReader();
-            reader.onload = (e) => {
+
+            try {
+                // Upload to S3
+                const s3url = await s3upload(file);
+
+                // Store S3 URL instead of base64
                 setUploadedFiles((prev) => [...prev, {
                     fileName: file.name,
-                    fileData: e.target.result,
+                    fileData: s3url,
                     fileType: file.type,
                     fileSize: file.size,
                 }]);
-            };
-            reader.readAsDataURL(file);
-        });
+            } catch (error) {
+                Swal.fire(" ", `Failed to upload ${file.name} to S3`);
+            }
+        }
     };
 
     const handleFileSelect = (e) => { processFiles(e.target.files); e.target.value = ""; };
@@ -225,14 +331,22 @@ const AddAsset = () => {
         setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
     };
 
-    const handleAssetImageSelect = (e) => {
+    const handleAssetImageSelect = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setAssetImage(event.target.result);
-            };
-            reader.readAsDataURL(file);
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                Swal.fire(" ", "Image size exceeds 5MB limit.");
+                return;
+            }
+
+            try {
+                // Upload image locally directly to S3
+                const s3url = await s3upload(file);
+                setAssetImage(s3url);
+            } catch (error) {
+                Swal.fire(" ", "Image upload to S3 failed.");
+            }
         }
     };
     const formatFileSize = (bytes) => {
@@ -240,50 +354,75 @@ const AddAsset = () => {
         return (bytes / (1024 * 1024)).toFixed(1) + " MB";
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!assetCategory || !assetSubCategory || !assetName) {
-            Swal.fire(" ", "Please fill all required fields (Category, Sub-Category, Asset Name)");
+        if (!assetCategory || !assetSubCategory || !assetName || !purchaseDate || !cost || (isAdmin && !center)) {
+            Swal.fire(" ", "Please fill all required fields (Center, Category, Sub-Category, Asset Name, Purchase Date, Purchase Cost)");
             return;
         }
-        const [dropdownValue, dropdown_id] = assetCategory.split("|");
+        const [dropdownValue, category_id] = assetCategory.split("|");
         const subCatObj = assetSubCategoryList.find(sub => sub.inputValue === assetSubCategory);
         const subCategory_id = subCatObj ? subCatObj._id : null;
+        const userDetails = ls.get("userDetails", { decrypt: true });
 
-        const formValues = {
-            dropdownvalue: dropdownValue,
-            dropdown_id,
-            inputValue: assetSubCategory,
-            assetName, brand, model, serialNo,
-            vendor, cost, warrantyDate,
-            description, purchaseDate, invoiceNumber,
-            residualValue, usefulLife, uploadedFiles,
-            specifications,
-            assetImage,
-            dropdownLabel: "asset category",
-            inputLabel: "asset subcategory",
-            status: "Pending",
+        const roles = userDetails?.roles || [];
+        const isAssetIncharge = roles.includes("asset-incharge");
+        const isAssetAdmin = roles.includes("admin") || roles.includes("asset-admin");
+
+        const baseValues = {
+            category: dropdownValue,
+            category_id: category_id,
+            subCategory: assetSubCategory,
             subCategory_id,
-            user_id: ls.get("userDetails", { decrypt: true })?.userId
+            assetID: assetID || undefined,
+            assetName,
+            brand,
+            model,
+            vendor: { name: vendor, id: vendorID },
+            purchaseCost: cost,
+            warrantyDate,
+            description,
+            purchaseDate,
+            invoiceNumber,
+
+            docs: uploadedFiles.map(f => f.fileData),
+            specifications,
+            assetImage: [{ url: assetImage, fileName: "asset_image" }],
+            user_id: userDetails?.user_id || userDetails?.userId || userDetails?._id,
+            userName: userDetails?.firstName ? `${userDetails.firstName} ${userDetails.lastName || ""}`.trim() : (userDetails?.fullName || userDetails?.name || "System"),
+            currentAllocation: center ? {
+                center: {
+                    _id: center.split("|")[1],
+                    name: center.split("|")[0]
+                }
+            } : undefined
         };
 
         setLoading(true);
         const apiUrl = params._id
-            ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management/put/${params._id}`
-            : `${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management/post`;
-        const method = params._id ? "put" : "post";
+            ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management-new/patch/${params._id}`
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management-new`;
 
-        axios[method](apiUrl, formValues)
-            .then(() => {
-                Swal.fire(" ", `Asset ${params._id ? 'updated' : 'added'} successfully`);
-                router.push(`/${loggedInRole}/asset-management`);
-            })
-            .catch((error) => {
-                console.error("Submission error:", error);
-                Swal.fire(" ", "Something went wrong during submission");
-            })
-            .finally(() => setLoading(false));
+        try {
+            if (params._id) {
+                // Update mode
+                await axios.patch(apiUrl, { ...baseValues, serialNumber: serialNo });
+            } else {
+                // Add mode with quantity support
+                const totalQty = parseInt(quantity) || 1;
+                for (let i = 0; i < totalQty; i++) {
+                    await axios.post(apiUrl, { ...baseValues, serialNumber: serialNumbers[i] });
+                }
+            }
+            Swal.fire(" ", `Asset ${params._id ? 'updated' : 'added'} successfully`);
+            router.push(`/${loggedInRole}/management`);
+        } catch (error) {
+            console.error("Submission error:", error);
+            Swal.fire(" ", "Something went wrong during submission");
+        } finally {
+            setLoading(false);
+        }
     };
 
     // ── Section Header ──
@@ -311,33 +450,42 @@ const AddAsset = () => {
                     <div className="border-b-2 border-gray-300 flex justify-between">
                         <h1 className="heading">Central Asset Registry</h1>
                         <div className="flex gap-3 my-5 me-10">
-                            <Tooltip content="Bulk Upload" placement="bottom" className="bg-green" arrow={false}>
-                                {loading ? (
-                                    <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
-                                ) : (
-                                    <FaFileUpload
-                                        className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
-                                        onClick={() => window.open(`/${loggedInRole}/asset-management/bulk-upload`, '_self')}
-                                    />
-                                )}
+                            <Tooltip content="Asset List" placement="bottom" className="bg-green" arrow={false}>
+                                <CiViewList
+                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                                    onClick={() => window.open(`/${loggedInRole}/management`, '_self')}
+                                />
                             </Tooltip>
                             <Tooltip
-                                content="Asset Allocation Approval"
+                                content="Allocate Asset"
                                 placement="bottom"
                                 className="bg-green"
                                 arrow={false}
                             >
-                                <MdOutlineFactCheck
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                                <FaUserPlus
+                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
                                     onClick={() => {
-                                        router.push(`/${loggedInRole}/asset-management/movement-authorization`);
+                                        router.push(`/${loggedInRole}/management/asset-allocation`);
                                     }}
                                 />
                             </Tooltip>
-                            <Tooltip content="Asset List" placement="bottom" className="bg-green" arrow={false}>
-                                <CiViewList
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
-                                    onClick={() => window.open(`/${loggedInRole}/asset-management`, '_self')}
+                            <Tooltip
+                                content="Allocation Approval List"
+                                placement="bottom"
+                                className="bg-green"
+                                arrow={false}
+                            >
+                                <FaListUl
+                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                                    onClick={() => {
+                                        router.push(`/${loggedInRole}/management/allocation-approval-list`);
+                                    }}
+                                />
+                            </Tooltip>
+                            <Tooltip content="Bulk Upload" placement="bottom" className="bg-green" arrow={false}>
+                                <FaFileUpload
+                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                                    onClick={() => window.open(`/${loggedInRole}/management/bulk-upload`, '_self')}
                                 />
                             </Tooltip>
                         </div>
@@ -365,6 +513,28 @@ const AddAsset = () => {
                                 <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">
                                     {/* Left 70%: Inputs */}
                                     <div className="lg:col-span-8 space-y-4">
+                                        {/* Row: Center Dropdown */}
+                                        <div className="flex lg:flex-row md:flex-col flex-col gap-x-4">
+                                            <div className="flex-1">
+                                                <label className="inputLabel mb-1">Center<span className="text-red-500">*</span></label>
+                                                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                    <IconWrapper icon={MdBusiness} />
+                                                    <select
+                                                        value={center}
+                                                        onChange={(e) => setCenter(e.target.value)}
+                                                        className="stdSelectField w-full pl-12"
+                                                        required={isAdmin}
+                                                        disabled={isAssetIncharge}
+                                                    >
+                                                        <option value="" disabled>-- Select Center --</option>
+                                                        {centerList.map((c) => (
+                                                            <option key={c._id} value={`${c.centerName}|${c._id}`}>{c.centerName}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="flex-1"></div>
+                                        </div>
                                         {/* Row: Asset Name */}
                                         <div className="flex lg:flex-row md:flex-col flex-col gap-x-4">
                                             <div className="flex-1">
@@ -374,6 +544,20 @@ const AddAsset = () => {
                                                     <input type="text" className="stdInputField w-full pl-12"
                                                         placeholder="e.g. MacBook Pro 16 – IT Dept"
                                                         value={assetName} onChange={(e) => setAssetName(e.target.value)} required />
+                                                </div>
+                                            </div>
+                                            <div className="flex-1">
+                                                <label className="inputLabel mb-1 flex items-center gap-1">
+                                                    Asset ID
+                                                    <Tooltip content="Asset ID will be auto-generated if not provided manually." placement="top" className="bg-green">
+                                                        <MdInfoOutline className="text-gray-400 cursor-help" />
+                                                    </Tooltip>
+                                                </label>
+                                                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                    <IconWrapper icon={MdPin} />
+                                                    <input type="text" className="stdInputField w-full pl-12"
+                                                        placeholder="Optional (e.g. AST-001)"
+                                                        value={assetID} onChange={(e) => setAssetID(e.target.value)} />
                                                 </div>
                                             </div>
                                         </div>
@@ -435,18 +619,40 @@ const AddAsset = () => {
                                             </div>
                                         </div>
 
-                                        {/* Row: Serial No */}
+                                        {/* Row: Quantity + Serial No */}
                                         <div className="flex lg:flex-row md:flex-col flex-col gap-x-4">
-                                            <div className="flex-1">
-                                                <label className="inputLabel mb-1">Serial Number</label>
-                                                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                                                    <IconWrapper icon={MdInventory} />
-                                                    <input type="text" className="stdInputField w-full pl-12"
-                                                        placeholder="Product Serial No"
-                                                        value={serialNo} onChange={(e) => setSerialNo(e.target.value)} />
+                                            {!params._id && (
+                                                <div className="flex-1">
+                                                    <label className="inputLabel mb-1">Quantity <span className="text-red-500">*</span></label>
+                                                    <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                        <IconWrapper icon={MdInventory} />
+                                                        <input type="text" className="stdInputField w-full pl-12"
+                                                            placeholder="0"
+                                                            value={quantity} onChange={handleQuantityChange} required />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                             <div className="flex-1"></div>
+                                        </div>
+
+                                        {/* Dynamic Serial Numbers */}
+                                        <div className="space-y-4">
+                                            {serialNumbers.map((sn, index) => (
+                                                <div key={index} className="flex lg:flex-row md:flex-col flex-col gap-x-4">
+                                                    <div className="flex-1">
+                                                        <label className="inputLabel mb-1">
+                                                            Serial Number {quantity > 1 ? `#${index + 1}` : ""}
+                                                        </label>
+                                                        <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                            <IconWrapper icon={MdInventory} />
+                                                            <input type="text" className="stdInputField w-full pl-12"
+                                                                placeholder="Product Serial No"
+                                                                value={sn} onChange={(e) => handleSerialNoChange(index, e.target.value)} />
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex-1"></div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
 
@@ -580,11 +786,11 @@ const AddAsset = () => {
                                 {/* Row: Purchase Date + Invoice Number */}
                                 <div className="flex lg:flex-row md:flex-col flex-col gap-x-4">
                                     <div className="flex-1 mt-2">
-                                        <label className="inputLabel mb-1">Purchase Date</label>
+                                        <label className="inputLabel mb-1">Purchase Date <span className="text-red-500">*</span></label>
                                         <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
                                             <IconWrapper icon={MdCalendarMonth} />
                                             <input type="date" className="stdInputField w-full pl-12"
-                                                value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)} />
+                                                value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)} required />
                                         </div>
                                     </div>
                                     <div className="flex-1 mt-2">
@@ -604,18 +810,32 @@ const AddAsset = () => {
                                         <label className="inputLabel mb-1">Vendor / Supplier</label>
                                         <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
                                             <IconWrapper icon={MdBusiness} />
-                                            <input type="text" className="stdInputField w-full pl-12"
-                                                placeholder="Vendor Name"
-                                                value={vendor} onChange={(e) => setVendor(e.target.value)} />
+                                            <select
+                                                className="stdSelectField w-full pl-12"
+                                                value={vendorID}
+                                                onChange={(e) => {
+                                                    const selectedID = e.target.value;
+                                                    setVendorID(selectedID);
+                                                    const selectedVendor = vendorDropdownOptions.find(v => v._id === selectedID);
+                                                    setVendor(selectedVendor ? selectedVendor.vendorInfo?.nameOfCompany : "");
+                                                }}
+                                            >
+                                                <option value="">-- Select Vendor --</option>
+                                                {vendorDropdownOptions.map((v) => (
+                                                    <option key={v._id} value={v._id}>
+                                                        {v.vendorInfo?.nameOfCompany} {v.vendorID ? `(${v.vendorID})` : ""}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="flex-1 mt-4">
-                                        <label className="inputLabel mb-1">Purchase Cost (INR)</label>
+                                        <label className="inputLabel mb-1">Purchase Cost (INR) <span className="text-red-500">*</span></label>
                                         <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
                                             <IconWrapper icon={FaRupeeSign} />
                                             <input type="number" className="stdInputField w-full pl-12"
                                                 placeholder="0.00"
-                                                value={cost} onChange={(e) => setCost(e.target.value)} />
+                                                value={cost} onChange={(e) => setCost(e.target.value)} required />
                                         </div>
                                     </div>
                                 </div>
@@ -634,55 +854,7 @@ const AddAsset = () => {
                                 </div>
                             </div>
 
-                            {/* ══════════════════════════════════════════
-                                SECTION 3 — Financial Details
-                            ══════════════════════════════════════════ */}
-                            <div className="border border-gray-200 rounded-lg p-5 mt-5 shadow-md">
-                                <SectionHeader
-                                    title="Financial Details"
-                                    subtitle="Useful life and depreciation configuration."
-                                />
 
-                                {/* Row: Residual Value + Useful Life */}
-                                <div className="flex lg:flex-row md:flex-col flex-col gap-x-4">
-                                    <div className="flex-1 mt-2">
-                                        <label className="inputLabel mb-1">Residual Value (INR)</label>
-                                        <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                                            <IconWrapper icon={FaRupeeSign} />
-                                            <input type="number" className="stdInputField w-full pl-12"
-                                                placeholder="0.00"
-                                                value={residualValue} onChange={(e) => setResidualValue(e.target.value)} />
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 mt-2">
-                                        <label className="inputLabel mb-1">Useful Life (Years)</label>
-                                        <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                                            <IconWrapper icon={MdTimelapse} />
-                                            <input type="number" className="stdInputField w-full pl-12"
-                                                placeholder="e.g. 5"
-                                                value={usefulLife} onChange={(e) => setUsefulLife(e.target.value)} />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Row: Monthly Depreciation (read-only) */}
-                                <div className="flex lg:flex-row md:flex-col flex-col gap-x-4">
-                                    <div className="flex-1 mt-4">
-                                        <label className="inputLabel mb-1">
-                                            Estimated Monthly Depreciation
-                                            <span className="ml-1 text-[11px] font-normal text-gray-400">(auto-calculated)</span>
-                                        </label>
-                                        <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                                            <IconWrapper icon={MdTrendingDown} />
-                                            <input type="text"
-                                                className="stdInputField w-full pl-12 bg-gray-50 cursor-not-allowed"
-                                                value={`₹ ${monthlyDepreciation}`}
-                                                readOnly />
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 mt-4"></div>
-                                </div>
-                            </div>
 
                             {/* ══════════════════════════════════════════
                                 SECTION 4 — Document Upload

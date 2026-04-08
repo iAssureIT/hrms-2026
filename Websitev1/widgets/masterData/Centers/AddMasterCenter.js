@@ -26,6 +26,7 @@ const stateList = ["Maharashtra", "Karnataka", "Goa"];
 
 const CenterManagement = (props) => {
   const [centerName, setCenterName] = useState("");
+  const [assetManagementCenterCode, setAssetManagementCenterCode] = useState("");
   const [addressLine, setAddressLine] = useState("");
 
   const [loggedInRole, setLoggedInRole] = useState("");
@@ -82,6 +83,7 @@ const CenterManagement = (props) => {
           setDistrict(centerData.data[0].address.district);
           setState(centerData.data[0].address.state);
           setPincode(centerData.data[0].address.pincode);
+          setAssetManagementCenterCode(centerData.data[0].assetManagementCenterCode);
 
           setOnRoll(centerData.data[0].onRoll);
           setThirdParty(centerData.data[0].thirdParty);
@@ -204,6 +206,7 @@ const CenterManagement = (props) => {
         onRoll: onRoll,
         thirdParty: thirdParty,
         totalEmp: totalEmp,
+        assetManagementCenterCode: assetManagementCenterCode,
         user_id,
       };
 
@@ -235,36 +238,31 @@ const CenterManagement = (props) => {
       } else {
         axios
           .post("api/centers/post", formValues)
-
           .then((response) => {
             setRunCount((count) => count + 1);
-            if (response.data.message !== "Center already exists") {
-              Swal.fire(" ", "Center details submitted successfully!!");
+            Swal.fire(" ", "Center details submitted successfully!!");
 
-              // Reset form values after successful submission
-              setCenterName("");
-              setAddressLine("");
-              setDistrict("");
-              setState("");
-              setPincode("");
-              setOnRoll("");
-              setThirdParty("");
-              setTotalEmp("");
+            // Reset form values after successful submission
+            setCenterName("");
+            setAddressLine("");
+            setDistrict("");
+            setState("");
+            setPincode("");
+            setAssetManagementCenterCode("");
+            setOnRoll("");
+            setThirdParty("");
+            setTotalEmp("");
 
-              setLoading2(true);
+            setLoading2(true);
 
-              router.push(
-                "/admin/master-data/center-details/center-details-list"
-              );
-            } else {
-              Swal.fire(
-                " ",
-                response.data.message + "! Please enter another center"
-              );
-            }
+            router.push(
+              "/admin/master-data/center-details/center-details-list"
+            );
           })
           .catch((error) => {
             console.log("post API Error => ", error);
+            const errorMessage = error?.response?.data?.message || "Something went wrong!";
+            Swal.fire(" ", errorMessage);
           });
       }
     }
@@ -310,44 +308,65 @@ const CenterManagement = (props) => {
             <div>
               <div className="rounded-md">
                 <div className="mt-5">
-                  <div className="flex-1 my-2">
-                    <label htmlFor="center-name" className="inputLabel">
-                      Center Name <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          <HiBuildingOffice2 className="icon" />
-                        </span>
+                  <div className="flex flex-col lg:flex-row gap-4">
+                    <div className="flex-[2] my-2">
+                      <label htmlFor="center-name" className="inputLabel">
+                        Center Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative mt-2 rounded-md shadow-sm">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+                            <HiBuildingOffice2 className="icon" />
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          name="centerName"
+                          id="centerName"
+                          value={centerName}
+                          className="stdInputField"
+                          placeholder="Enter Center Name"
+                          onChange={(e) => {
+                            setCenterName(e.target.value.trim());
+                            setError((prevState) => ({
+                              ...prevState,
+                              centerNameError: "",
+                            }));
+                          }}
+                        />
                       </div>
-                      <input
-                        type="text"
-                        name="productId"
-                        id="productId"
-                        value={centerName}
-                        className={
-                          error.centerNameError
-                            ? "stdInputField"
-                            : "stdInputField"
-                        }
-                        placeholder="Enter Center Name"
-                        onChange={(e) => {
-                          setCenterName(e.target.value.trim());
-                          setError((prevState) => ({
-                            ...prevState,
-                            centerNameError: "",
-                          }));
+                      <div
+                        className="text-red-500"
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: "normal",
                         }}
-                      />
+                      >
+                        {error.centerNameError}
+                      </div>
                     </div>
-                    <div
-                      className="text-red-500"
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      {error.centerNameError}
+                    <div className="flex-[1] my-2">
+                      <label htmlFor="assetManagementCenterCode" className="inputLabel">
+                        Asset Management Center Code
+                      </label>
+                      <div className="relative mt-2 rounded-md shadow-sm">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+                            <Md123 className="icon" />
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          name="assetManagementCenterCode"
+                          id="assetManagementCenterCode"
+                          value={assetManagementCenterCode}
+                          className="stdInputField"
+                          placeholder="Enter Code"
+                          onChange={(e) => {
+                            setAssetManagementCenterCode(e.target.value);
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="flex-1 mt-4 my-2">

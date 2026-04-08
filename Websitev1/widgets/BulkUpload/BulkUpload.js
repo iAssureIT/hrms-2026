@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import swal from "sweetalert2";
 import ProgressBar from "./ProgressBar.js";
-// import GenericTable from "@/widgets/GenericTable/FilterTable.js";
 import GenericTable from "@/widgets/BulkUpload/GenericTable/Table";
 import "./BulkUpload.css";
 import { Tooltip } from "flowbite-react";

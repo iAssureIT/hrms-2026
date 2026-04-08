@@ -16,6 +16,7 @@ const TwoFieldComponent = ({
   oneFieldLable,
   twoFieldLable,
   twoField,
+  showAddButton,
 }) => {
   const [openModal, setOpenModal] = useState(false);
   const [items, setItems] = useState([]);
@@ -60,7 +61,7 @@ const TwoFieldComponent = ({
   useEffect(() => {
     const getList = async () => {
       try {
-        if (!oneField.oneFieldLable) {
+        if (oneField.getListAPI) {
           const response = await axios.get(oneField.getListAPI);
           setDropDownData(response.data);
         } else {
@@ -111,7 +112,7 @@ const TwoFieldComponent = ({
             console.log("updated product => ", response.data);
             setCheckRelode((count) => count + 1);
             if (response.data) {
-              Swal.fire(" ", response.data.message);
+              Swal.fire(" ", response.data.message || "Data updated successfully.");
 
               if (response.data.success) {
                 setDropdownValue("");
@@ -120,18 +121,27 @@ const TwoFieldComponent = ({
                 setEditingItem(null);
               }
             }
+          })
+          .catch((err) => {
+            const errorMessage = err?.response?.data?.message || "Error updating item";
+            Swal.fire(" ", errorMessage);
           });
       } else {
-        axios.post(twoField.insertAPI, item).then((response) => {
-          setCheckRelode((count) => count + 1);
-          Swal.fire(" ", `${twoFieldLable} added successfully.`);
-          setDropdownValue("");
-          setInputValue("");
-          fetchItems();
-        });
+        axios.post(twoField.insertAPI, item)
+          .then((response) => {
+            setCheckRelode((count) => count + 1);
+            Swal.fire(" ", `${twoFieldLable} added successfully.`);
+            setDropdownValue("");
+            setInputValue("");
+            fetchItems();
+          })
+          .catch((err) => {
+            const errorMessage = err?.response?.data?.message || "Error adding item";
+            Swal.fire(" ", errorMessage);
+          });
       }
     } catch (err) {
-      setError("Error saving item");
+      Swal.fire(" ", "An unexpected error occurred.");
     }
   };
 
@@ -376,11 +386,15 @@ const TwoFieldComponent = ({
                     <label className="inputLabel flex items-center mb-1">
                       {oneField.fieldlabel}
                       <span className="text-red-600 ms-1">*</span>
-                      <IoMdAdd
-                        className="bg-[#4285F4] ms-1 text-white cursor-pointer"
-                        size={"1.2rem"}
-                        onClick={() => setOpenModal(true)}
-                      />
+                      {
+                        showAddButton && (
+                          <IoMdAdd
+                            className="bg-green hover:bg-Green ms-1 text-white cursor-pointer"
+                            size={"1.2rem"}
+                            onClick={() => setOpenModal(true)}
+                          />
+                        )
+                      }
                     </label>
 
                     <div className="relative mt-3">
@@ -407,9 +421,10 @@ const TwoFieldComponent = ({
                           dropdownData.map((option) => (
                             <option
                               key={option._id}
-                              value={option.fieldValue + "|" + option._id}
+                              value={(option.fieldValue || option.centerName) + "|" + option._id}
+                              className="text-black"
                             >
-                              {option.fieldValue}
+                              {option.fieldValue || option.centerName}
                             </option>
                           ))}
                       </select>
@@ -590,19 +605,25 @@ const TwoFieldComponent = ({
             <Modal
               show={openModal}
               size="6xl"
-              onClose={() => setOpenModal(false)}
+              onClose={() => {
+                setOpenModal(false)
+                setCheckRelode((count) => count + 1)
+              }}
               className="lg:px-44 px-1 bg-[#1111114f] pt-10 "
             >
               <Modal.Body>
                 <div className="mx-auto">
-                  <div className="flex justify-end relative top-2 me-10">
+                  <div className="flex justify-end relative mb-4">
                     <button
-                      className="border-none outline-none"
-                      onClick={() => setOpenModal(false)}
+                      className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
+                      onClick={() => {
+                        setOpenModal(false)
+                        setCheckRelode((count) => count + 1)
+                      }}
                     >
                       <IoMdClose
-                        className=" text-black font-bold hover:bg-red-400 hover:text-white"
-                        size={"1.5rem"}
+                        className=" "
+                      // size={"1.5rem"}
                       />
                     </button>
                   </div>

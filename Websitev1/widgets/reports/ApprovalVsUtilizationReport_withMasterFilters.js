@@ -15,7 +15,7 @@ function AppVsUtilizationReport() {
   const pathname = usePathname();
   const [loggedInRole, setLoggedInRole] = useState("");
   const [userDetails, setUserDetails] = useState(
-    ls.get("userDetails", { decrypt: true })
+    ls.get("userDetails", { decrypt: true }),
   );
   // console.log("userDetails  =>", userDetails);
 
@@ -138,7 +138,7 @@ function AppVsUtilizationReport() {
     try {
       const response = await axios.post(
         "/api/reports/post/approval-vs-utilization-report",
-        formValues
+        formValues,
       );
       if (response.data.success) {
         // console.log("response.data", response);
@@ -199,7 +199,7 @@ function AppVsUtilizationReport() {
           setProgramList(
             ProgramList.sort((a, b) => {
               return a.fieldValue.localeCompare(b.fieldValue);
-            })
+            }),
           );
         } else {
           console.error("Expected data to be an array but got:", ProgramList);
@@ -223,7 +223,7 @@ function AppVsUtilizationReport() {
           setProjectList(
             ProjectList.sort((a, b) => {
               return a.field2Value.localeCompare(b.field2Value);
-            })
+            }),
           );
         } else {
           console.error("Expected data to be an array but got:", ProjectList);
@@ -239,7 +239,7 @@ function AppVsUtilizationReport() {
     if (program_id && project_id) {
       axios
         .get(
-          "/api/subactivity-mapping/get/list/" + program_id + "/" + project_id
+          "/api/subactivity-mapping/get/list/" + program_id + "/" + project_id,
         )
         // .get("/api/activity/get")
         .then((response) => {
@@ -250,12 +250,12 @@ function AppVsUtilizationReport() {
             setActivityNameList(
               ActivityNameList.sort((a, b) => {
                 return a.field3Value.localeCompare(b.field3Value);
-              })
+              }),
             );
           } else {
             console.error(
               "Expected data to be an array but got:",
-              ActivityNameList
+              ActivityNameList,
             );
             setActivityNameList([]);
           }
@@ -277,7 +277,7 @@ function AppVsUtilizationReport() {
         } else {
           console.error(
             "Expected data to be an array but got:",
-            CenterNameList
+            CenterNameList,
           );
           setCenterNameList([]);
         }
@@ -294,15 +294,15 @@ function AppVsUtilizationReport() {
           "/" +
           project_id +
           "/" +
-          activityName_id
+          activityName_id,
       );
       // .get("/api/subactivity/get/" + id);
 
       setSubActivityNameList(
-          response.data.sort((a, b) => {
-            return a.inputValue.localeCompare(b.inputValue);
-          })
-        );
+        response.data.sort((a, b) => {
+          return a.inputValue.localeCompare(b.inputValue);
+        }),
+      );
     } catch (error) {
       console.error("Error fetching subactivities:", error);
     }
@@ -328,7 +328,7 @@ function AppVsUtilizationReport() {
         </div>
 
         <div className="px-10">
-          <div className="mt-4 mb-0 lg:mb-5 w-full grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="mt-4 mb-0 lg:mb-5 w-full grid lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-4">
             {loggedInRole === "admin" || loggedInRole === "executive" ? (
               <div className="">
                 <label htmlFor="centerName" className="inputLabel">

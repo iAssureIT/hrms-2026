@@ -105,7 +105,7 @@ class ResetPassword extends Component {
       },
       () => {
         console.log("this.state.errors = ", this.state.errors);
-      }
+      },
     );
 
     return formIsValid;
@@ -131,7 +131,7 @@ class ResetPassword extends Component {
           Swal.fire(
             " ",
             "Password changed successfully <br/>",
-            "Use new password to Login!"
+            "Use new password to Login!",
           ).then(() => {
             window.location.href = "/auth/login";
             window.location.assign("/auth/login");
@@ -159,65 +159,55 @@ class ResetPassword extends Component {
   }
   render() {
     return (
-      <section className="bg-white rounded shadow-md w-full max-w-sm m-10">
+      <section className="bg-white rounded shadow-md w-full max-w-sm max-h-[80dvh] overflow-y-auto">
         <div className="w-full">
-          <div className="w-full bg-lightgreen border border-2 border-t-green py-6 h-20">
+          <div className="w-full bg-lightgreen border border-2 border-t-green py-3">
             <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
               Reset Password
             </h1>
           </div>
-          <form className="mt-6 p-8" action="#" method="POST">
-            <div className="space-y-2 md:space-y-2 mb-4">
-              <label className="inputLabel font-semibold">Email :</label>
-              <div className="mb-4 relative">
-                <label
-                  htmlFor="Email ID"
-                  className="block text-sm font-medium dark:text-white"
-                >
-                  <span className="sr-only">Email ID</span>
-                </label>
-                <div className="insideIcon">
-                  <i className="fa-regular fa-envelope  mr-16"></i>
-                </div>
+          <form className="mt-2 p-4" action="#" method="POST">
+            <div className="mb-2 relative">
+              <label className="block inputLabel font-semibold mb-1">
+                Email :
+              </label>
+              <div className="relative">
                 <input
                   type="email"
                   name="email"
                   id="email"
                   placeholder="Email ID"
-                  className="stdInput2"
+                  className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
                   value={this.state.email}
                   onChange={this.handleChange.bind(this)}
                   autoFocus
-                  autoComplete
+                  autoComplete="on"
                   required
                 />
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i className="fa-regular fa-envelope"></i>
+                </span>
               </div>
             </div>
-            <div className="space-y-2 md:space-y-2 mb-4">
-              <label className="inputLabel font-semibold">New Password :</label>
-              <div className="mb-4 relative">
-                <label
-                  htmlFor="newPassword"
-                  className="block text-sm font-medium dark:text-white"
-                >
-                  <span className="sr-only">New Password</span>
-                </label>
-                <div className="insideIcon">
-                  <i className="fa fa-lock  mr-16"></i>
-                </div>
+            <div className="mb-2 relative">
+              <label className="block inputLabel font-semibold mb-1">
+                New Password :
+              </label>
+              <div className="relative">
                 <input
-                  // type="password"
                   type={this.state.showPassword ? "text" : "password"}
                   name="newPassword"
                   id="newPassword"
                   placeholder="Password"
-                  className="stdInput2"
+                  className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
                   value={this.state.newPassword}
                   onChange={this.handleChange.bind(this)}
-                  autoFocus
-                  autoComplete
+                  autoComplete="on"
                   required
                 />
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i className="fa fa-lock"></i>
+                </span>
                 <span
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
                   onClick={() =>
@@ -240,41 +230,27 @@ class ResetPassword extends Component {
                     ></span>
                   )}
                 </span>
-                {/* <span
-                  id="id-newPassword"
-                  onClick={this.togglePassword.bind(this)}
-                  className={"fa fa-eye-slash toggleEye right-5 top-3"}
-                ></span> */}
               </div>
             </div>
-            <div className="space-y-2 md:space-y-2 mb-4">
-              <label className="inputLabel font-semibold">
+            <div className="mb-2 relative">
+              <label className="block inputLabel font-semibold mb-1">
                 Confirm Password :
               </label>
-              <div className="mb-4 relative">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium dark:text-white"
-                >
-                  <span className="sr-only">Confirm Password</span>
-                </label>
-                <div className="insideIcon">
-                  <i className="fa fa-lock  mr-16"></i>
-                </div>
+              <div className="relative">
                 <input
-                  // type="password"
                   type={this.state.showPassword ? "text" : "password"}
                   name="confirmPassword"
                   id="confirmPassword"
                   placeholder="Password"
-                  className="stdInput2"
-                  autoFocus
+                  className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
                   value={this.state.confirmPassword}
                   onChange={this.handleChange.bind(this)}
-                  autoComplete
+                  autoComplete="on"
                   required
                 />
-
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i className="fa fa-lock"></i>
+                </span>
                 <span
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
                   onClick={() =>
@@ -297,17 +273,12 @@ class ResetPassword extends Component {
                     ></span>
                   )}
                 </span>
-                {/* <span
-                  id="id-confirmPassword"
-                  onClick={this.togglePassword.bind(this)}
-                  className={"fa fa-eye-slash toggleEye right-5 top-3"}
-                ></span> */}
               </div>
             </div>
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="formButtons mt-4"
+                className="formButtons w-full sm:w-auto mt-2"
                 onClick={this.resetPassword.bind(this)}
               >
                 {this.state.loading ? (

@@ -166,7 +166,7 @@ const GenericTable = ({
         setfullName(res?.data?.data.profile.fullName);
         setlogDetails(res?.data?.logDetails);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   useEffect(() => {
     var user = JSON.parse(localStorage.getItem("userDetails"));
@@ -353,9 +353,9 @@ const GenericTable = ({
                 });
               }
             })
-            .catch((error) => {});
+            .catch((error) => { });
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }
   };
   const validation = () => {
@@ -648,19 +648,17 @@ const GenericTable = ({
           // Create user data without HTML tags
           let userData = {
             _id: usersData[index]._id,
-            userProfile: `${usersData[index]?.firstname || ""} ${
-              usersData[index]?.lastname || ""
-            }\n${usersData[index].email || ""}\n+91 ${
-              usersData[index]?.mobNumber || ""
-            }`,
+            userProfile: `${usersData[index]?.firstname || ""} ${usersData[index]?.lastname || ""
+              }\n${usersData[index].email || ""}\n+91 ${usersData[index]?.mobNumber || ""
+              }`,
             role: usersData[index].role?.join(", ") || "",
             createdAt: moment(usersData[index].createdAt).format(
               "Do MMMM YYYY, HH:mm"
             ),
             lastloggedin: usersData[index].lastLogin
               ? `${moment(usersData[index].lastLogin).fromNow(true)}\n${moment(
-                  usersData[index].lastLogin
-                ).format("Do MMMM YYYY, HH:mm")}`
+                usersData[index].lastLogin
+              ).format("Do MMMM YYYY, HH:mm")}`
               : "Not logged in yet",
             status:
               usersData[index].status === "active" ? "Active" : "Inactive",
@@ -862,11 +860,10 @@ const GenericTable = ({
                 <select
                   // className="w-full border mt-2 text-sm"
                   // className="stdSelectField py-1.5"
-                  className={`${
-                    recsPerPage
+                  className={`${recsPerPage
                       ? "stdSelectField pl-3 w-3/4"
                       : "stdSelectField pl-3 w-3/4"
-                  } ${recsPerPage ? "selectOption" : "font-normal"}
+                    } ${recsPerPage ? "selectOption" : "font-normal"}
               `}
                   onChange={(event) => {
                     setRecsPerPage(event.target.value);
@@ -1792,15 +1789,15 @@ const GenericTable = ({
                           <td className={classes}>
                             {log.loginTimeStamp
                               ? moment(log.loginTimeStamp).format(
-                                  "DD-MMM-YY LT"
-                                )
+                                "DD-MMM-YY LT"
+                              )
                               : "-"}
                           </td>
                           <td className={classes}>
                             {log.logoutTimeStamp
                               ? moment(log.logoutTimeStamp).format(
-                                  "DD-MMM-YY LT"
-                                )
+                                "DD-MMM-YY LT"
+                              )
                               : "-"}
                           </td>
                           <td className={classes}>

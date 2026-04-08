@@ -36,6 +36,7 @@ const BulkUpload = (props) => {
   }, []);
   const handleChange = (e) => {
     const files = e.target.files;
+
     if (files && files[0]) {
       var fileName = files[0].name;
       var ext = fileName.split(".").pop();
@@ -185,6 +186,7 @@ const BulkUpload = (props) => {
                 },
               })
                 .then((response) => {
+                  console.log("response.data file url", response)
                   if (response.data.completed) {
                     var percentage = Math.round((endLmt * 100) / totalrows);
                     var uploadFinishMessage = "";
@@ -223,7 +225,7 @@ const BulkUpload = (props) => {
   };
   const SheetJSFT = ["xlsx", "xls", "csv"];
   return (
-    <section className="section">
+    <section className="p-0 font-bold bg-white">
       <div className="m-4 grid">
         <div className="flex justify-between">
           <div className="">
@@ -281,37 +283,37 @@ const BulkUpload = (props) => {
                   arrow={false}
                 >
                   <label
-                    class="flex mt-1 cursor-pointer appearance-none rounded-md text-sm transition disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75 w-16 "
-                    tabindex="0"
+                    className="flex mt-1 cursor-pointer appearance-none rounded-md text-sm transition disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75 w-16 "
+                    tabIndex="0"
                   >
                     <span
-                      for="photo-dropbox"
-                      class="flex items-center space-x-2"
+                      htmlFor="photo-dropbox"
+                      className="flex items-center space-x-2"
                     >
                       <div className="p-3 bg-green rounded-md hover:bg-Green">
                         <svg
-                          class="h-8 w-8 stroke-white text-white"
+                          className="h-8 w-8 stroke-white text-white"
                           viewBox="0 0 256 256"
                         >
                           <path
                             d="M96,208H72A56,56,0,0,1,72,96a57.5,57.5,0,0,1,13.9,1.7"
                             fill="none"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             strokeWidth="24"
                           ></path>
                           <path
                             d="M80,128a80,80,0,1,1,144,48"
                             fill="none"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             strokeWidth="24"
                           ></path>
                           <polyline
                             points="118.1 161.9 152 128 185.9 161.9"
                             fill="none"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             strokeWidth="24"
                           ></polyline>
                           <line
@@ -320,8 +322,8 @@ const BulkUpload = (props) => {
                             x2="152"
                             y2="128"
                             fill="none"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             strokeWidth="24"
                           ></line>
                         </svg>
@@ -339,7 +341,7 @@ const BulkUpload = (props) => {
                   </label>
                 </Tooltip>
 
-                <div class="font-normal text-gray-600 text-md ps-3 flex items-center w-full">
+                <div className="font-normal text-gray-600 text-md ps-3 flex items-center w-full">
                   {fileName ? (
                     <div className="text-center min-w-24 border border-gray-400 px-3 py-2 rounded-md relative">
                       <div className="w-full flex justify-end">
@@ -406,21 +408,19 @@ const BulkUpload = (props) => {
         <div>
           <div className="flex mb-4 capitalise">
             <button
-              className={`px-6 py-2 hover:bg-gray-200 ${
-                activeTab === "active"
+              className={`px-6 py-2 hover:bg-gray-200 ${activeTab === "active"
                   ? "text-green bg-white border-green border-b-2"
                   : "text-gray-700"
-              }`}
+                }`}
               onClick={() => setActiveTab("active")}
             >
               Success
             </button>
             <button
-              className={`px-6 py-2 flex gap-2 justify-center items-center hover:bg-gray-200 ${
-                activeTab === "failure"
+              className={`px-6 py-2 flex gap-2 justify-center items-center hover:bg-gray-200 ${activeTab === "failure"
                   ? "text-green bg-white border-green border-b-2"
                   : "text-gray-700"
-              }`}
+                }`}
               onClick={() => setActiveTab("failure")}
             >
               Failure

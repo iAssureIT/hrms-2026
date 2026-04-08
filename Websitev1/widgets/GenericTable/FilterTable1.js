@@ -337,16 +337,16 @@ const GenericTable = ({
     const formvalues = { ...filterData, removePagination: true };
     // console.log("formvalues",formvalues)
     let url;
-    if(tableObjects?.tableType==="report"){
-      url= tableObjects?.apiURL
-    }else if (tableObjects.titleMsg === "Contributors List"){
-      url= `${tableObjects?.apiURL}/post/contributors-list`
-    }else{
-      url= `${tableObjects?.apiURL}/post/list`
+    if (tableObjects?.tableType === "report") {
+      url = tableObjects?.apiURL
+    } else if (tableObjects.titleMsg === "Contributors List") {
+      url = `${tableObjects?.apiURL}/post/contributors-list`
+    } else {
+      url = `${tableObjects?.apiURL}/post/list`
     }
     axios({
       method: tableObjects?.getListMethod,
-      url:url,
+      url: url,
       data: formvalues,
     })
       .then((response) => {
@@ -452,11 +452,10 @@ const GenericTable = ({
                 <select
                   // className="w-full border mt-2 text-sm"
                   // className="stdSelectField py-1.5"
-                  className={`${
-                    recsPerPage
-                      ? "stdSelectField pl-3 w-3/4"
-                      : "stdSelectField pl-3 w-3/4"
-                  } ${recsPerPage ? "selectOption" : "font-normal"}
+                  className={`${recsPerPage
+                    ? "stdSelectField pl-3 w-3/4"
+                    : "stdSelectField pl-3 w-3/4"
+                    } ${recsPerPage ? "selectOption" : "font-normal"}
               `}
                   onChange={(event) => {
                     setRecsPerPage(event.target.value);
@@ -539,33 +538,31 @@ const GenericTable = ({
             className={`table-auto text-base bottom border-separate border-spacing-y-2 w-full dark:w-full`}
           >
             <thead
-              className={`${pdfMode ? "text-xs" : "text-base"} uppercase ${
-                pdfMode ? "text-wrap" : "text-nowrap"
-              } bg-white dark:bg-white`}
+              className={`${pdfMode ? "text-xs" : "text-base"} uppercase ${pdfMode ? "text-wrap" : "text-nowrap"
+                } bg-white dark:bg-white`}
             ><tr className="">
-            {twoLevelHeader.apply === true
-              ? twoLevelHeader.firstHeaderData.map((data, index) => {
-                  // console.log('dataIIIIIIIIIIIIIIIIIII',data,index);
+                {twoLevelHeader.apply === true
+                  ? twoLevelHeader.firstHeaderData.map((data, index) => {
+                    // console.log('dataIIIIIIIIIIIIIIIIIII',data,index);
 
-                  var lastIndex = twoLevelHeader.firstHeaderData.length;
-                  return (
-                    <th
-                      key={index}
-                      colSpan={data.mergedColoums}
-                      className={`px-4 py-3 border  ${
-                        index !== lastIndex - 1 && index !== 0
+                    var lastIndex = twoLevelHeader.firstHeaderData.length;
+                    return (
+                      <th
+                        key={index}
+                        colSpan={data.mergedColoums}
+                        className={`px-4 py-3 border  ${index !== lastIndex - 1 && index !== 0
                           ? "border-l-0"
                           : index === lastIndex - 1
-                          ? "border-l-0"
-                          : ""
-                      } border-grayTwo`}
-                    >
-                      {data.heading}
-                    </th>
-                  );
-                })
-              : null}
-          </tr>
+                            ? "border-l-0"
+                            : ""
+                          } border-grayTwo`}
+                      >
+                        {data.heading}
+                      </th>
+                    );
+                  })
+                  : null}
+              </tr>
               <tr className="text-left">
                 <th className="text-center px-4 py-3 border border-grayTwo border-r-0">
                   Sr. No
@@ -586,12 +583,11 @@ const GenericTable = ({
                       return (
                         <th
                           key={i}
-                          className={`px-4 py-3 border border-grayTwo border-l-0 ${
-                            key !== "actions" &&
+                          className={`px-4 py-3 border border-grayTwo border-l-0 ${key !== "actions" &&
                             i === Object.entries(tableHeading).length - 1
-                              ? "border-r-1"
-                              : "border-r-0"
-                          }`}
+                            ? "border-r-1"
+                            : "border-r-0"
+                            }`}
                         >
                           {value}{" "}
                           <span
@@ -609,9 +605,8 @@ const GenericTable = ({
               </tr>
             </thead>
             <tbody
-              className={`border border-grayTwo ${
-                pdfMode ? "text-wrap text-xs" : "text-nowrap text-base"
-              } `}
+              className={`border border-grayTwo ${pdfMode ? "text-wrap text-xs" : "text-nowrap text-base"
+                } `}
             >
               {tableData && tableData.length > 0 ? (
                 tableData.map((value, i) => {
@@ -645,17 +640,21 @@ const GenericTable = ({
                           var textAlign = "text-left";
                         }
 
-                        if (value1 === "Pending" || value1 === "pending") {
-                          var statusColor =
-                            "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 px-1 text-white";
-                        }
-                        if (value1 === "approved" || value1 === "Approved") {
-                          var statusColor =
-                            "border bg-green rounded-lg text-xs text text-center py-0.5 px-1 text-white";
-                        }
-                        if (value1 === "rejected" || value1 === "Rejected") {
-                          var statusColor =
-                            "border bg-red-500 rounded-lg text-xs text-center py-0.5 px-1 text-white";
+                        var isHtmlStatus = typeof value1 === "string" && (value1.includes("<span") || value1.includes("<div"));
+                        var statusColor = "";
+                        if (!isHtmlStatus) {
+                          if (value1 === "Pending" || value1 === "pending") {
+                            statusColor =
+                              "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 px-1 text-white";
+                          }
+                          if (value1 === "approved" || value1 === "Approved") {
+                            statusColor =
+                              "border bg-green rounded-lg text-xs text text-center py-0.5 px-1 text-white";
+                          }
+                          if (value1 === "rejected" || value1 === "Rejected") {
+                            statusColor =
+                              "border bg-red-500 rounded-lg text-xs text-center py-0.5 px-1 text-white";
+                          }
                         }
 
                         var found = Object.keys(tableHeading).filter((k) => {
@@ -668,12 +667,11 @@ const GenericTable = ({
                           if (key !== "id") {
                             return (
                               <td
-                                className={`px-4 py-2 border border-grayTwo border-l-0 ${
-                                  value._id === "totals" &&
+                                className={`px-4 py-2 border border-grayTwo border-l-0 ${value._id === "totals" &&
                                   i === Object.entries(value).length - 1
-                                    ? "border-r-1"
-                                    : "border-r-0"
-                                } text-black`}
+                                  ? "border-r-1"
+                                  : "border-r-0"
+                                  } text-black`}
                                 key={i}
                               >
                                 <div
@@ -694,11 +692,11 @@ const GenericTable = ({
                       {tableHeading && tableHeading.actions ?
                         (
                           <td className="border border-grayTwo  border-l-0">
-                            {value.centerName !=="Total"?
+                            {value.centerName !== "Total" ?
                               <div className="flex mx-3  gap-1 items-center">
                                 {loggedInRole === "admin" &&
                                   tableObjects.formURL ===
-                                    "Add Center Incharge" && (
+                                  "Add Center Incharge" && (
                                     <Tooltip
                                       content="Add Center Incharge"
                                       placement="bottom"
@@ -711,9 +709,9 @@ const GenericTable = ({
                                         onClick={() =>
                                           router.push(
                                             "/" +
-                                              loggedInRole +
-                                              "/master-data/center-details/add-center-incharge/" +
-                                              value._id
+                                            loggedInRole +
+                                            "/master-data/center-details/add-center-incharge/" +
+                                            value._id
                                           )
                                         }
                                       />
@@ -726,7 +724,7 @@ const GenericTable = ({
                                   arrow={false}
                                 >
                                   {tableObjects.formText === "Approval Form" ||
-                                  tableObjects.formText === "Add Center Details" ? (
+                                    tableObjects.formText === "Add Center Details" ? (
                                     <FaEye
                                       className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
                                       size={"1.3rem"}
@@ -736,9 +734,9 @@ const GenericTable = ({
                                         ) {
                                           router.push(
                                             "/" +
-                                              loggedInRole +
-                                              "/approval-management/approval-details/" +
-                                              value._id
+                                            loggedInRole +
+                                            "/approval-management/approval-details/" +
+                                            value._id
                                           );
                                         } else if (
                                           tableObjects.formText ===
@@ -746,9 +744,9 @@ const GenericTable = ({
                                         ) {
                                           router.push(
                                             "/" +
-                                              loggedInRole +
-                                              "/master-data/center-details/center-profile/" +
-                                              value._id
+                                            loggedInRole +
+                                            "/master-data/center-details/center-profile/" +
+                                            value._id
                                           );
                                         }
                                       }}
@@ -770,16 +768,16 @@ const GenericTable = ({
                                       onClick={() => {
                                         router.push(
                                           "/" +
-                                            loggedInRole +
-                                            "/fund-management/add-cc/contribution-details/" +
-                                            value._id
+                                          loggedInRole +
+                                          "/fund-management/add-cc/contribution-details/" +
+                                          value._id
                                         );
                                       }}
                                     />
                                   </Tooltip>
                                 )}
                                 {loggedInRole === "admin" ||
-                                loggedInRole === "center" ? (
+                                  loggedInRole === "center" ? (
                                   <>
                                     <Tooltip
                                       content="Edit"
@@ -813,14 +811,13 @@ const GenericTable = ({
                                 ) : null}
                                 &nbsp;
                                 {value.finalStatus === "approved" &&
-                                loggedInRole !== "executive" &&
-                                value.hideUtilizationButton === false ? (
+                                  loggedInRole !== "executive" &&
+                                  value.hideUtilizationButton === false ? (
                                   <button
-                                    className={`formButtons ${
-                                      value.finalStatus === "approved"
-                                        ? "block"
-                                        : "hidden"
-                                    }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
+                                    className={`formButtons ${value.finalStatus === "approved"
+                                      ? "block"
+                                      : "hidden"
+                                      }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                     onClick={() => {
                                       redirect("redirect", value._id);
                                     }}
@@ -831,10 +828,10 @@ const GenericTable = ({
                                   ""
                                 )}
                               </div>
-                            : null}
+                              : null}
                           </td>
-                        ) 
-                      : null}
+                        )
+                        : null}
                     </tr>
                   );
                 })

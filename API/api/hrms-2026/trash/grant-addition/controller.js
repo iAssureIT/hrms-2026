@@ -1,0 +1,269 @@
+// const mongoose = require("mongoose");
+// const _ = require("underscore");
+// const moment = require("moment");
+// const Grant = require("./model.js");
+
+// exports.create_grant = (req, res, next) => {
+//   getData();
+//   async function getData() {
+//     const grant = new Grant({
+//       _id: new mongoose.Types.ObjectId(),
+
+//       center_id: req.body.center_id,
+//       centerName: req.body.centerName,
+//       program_id: req.body.program_id,
+//       program: req.body.program,
+//       project_id: req.body.project_id,
+//       project: req.body.project,
+//       activityName_id: req.body.activityName_id,
+//       activityName: req.body.activityName,
+//       subactivityName_id: req.body.subactivityName_id,
+//       subactivityName: req.body.subactivityName,
+//       grantReceiptNumber: req.body.grantReceiptNumber,
+//       grantReceived: req.body.grantReceived,
+//       bankDepositDate: req.body.bankDepositDate,
+//       utrTransactionNumber: req.body.utrTransactionNumber,
+//       lhwrfBankName: req.body.lhwrfBankName,
+//       lhwrfBranchName: req.body.lhwrfBranchName,
+//       lhwrfAccountNumber: req.body.lhwrfAccountNumber,
+//       fundingAgencyName: req.body.fundingAgencyName,
+
+//       //   sourceofFund: {
+//       //     LHWRF: req.body.LHWRF,
+//       //     grant: req.body.grant,
+//       //     CC: req.body.CC,
+//       //     total: req.body.total,
+//       //     convergence: req.body.convergence,
+//       //   },
+//       createdBy: req.body.createdBy,
+//       createdAt: new Date(),
+//     });
+//     grant
+//       .save()
+//       .then((response) => {
+//         res.status(200).json({
+//           message: "Grant Details submitted Successfully.",
+//           insertedLevel: response,
+//           success: true,
+//         });
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         res.status(500).json({
+//           error: err,
+//         });
+//       });
+//   }
+// };
+
+// exports.update_grant = (req, res, next) => {
+//   Grant.updateOne(
+//     { _id: req.body.ID },
+//     {
+//       $set: {
+//         center_id: req.body.center_id,
+//         centerName: req.body.centerName,
+//         program_id: req.body.program_id,
+//         program: req.body.program,
+//         project_id: req.body.project_id,
+//         project: req.body.project,
+//         activityName_id: req.body.activityName_id,
+//         activityName: req.body.activityName,
+//         subactivityName_id: req.body.subactivityName_id,
+//         subactivityName: req.body.subactivityName,
+//         grantReceiptNumber: req.body.grantReceiptNumber,
+//         grantReceived: req.body.grantReceived,
+//         bankDepositDate: req.body.bankDepositDate,
+//         utrTransactionNumber: req.body.utrTransactionNumber,
+//         lhwrfBankName: req.body.lhwrfBankName,
+//         lhwrfBranchName: req.body.lhwrfBranchName,
+//         lhwrfAccountNumber: req.body.lhwrfAccountNumber,
+//         fundingAgencyName: req.body.fundingAgencyName,
+//         // sourceofFund: {
+//         //   LHWRF: req.body.LHWRF,
+//         //   grant: req.body.grant,
+//         //   CC: req.body.CC,
+//         //   total: req.body.total,
+//         //   convergence: req.body.convergence,
+//         // },
+//       },
+//     }
+//   )
+//     .exec()
+//     .then((data) => {
+//       // if(data.modifiedCount == 1){
+//       res.status(200).json({
+//         data,
+//         success: true,
+//         message: "Grant Details updated Successfully.",
+//       });
+//       // }else{
+//       // res.status(200).json({
+//       //     "message": "AnnualPlan Details not modified"
+//       // });
+//       // }
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({
+//         error: err,
+//       });
+//     });
+// };
+
+// exports.list_grant = (req, res, next) => {
+//   // var query = "1";
+//   // if(req.params.center_id === 'all'){
+//   //     query = {};
+//   // }else{
+//   //     query = { "center_id" : req.params.center_id};
+//   // }
+//   // if(query != "1"){
+//   // AnnualPlan.find(query)
+//   Grant.find()
+//     // .exec()
+//     .then((data) => {
+//       res.status(200).json(data);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({
+//         error: err,
+//       });
+//     });
+//   // }
+// };
+// exports.list_grant_with_limitsOld = (req, res, next) => {
+//   var query = "1";
+//   if (req.params.center_id === "all") {
+//     query = {};
+//   } else {
+//     query = { center_id: req.params.center_id };
+//   }
+//   if (query != "1") {
+//     Grant.find(query)
+//       .sort({ createdAt: -1 })
+//       .exec()
+//       .then((data) => {
+//         if (data) {
+//           res
+//             .status(200)
+//             .json(data.slice(req.body.startRange, req.body.limitRange));
+//         }
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         res.status(500).json({
+//           error: err,
+//         });
+//       });
+//   }
+// };
+
+// exports.list_grant_with_limits = (req, res, next) => {
+//   let recsPerPage = req.params.recsPerPage;
+//   let pageNum = req.params.pageNumber;
+//   let skipRec = recsPerPage * (pageNum - 1);
+//   var query = "1";
+//   if (req.body.center_ID === "all") {
+//     query = {};
+//   } else {
+//     query = { center_id: req.body.center_ID };
+//   }
+//   console.log(
+//     "Page Number",
+//     pageNum,
+//     "query",
+//     query,
+//     "req.body",
+//     req.body.center_ID
+//   );
+
+//   if (query != "1") {
+//     Grant.estimatedDocumentCount(query)
+//       .then((totalRecs) => {
+//         console.log("totalRecs => ", totalRecs);
+//         Grant.find(query)
+//           .skip(parseInt(skipRec))
+//           .limit(parseInt(recsPerPage))
+//           .then((data) => {
+//             var grantData = data.map((item, index) => {
+//               return {
+//                 _id: item._id,
+//                 center_id: item.center_id ? item.center_id : "all",
+//                 centerName: item.centerName ? item.centerName : "All",
+//                 program_id: item.program_id,
+//                 program: item.program,
+//                 project_id: item.project_id,
+//                 project: item.project,
+//                 activityName_id: item.activityName_id,
+//                 activityName: item.activityName,
+//                 subactivityName_id: item.subactivityName_id,
+//                 subactivityName: item.subactivityName,
+//                 grantReceiptNumber: item.grantReceiptNumber,
+//                 grantReceived: item.grantReceived,
+//                 bankDepositDate: item.bankDepositDate,
+//                 utrTransactionNumber: item.utrTransactionNumber,
+//                 lhwrfBankName: item.lhwrfBankName,
+//                 lhwrfBranchName: item.lhwrfBranchName,
+//                 lhwrfAccountNumber: item.lhwrfAccountNumber,
+//                 fundingAgencyName: item.fundingAgencyName,
+//               };
+//             });
+//             console.log("grantData", grantData);
+//             res.status(200).json({
+//               totalRecs: totalRecs,
+//               tableData: grantData,
+//               success: true,
+//             });
+//           })
+//           .catch((error) => {
+//             console.log("Error in grantList  => ", error);
+//             res.status(500).json({ errorMsg: error.message, success: false });
+//           });
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         res.status(500).json({
+//           error: err,
+//         });
+//       });
+//   }
+// };
+
+// exports.fetch_grant = (req, res, next) => {
+//   Grant.find({ _id: req.params.ID })
+//     .exec()
+//     .then((data) => {
+//       res.status(200).json(data);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({
+//         error: err,
+//       });
+//     });
+// };
+
+// exports.delete_grant = (req, res, next) => {
+//   // console.log("req.params.ID ",req.params.ID);
+//   Grant.deleteOne({ _id: req.params.ID })
+//     .exec()
+//     .then((data) => {
+//       // console.log('data ',data);
+//       // if(data.deletedCount === 1){
+//       res.status(200).json({
+//         deleted: true,
+//         message: "Grant List deleted Successfully.",
+//       });
+//       // }else{
+//       //    res.status(200).json({ deleted : false });
+//       // }
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({
+//         error: err,
+//       });
+//     });
+// };

@@ -13,7 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as XLSX from "xlsx";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
-
+import { FaFileUpload, FaWpforms } from "react-icons/fa";
+import { BsPlusSquare } from "react-icons/bs";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 // import { AiFillProduct } from "react-icons/ai";
 // import S3UploadComponent from "../S3UploadComponent/S3UploadComponent";
@@ -42,6 +43,7 @@ const OneFieldComponent = ({
 
   const [deleteId, setDeleteId] = useState("");
   const [errorr, setErrorr] = useState("");
+
 
   let [recsPerPage, setRecsPerPage] = useState(10);
   let [numOfPages, setNumOfPages] = useState([]);
@@ -211,7 +213,7 @@ const OneFieldComponent = ({
       return;
     }
 
-    const isUpdate = checkUpdate; // ✅ store before changing
+    const isUpdate = checkUpdate; 
 
     let apiUrl = isUpdate
       ? oneField.editAPI + "/" + updateID
@@ -260,7 +262,7 @@ const OneFieldComponent = ({
 
       setErrorr(errorMessage);
 
-      Swal.fire("", "Something went wrong! <br/>" + errorMessage);
+      Swal.fire(" ", errorMessage);
 
       setField("");
       setImageUrl("");
@@ -341,7 +343,12 @@ const OneFieldComponent = ({
 
         // Add data to the worksheet
         downloadData.forEach((row) => {
-          const rowData = Object.keys(tableHeading).map((key) => row[key]);
+          const rowData = Object.keys(tableHeading).map((key) => {
+            if (key === "fieldValue") {
+              return row.fieldValue || row.centerName;
+            }
+            return row[key];
+          });
           worksheetData.push(rowData);
         });
 
@@ -354,19 +361,48 @@ const OneFieldComponent = ({
       .catch((error) => {
         console.log("Error Message from userslist delete redirect  => ", error);
         Swal.fire(" ", "Error Message from userslist delete redirect  =>");
-        // setErrorModal(true);
       });
   };
 
   return (
-    <section className="font-body  bg-white">
-      <div className="text-xl font-semibold">
-        <div className="border-b pb-2 uppercase">
+    <section className="font-body box border-2 rounded-md shadow-md">
+      {/* <div className="text-xl font-semibold">
+        <div className="border-b uppercase py-5 ps-6">
           <h1>Add {oneField.fieldlabel}</h1>
+        </div>
+      </div> */}
+      <div className="border-b py-5 px-6 flex items-center justify-between">
+        {/* Heading */}
+        <h1 className="text-xl font-semibold uppercase">
+          Add {oneField.fieldlabel}
+        </h1>
+
+        {/* Small Buttons */}
+        <div className="flex gap-2">
+          <Tooltip
+            content={activeTab === "bulk" ? "Go to Form" : "Bulk Upload"}
+            placement="bottom"
+            arrow={false}
+            className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+          >
+            <div>
+              {activeTab === "failure" ? (
+                <BsPlusSquare
+                  className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                  onClick={() => setActiveTab("active")}
+                />
+              ) : (
+                <FaFileUpload
+                  className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                  onClick={() => setActiveTab("failure")}
+                />
+              )}
+            </div>
+          </Tooltip>
         </div>
       </div>
       <div>
-        <div className="flex mt-4 mb-10 capitalise justify-end">
+        {/* <div className="flex mt-4 mb-10 capitalise justify-end">
           <button
             className={`px-6 py-2 hover:bg-gray-200 font-medium ${activeTab === "active"
               ? "text-green bg-gray-100 border-green border-b-2"
@@ -385,7 +421,7 @@ const OneFieldComponent = ({
           >
             Bulk Upload
           </button>
-        </div>
+        </div> */}
         {/* form tab */}
         <div>
           {activeTab === "active" ? (
@@ -411,12 +447,13 @@ const OneFieldComponent = ({
                         </div>
                         <input
                           type="text"
-                          id="minStock"
+                          id="inputField"
                           className="stdInputField"
                           // className="text-gray-900 rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none"
                           placeholder={`${oneField.fieldlabel ? oneField.fieldlabel : ""
                             }`}
-                          defaultValue={field}
+                          // defaultValue={field}
+                          value={field}
                           required
                           onChange={(e) => {
                             setField(e.target.value.trim());
@@ -447,8 +484,7 @@ const OneFieldComponent = ({
                         <button
                           type="submit"
                           className="formButtons"
-                          // className="text-white bg-gradient-to-r bg-[#4285F4] hover:bg-[#4879be] focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg inline-flex items-center font-medium rounded-sm text-sm px-5 h-8 text-center mb-2"
-                          onClick={handleSubmit}
+                        // className="text-white bg-gradient-to-r bg-[#4285F4] hover:bg-[#4879be] focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg inline-flex items-center font-medium rounded-sm text-sm px-5 h-8 text-center mb-2"
                         >
                           {checkUpdate ? "Update" : "Submit"}
                         </button>
@@ -603,7 +639,7 @@ const OneFieldComponent = ({
                                     </div>
                                   </td>
                                   <td className="px-6 py-4 text-[13px] border border-grayTwo border-r-1 border-l-0">
-                                    {item.fieldValue}
+                                    {item.fieldValue || item.centerName}
                                   </td>
                                   {oneField.showImg === true && (
                                     <td className="px-6 py-4 border border-grayTwo border-l-0">

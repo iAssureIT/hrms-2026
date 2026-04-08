@@ -62,7 +62,7 @@ export default class ForgotPasswordConfirmOtp extends Component {
     if (this.state.userName) {
       var formValues = {
         userName: this.state.userName,
-        role: ["admin"],
+        role: ["admin", "fa-accounts"],
       };
 
       Axios.post("/api/auth/post/send-otp-forgot-password", formValues)
@@ -96,6 +96,7 @@ export default class ForgotPasswordConfirmOtp extends Component {
         "senior-manager",
         "head-csr",
         "head-livelihood",
+        "fa-accounts",
       ],
     };
 

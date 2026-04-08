@@ -109,7 +109,7 @@ class Login extends Component {
     var formValues = {
       email: this.state.email,
       password: this.state.password,
-      role: ["admin"],
+      role: ["admin", "fa-accounts"],
       // role: ["user",'admin'],
     };
     console.log("formValues", formValues);

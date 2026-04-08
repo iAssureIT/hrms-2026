@@ -402,11 +402,10 @@ const GenericTable = ({
                   <select
                     // className="w-full border mt-2 text-sm"
                     // className="stdSelectField py-1.5"
-                    className={`${
-                      recsPerPage
+                    className={`${recsPerPage
                         ? "stdSelectField pl-3 w-3/4"
                         : "stdSelectField pl-3 w-3/4"
-                    } ${recsPerPage ? "selectOption" : "font-normal"}
+                      } ${recsPerPage ? "selectOption" : "font-normal"}
                 `}
                     onChange={(event) => {
                       setRecsPerPage(event.target.value);
@@ -504,13 +503,12 @@ const GenericTable = ({
                       return (
                         <th
                           key={i}
-                          className={`${
-                            i === Object.entries(tableHeading).length - 1
+                          className={`${i === Object.entries(tableHeading).length - 1
                               ? "border-l-0 border-r-1"
                               : i === 0
-                              ? "border-l-1 border-r-0"
-                              : "border-l-0 border-r-0"
-                          }  px-4 py-3 border border-grayTwo `}
+                                ? "border-l-1 border-r-0"
+                                : "border-l-0 border-r-0"
+                            }  px-4 py-3 border border-grayTwo `}
                         >
                           <span className="w-[50px] text-wrap">{value} </span>
                           {/*<span
@@ -564,17 +562,21 @@ const GenericTable = ({
                         } else {
                           var textAlign = "text-left";
                         }
-                        if (value1 === "Pending" || value1 === "pending") {
-                          var statusColor =
-                            "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 px-1 text-white";
-                        }
-                        if (value1 === "approved" || value1 === "Approved") {
-                          var statusColor =
-                            "border bg-green rounded-lg text-xs text text-center py-0.5 px-1 text-white";
-                        }
-                        if (value1 === "rejected" || value1 === "Rejected") {
-                          var statusColor =
-                            "border bg-red-500 rounded-lg text-xs text-center py-0.5 px-1 text-white";
+                        var isHtmlStatus = typeof value1 === "string" && (value1.includes("<span") || value1.includes("<div"));
+                        var statusColor = "";
+                        if (!isHtmlStatus) {
+                          if (value1 === "Pending" || value1 === "pending") {
+                            statusColor =
+                              "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 px-1 text-white";
+                          }
+                          if (value1 === "approved" || value1 === "Approved") {
+                            statusColor =
+                              "border bg-green rounded-lg text-xs text text-center py-0.5 px-1 text-white";
+                          }
+                          if (value1 === "rejected" || value1 === "Rejected") {
+                            statusColor =
+                              "border bg-red-500 rounded-lg text-xs text-center py-0.5 px-1 text-white";
+                          }
                         }
                         var found = Object.keys(tableHeading).filter((k) => {
                           return k === key;
@@ -586,22 +588,21 @@ const GenericTable = ({
                           if (key !== "id") {
                             return (
                               <td
-                                className={`${
-                                  i === Object.entries(value).length - 1
+                                className={`${i === Object.entries(value).length - 1
                                     ? "border-l-0 border-r-1"
                                     : i === 0
-                                    ? "border-l-1 border-r-0"
-                                    : "border-l-0 border-r-0"
-                                } px-4 py-3 border border-grayTwo `}
+                                      ? "border-l-1 border-r-0"
+                                      : "border-l-0 border-r-0"
+                                  } px-4 py-3 border border-grayTwo `}
                                 key={i}
                               >
                                 <div
                                   className={
                                     "w-[50px] text-wrap font-normal  " +
-                                      textAlign +
-                                      statusColor +
-                                      key ===
-                                      "balanceAmount" && "text-nowrap"
+                                    textAlign +
+                                    statusColor +
+                                    key ===
+                                    "balanceAmount" && "text-nowrap"
                                   }
                                   dangerouslySetInnerHTML={{
                                     __html: value1,
@@ -629,7 +630,7 @@ const GenericTable = ({
                                   onClick={() =>
                                     router.push(
                                       "/admin/master-data/center-details/add-center-incharge/" +
-                                        value._id
+                                      value._id
                                     )
                                   }
                                 />
@@ -642,7 +643,7 @@ const GenericTable = ({
                               arrow={false}
                             >
                               {tableObjects.formText === "Approval Form" ||
-                              tableObjects.formText === "Add Center Details" ? (
+                                tableObjects.formText === "Add Center Details" ? (
                                 <FaEye
                                   className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
                                   size={"1.3rem"}
@@ -652,7 +653,7 @@ const GenericTable = ({
                                     ) {
                                       router.push(
                                         "/admin/approval-management/approval-details/" +
-                                          value._id
+                                        value._id
                                       );
                                     } else if (
                                       tableObjects.formText ===
@@ -660,7 +661,7 @@ const GenericTable = ({
                                     ) {
                                       router.push(
                                         "/admin/master-data/center-details/center-profile/" +
-                                          value._id
+                                        value._id
                                       );
                                     }
                                   }}
@@ -699,14 +700,13 @@ const GenericTable = ({
                             </Tooltip>
                             &nbsp;
                             {tableObjects?.showButton &&
-                            value.finalStatus === "approved" ? (
+                              value.finalStatus === "approved" ? (
                               <button
-                                className={`formButtons ${
-                                  tableHeading.finalStatus !== "approved" &&
-                                  tableObjects.buttonText !== "Approval Form"
+                                className={`formButtons ${tableHeading.finalStatus !== "approved" &&
+                                    tableObjects.buttonText !== "Approval Form"
                                     ? "hidden"
                                     : "block"
-                                } text-[10px] flex justify-center items-center leading-3 rounded-none`}
+                                  } text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                 onClick={() => {
                                   redirect("redirect", value._id);
                                 }}

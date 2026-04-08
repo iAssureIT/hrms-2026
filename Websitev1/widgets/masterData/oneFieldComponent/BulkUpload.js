@@ -25,30 +25,27 @@ const Page = (props) => {
   const getFileDetails = (fileName) => {
     axios
       .get(props?.fileDetailUrl + fileName)
+    axios
+      .get(props?.fileDetailUrl + fileName)
       .then((response) => {
-        if (response) {
-          setFileDetails(response.data);
-          setGoodDataCount(response.data.goodrecords.length);
-          setFailedRecordsCount(response.data.failedRecords.length);
+        if (response && response.data) {
+          console.log("response", response);
 
-          var tableData = response.data.goodrecords.map((a, i) => {
-            return {
-              fieldValue: a?.fieldValue,
-            };
-          });
-          var failedRecordsTable = response.data.failedRecords.map((a, i) => {
-            return {
-              fieldValue:
-                props.fieldLabel === "Programs"
-                  ? a.program
-                  : "" || props.fieldLabel === "Projects"
-                  ? a.project
-                  : "" || props.fieldLabel === "Activity"
-                  ? a.activity
-                  : "",
-              failedRemark: a?.failedRemark,
-            };
-          });
+          const goodrecords = response.data.goodrecords || [];
+          const failedRecords = response.data.failedRecords || [];
+
+          setFileDetails(response.data);
+          setGoodDataCount(goodrecords.length);
+          setFailedRecordsCount(failedRecords.length);
+
+          var tableData = goodrecords.map((a) => ({
+            fieldValue: a?.fieldValue,
+          }));
+
+          var failedRecordsTable = failedRecords.map((a) => ({
+            fieldValue: a?.fieldValue,
+            failedRemark: a?.failedRemark,
+          }));
 
           setFailedRecordsTable(failedRecordsTable);
           setGoodRecordsTable(tableData);
@@ -59,16 +56,21 @@ const Page = (props) => {
       });
   };
 
+
+  console.log("goodRecordsTable", goodRecordsTable);
+
   const lowercaseLabel = props.fieldLabel?.toLowerCase();
+
+  console.log("fileDetails", fileDetails)
 
   return (
     <section className="">
       <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
+        {/* <div className="uppercase text-xl font-semibold">
           <div className="border-b-2 border-gray-300 flex justify-between">
             <h1 className="heading">{props.fieldLabel} Bulk Upload</h1>
           </div>
-        </div>
+        </div> */}
 
         <div className="">
           <BulkUpload
@@ -78,7 +80,7 @@ const Page = (props) => {
               lowercaseLabel +
               "/bulkUpload"
             }
-            fileurl={`https://test-lupin.s3.amazonaws.com/${lowercaseLabel}-bulk-upload.xlsx`}
+            fileurl={`https://prod-lupinmis.s3.amazonaws.com/${lowercaseLabel}-bulk-upload.xlsx`}
             data={[]}
             getFileDetails={getFileDetails}
             fileDetails={fileDetails}

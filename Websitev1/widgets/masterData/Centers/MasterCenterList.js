@@ -56,6 +56,7 @@ const CenterDetailsList = (props) => {
   const tableHeading = {
     actions: "Actions",
     centerName: "Center Name",
+    assetManagementCenterCode: "Asset Management Center Code",
     address: "Address",
     centerInchargeName: "Center Incharge Name",
     centerInchargeMobile: "Center Incharge Mobile",

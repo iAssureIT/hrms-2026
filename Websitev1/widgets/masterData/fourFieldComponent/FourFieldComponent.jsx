@@ -327,25 +327,30 @@ const FourFieldComponent = ({
               }
             });
         } else {
-          axios.post(field4.insertAPI, item).then((response) => {
-            if (response.data.message === "Data already exists") {
-              // Show Swal popup
-              Swal.fire(" ", "Data already exists");
-            } else {
+          axios.post(field4.insertAPI, item)
+            .then((response) => {
               setField1Value("");
               setField2Value("");
               setField3Value("");
               setInputValue("");
-              Swal.fire(" ", "Data submitted successfully");
-            }
-          });
+              // console.log("response --> ", response);
+              if (response.data.success) {
+                Swal.fire(" ", "Data submitted successfully");
+              } else {
+                Swal.fire(" ", response.data.message);
+              }
+              
+              setRunCount((count) => count + 1);
+              setCheckReload((count) => count + 1);
+              getData();
+            })
+            .catch((err) => {
+              const errorMessage = err?.response?.data?.message || "Something went wrong!";
+              Swal.fire(" ", errorMessage);
+            });
         }
-        setRunCount((count) => count + 1);
-        setCheckReload((count) => count + 1);
-        getData();
       } catch (err) {
-        setError("Error saving item");
-        Swal.fire(" ", "Something went wrong!");
+        Swal.fire(" ", "An unexpected error occurred.");
       }
     }
   };
@@ -451,12 +456,11 @@ const FourFieldComponent = ({
                             }
                           }}
                           name="programs"
-                          className={`stdSelectField ${
-                            field1Value
-                              ? "selectOption"
-                              : "text-gray-400 font-normal"
-                          }`}
-                          // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
+                          className={`stdSelectField ${field1Value
+                            ? "selectOption"
+                            : "text-gray-400 font-normal"
+                            }`}
+                        // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
                         >
                           <option value="" disabled className="text-grayThree">
                             -- Select Program --
@@ -508,11 +512,10 @@ const FourFieldComponent = ({
                               setErrorMessage2("");
                             }
                           }}
-                          className={`stdSelectField ${
-                            field2Value
-                              ? "selectOption"
-                              : "text-gray-400 font-normal"
-                          }`}
+                          className={`stdSelectField ${field2Value
+                            ? "selectOption"
+                            : "text-gray-400 font-normal"
+                            }`}
                         >
                           <option value="" disabled className="text-grayThree">
                             -- Select Project --
@@ -567,12 +570,11 @@ const FourFieldComponent = ({
                             }
                           }}
                           name="activity"
-                          className={`stdSelectField ${
-                            field3Value
-                              ? "selectOption"
-                              : "text-gray-400 font-normal"
-                          }`}
-                          // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
+                          className={`stdSelectField ${field3Value
+                            ? "selectOption"
+                            : "text-gray-400 font-normal"
+                            }`}
+                        // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
                         >
                           <option value="" disabled className="text-grayThree">
                             -- Select Activity --
@@ -615,11 +617,10 @@ const FourFieldComponent = ({
                           type="text"
                           id="minStock"
                           // className="stdInputField"
-                          className={`stdInputField ${
-                            inputValue
-                              ? "selectOption"
-                              : "text-gray-400 font-normal"
-                          }`}
+                          className={`stdInputField ${inputValue
+                            ? "selectOption"
+                            : "text-gray-400 font-normal"
+                            }`}
                           placeholder="Enter Subactivity"
                           // className="text-gray-900 rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none"
                           value={inputValue}
@@ -686,14 +687,14 @@ const FourFieldComponent = ({
       >
         <Modal.Body>
           <div className="mx-auto">
-            <div className="flex justify-end relative top-5 me-10">
+            <div className="flex justify-end relative mb-4">
               <button
-                className="border-none outline-none"
+                className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
                 onClick={() => setOpenModal1(false)}
               >
                 <IoMdClose
-                  className=" text-white bg-red-500 font-bold rounded-full  hover:bg-red-600 hover:text-white"
-                  size={"1.5rem"}
+                  className=""
+                // size={"1.5rem"}
                 />
               </button>
             </div>
@@ -723,14 +724,14 @@ const FourFieldComponent = ({
       >
         <Modal.Body>
           <div className="mx-auto">
-            <div className="flex justify-end relative top-5 me-10">
+            <div className="flex justify-end relative mb-4">
               <button
-                className="border-none outline-none"
+                className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
                 onClick={() => setOpenModal2(false)}
               >
                 <IoMdClose
-                  className=" text-white bg-red-500 font-bold rounded-full  hover:bg-red-600 hover:text-white"
-                  size={"1.5rem"}
+                // className=" text-white bg-red-500 font-bold rounded-full  hover:bg-red-600 hover:text-white"
+                // size={"1.5rem"}
                 />
               </button>
             </div>
@@ -760,14 +761,14 @@ const FourFieldComponent = ({
       >
         <Modal.Body>
           <div className="mx-auto">
-            <div className="flex justify-end relative top-5 me-10">
+            <div className="flex justify-end relative mb-4">
               <button
-                className="border-none outline-none"
+                className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
                 onClick={() => setOpenModal3(false)}
               >
                 <IoMdClose
-                  className=" text-white bg-red-500 font-bold rounded-full  hover:bg-red-600 hover:text-white"
-                  size={"1.5rem"}
+                // className=" text-white bg-red-500 font-bold rounded-full  hover:bg-red-600 hover:text-white"
+                // size={"1.5rem"}
                 />
               </button>
             </div>

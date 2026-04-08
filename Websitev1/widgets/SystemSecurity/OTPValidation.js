@@ -68,6 +68,7 @@ class ConfirmOTP extends Component {
           "senior-manager",
           "head-csr",
           "head-livelihood",
+          "fa-accounts",
         ],
       };
       Axios.post("/api/auth/patch/send-otp-using-username", formValues)
@@ -78,7 +79,7 @@ class ConfirmOTP extends Component {
             Swal.fire(
               " ",
               "New OTP resent to your email address <br/>" +
-                "Please Enter your new OTP"
+                "Please Enter your new OTP",
             );
             // this.setState({ otpSentModal: true });
           }
@@ -95,7 +96,7 @@ class ConfirmOTP extends Component {
     var formValues = {
       userName: this.state.userName,
       OTP: this.state.otp,
-      role: ["admin"],
+      role: ["admin", "fa-accounts"],
     };
 
     Axios.post("/api/auth/post/verify-otp-for-signup", formValues)
@@ -106,7 +107,7 @@ class ConfirmOTP extends Component {
               Swal(
                 " ",
                 "Your email is verified successfully! <br/>" +
-                  "You have to Login with your registered email and password"
+                  "You have to Login with your registered email and password",
               );
               // this.setState({ otpVerifyModal: true });
               // this.props.SetModalForm("login");
@@ -114,7 +115,7 @@ class ConfirmOTP extends Component {
               Swal.fire(
                 " ",
                 "Your Account is Created Successfully! <br/>" +
-                  "Welcome to Website"
+                  "Welcome to Website",
               )
                 // Swal.fire(
                 //   " ",
@@ -179,7 +180,7 @@ class ConfirmOTP extends Component {
             let msg = verifyOtpResponse.data.message;
             new Swal(
               " ",
-              verifyOtpResponse.data.message + "<br/>" + "Try Again!"
+              verifyOtpResponse.data.message + "<br/>" + "Try Again!",
             );
             // this.setState({ errorModal: true, msg: msg });
           }
@@ -193,46 +194,23 @@ class ConfirmOTP extends Component {
   };
   render() {
     return (
-      <section
-        className={
-          " w-full mx-auto md:flex-row h-auto items-center  my-10 " +
-          this.props.bgColor
-        }
-      >
-        <div className={"formWrapper " + this.props.style}>
-          <a
-            href="#"
-            className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-          >
-            {/* <img className="w-46 h-14  mr-2 xxl:w-46 xxl:h-16" src={"this.props.logo"} alt="logo" /> */}
-          </a>
-          {/* <div className="bg-white w-full md:max-w-md lg:max-w-full h-screen md:mx-0 md:w-1/2 xl:w-2/6 px-6 lg:px-16 xl:px-12
-                            flex items-center justify-center"> */}
-          <div className="w-full h-100">
-            <h2 className="mb-1 text-xl font-bold leading-tight text-center tracking-tight text-gray-900 md:text-2xl dark:text-white">
+      <section className="bg-white rounded shadow-md w-full max-w-sm max-h-[80dvh] overflow-y-auto px-4 sm:px-0 sm:mx-10 sm:my-10">
+        <div className="w-full">
+          <div className="w-full bg-lightgreen border border-2 border-t-green py-3">
+            <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
               Verify OTP
-            </h2>
-            <form className="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#">
-              <div className="w-52 mx-auto justify-content-center otpInputBox">
-                {/* <OtpInput
-                  id=""
-                  className="w-10 border "
-                  value={this.state.otp}
-                  onChange={this.handleChange}
-                  numInputs={4}
-                  name="otp"
-                  // separator={<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>}
-                  // renderSeparator={<span>-</span>}
-                  renderInput={(props) => <input {...props} />}
-                /> */}
+            </h1>
+          </div>
+          <div className="p-4 sm:p-8">
+            <form className="mt-2 space-y-4" action="#">
+              <div className="flex justify-center">
                 <OtpInput
                   value={this.state.otp}
                   onChange={this.handleChange}
                   name="otp"
-                  numInputs={4} // Specify the number of OTP input fields
-                  isInputNum // Whether input should be numbers only (default is false)
+                  numInputs={4}
+                  isInputNum
                   inputStyle={{
-                    // Style for each OTP input field
                     width: "40px",
                     height: "40px",
                     margin: "4px",
@@ -243,13 +221,12 @@ class ConfirmOTP extends Component {
                   }}
                   renderInput={(props) => <input {...props} />}
                   focusStyle={{
-                    // Style for focused OTP input field
                     outline: "none",
-                    border: "1px solid #007bff",
+                    border: "1px solid #00B25B",
                   }}
                 />
               </div>
-              <div className="flex justify-center text-center mt-5">
+              <div className="flex justify-center text-center mt-2">
                 <span className="text-dark">
                   {this.state.OTPresent ? (
                     <Countdown
@@ -259,9 +236,7 @@ class ConfirmOTP extends Component {
                   ) : (
                     <a
                       href=""
-                      className={
-                        "flex items-center text-blue-700 hover:text-blue-900 cursor-pointer"
-                      }
+                      className="flex items-center text-blue-500 hover:text-blue-700 text-sm font-semibold underline underline-offset-2"
                       onClick={this.resendOTP.bind(this)}
                     >
                       <span>Resend OTP</span>
@@ -270,26 +245,25 @@ class ConfirmOTP extends Component {
                   )}
                 </span>
               </div>
-              <div className="w-2/3 justify-center text-center mx-auto">
+              <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="stdBtn bg-blue-600"
+                  className="formButtons w-full sm:w-auto px-10 mt-2"
                   onClick={this.verifyOTP.bind(this)}
                 >
                   Verify OTP & Login
                 </button>
               </div>
-              <div className="text-left mx-2">
+              <div className="text-left mt-4">
                 <a
                   href="/auth/login"
-                  className="font-light text-xs justify-left"
+                  className="underline underline-offset-2 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700"
                 >
                   Back to Login
                 </a>
               </div>
             </form>
           </div>
-          {/* </div> */}
         </div>
       </section>
     );

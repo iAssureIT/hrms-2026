@@ -65,7 +65,7 @@ class ForgotPassword extends Component {
       Axios.post(
         "/api/auth/post/send-otp-forgot-password",
         // "/api/auth/post/send-otp-forgot-password-without-notification",
-        formValues
+        formValues,
       )
         .then((forgotPassResponse) => {
           this.setState({ btnLoading: false });
@@ -79,11 +79,11 @@ class ForgotPassword extends Component {
               " ",
               forgotPassResponse.data.message +
                 "<br/>" +
-                "Use this OTP to verify your account!"
+                "Use this OTP to verify your account!",
             ).then(() => {
               window.location.replace(
                 "/auth/forgot-password-confirm-otp?username=" +
-                  this.state.userName
+                  this.state.userName,
               );
             });
 
@@ -103,7 +103,7 @@ class ForgotPassword extends Component {
   }
   render() {
     return (
-      <section className="bg-white rounded shadow-md w-full max-w-sm m-10">
+      <section className="bg-white rounded shadow-md w-full max-w-sm my-10 mx-auto sm:m-10">
         <div className="w-full">
           <div className="w-full bg-lightgreen border border-2 border-t-green py-6 h-20">
             <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
@@ -114,7 +114,7 @@ class ForgotPassword extends Component {
             Please enter your registered email address below to receive an OTP.
           </p>
 
-          <form className="mt-4 p-8">
+          <form className="mt-4 p-4 sm:p-8">
             <div className="space-y-2 md:space-y-2 mb-4">
               <label className="inputLabel font-semibold">Email:</label>
               <div className="mb-4 relative">
@@ -145,10 +145,10 @@ class ForgotPassword extends Component {
                 {this.state.errors.userName}
               </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-center sm:items-baseline gap-4 sm:gap-0">
               <a
                 href="/auth/login"
-                className="underline underline-offset-2 pt-5 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
+                className="underline underline-offset-2 sm:pt-5 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
                 onClick={() => {
                   this.setState({ loading: true });
                 }}
@@ -173,7 +173,7 @@ class ForgotPassword extends Component {
               ) : (
                 <button
                   type="submit"
-                  className="formButtons px-10 mt-4"
+                  className="formButtons w-full sm:w-auto px-10 sm:mt-4"
                   onClick={this.sendOTP.bind(this)}
                 >
                   <span>Send&nbsp;OTP</span>

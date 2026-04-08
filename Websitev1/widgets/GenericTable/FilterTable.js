@@ -69,8 +69,9 @@
 //   let router = useRouter();
 //   const pathname = usePathname();
 //   const [loggedInRole, setLoggedInRole] = useState("");
+
 //   const [userDetails, setUserDetails] = useState(
-//     ls.get("userDetails", { decrypt: true })
+//     ls.get("userDetails", { decrypt: true }),
 //   );
 //   // console.log("userDetails  =>", userDetails);
 
@@ -85,6 +86,7 @@
 //   const [deleteSuccessModal, setDeleteSuccessModal] = useState(false);
 //   const [deleteFailModal, setDeleteFailModal] = useState(false);
 //   const [errorModal, setErrorModal] = useState(false);
+//   const [recsDropdownOpen, setRecsDropdownOpen] = useState(false);
 //   const startSerialNumber = (pageNumber - 1) * recsPerPage + 1;
 
 //   const [showContributorsBulkUploadModal, setShowContributorsBulkUploadModal] =
@@ -198,7 +200,7 @@
 //       // setApprovalId(uid);
 //       window.open(
 //         "/" + loggedInRole + tableObjects?.buttonURL + uid,
-//         '_self'
+//         "_self",
 //         // "noopener,noreferrer"
 //       );
 //       // window.location.href = "/" + loggedInRole + tableObjects?.buttonURL + uid;
@@ -240,7 +242,7 @@
 //             .catch((error) => {
 //               console.log(
 //                 "Error Message from userslist delete redirect  => ",
-//                 error
+//                 error,
 //               );
 //               Swal.fire(" ", "Something Went Wrong <br/>" + error.message);
 //             });
@@ -433,7 +435,7 @@
 //           : "mt-5"
 //       }
 //     >
-//       <div className={("container mx-auto transition-all duration-300 ")}>
+//       <div className={"container mx-auto transition-all duration-300 "}>
 //         <style jsx>{`
 //           .resizing {
 //             cursor: col-resize !important;
@@ -452,14 +454,15 @@
 //             z-index: 10;
 //           }
 //           thead.header2 {
-//             top: '-4px';
+//             top: "-4px";
 //             z-index: 9;
 //           }
 //           table {
 //             width: 100%;
 //             table-layout: auto;
 //           }
-//           th, td {
+//           th,
+//           td {
 //             box-sizing: border-box;
 //           }
 //         `}</style>
@@ -480,36 +483,42 @@
 //                   Records per Page
 //                 </label>
 //                 <div className="relative mt-2 rounded-md text-gray-500 w-full">
-//                   <select
-//                     // className="w-full border mt-2 text-sm"
-//                     // className="stdSelectField py-2.5"
-//                     className={`${
-//                       recsPerPage
-//                         ? "stdSelectField pl-3 w-3/4"
-//                         : "stdSelectField pl-3 w-3/4"
-//                     } ${recsPerPage ? "selectOption" : "font-normal"}
-//                 `}
-//                     onChange={(event) => {
-//                       setRecsPerPage(event.target.value);
-//                       setPageNumber(1)
-//                     }}
+//                   <button
+//                     type="button"
+//                     onClick={() => setRecsDropdownOpen(!recsDropdownOpen)}
+//                     className="stdSelectField text-left w-3/4 pl-3 flex justify-between items-center"
 //                   >
-//                     <option value={10} className="font-normal">
-//                       10
-//                     </option>
-//                     <option value={50} className="font-normal">
-//                       50
-//                     </option>
-//                     <option value={100} className="font-normal">
-//                       100
-//                     </option>
-//                     <option value={500} className="font-normal">
-//                       500
-//                     </option>
-//                     <option value={1000} className="font-normal">
-//                       1000
-//                     </option>
-//                   </select>
+//                     {recsPerPage}
+//                     <svg
+//                       className="w-4 h-4 ml-2"
+//                       fill="currentColor"
+//                       viewBox="0 0 20 20"
+//                     >
+//                       <path
+//                         fillRule="evenodd"
+//                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+//                         clipRule="evenodd"
+//                       />
+//                     </svg>
+//                   </button>
+
+//                   {recsDropdownOpen && (
+//                     <div className="absolute z-50 w-3/4 bg-white border rounded-md shadow-md mt-1 max-h-48 overflow-y-auto">
+//                       {[10, 50, 100, 500, 1000].map((val) => (
+//                         <div
+//                           key={val}
+//                           onClick={() => {
+//                             setRecsPerPage(val);
+//                             setPageNumber(1);
+//                             setRecsDropdownOpen(false);
+//                           }}
+//                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-black"
+//                         >
+//                           {val}
+//                         </div>
+//                       ))}
+//                     </div>
+//                   )}
 //                 </div>
 //               </div>
 //             </div>
@@ -565,460 +574,480 @@
 
 //           {/* <div className={`table-responsive relative overflow-hidden hover:overflow-auto w-full mt-3 `}>
 //             <table  className={`table-auto text-base bottom border-separate border-spacing-y-2 w-full dark:w-full`}> */}
-//           <div className="table-responsive table-container relative overflow-hidden hover:overflow-auto w-full mt-3">
-//             <table className="min-w-full table-fixed border-collapse text-base bottom  border-separate border-spacing-y-1 w-full dark:w-full leading-tight">
+//           <div className="relative w-full mt-3">
+//             <div className="table-responsive table-container overflow-x-auto">
+//               <table className="min-w-full table-fixed border-collapse text-base bottom  border-separate border-spacing-y-1 w-full dark:w-full leading-tight">
+//                 <thead
+//                   className={`${pdfMode ? "text-xs" : "text-[13px]"} uppercase ${
+//                     pdfMode ? "text-wrap" : "text-wrap"
+//                   } bg-white dark:bg-white`}
+//                 >
+//                   <tr className="text-left">
+//                     <th className="text-center px-4 py-2 border border-grayTwo border-r-0">
+//                       Sr. No
+//                     </th>
+//                     {tableHeading ? (
+//                       Object.entries(tableHeading).map(([key, value], i) => {
+//                         if (key === "actions") {
+//                           return (
+//                             <th
+//                               key={i}
+//                               className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0"
+//                               id="ActionContent"
+//                             >
+//                               {value}
+//                             </th>
+//                           );
+//                         } else {
+//                           return (
+//                             <th
+//                               key={i}
+//                               className={`px-2 py-2 border border-grayTwo border-l-0 break-words max-w-xs ${
+//                                 key !== "actions" &&
+//                                 i === Object.entries(tableHeading).length - 1
+//                                   ? "border-r-1"
+//                                   : "border-r-0"
+//                               }`}
+//                             >
+//                               {value}{" "}
+//                               <span
+//                                 onClick={sortData}
+//                                 id={key}
+//                                 className="fa cursor-pointer fa-sort tableSort hide-in-pdf"
+//                               ></span>
+//                             </th>
+//                           );
+//                         }
+//                       })
+//                     ) : (
+//                       <th className=""></th>
+//                     )}
+//                   </tr>
+//                 </thead>
+//                 <tbody
+//                   className={`border border-grayTwo ${
+//                     pdfMode ? "text-wrap text-xs" : "text-wrap text-[13px]"
+//                   } `}
+//                 >
+//                   {tableData && tableData.length > 0 ? (
+//                     tableData.map((value, i) => {
+//                       // console.log("value",value)
+//                       console.log(
+//                         "value.utilizationStatus 1",
+//                         value.utilizationStatus,
+//                       );
+//                       const serialNumber = startSerialNumber + i;
+//                       return (
+//                         <tr
+//                           key={i}
+//                           className="odd:bg-grayOne text-[13px] even:bg-white border border-grayTwo  text-[#000] font-normal"
+//                         >
+//                           <td className="text-center px-1 md:px-4 py-2 font-normal border border-grayTwo border-r-0">
+//                             {serialNumber}
+//                           </td>
+//                           {tableHeading && tableHeading.actions ? (
+//                             <td className="border border-grayTwo  border-l-0 border-r-0">
+//                               {value.centerName !== "Total" ? (
+//                                 <div className="flex flex-wrap md:flex-nowrap mx-3 gap-2 items-center">
+//                                   {loggedInRole === "admin" &&
+//                                     tableObjects.formURL ===
+//                                       "Add Center Incharge" && (
+//                                       <Tooltip
+//                                         content="Add Center Incharge"
+//                                         placement="bottom"
+//                                         className="bg-green"
+//                                         arrow={false}
+//                                       >
+//                                         <FaPlus
+//                                           className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+//                                           size={"1.3rem"}
+//                                           // onClick={() =>
+//                                           //   router.push(
+//                                           //     "/" +
+//                                           //       loggedInRole +
+//                                           //       "/master-data/center-details/add-center-incharge/" +
+//                                           //       value._id
+//                                           //   )
+//                                           // }
+//                                           onClick={() => {
+//                                             window.open(
+//                                               "/" +
+//                                                 loggedInRole +
+//                                                 "/master-data/center-details/add-center-incharge/" +
+//                                                 value._id,
+//                                               // "_blank"
+//                                             );
+//                                           }}
+//                                         />
+//                                       </Tooltip>
+//                                     )}
+//                                   <Tooltip
+//                                     content="View for Action"
+//                                     placement="bottom"
+//                                     className="bg-green"
+//                                     arrow={false}
+//                                   >
+//                                     {/* {console.log("formText", tableObjects.formText)} */}
+//                                     {tableObjects.formText ===
+//                                       "Approval Form" ||
+//                                     tableObjects.formText ===
+//                                       "Utilization Form" ||
+//                                     tableObjects.formText ===
+//                                       "Add Center Details" ? (
+//                                       <FaEye
+//                                         className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+//                                         size={"1.3rem"}
+//                                         onClick={() => {
+//                                           let url = "";
+//                                           if (
+//                                             tableObjects.formText ===
+//                                             "Approval Form"
+//                                           ) {
+//                                             url =
+//                                               "/" +
+//                                               loggedInRole +
+//                                               "/approval-management/approval-details/" +
+//                                               value._id;
+//                                           } else if (
+//                                             tableObjects.formText ===
+//                                             "Utilization Form"
+//                                           ) {
+//                                             url =
+//                                               "/" +
+//                                               loggedInRole +
+//                                               "/utilization-management/utilization-details/" +
+//                                               value._id;
+//                                           } else if (
+//                                             tableObjects.formText ===
+//                                             "Add Center Details"
+//                                           ) {
+//                                             url =
+//                                               "/" +
+//                                               loggedInRole +
+//                                               "/master-data/center-details/center-profile/" +
+//                                               value._id;
+//                                           }
 
-//               <thead
-//                 className={`${pdfMode ? "text-xs" : "text-[13px]"} uppercase ${
-//                   pdfMode ? "text-wrap" : "text-wrap"
-//                 } bg-white dark:bg-white`}
-//               >
-//                 <tr className="text-left">
-//                   <th className="text-center px-4 py-2 border border-grayTwo border-r-0">
-//                     Sr. No
-//                   </th>
-//                   {tableHeading ? (
-//                     Object.entries(tableHeading).map(([key, value], i) => {
-//                       if (key === "actions") {
-//                         return (
-//                           <th
-//                             key={i}
-//                             className="px-4 py-2 border border-grayTwo border-l-0 border-r-0"
-//                             id="ActionContent"
-//                           >
-//                             {value}
-//                           </th>
-//                         );
-//                       } else {
-//                         return (
-//                           <th
-//                             key={i}
-//                             className={`px-2 py-2 border border-grayTwo border-l-0 break-words max-w-xs ${
-//                               key !== "actions" &&
-//                               i === Object.entries(tableHeading).length - 1
-//                                 ? "border-r-1"
-//                                 : "border-r-0"
-//                             }`}
-//                           >
-//                             {value}{" "}
-//                             <span
-//                               onClick={sortData}
-//                               id={key}
-//                               className="fa cursor-pointer fa-sort tableSort hide-in-pdf"
-//                             ></span>
-//                           </th>
-//                         );
-//                       }
-//                     })
-//                   ) : (
-//                     <th className=""></th>
-//                   )}
-//                 </tr>
-//               </thead>
-//               <tbody
-//                 className={`border border-grayTwo ${
-//                   pdfMode ? "text-wrap text-xs" : "text-wrap text-[13px]"
-//                 } `}
-//               >
-//                 {tableData && tableData.length > 0 ? (
-//                   tableData.map((value, i) => {
-//                     // console.log("value",value)
-//                     console.log(
-//                       "value.utilizationStatus 1",
-//                       value.utilizationStatus
-//                     );
-//                     const serialNumber = startSerialNumber + i;
-//                     return (
-//                       <tr
-//                         key={i}
-//                         className="odd:bg-grayOne text-[13px] even:bg-white border border-grayTwo  text-[#000] font-normal"
-//                       >
-//                         <td className="text-center px-4 py-2 font-normal border border-grayTwo border-r-0">
-//                           {serialNumber}
-//                         </td>
-//                         {tableHeading && tableHeading.actions ? (
-//                           <td className="border border-grayTwo  border-l-0 border-r-0">
-//                             {value.centerName !== "Total" ? (
-//                               <div className="flex mx-3  gap-1 items-center">
-//                                 {loggedInRole === "admin" &&
-//                                   tableObjects.formURL ===
-//                                     "Add Center Incharge" && (
+//                                           if (url) {
+//                                             window.open(
+//                                               url,
+//                                               "_self",
+//                                               // "noopener,noreferrer"
+//                                             ); // Opens in new tab
+//                                           }
+//                                         }}
+//                                         // onClick={() => {
+//                                         //   if (
+//                                         //     tableObjects.formText ===
+//                                         //     "Approval Form"
+//                                         //   ) {
+//                                         //     router.push(
+//                                         //       "/" +
+//                                         //         loggedInRole +
+//                                         //         "/approval-management/approval-details/" +
+//                                         //         value._id
+//                                         //     );
+//                                         //   } else if (
+//                                         //     tableObjects.formText ===
+//                                         //     "Utilization Form"
+//                                         //   ) {
+//                                         //     router.push(
+//                                         //       "/" +
+//                                         //         loggedInRole +
+//                                         //         "/utilization-management/utilization-details/" +
+//                                         //         value._id
+//                                         //     );
+//                                         //   } else if (
+//                                         //     tableObjects.formText ===
+//                                         //     "Add Center Details"
+//                                         //   ) {
+//                                         //     router.push(
+//                                         //       "/" +
+//                                         //         loggedInRole +
+//                                         //         "/master-data/center-details/center-profile/" +
+//                                         //         value._id
+//                                         //     );
+//                                         //   }
+//                                         // }}
+//                                       />
+//                                     ) : (
+//                                       ""
+//                                     )}
+//                                   </Tooltip>
+//                                   {tableObjects.formText === "Add CC Form" && (
 //                                     <Tooltip
-//                                       content="Add Center Incharge"
+//                                       content="Contribution Details"
 //                                       placement="bottom"
 //                                       className="bg-green"
 //                                       arrow={false}
 //                                     >
-//                                       <FaPlus
+//                                       <FaEye
 //                                         className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
 //                                         size={"1.3rem"}
-//                                         // onClick={() =>
+//                                         // onClick={() => {
 //                                         //   router.push(
 //                                         //     "/" +
 //                                         //       loggedInRole +
-//                                         //       "/master-data/center-details/add-center-incharge/" +
+//                                         //       "/fund-management/add-cc/contribution-details/" +
 //                                         //       value._id
-//                                         //   )
-//                                         // }
+//                                         //   );
+//                                         // }}
 //                                         onClick={() => {
+//                                           const url = `/${loggedInRole}/fund-management/contribution-details/${value._id}`;
 //                                           window.open(
-//                                             "/" +
-//                                               loggedInRole +
-//                                               "/master-data/center-details/add-center-incharge/" +
-//                                               value._id,
-//                                             // "_blank"
+//                                             url,
+//                                             "_self",
+//                                             // "noopener,noreferrer"
 //                                           );
 //                                         }}
 //                                       />
 //                                     </Tooltip>
 //                                   )}
-//                                 <Tooltip
-//                                   content="View for Action"
-//                                   placement="bottom"
-//                                   className="bg-green"
-//                                   arrow={false}
-//                                 >
-//                                   {/* {console.log("formText", tableObjects.formText)} */}
-//                                   {tableObjects.formText === "Approval Form" ||
-//                                   tableObjects.formText === "Utilization Form" ||
-//                                   tableObjects.formText ===
-//                                     "Add Center Details" ? (
-//                                     <FaEye
-//                                       className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-//                                       size={"1.3rem"}
-//                                       onClick={() => {
-//                                         let url = "";
-//                                         if (
-//                                           tableObjects.formText ===
-//                                           "Approval Form"
-//                                         ) {
-//                                           url =
-//                                             "/" +
-//                                             loggedInRole +
-//                                             "/approval-management/approval-details/" +
-//                                             value._id;
-//                                         } else if (
-//                                           tableObjects.formText ===
-//                                           "Utilization Form"
-//                                         ) {
-//                                           url =
-//                                             "/" +
-//                                             loggedInRole +
-//                                             "/utilization-management/utilization-details/" +
-//                                             value._id;
-//                                         } else if (
-//                                           tableObjects.formText ===
-//                                           "Add Center Details"
-//                                         ) {
-//                                           url =
-//                                             "/" +
-//                                             loggedInRole +
-//                                             "/master-data/center-details/center-profile/" +
-//                                             value._id;
-//                                         }
+//                                   {loggedInRole === "admin" ||
+//                                   loggedInRole === "center" ? (
 
-//                                         if (url) {
-//                                           window.open(
-//                                             url,
-//                                             '_self'
-//                                             // "noopener,noreferrer"
-//                                           ); // Opens in new tab
-//                                         }
-//                                       }}
-//                                       // onClick={() => {
-//                                       //   if (
-//                                       //     tableObjects.formText ===
-//                                       //     "Approval Form"
-//                                       //   ) {
-//                                       //     router.push(
-//                                       //       "/" +
-//                                       //         loggedInRole +
-//                                       //         "/approval-management/approval-details/" +
-//                                       //         value._id
-//                                       //     );
-//                                       //   } else if (
-//                                       //     tableObjects.formText ===
-//                                       //     "Utilization Form"
-//                                       //   ) {
-//                                       //     router.push(
-//                                       //       "/" +
-//                                       //         loggedInRole +
-//                                       //         "/utilization-management/utilization-details/" +
-//                                       //         value._id
-//                                       //     );
-//                                       //   } else if (
-//                                       //     tableObjects.formText ===
-//                                       //     "Add Center Details"
-//                                       //   ) {
-//                                       //     router.push(
-//                                       //       "/" +
-//                                       //         loggedInRole +
-//                                       //         "/master-data/center-details/center-profile/" +
-//                                       //         value._id
-//                                       //     );
-//                                       //   }
-//                                       // }}
-//                                     />
-//                                   ) : (
-//                                     ""
-//                                   )}
-//                                 </Tooltip>
-//                                 {tableObjects.formText === "Add CC Form" && (
-//                                   <Tooltip
-//                                     content="Contribution Details"
-//                                     placement="bottom"
-//                                     className="bg-green"
-//                                     arrow={false}
-//                                   >
-//                                     <FaEye
-//                                       className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-//                                       size={"1.3rem"}
-//                                       // onClick={() => {
-//                                       //   router.push(
-//                                       //     "/" +
-//                                       //       loggedInRole +
-//                                       //       "/fund-management/add-cc/contribution-details/" +
-//                                       //       value._id
-//                                       //   );
-//                                       // }}
-//                                       onClick={() => {
-//                                         const url = `/${loggedInRole}/fund-management/add-cc/contribution-details/${value._id}`;
-//                                         window.open(
-//                                           url,
-//                                           '_self'
-//                                           // "noopener,noreferrer"
-//                                         );
-//                                       }}
-//                                     />
-//                                   </Tooltip>
-//                                 )}
-//                                 {loggedInRole === "admin" ||
-//                                 loggedInRole === "center" ? (
-//                                   <>
-//                                     <Tooltip
-//                                       content="Edit"
-//                                       placement="bottom"
-//                                       className="bg-green"
-//                                       arrow={false}
-//                                     >
-//                                       <MdOutlineEdit
-//                                         className="border  border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-//                                         size={"1.3rem"}
-//                                         onClick={() =>
-//                                           redirect("edit", value._id)
-//                                         }
-//                                       />
-//                                     </Tooltip>
-//                                     &nbsp;
-//                                     <Tooltip
-//                                       content="Delete"
-//                                       placement="bottom"
-//                                       className="bg-red-500"
-//                                       arrow={false}
-//                                     >
-//                                       <RiDeleteBin6Line
-//                                         className="border border-red-500 text-red-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
-//                                         size={"1.3rem"}
-//                                         onClick={() => {
-//                                           redirect("delete", value._id);
-//                                           setDeleteId(value._id);
-//                                         }}
-//                                       />
-//                                     </Tooltip>
-//                                   </>
-//                                 ) : null}
-//                                 &nbsp;
-//                                 {/* {console.log("pathname", pathname,tableObjects?.buttonText,(pathname ==="/" + loggedInRole +"/annual-plan-management/annual-list" &&  loggedInRole !== "executive" ))} */}
-//                                 {pathname ===
-//                                   "/" +
-//                                     loggedInRole +
-//                                     "/annual-plan-management/annual-list" &&
-//                                 loggedInRole !== "executive" ? (
-//                                   <button
-//                                     className={`formButtons text-[10px] flex justify-center items-center leading-3 rounded-none`}
-//                                     onClick={() => {
-//                                       redirect("redirect", value._id);
-//                                     }}
-//                                   >
-//                                     {tableObjects?.buttonText}
-//                                   </button>
-//                                 ) : null}
-//                                 {pathname ===
-//                                   "/" +
-//                                     loggedInRole +
-//                                     "/approval-management/approval-list" &&
-//                                 value.finalStatus === "approved" &&
-//                                 loggedInRole !== "executive" &&
-//                                 value.hideUtilizationButton === false ? (
-//                                   <div>
+//                                     <>
+//                                       <Tooltip
+//                                         content="Edit"
+//                                         placement="bottom"
+//                                         className="bg-green"
+//                                         arrow={false}
+//                                       >
+//                                         <MdOutlineEdit
+//                                           className="border  border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+//                                           size={"1.3rem"}
+//                                           onClick={() =>
+//                                             redirect("edit", value._id)
+//                                           }
+//                                         />
+//                                       </Tooltip>
+//                                       &nbsp;
+//                                       <Tooltip
+//                                         content="Delete"
+//                                         placement="bottom"
+//                                         className="bg-red-500"
+//                                         arrow={false}
+//                                       >
+//                                         <RiDeleteBin6Line
+//                                           className="border border-red-500 text-red-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
+//                                           size={"1.3rem"}
+//                                           onClick={() => {
+//                                             redirect("delete", value._id);
+//                                             setDeleteId(value._id);
+//                                           }}
+//                                         />
+//                                       </Tooltip>
+//                                     </>
+//                                   ) : null}
+//                                   &nbsp;
+//                                   {/* {console.log("pathname", pathname,tableObjects?.buttonText,(pathname ==="/" + loggedInRole +"/annual-plan-management/annual-list" &&  loggedInRole !== "executive" ))} */}
+//                                   {pathname ===
+//                                     "/" +
+//                                       loggedInRole +
+//                                       "/annual-plan-management/annual-list" &&
+//                                   loggedInRole !== "executive" ? (
 //                                     <button
-//                                       className={`formButtons ${
-//                                         value.finalStatus === "approved" 
-//                                         && value.utilizationStatus !== "Completed"
-//                                           ? "block"
-//                                           : "hidden"
-//                                       }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
+//                                       className={`formButtons text-[10px] flex justify-center items-center leading-3 rounded-none`}
 //                                       onClick={() => {
 //                                         redirect("redirect", value._id);
 //                                       }}
 //                                     >
 //                                       {tableObjects?.buttonText}
 //                                     </button>
-//                                     {console.log(
-//                                       "value.utilizationStatus",
-//                                       value.utilizationStatus
-//                                     )}
-//                                     {value.utilizationStatus ? (
-//                                       <div
-//                                         className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${
-//                                           value.utilizationStatus == "Completed"
+//                                   ) : null}
+//                                   {pathname ===
+//                                     "/" +
+//                                       loggedInRole +
+//                                       "/approval-management/approval-list" &&
+//                                   value.finalStatus === "approved" &&
+//                                   loggedInRole !== "executive" &&
+//                                   value.hideUtilizationButton === false ? (
+//                                     <div>
+//                                       <button
+//                                         className={`formButtons ${
+//                                           value.finalStatus === "approved" &&
+//                                           value.utilizationStatus !==
+//                                             "Completed"
 //                                             ? "block"
 //                                             : "hidden"
-//                                         } text-[10px] flex justify-center items-center leading-3`}
+//                                         }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
+//                                         onClick={() => {
+//                                           redirect("redirect", value._id);
+//                                         }}
 //                                       >
-//                                         Activity Completed
-//                                       </div>
-//                                     ) : null}
-//                                   </div>
-//                                 ) : (
-//                                   ""
-//                                 )}
-//                               </div>
-//                             ) : null}
-//                           </td>
-//                         ) : null}
-//                         {Object.entries(value).map(([key, value1], i) => {
-//                           let valueStr = value1 != null ? value1.toString() : "";
+//                                         {tableObjects?.buttonText}
+//                                       </button>
+//                                       {console.log(
+//                                         "value.utilizationStatus",
+//                                         value.utilizationStatus,
+//                                       )}
+//                                       {value.utilizationStatus ? (
+//                                         <div
+//                                           className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${
+//                                             value.utilizationStatus ==
+//                                             "Completed"
+//                                               ? "block"
+//                                               : "hidden"
+//                                           } text-[10px] flex justify-center items-center leading-3`}
+//                                         >
+//                                           Activity Completed
+//                                         </div>
+//                                       ) : null}
+//                                     </div>
+//                                   ) : (
+//                                     ""
+//                                   )}
+//                                 </div>
+//                               ) : null}
+//                             </td>
+//                           ) : null}
+//                           {Object.entries(value).map(([key, value1], i) => {
+//                             let valueStr =
+//                               value1 != null ? value1.toString() : "";
 
-//                           if (!isNaN(valueStr) && valueStr?.trim() !== "") {
-//                             textAlign = "text-right text-nowrap ";
+//                             if (!isNaN(valueStr) && valueStr?.trim() !== "") {
+//                               textAlign = "text-right text-nowrap ";
 
-//                             if (amountArr.includes(key)) {
-//                               value1 = formatToINR(valueStr);
+//                               if (amountArr.includes(key)) {
+//                                 value1 = formatToINR(valueStr);
+//                               }
+//                               if (numberArr.includes(key)) {
+//                                 value1 = formatNumberToCommas(valueStr);
+//                               }
+//                             } else if (/^[A-Za-z]+$/.test(valueStr)) {
+//                               // Check if the value is alphabetic using regex
+//                               // var textAlign = "text-left text-nowrap ";
+//                               var textAlign = "text-left ";
+//                               // } else if (valueStr?.includes(",")) {
+//                               //   var textAlign = "text-right";
+//                             } else {
+//                               // var textAlign = "text-left text-nowrap ";
+//                               var textAlign = "text-left";
 //                             }
-//                             if (numberArr.includes(key)) {
-//                               value1 = formatNumberToCommas(valueStr);
+
+//                             if (
+//                               key === "remarks" ||
+//                               key === "convergenceNote"
+//                             ) {
+//                               var heightOfPara = `h-24 max-h-24 block ${
+//                                 valueStr.length < 40
+//                                   ? "overflow-y-hidden"
+//                                   : "overflow-y-scroll"
+//                               }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
+//                               var remarksStyle = {
+//                                 display: "block",
+//                                 whiteSpace: "pre-wrap",
+//                                 wordBreak: "break-word",
+//                               };
 //                             }
-//                           } else if (/^[A-Za-z]+$/.test(valueStr)) {
-//                             // Check if the value is alphabetic using regex
-//                             // var textAlign = "text-left text-nowrap ";
-//                             var textAlign = "text-left ";
-//                             // } else if (valueStr?.includes(",")) {
-//                             //   var textAlign = "text-right";
-//                           } else {
-//                             // var textAlign = "text-left text-nowrap ";
-//                             var textAlign = "text-left";
-//                           }
-
-//                           if (key === "remarks" || key === "convergenceNote") {
-//                             var heightOfPara = `h-24 max-h-24 block ${
-//                               valueStr.length < 40
-//                                 ? "overflow-y-hidden"
-//                                 : "overflow-y-scroll"
-//                             }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
-//                             var remarksStyle = {
-//                               display: "block",
-//                               whiteSpace: "pre-wrap",
-//                               wordBreak: "break-word",
-//                             };
-//                           }
-//                           if (value1 === "approved" || value1 === "Approved") {
-//                             var statusColor =
-//                               "border bg-green rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
-//                           }
-//                           if (value1 === "rejected" || value1 === "Rejected") {
-//                             var statusColor =
-//                               "border bg-red-500 rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
-//                           }
-//                           if (
-//                             value1 === "payment-released" ||
-//                             value1 === "payment-released"
-//                           ) {
-//                             var statusColor =
-//                               "border bg-green rounded-lg text-xs text-center w-40 py-0.5 px-1 text-white";
-//                           }
-//                           if (value1 === "Pending" || value1 === "pending") {
-//                             var statusColor =
-//                               "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-24 px-1 text-white";
-//                           }
-//                           if (
-//                             typeof value1 === "string" &&
-//                             value1.toLowerCase().includes("pending")
-//                           ) {
-//                             var statusColor =
-//                               "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-40 px-1 text-white";
-//                           }
-
-//                           let textWrap = "";
-//                           if (
-//                             key === "program" ||
-//                             key === "project" ||
-//                             key === "activityName" ||
-//                             key === "subactivityName"
-//                           ) {
-//                             textWrap =
-//                               "whitespace-normal break-words max-w-xs overflow-hidden";
-//                           }
-
-//                           var found = Object.keys(tableHeading).filter((k) => {
-//                             return k === key;
-//                           });
-
-//                           // {console.log(i," | key = ",key, " | value = ",value1)}
-
-//                           if (found.length > 0) {
-//                             if (key !== "id") {
-//                               return (
-//                                 <td
-//                                   className={`px-2 py-2 border border-grayTwo text-wrap border-l-0 whitespace-normal break-words max-w-xs overflow-hidden ${
-//                                     amountArr.includes(key)
-//                                       ? "text-right text-nowrap whitespace-nowrap"
-//                                       : ""
-//                                   } ${
-//                                     i === Object.entries(value).length - 1
-//                                       ? "border-r-1"
-//                                       : "border-r-0"
-//                                   } text-black`}
-//                                   key={i}
-//                                 >
-//                                   <div
-//                                     className={`font-normal text-wrap  ${textAlign} ${statusColor} ${heightOfPara} ${textWrap}`}
-//                                     style={remarksStyle ? remarksStyle : {}}
-//                                     dangerouslySetInnerHTML={{
-//                                       __html: value1,
-//                                       // __html: valueStr,
-//                                     }}
-//                                   ></div>
-//                                 </td>
-//                               );
+//                             if (
+//                               value1 === "approved" ||
+//                               value1 === "Approved"
+//                             ) {
+//                               var statusColor =
+//                                 "border bg-green rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
 //                             }
-//                           }
-//                         })}
+//                             if (
+//                               value1 === "rejected" ||
+//                               value1 === "Rejected"
+//                             ) {
+//                               var statusColor =
+//                                 "border bg-red-500 rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
+//                             }
+//                             if (
+//                               value1 === "payment-released" ||
+//                               value1 === "payment-released"
+//                             ) {
+//                               var statusColor =
+//                                 "border bg-green rounded-lg text-xs text-center w-40 py-0.5 px-1 text-white";
+//                             }
+//                             if (value1 === "Pending" || value1 === "pending") {
+//                               var statusColor =
+//                                 "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-24 px-1 text-white";
+//                             }
+//                             if (
+//                               typeof value1 === "string" &&
+//                               value1.toLowerCase().includes("pending")
+//                             ) {
+//                               var statusColor =
+//                                 "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-40 px-1 text-white";
+//                             }
+
+//                             let textWrap = "";
+//                             if (
+//                               key === "program" ||
+//                               key === "project" ||
+//                               key === "activityName" ||
+//                               key === "subactivityName"
+//                             ) {
+//                               textWrap =
+//                                 "whitespace-normal break-words max-w-xs overflow-hidden";
+//                             }
+
+//                             var found = Object.keys(tableHeading).filter(
+//                               (k) => {
+//                                 return k === key;
+//                               },
+//                             );
+
+//                             // {console.log(i," | key = ",key, " | value = ",value1)}
+
+//                             if (found.length > 0) {
+//                               if (key !== "id") {
+//                                 return (
+//                                   <td
+//                                     className={`px-2 py-2 border border-grayTwo text-wrap border-l-0 whitespace-normal break-words max-w-xs overflow-hidden ${
+//                                       amountArr.includes(key)
+//                                         ? "text-right text-nowrap whitespace-nowrap"
+//                                         : ""
+//                                     } ${
+//                                       i === Object.entries(value).length - 1
+//                                         ? "border-r-1"
+//                                         : "border-r-0"
+//                                     } text-black`}
+//                                     key={i}
+//                                   >
+//                                     <div
+//                                       className={`font-normal text-wrap  ${textAlign} ${statusColor} ${heightOfPara} ${textWrap}`}
+//                                       style={remarksStyle ? remarksStyle : {}}
+//                                       dangerouslySetInnerHTML={{
+//                                         __html: value1,
+//                                         // __html: valueStr,
+//                                       }}
+//                                     ></div>
+//                                   </td>
+//                                 );
+//                               }
+//                             }
+//                           })}
+//                         </tr>
+//                       );
+//                     })
+//                   ) : loading ? (
+//                     <tr>
+//                       <td
+//                         colSpan={8}
+//                         className="text-center text-Green text-3xl"
+//                       >
+//                         <FaSpinner className="animate-spin inline-flex mx-2" />
 //                       </tr>
-//                     );
-//                   })
-//                 ) : loading ? (
-//                   <tr>
-//                     <td colSpan={8} className="text-center text-Green text-3xl">
-//                       <FaSpinner className="animate-spin inline-flex mx-2" />
-//                     </td>
-//                   </tr>
-//                 ) : (
-//                   <tr className="">
-//                     <td colSpan={9} className="text-center">
-//                       No Record Found!
-//                     </td>
-//                   </tr>
-//                 )}
-//                 {/* {!tableData && tableData.length === 0 && (
+//                   ) : (
+//                     <tr className="">
+//                       <td colSpan={9} className="text-center">
+//                         No Record Found!
+//                       </td>
+//                     </tr>
+//                   )}
+//                   {/* {!tableData && tableData.length === 0 && (
 //                   <tr className="">
 //                     <td colSpan={9} className="text-center">
 //                       No Record Found!
 //                     </td>
 //                   </tr>
 //                 )} */}
-//               </tbody>
-//             </table>
+//                 </tbody>
+//               </table>
+//             </div>
 //             {/* {console.log("tableObjects.noPagination",tableObjects.noPagination)} */}
 //             {tableObjects.noPagination ? null : (
 //               <div className="flex justify-center my-5">
@@ -1029,14 +1058,15 @@
 //                     "recsPerPage:",
 //                     recsPerPage,"pageNumber",pageNumber)} */}
 //                   {numOfPages.length > 1 && totalRecs > recsPerPage ? (
-//                     <ul className="pagination mx-auto ps-5 flex">
+//                     <ul className="pagination mx-auto flex flex-nowrap justify-center ps-0 overflow-x-auto no-scrollbar whitespace-nowrap">
 //                       {pageNumber !== 1 ? (
 //                         <li
-//                           className="page-item hover pe-3 border border-gray-400 cursor-pointer text-center border-e-0"
+//                           // className="page-item hover pe-3 border border-gray-400 cursor-pointer text-center border-e-0"
+//                           className="page-item hover px-2 md:px-3 py-1.5 border border-gray-400 cursor-pointer text-center border-e-0 flex items-center justify-center min-w-[32px] md:min-w-[40px] h-[32px] md:h-[40px]"
 //                           onClick={() => setPageNumber(--pageNumber)}
 //                         >
 //                           <a className="page-link ">
-//                             &nbsp; <FontAwesomeIcon icon={faAngleLeft} />
+//                             <FontAwesomeIcon icon={faAngleLeft} />
 //                           </a>
 //                         </li>
 //                       ) : null}
@@ -1044,8 +1074,12 @@
 //                         return (
 //                           <li
 //                             key={i}
+//                             // className={
+//                             //   "page-item hover px-3 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold " +
+//                             //   (pageNumber === item ? " active" : "")
+//                             // }
 //                             className={
-//                               "page-item hover px-3 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold " +
+//                               "page-item hover px-2 md:px-3 py-1.5 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold flex items-center justify-center min-w-[32px] md:min-w-[40px] h-[32px] md:h-[40px] " +
 //                               (pageNumber === item ? " active" : "")
 //                             }
 //                             onClick={() => {
@@ -1058,7 +1092,8 @@
 //                       })}
 //                       {pageNumber !== numOfPages.length ? (
 //                         <li
-//                           className="page-item hover px-3 border border-gray-400 cursor-pointer"
+//                           // className="page-item hover px-3 border border-gray-400 cursor-pointer"
+//                           className="page-item hover px-2 md:px-3 py-1.5 border border-gray-400 cursor-pointer flex items-center justify-center min-w-[32px] md:min-w-[40px] h-[32px] md:h-[40px]"
 //                           onClick={() => {
 //                             setPageNumber(++pageNumber);
 //                           }}
@@ -1082,24 +1117,6 @@
 
 // export default GenericTable;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Nehas code 
-
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
@@ -1107,7 +1124,7 @@ import Swal from "sweetalert2";
 import "animate.css";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdOutlineFactCheck } from "react-icons/md";
 import { Modal, Tooltip } from "flowbite-react";
 import { IoMdAdd } from "react-icons/io";
 import validator, { toDate } from "validator";
@@ -1138,6 +1155,7 @@ import * as XLSX from "xlsx";
 const GenericTable = ({
   tableObjects,
   tableHeading,
+  excelHeading,
   setRunCount,
   runCount,
   recsPerPage,
@@ -1158,6 +1176,8 @@ const GenericTable = ({
   setSearch,
   loading,
   pdfMode,
+  handleAction,
+  customDownloadURL,
 }) => {
   // console.log("runCount", runCount);
   // console.log("recsPerPage", recsPerPage);
@@ -1173,7 +1193,7 @@ const GenericTable = ({
   const [loggedInRole, setLoggedInRole] = useState("");
 
   const [userDetails, setUserDetails] = useState(
-    ls.get("userDetails", { decrypt: true })
+    ls.get("userDetails", { decrypt: true }),
   );
   // console.log("userDetails  =>", userDetails);
 
@@ -1203,6 +1223,8 @@ const GenericTable = ({
       setLoggedInRole("admin");
     } else if (pathname.includes("center")) {
       setLoggedInRole("center");
+    } else if (pathname.includes("asset")) {
+      setLoggedInRole("asset");
     } else if (pathname.includes("account")) {
       setLoggedInRole("account");
     } else {
@@ -1302,7 +1324,7 @@ const GenericTable = ({
       // setApprovalId(uid);
       window.open(
         "/" + loggedInRole + tableObjects?.buttonURL + uid,
-        '_self'
+        "_self",
         // "noopener,noreferrer"
       );
       // window.location.href = "/" + loggedInRole + tableObjects?.buttonURL + uid;
@@ -1347,7 +1369,7 @@ const GenericTable = ({
             .catch((error) => {
               console.log(
                 "Error Message from userslist delete redirect  => ",
-                error
+                error,
               );
               Swal.fire(" ", "Something Went Wrong <br/>" + error.message);
             });
@@ -1445,24 +1467,47 @@ const GenericTable = ({
   const exportToExcel = () => {
     // Create a new workbook and a worksheet
     const workbook = XLSX.utils.book_new();
-    const worksheetData = [Object.values(tableHeading)];
+    const headers = excelHeading || tableHeading;
+    const headingKeys = Object.keys(headers).filter((key) => key !== "actions");
+    const worksheetData = [headingKeys.map((key) => headers[key])];
     const formvalues = { ...filterData, removePagination: true };
-    // console.log("formvalues",formvalues)
+
+    let url;
+    if (tableObjects?.downloadURL) {
+      url = tableObjects.downloadURL;
+    } else if (tableObjects?.tableType === "report") {
+      url = tableObjects?.apiURL;
+    } else if (tableObjects.titleMsg === "Contributors List") {
+      url = `${tableObjects?.apiURL}/post/contributors-list`;
+    } else {
+      url = `${tableObjects?.apiURL}/post/list`;
+    }
+
     axios({
-      method: tableObjects?.getListMethod,
-      url:
-        tableObjects.titleMsg === "Contributors List"
-          ? `${tableObjects?.apiURL}/post/contributors-list`
-          : `${tableObjects?.apiURL}/post/list`,
+      method: tableObjects?.getListMethod || "post",
+      url: url,
       data: formvalues,
     })
       .then((response) => {
-        // console.log("response", response);
-        var downloadData = response.data.tableData;
+        var downloadData = response.data.tableData || [];
 
         // Add data to the worksheet
         downloadData.forEach((row) => {
-          const rowData = Object.keys(tableHeading).map((key) => row[key]);
+          const rowData = headingKeys.map((key) => {
+            let value = "";
+            if (key.includes(".")) {
+              value = key.split(".").reduce((obj, k) => {
+                return obj && obj[k] !== undefined ? obj[k] : "";
+              }, row);
+            } else {
+              value = row[key];
+            }
+            if (typeof value === "string") {
+              // Strip HTML tags and replace &nbsp; with space
+              return value.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ");
+            }
+            return value ?? "";
+          });
           worksheetData.push(rowData);
         });
 
@@ -1470,12 +1515,14 @@ const GenericTable = ({
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
         // Generate Excel file and download
-        XLSX.writeFile(workbook, tableObjects?.titleMsg + ".xlsx");
+        XLSX.writeFile(
+          workbook,
+          (tableObjects?.titleMsg || "Export") + ".xlsx",
+        );
       })
       .catch((error) => {
         console.log("Error   => ", error);
-        Swal.fire(" ", "Error ", "Something went wrong");
-        // setErrorModal(true);
+        Swal.fire(" ", "Error in downloading excel", "error");
       });
   };
 
@@ -1540,7 +1587,7 @@ const GenericTable = ({
           : "mt-5"
       }
     >
-      <div className={("container mx-auto transition-all duration-300 ")}>
+      <div className={"container mx-auto transition-all duration-300 "}>
         <style jsx>{`
           .resizing {
             cursor: col-resize !important;
@@ -1559,14 +1606,15 @@ const GenericTable = ({
             z-index: 10;
           }
           thead.header2 {
-            top: '-4px';
+            top: "-4px";
             z-index: 9;
           }
           table {
             width: 100%;
             table-layout: auto;
           }
-          th, td {
+          th,
+          td {
             box-sizing: border-box;
           }
         `}</style>
@@ -1624,7 +1672,6 @@ const GenericTable = ({
                     </div>
                   )}
                 </div>
-
               </div>
             </div>
 
@@ -1682,13 +1729,12 @@ const GenericTable = ({
           <div className="relative w-full mt-3">
             <div className="table-responsive table-container overflow-x-auto">
               <table className="min-w-full table-fixed border-collapse text-base bottom  border-separate border-spacing-y-1 w-full dark:w-full leading-tight">
-
                 <thead
                   className={`${pdfMode ? "text-xs" : "text-[13px]"} uppercase ${pdfMode ? "text-wrap" : "text-wrap"
                     } bg-white dark:bg-white`}
                 >
                   <tr className="text-left">
-                    <th className="text-center px-4 py-2 border border-grayTwo border-r-0">
+                    <th className="text-center px-2 md:px-4 py-2 border border-grayTwo border-r-0">
                       Sr. No
                     </th>
                     {tableHeading ? (
@@ -1697,7 +1743,7 @@ const GenericTable = ({
                           return (
                             <th
                               key={i}
-                              className="px-4 py-2 border border-grayTwo border-l-0 border-r-0"
+                              className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0"
                               id="ActionContent"
                             >
                               {value}
@@ -1708,9 +1754,9 @@ const GenericTable = ({
                             <th
                               key={i}
                               className={`px-2 py-2 border border-grayTwo border-l-0 break-words max-w-xs ${key !== "actions" &&
-                                i === Object.entries(tableHeading).length - 1
-                                ? "border-r-1"
-                                : "border-r-0"
+                                  i === Object.entries(tableHeading).length - 1
+                                  ? "border-r-1"
+                                  : "border-r-0"
                                 }`}
                             >
                               {value}{" "}
@@ -1734,19 +1780,19 @@ const GenericTable = ({
                 >
                   {tableData && tableData.length > 0 ? (
                     tableData.map((value, i) => {
-                      // console.log("value",value)
-                      console.log(
-                        "value.utilizationStatus 1",
-                        value.utilizationStatus
-                      );
+                      // console.log(" row value",value)
+                      // console.log(
+                      //   "value.utilizationStatus 1",
+                      //   value.utilizationStatus,
+                      // );
                       const serialNumber = startSerialNumber + i;
                       return (
                         <tr
                           key={i}
                           className="odd:bg-grayOne text-[13px] even:bg-white border border-grayTwo  text-[#000] font-normal"
                         >
-                          <td className="text-center px-4 py-2 font-normal border border-grayTwo border-r-0">
-                            {serialNumber}
+                          <td className="text-center px-1 md:px-4 py-2 font-normal border border-grayTwo border-r-0">
+                            {value.centerName === "Total" || value.vNo === "Total" ? "" : serialNumber}
                           </td>
                           {tableHeading && tableHeading.actions ? (
                             <td className="border border-grayTwo  border-l-0 border-r-0">
@@ -1790,8 +1836,10 @@ const GenericTable = ({
                                     arrow={false}
                                   >
                                     {/* {console.log("formText", tableObjects.formText)} */}
-                                    {tableObjects.formText === "Approval Form" ||
-                                      tableObjects.formText === "Utilization Form" ||
+                                    {tableObjects.formText ===
+                                      "Approval Form" ||
+                                      tableObjects.formText ===
+                                      "Utilization Form" ||
                                       tableObjects.formText ===
                                       "Add Center Details" ? (
                                       <FaEye
@@ -1831,7 +1879,7 @@ const GenericTable = ({
                                           if (url) {
                                             window.open(
                                               url,
-                                              '_self'
+                                              "_self",
                                               // "noopener,noreferrer"
                                             ); // Opens in new tab
                                           }
@@ -1896,7 +1944,7 @@ const GenericTable = ({
                                           const url = `/${loggedInRole}/fund-management/contribution-details/${value._id}`;
                                           window.open(
                                             url,
-                                            '_self'
+                                            "_self",
                                             // "noopener,noreferrer"
                                           );
                                         }}
@@ -1904,7 +1952,10 @@ const GenericTable = ({
                                     </Tooltip>
                                   )}
                                   {loggedInRole === "admin" ||
-                                    loggedInRole === "center" ? (
+                                    loggedInRole === "center" ||
+                                    loggedInRole === "executive" ||
+                                    loggedInRole === "asset" ||
+                                    loggedInRole === "account" ? (
                                     <>
                                       {tableObjects.viewURL && (
                                         <Tooltip
@@ -1922,6 +1973,14 @@ const GenericTable = ({
                                           />
                                         </Tooltip>
                                       )}
+                                    </>
+                                  ) : null}
+
+                                  {(loggedInRole === "admin" ||
+                                    loggedInRole === "center" ||
+                                    loggedInRole === "asset") && 
+                                    !(userDetails?.roles?.includes("fa-accounts")) ? (
+                                    <>
                                       <Tooltip
                                         content="Edit"
                                         placement="bottom"
@@ -1977,10 +2036,11 @@ const GenericTable = ({
                                     value.hideUtilizationButton === false ? (
                                     <div>
                                       <button
-                                        className={`formButtons ${value.finalStatus === "approved"
-                                          && value.utilizationStatus !== "Completed"
-                                          ? "block"
-                                          : "hidden"
+                                        className={`formButtons ${value.finalStatus === "approved" &&
+                                            value.utilizationStatus !==
+                                            "Completed"
+                                            ? "block"
+                                            : "hidden"
                                           }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                         onClick={() => {
                                           redirect("redirect", value._id);
@@ -1990,13 +2050,14 @@ const GenericTable = ({
                                       </button>
                                       {console.log(
                                         "value.utilizationStatus",
-                                        value.utilizationStatus
+                                        value.utilizationStatus,
                                       )}
                                       {value.utilizationStatus ? (
                                         <div
-                                          className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${value.utilizationStatus == "Completed"
-                                            ? "block"
-                                            : "hidden"
+                                          className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${value.utilizationStatus ==
+                                              "Completed"
+                                              ? "block"
+                                              : "hidden"
                                             } text-[10px] flex justify-center items-center leading-3`}
                                         >
                                           Activity Completed
@@ -2013,7 +2074,8 @@ const GenericTable = ({
                           {Object.keys(tableHeading).map((key, i) => {
                             if (key === "actions") return null;
                             let value1 = value[key];
-                            let valueStr = value1 != null ? value1.toString() : "";
+                            let valueStr =
+                              value1 != null ? value1.toString() : "";
 
                             let textAlign = "text-left";
                             if (!isNaN(valueStr) && valueStr?.trim() !== "") {
@@ -2031,10 +2093,13 @@ const GenericTable = ({
 
                             var heightOfPara = "";
                             var remarksStyle = null;
-                            if (key === "remarks" || key === "convergenceNote") {
+                            if (
+                              key === "remarks" ||
+                              key === "convergenceNote"
+                            ) {
                               heightOfPara = `h-24 max-h-24 block ${valueStr.length < 40
-                                ? "overflow-y-hidden"
-                                : "overflow-y-scroll"
+                                  ? "overflow-y-hidden"
+                                  : "overflow-y-scroll"
                                 }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
                               remarksStyle = {
                                 display: "block",
@@ -2043,39 +2108,78 @@ const GenericTable = ({
                               };
                             }
 
+                            var isHtmlStatus =
+                              typeof value1 === "string" &&
+                              (value1.includes("<span") ||
+                                value1.includes("<div"));
                             var statusColor = "";
-                            if (value1 === "approved" || value1 === "Approved") {
-                              statusColor = "border bg-green rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
-                            }
-                            if (value1 === "rejected" || value1 === "Rejected") {
-                              statusColor = "border bg-red-500 rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
-                            }
-                            if (value1 === "payment-released" || value1 === "payment-released") {
-                              statusColor = "border bg-green rounded-lg text-xs text-center w-40 py-0.5 px-1 text-white";
-                            }
-                            if (value1 === "Pending" || value1 === "pending") {
-                              statusColor = "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-24 px-1 text-white";
-                            }
-                            if (value1 === "Active" || value1 === "active") {
-                              statusColor = "border bg-green rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
-                            }
-                            if (value1 === "Inactive" || value1 === "inactive") {
-                              statusColor = "border bg-red-500 rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
-                            }
-                            if (typeof value1 === "string" && value1.toLowerCase().includes("pending")) {
-                              statusColor = "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-24 px-1 text-white";
+                            if (!isHtmlStatus) {
+                              if (
+                                value1 === "approved" ||
+                                value1 === "Approved"
+                              ) {
+                                statusColor =
+                                  "border bg-green rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
+                              }
+                              if (
+                                value1 === "rejected" ||
+                                value1 === "Rejected"
+                              ) {
+                                statusColor =
+                                  "border bg-red-500 rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
+                              }
+                              if (
+                                value1 === "payment-released" ||
+                                value1 === "payment-released"
+                              ) {
+                                statusColor =
+                                  "border bg-green rounded-lg text-xs text-center w-40 py-0.5 px-1 text-white";
+                              }
+                              if (
+                                value1 === "Pending" ||
+                                value1 === "pending"
+                              ) {
+                                statusColor =
+                                  "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-24 px-1 text-white";
+                              }
+                              if (value1 === "Active" || value1 === "active") {
+                                statusColor =
+                                  "border bg-green rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
+                              }
+                              if (
+                                value1 === "Inactive" ||
+                                value1 === "inactive"
+                              ) {
+                                statusColor =
+                                  "border bg-red-500 rounded-lg text-xs text-center py-0.5 w-24 px-1 text-white";
+                              }
+                              if (
+                                typeof value1 === "string" &&
+                                value1.toLowerCase().includes("pending")
+                              ) {
+                                statusColor =
+                                  "border bg-yellow-500 text-xs rounded-lg text-center py-0.5 w-24 px-1 text-white";
+                              }
                             }
 
                             let textWrap = "";
-                            if (["program", "project", "activityName", "subactivityName"].includes(key)) {
-                              textWrap = "whitespace-normal break-words max-w-xs overflow-hidden";
+                            if (
+                              [
+                                "program",
+                                "project",
+                                "activityName",
+                                "subactivityName",
+                              ].includes(key)
+                            ) {
+                              textWrap =
+                                "whitespace-normal break-words max-w-xs overflow-hidden";
                             }
 
                             return (
                               <td
                                 className={`px-2 py-2 border border-grayTwo text-wrap border-l-0 whitespace-normal break-words max-w-xs overflow-hidden ${amountArr.includes(key)
-                                  ? "text-right text-nowrap whitespace-nowrap"
-                                  : ""
+                                    ? "text-right text-nowrap whitespace-nowrap"
+                                    : ""
                                   } ${i === Object.keys(tableHeading).length - 1
                                     ? "border-r-1"
                                     : "border-r-0"
@@ -2097,7 +2201,10 @@ const GenericTable = ({
                     })
                   ) : loading ? (
                     <tr>
-                      <td colSpan={8} className="text-center text-Green text-3xl">
+                      <td
+                        colSpan={8}
+                        className="text-center text-Green text-3xl"
+                      >
                         <FaSpinner className="animate-spin inline-flex mx-2" />
                       </td>
                     </tr>
@@ -2127,13 +2234,14 @@ const GenericTable = ({
                     totalRecs,
                     "recsPerPage:",
                     recsPerPage,"pageNumber",pageNumber)} */}
-                  {numOfPages.length > 1 && totalRecs > recsPerPage ? (
-                    <ul className="pagination mx-auto ps-5 flex">
+                  {numOfPages &&
+                    numOfPages.length > 1 &&
+                    totalRecs > recsPerPage ? (
+                    <ul className="pagination mx-auto flex flex-nowrap justify-center ps-0 overflow-x-auto no-scrollbar whitespace-nowrap">
                       {pageNumber !== 1 ? (
                         <li
                           // className="page-item hover pe-3 border border-gray-400 cursor-pointer text-center border-e-0"
-                          className="page-item hover px-3 py-1.5 border border-gray-400 cursor-pointer text-center border-e-0 flex items-center justify-center min-w-[40px] h-[40px]"
-
+                          className="page-item hover px-2 md:px-3 py-1.5 border border-gray-400 cursor-pointer text-center border-e-0 flex items-center justify-center min-w-[32px] md:min-w-[40px] h-[32px] md:h-[40px]"
                           onClick={() => setPageNumber(--pageNumber)}
                         >
                           <a className="page-link ">
@@ -2141,29 +2249,31 @@ const GenericTable = ({
                           </a>
                         </li>
                       ) : null}
-                      {numOfPages.map((item, i) => {
-                        return (
-                          <li
-                            key={i}
-                            // className={
-                            //   "page-item hover px-3 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold " +
-                            //   (pageNumber === item ? " active" : "")
-                            // }
-                            className={"page-item hover px-3 py-1.5 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold flex items-center justify-center min-w-[40px] h-[40px] " + (pageNumber === item ? " active" : "")}
-
-                            onClick={() => {
-                              handlePageClick(item);
-                            }}
-                          >
-                            <a className="page-link">{item}</a>
-                          </li>
-                        );
-                      })}
-                      {pageNumber !== numOfPages.length ? (
+                      {numOfPages &&
+                        numOfPages.map((item, i) => {
+                          return (
+                            <li
+                              key={i}
+                              // className={
+                              //   "page-item hover px-3 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold " +
+                              //   (pageNumber === item ? " active" : "")
+                              // }
+                              className={
+                                "page-item hover px-2 md:px-3 py-1.5 border border-gray-400 cursor-pointer text-center border-e-0 font-semibold flex items-center justify-center min-w-[32px] md:min-w-[40px] h-[32px] md:h-[40px] " +
+                                (pageNumber === item ? " active" : "")
+                              }
+                              onClick={() => {
+                                handlePageClick(item);
+                              }}
+                            >
+                              <a className="page-link">{item}</a>
+                            </li>
+                          );
+                        })}
+                      {numOfPages && pageNumber !== numOfPages.length ? (
                         <li
                           // className="page-item hover px-3 border border-gray-400 cursor-pointer"
-                          className="page-item hover px-3 py-1.5 border border-gray-400 cursor-pointer flex items-center justify-center min-w-[40px] h-[40px]"
-
+                          className="page-item hover px-2 md:px-3 py-1.5 border border-gray-400 cursor-pointer flex items-center justify-center min-w-[32px] md:min-w-[40px] h-[32px] md:h-[40px]"
                           onClick={() => {
                             setPageNumber(++pageNumber);
                           }}
