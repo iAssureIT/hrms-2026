@@ -21,7 +21,7 @@ import { FaUserGraduate, FaCalendarCheck, FaFileUpload } from "react-icons/fa";
 import { SlBookOpen } from "react-icons/sl";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
-import { idContext } from "@/app/admin/layout";
+import { idContext } from "@/context/IdContext";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaFileDownload } from "react-icons/fa";

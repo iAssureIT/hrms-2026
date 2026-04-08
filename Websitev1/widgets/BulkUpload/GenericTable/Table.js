@@ -305,25 +305,25 @@ const GenericTable = (props) => {
     // })
     //   .then((response) => {
     //     // console.log("response", response);
-        var downloadData = tableData;
+    var downloadData = tableData;
 
-        // Add data to the worksheet
-        downloadData.forEach((row) => {
-          const rowData = Object.keys(tableHeading).map((key) => row[key]);
-          worksheetData.push(rowData);
-        });
+    // Add data to the worksheet
+    downloadData.forEach((row) => {
+      const rowData = Object.keys(tableHeading).map((key) => row[key]);
+      worksheetData.push(rowData);
+    });
 
-        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-        // Generate Excel file and download
-        XLSX.writeFile(workbook, downloadTableName + ".xlsx");
-        // })
-      // .catch((error) => {
-      //   console.log("Error Message from userslist delete redirect  => ", error);
-      //   Swal.fire(" ", "Error Message from userslist delete redirect  =>");
-      //   // setErrorModal(true);
-      // });
+    // Generate Excel file and download
+    XLSX.writeFile(workbook, downloadTableName + ".xlsx");
+    // })
+    // .catch((error) => {
+    //   console.log("Error Message from userslist delete redirect  => ", error);
+    //   Swal.fire(" ", "Error Message from userslist delete redirect  =>");
+    //   // setErrorModal(true);
+    // });
   };
   // console.log("tableData",tableData);
   return (
@@ -334,13 +334,13 @@ const GenericTable = (props) => {
 
       <div className="">
         <div className="flex flex-row justify-between w-full">
-        
+
           <div className="flex text-sm">
           </div>
 
           <div className="flex text-sm">
             {tableObjects.searchApply ? (
-              <div className="basis-1/3 text-sm -mt-1">             
+              <div className="basis-1/3 text-sm -mt-1">
                 <label
                   htmlFor="search"
                   //  className="mb-4 font-semibold"
@@ -479,7 +479,7 @@ const GenericTable = (props) => {
                                     key={i}
                                   >
                                     <div
-                                      className={key ===" 'failedRemark' "?" w-[40]": key }
+                                      className={key === " 'failedRemark' " ? " w-[40]" : key}
                                       dangerouslySetInnerHTML={{
                                         __html: value1,
                                       }}

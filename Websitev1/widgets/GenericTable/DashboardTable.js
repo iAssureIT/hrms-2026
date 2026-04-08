@@ -20,7 +20,7 @@ import { FaUserGraduate, FaCalendarCheck } from "react-icons/fa";
 import { SlBookOpen } from "react-icons/sl";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
-import { idContext } from "@/app/admin/layout";
+import { idContext } from "@/context/IdContext";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaFileDownload } from "react-icons/fa";
@@ -403,8 +403,8 @@ const GenericTable = ({
                     // className="w-full border mt-2 text-sm"
                     // className="stdSelectField py-1.5"
                     className={`${recsPerPage
-                        ? "stdSelectField pl-3 w-3/4"
-                        : "stdSelectField pl-3 w-3/4"
+                      ? "stdSelectField pl-3 w-3/4"
+                      : "stdSelectField pl-3 w-3/4"
                       } ${recsPerPage ? "selectOption" : "font-normal"}
                 `}
                     onChange={(event) => {
@@ -504,10 +504,10 @@ const GenericTable = ({
                         <th
                           key={i}
                           className={`${i === Object.entries(tableHeading).length - 1
-                              ? "border-l-0 border-r-1"
-                              : i === 0
-                                ? "border-l-1 border-r-0"
-                                : "border-l-0 border-r-0"
+                            ? "border-l-0 border-r-1"
+                            : i === 0
+                              ? "border-l-1 border-r-0"
+                              : "border-l-0 border-r-0"
                             }  px-4 py-3 border border-grayTwo `}
                         >
                           <span className="w-[50px] text-wrap">{value} </span>
@@ -589,10 +589,10 @@ const GenericTable = ({
                             return (
                               <td
                                 className={`${i === Object.entries(value).length - 1
-                                    ? "border-l-0 border-r-1"
-                                    : i === 0
-                                      ? "border-l-1 border-r-0"
-                                      : "border-l-0 border-r-0"
+                                  ? "border-l-0 border-r-1"
+                                  : i === 0
+                                    ? "border-l-1 border-r-0"
+                                    : "border-l-0 border-r-0"
                                   } px-4 py-3 border border-grayTwo `}
                                 key={i}
                               >
@@ -703,9 +703,9 @@ const GenericTable = ({
                               value.finalStatus === "approved" ? (
                               <button
                                 className={`formButtons ${tableHeading.finalStatus !== "approved" &&
-                                    tableObjects.buttonText !== "Approval Form"
-                                    ? "hidden"
-                                    : "block"
+                                  tableObjects.buttonText !== "Approval Form"
+                                  ? "hidden"
+                                  : "block"
                                   } text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                 onClick={() => {
                                   redirect("redirect", value._id);

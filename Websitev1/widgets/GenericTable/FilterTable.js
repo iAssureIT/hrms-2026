@@ -21,7 +21,7 @@
 // import { SlBookOpen } from "react-icons/sl";
 // import { IoLocationSharp } from "react-icons/io5";
 // import { FaSearch } from "react-icons/fa";
-// import { idContext } from "@/app/admin/layout";
+// import { idContext } from "@/context/IdContext";
 // import { MdOutlineEdit } from "react-icons/md";
 // import { RiDeleteBin6Line } from "react-icons/ri";
 // import { FaFileDownload } from "react-icons/fa";
@@ -1140,7 +1140,7 @@ import { FaUserGraduate, FaCalendarCheck, FaFileUpload } from "react-icons/fa";
 import { SlBookOpen } from "react-icons/sl";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
-import { idContext } from "@/app/admin/layout";
+import { idContext } from "@/context/IdContext";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaFileDownload } from "react-icons/fa";
@@ -1754,9 +1754,9 @@ const GenericTable = ({
                             <th
                               key={i}
                               className={`px-2 py-2 border border-grayTwo border-l-0 break-words max-w-xs ${key !== "actions" &&
-                                  i === Object.entries(tableHeading).length - 1
-                                  ? "border-r-1"
-                                  : "border-r-0"
+                                i === Object.entries(tableHeading).length - 1
+                                ? "border-r-1"
+                                : "border-r-0"
                                 }`}
                             >
                               {value}{" "}
@@ -1978,7 +1978,7 @@ const GenericTable = ({
 
                                   {(loggedInRole === "admin" ||
                                     loggedInRole === "center" ||
-                                    loggedInRole === "asset") && 
+                                    loggedInRole === "asset") &&
                                     !(userDetails?.roles?.includes("fa-accounts")) ? (
                                     <>
                                       <Tooltip
@@ -2037,10 +2037,10 @@ const GenericTable = ({
                                     <div>
                                       <button
                                         className={`formButtons ${value.finalStatus === "approved" &&
-                                            value.utilizationStatus !==
-                                            "Completed"
-                                            ? "block"
-                                            : "hidden"
+                                          value.utilizationStatus !==
+                                          "Completed"
+                                          ? "block"
+                                          : "hidden"
                                           }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                         onClick={() => {
                                           redirect("redirect", value._id);
@@ -2055,9 +2055,9 @@ const GenericTable = ({
                                       {value.utilizationStatus ? (
                                         <div
                                           className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${value.utilizationStatus ==
-                                              "Completed"
-                                              ? "block"
-                                              : "hidden"
+                                            "Completed"
+                                            ? "block"
+                                            : "hidden"
                                             } text-[10px] flex justify-center items-center leading-3`}
                                         >
                                           Activity Completed
@@ -2098,8 +2098,8 @@ const GenericTable = ({
                               key === "convergenceNote"
                             ) {
                               heightOfPara = `h-24 max-h-24 block ${valueStr.length < 40
-                                  ? "overflow-y-hidden"
-                                  : "overflow-y-scroll"
+                                ? "overflow-y-hidden"
+                                : "overflow-y-scroll"
                                 }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
                               remarksStyle = {
                                 display: "block",
@@ -2178,8 +2178,8 @@ const GenericTable = ({
                             return (
                               <td
                                 className={`px-2 py-2 border border-grayTwo text-wrap border-l-0 whitespace-normal break-words max-w-xs overflow-hidden ${amountArr.includes(key)
-                                    ? "text-right text-nowrap whitespace-nowrap"
-                                    : ""
+                                  ? "text-right text-nowrap whitespace-nowrap"
+                                  : ""
                                   } ${i === Object.keys(tableHeading).length - 1
                                     ? "border-r-1"
                                     : "border-r-0"

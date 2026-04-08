@@ -36,7 +36,7 @@ import { CiMail } from "react-icons/ci";
 import { GrMoney } from "react-icons/gr";
 import { RiExchangeFundsFill } from "react-icons/ri";
 import { TbReport } from "react-icons/tb";
-import { idContext } from "@/app/admin/layout";
+import { idContext } from "@/context/IdContext";
 
 // User Management specific
 
@@ -52,9 +52,11 @@ export default function RootLayout({ children }) {
   const router = useRouter();
   const [open, setOpen] = useState(true);
   const [approvalId, setApprovalId] = useState("");
-  const [userDetails, setUserDetails] = useState(
-    ls.get("userDetails", { decrypt: true })
-  );
+  const [userDetails, setUserDetails] = useState(null);
+  useEffect(() => {
+    const details = ls.get("userDetails", { decrypt: true });
+    setUserDetails(details);
+  }, []);
 
   const sidebarData = [
     { logoimgfull: logoimgfull },

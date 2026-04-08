@@ -1288,8 +1288,8 @@ const GenericReport = ({
           }
           thead.header2 {
             top: ${twoLevelHeader && twoLevelHeader.length > 0
-              ? "48px"
-              : "-4px"};
+            ? "48px"
+            : "-4px"};
             z-index: 9;
           }
           table {
@@ -1321,11 +1321,10 @@ const GenericReport = ({
                   <button
                     type="button"
                     onClick={() => setRecsDropdownOpen(!recsDropdownOpen)}
-                    className={`${
-                      recsPerPage
+                    className={`${recsPerPage
                         ? "stdSelectField pl-3 w-3/4 flex justify-between items-center"
                         : "stdSelectField pl-3 w-3/4 flex justify-between items-center"
-                    } ${recsPerPage ? "selectOption" : "font-normal"}
+                      } ${recsPerPage ? "selectOption" : "font-normal"}
                 `}
                   >
                     {recsPerPage}
@@ -1416,25 +1415,24 @@ const GenericReport = ({
                 <tr className="">
                   {twoLevelHeader.apply === true
                     ? twoLevelHeader.firstHeaderData.map((data, index) => {
-                        // console.log('dataIIIIIIIIIIIIIIIIIII',data,index);
+                      // console.log('dataIIIIIIIIIIIIIIIIIII',data,index);
 
-                        var lastIndex = twoLevelHeader.firstHeaderData.length;
-                        return (
-                          <th
-                            key={index}
-                            colSpan={data.mergedColoums}
-                            className={`px-4 py-1 text-[13px] border  ${
-                              index !== lastIndex - 1 && index !== 0
+                      var lastIndex = twoLevelHeader.firstHeaderData.length;
+                      return (
+                        <th
+                          key={index}
+                          colSpan={data.mergedColoums}
+                          className={`px-4 py-1 text-[13px] border  ${index !== lastIndex - 1 && index !== 0
+                              ? "border-l-0"
+                              : index === lastIndex - 1
                                 ? "border-l-0"
-                                : index === lastIndex - 1
-                                  ? "border-l-0"
-                                  : ""
+                                : ""
                             } border-grayTwo`}
-                          >
-                            {data.heading}
-                          </th>
-                        );
-                      })
+                        >
+                          {data.heading}
+                        </th>
+                      );
+                    })
                     : null}
                 </tr>
                 <tr className="text-left">
@@ -1446,12 +1444,11 @@ const GenericReport = ({
                       return (
                         <th
                           key={i}
-                          className={`px-4 py-1 border text-[13px] border-grayTwo border-l-0 ${
-                            i !== Object.entries(tableHeading).length - 1
+                          className={`px-4 py-1 border text-[13px] border-grayTwo border-l-0 ${i !== Object.entries(tableHeading).length - 1
                               ? ""
                               : // ? "border-r-0"
-                                ""
-                          }`}
+                              ""
+                            }`}
                           id="ActionContent"
                         >
                           {value}
@@ -1501,11 +1498,10 @@ const GenericReport = ({
                           }
 
                           if (key === "remarks" || key === "convergenceNote") {
-                            var heightOfPara = `h-24 max-h-24 block ${
-                              valueStr.length < 40
+                            var heightOfPara = `h-24 max-h-24 block ${valueStr.length < 40
                                 ? "overflow-y-hidden"
                                 : "overflow-y-scroll"
-                            }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
+                              }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
                             var remarksStyle = {
                               display: "block",
                               whiteSpace: "pre-wrap",
@@ -1546,15 +1542,13 @@ const GenericReport = ({
                             if (key !== "id") {
                               return (
                                 <td
-                                  className={`px-4 py-1 border border-grayTwo border-l-0 ${
-                                    amountArr.includes(key)
+                                  className={`px-4 py-1 border border-grayTwo border-l-0 ${amountArr.includes(key)
                                       ? "text-right text-nowrap whitespace-nowrap"
                                       : ""
-                                  } ${
-                                    i === Object.entries(value).length - 1
+                                    } ${i === Object.entries(value).length - 1
                                       ? "border-r-1"
                                       : ""
-                                  } text-black`}
+                                    } text-black`}
                                   key={i}
                                 >
                                   <div

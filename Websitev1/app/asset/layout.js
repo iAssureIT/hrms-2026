@@ -2,6 +2,7 @@
 
 "use client";
 import React, { useEffect, useState } from "react";
+import { idContext } from "@/context/IdContext";
 import { Inter } from "next/font/google";
 import axios from "axios";
 import Image from "next/image";
@@ -41,7 +42,6 @@ import { CiMail } from "react-icons/ci";
 import { GrMoney } from "react-icons/gr";
 import { RiExchangeFundsFill } from "react-icons/ri";
 import { TbReport } from "react-icons/ri";
-import { idContext } from "@/app/admin/layout";
 
 // User Management specific
 
@@ -69,6 +69,7 @@ export default function RootLayout({ children }) {
     : [roles.toString().toLowerCase()];
 
   const isAssetRole = roleArray.some(r =>
+    r === "admin" ||
     r === "asset-admin" ||
     r === "asset-manager" ||
     r === "asset-incharge" ||
@@ -81,156 +82,100 @@ export default function RootLayout({ children }) {
   const sidebarData = [
     { logoimgfull: logoimgfull },
     { logoimgsm: logoimgsm },
-    ...(isAssetRole ? [
-      // {
-      //   title: "Master-Data",
-      //   submenu: true,
-      //   icon: <BsClipboardDataFill />,
-      //   submenuItems: [
-      //     {
-      //       icon: <FaRegCircle />,
-      //       title: "Location",
-      //       link: "/asset/master-data/sublocation",
-      //     },
-      //     {
-      //       icon: <FaRegCircle />,
-      //       title: "Asset Category",
-      //       link: "/asset/master-data/asset-category-subcategory",
-      //     },
-      //     {
-      //       icon: <FaRegCircle />,
-      //       title: "Asset Inspection Checklist",
-      //       link: "/asset/master-data/asset-inspection-checklist",
-      //     },
-      //     {
-      //       icon: <FaRegCircle />,
-      //       title: "Asset Depreciation",
-      //       link: "/asset/master-data/asset-depreciation",
-      //     },
+    { title: "Dashboard", link: "/admin/dashboard" },
 
-      //     {
-      //       icon: <FaRegCircle />,
-      //       title: "Department",
-      //       link: "/asset/master-data/department-subdepartment",
-      //     },
-      //   ],
-      // },
-
-      ...(roleArray.includes("fa-accounts") ? [
+    {
+      title: "Asset Registry",
+      icon: <BsBoxes />,
+      link: "/asset/management",
+    },
+    {
+      title: "Asset Maintenance",
+      icon: <FaTools />,
+      link: "/asset/management/maintenance-list",
+    },
+    {
+      title: "Asset Audit",
+      icon: <FaClipboardCheck />,
+      link: "/asset/management/asset-audit",
+    },
+    {
+      title: "Asset Depreciation",
+      icon: <FaChartLine />,
+      link: "/asset/management/depreciation",
+    },
+    {
+      title: "Gate Pass Management",
+      icon: <FaIdCard />,
+      link: "/asset/management/gate-pass-management",
+    },
+    {
+      title: "Asset Disposal",
+      icon: <FaTrashAlt />,
+      link: "/asset/management/asset-disposal",
+    },
+    {
+      title: "Employee Master",
+      icon: <FaUser />,
+      link: "/asset/management/employee-master",
+    },
+    {
+      title: "Vendor Master",
+      icon: <BsBank />,
+      link: "/asset/master-data/vendor-master/vendor-list",
+    },
+    {
+      title: "Master-Data",
+      submenu: true,
+      icon: <BsClipboardDataFill />,
+      submenuItems: [
         {
-          title: "Asset Inventory",
-          icon: <BsBoxes />,
-          link: "/asset/management",
+          icon: <FaRegCircle />,
+          title: "Center Details",
+          link: "/admin/master-data/center-details/center-details-list",
         },
-        // {
-        //   title: "Allocation Approval",
-        //   icon: <FaListUl />,
-        //   link: "/asset/management/allocation-approval-list",
-        // },
         {
-          title: "Asset Maintenance",
-          icon: <FaTools />,
-          link: "/asset/management/maintenance-list",
+          icon: <FaRegCircle />,
+          title: "Location",
+          link: "/asset/master-data/sublocation",
         },
         {
+          icon: <FaRegCircle />,
+          title: "Asset Category",
+          link: "/asset/master-data/asset-category-subcategory",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Bank Details",
+          link: "/admin/master-data/bank-details/bank-details-list",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Unit of Measurement",
+          link: "/admin/master-data/unit",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Inspection Checklist",
+          link: "/asset/master-data/asset-inspection-checklist",
+        },
+        {
+          icon: <FaRegCircle />,
           title: "Asset Depreciation",
-          icon: <FaChartLine />,
-          link: "/asset/management/depreciation",
+          link: "/asset/master-data/asset-depreciation",
         },
         {
-          title: "Gate Pass Control",
-          icon: <FaIdCard />,
-          link: "/asset/management/gate-pass-management",
+          icon: <FaRegCircle />,
+          title: "Department",
+          link: "/asset/master-data/department-subdepartment",
         },
-        {
-          title: "Asset Audit",
-          icon: <FaClipboardCheck />,
-          link: "/asset/management/asset-audit",
-        }
-      ] : [
-        {
-          title: "Asset Inventory",
-          icon: <BsBoxes />,
-          link: "/asset/management",
-        },
-
-        {
-          title: "Asset Maintenance",
-          icon: <FaTools />,
-          link: "/asset/management/maintenance-list",
-        },
-
-        {
-          title: "Asset Depreciation",
-          icon: <FaChartLine />,
-          link: "/asset/management/depreciation",
-        },
-        {
-          title: "Gate Pass Control",
-          icon: <FaIdCard />,
-          link: "/asset/management/gate-pass-management",
-        },
-        {
-          title: "Asset Audit",
-          icon: <FaClipboardCheck />,
-          link: "/asset/management/asset-audit",
-        },
-        {
-          title: "Asset Disposal",
-          icon: <FaTrashAlt />,
-          link: "/asset/management/asset-disposal",
-        },
-      ]),
-      ...(roleArray.includes("asset-admin") ? [
-        {
-          title: "Master-Data",
-          submenu: true,
-          icon: <BsClipboardDataFill />,
-          submenuItems: [
-            {
-              icon: <FaRegCircle />,
-              title: "Location",
-              link: "/asset/master-data/sublocation",
-            },
-            {
-              icon: <FaRegCircle />,
-              title: "Department",
-              link: "/asset/master-data/department-subdepartment",
-            },
-            {
-              icon: <FaRegCircle />,
-              title: "Asset Category & Depreciation",
-              link: "/asset/master-data/asset-depreciation",
-            },
-            {
-              icon: <FaRegCircle />,
-              title: "Asset Sub-Category",
-              link: "/asset/master-data/asset-category-subcategory",
-            },
-            {
-              icon: <FaRegCircle />,
-              title: "Asset Inspection Checklist",
-              link: "/asset/master-data/asset-inspection-checklist",
-            },
-
-
-
-          ],
-        },
-        {
-          title: "Vendor Management",
-          icon: <FaUserTie />,
-          link: "/asset/master-data/vendor-master/vendor-list",
-        },
-        {
-
-          title: "Employee Master",
-          icon: <FaUser />,
-          link: "/asset/management/employee-master",
-        },
-      ] : []),
-
-    ] : [])
+      ],
+    },
+    {
+      title: "User Management",
+      icon: <FaUser />,
+      link: "/admin/user-management",
+    },
   ];
 
   const handleSidebarItemClick = (link) => {

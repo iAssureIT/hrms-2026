@@ -100,9 +100,11 @@ const MetricCard = ({
 function AssetList() {
   const pathname = usePathname();
   const [loggedInRole, setLoggedInRole] = useState("");
-  const [userDetails, setUserDetails] = useState(
-    ls.get("userDetails", { decrypt: true }),
-  );
+  const [userDetails, setUserDetails] = useState(null);
+  useEffect(() => {
+    const details = ls.get("userDetails", { decrypt: true });
+    setUserDetails(details);
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);

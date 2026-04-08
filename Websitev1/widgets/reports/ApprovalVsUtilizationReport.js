@@ -16,9 +16,11 @@ import ls from "localstorage-slim";
 function AppVsUtilizationReport() {
   const pathname = usePathname();
   const [loggedInRole, setLoggedInRole] = useState("");
-  const [userDetails, setUserDetails] = useState(
-    ls.get("userDetails", { decrypt: true }),
-  );
+  const [userDetails, setUserDetails] = useState(null);
+  useEffect(() => {
+    const details = ls.get("userDetails", { decrypt: true });
+    setUserDetails(details);
+  }, []);
   // console.log("userDetails  =>", userDetails);
 
   const [centerName, setCenterName] = useState("all");
