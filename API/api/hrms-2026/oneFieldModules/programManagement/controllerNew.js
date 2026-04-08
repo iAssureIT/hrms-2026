@@ -144,7 +144,11 @@ exports.updateProgram = async (req, res) => {
           ),
           Utilization.updateMany(
             { program_id: program._id },
+<<<<<<< Updated upstream
             { $set: { program: program.fieldValue } },
+=======
+            { $set: { program: program.fieldValue } }
+>>>>>>> Stashed changes
           ),
           FundManagement.updateMany(
             { program_id: program._id },

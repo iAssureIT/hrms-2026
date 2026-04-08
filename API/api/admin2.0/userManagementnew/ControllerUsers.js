@@ -77,12 +77,12 @@ exports.add_user_details = (req, res, next) => {
                           companyName: req.body.companyName,
                           center_id:
                             req.body.center_id &&
-                            req.body.center_id.trim() !== ""
+                              req.body.center_id.trim() !== ""
                               ? req.body.center_id
                               : null,
                           centerName:
                             req.body.centerName &&
-                            req.body.centerName.trim() !== ""
+                              req.body.centerName.trim() !== ""
                               ? req.body.centerName
                               : null,
 
@@ -1357,8 +1357,8 @@ exports.user_update_name_mobile = (req, res, next) => {
                           req.body.firstname && req.body.lastname
                             ? req.body.firstname + " " + req.body.lastname
                             : user.profile.firstname +
-                              "" +
-                              user.profile.lastname,
+                            "" +
+                            user.profile.lastname,
                         email: req.body.email
                           ? req.body.email
                           : user.profile.email,
@@ -2363,8 +2363,8 @@ exports.post_list_deleted_users = async (req, res, next) => {
       const lastLogin =
         user.services?.resume?.loginTokens?.length > 0
           ? user.services.resume.loginTokens[
-              user.services.resume.loginTokens.length - 1
-            ].loginTimeStamp
+            user.services.resume.loginTokens.length - 1
+          ].loginTimeStamp
           : null;
 
       const statusupdatedAt =
@@ -2546,7 +2546,7 @@ exports.post_list_users = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
               statusupdatedAt:
                 statuslogLength > 0
@@ -2663,8 +2663,8 @@ exports.list_users_recsPerPage = (req, res, next) => {
                     lastLogin:
                       loginTokenscount > 0
                         ? data[i].services.resume.loginTokens[
-                            loginTokenscount - 1
-                          ].loginTimeStamp
+                          loginTokenscount - 1
+                        ].loginTimeStamp
                         : null,
                     statusupdatedAt:
                       statuslogLength > 0
@@ -2762,7 +2762,7 @@ exports.fetch_users_withlimits = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
             });
             // console.log("returnData==>",returnData);
@@ -2854,7 +2854,7 @@ exports.fetch_users_Companies = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
             });
             // console.log("returnData==>",returnData);
@@ -2957,13 +2957,13 @@ exports.fetch_users_roles = (req, res, next) => {
                   fullName: data[i].profile.fullName
                     ? data[i].profile.fullName
                     : data[i].profile.firstname +
-                      " " +
-                      data[i].profile.lastname,
+                    " " +
+                    data[i].profile.lastname,
                   lastLogin:
                     loginTokenscount > 0
                       ? data[i].services.resume.loginTokens[
-                          loginTokenscount - 1
-                        ].loginTimeStamp
+                        loginTokenscount - 1
+                      ].loginTimeStamp
                       : null,
                 });
                 // console.log("returnData==>", returnData);
@@ -3071,14 +3071,14 @@ exports.fetch_users_status = (req, res, next) => {
                   fullName: data[i].profile.fullName
                     ? data[i].profile.fullName
                     : data[i].profile.firstname +
-                      " " +
-                      data[i].profile.lastname,
+                    " " +
+                    data[i].profile.lastname,
                   createdAt: data[i].createdAt,
                   lastLogin:
                     loginTokenscount > 0
                       ? data[i].services.resume.loginTokens[
-                          loginTokenscount - 1
-                        ].loginTimeStamp
+                        loginTokenscount - 1
+                      ].loginTimeStamp
                       : null,
                   statusupdatedAt:
                     statuslogLength > 0
@@ -3233,7 +3233,7 @@ exports.post_list_users_filter = (req, res, next) => {
                 lastLogin:
                   loginTokenscount > 0
                     ? user.services.resume.loginTokens[loginTokenscount - 1]
-                        .loginTimeStamp
+                      .loginTimeStamp
                     : null,
               };
             });
@@ -3351,7 +3351,7 @@ exports.fetch_users_status_roles = (req, res, next) => {
                 lastLogin:
                   loginTokenscount > 0
                     ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                        .loginTimeStamp
+                      .loginTimeStamp
                     : null,
               });
             }
@@ -3442,7 +3442,7 @@ exports.fetch_users_company_status_role = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
             });
           }
@@ -3519,7 +3519,7 @@ exports.fetch_users_company_status = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
             });
           }
@@ -3597,7 +3597,7 @@ exports.fetch_users_company_roles = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
             });
           }
@@ -3923,7 +3923,7 @@ exports.search_text = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i]?.services?.resume?.loginTokens[loginTokenscount - 1]
-                      ?.loginTimeStamp
+                    ?.loginTimeStamp
                   : null,
               statusupdatedAt:
                 statuslogLength > 0
@@ -3957,20 +3957,20 @@ exports.search_textCompRoleStatus = (req, res, next) => {
     var selector = {};
     // console.log("selector",selector);
     /* if(req.body.companyID) {
-	            selector.companyID = req.body.companyID 
-	        }
-	        if(req.body.searchText) {
-	            selector.searchText =  req.body.searchText 
-	        }
-	        if(req.body.role) {
-	            selector.role =  req.body.role 
-	        }
-	        if(req.body.status) {
-	            selector.status =   req.body.status 
-	        }
-	        if(req.body.company) {
-	            selector.company =  req.body.company } 
-	        }*/
+              selector.companyID = req.body.companyID 
+          }
+          if(req.body.searchText) {
+              selector.searchText =  req.body.searchText 
+          }
+          if(req.body.role) {
+              selector.role =  req.body.role 
+          }
+          if(req.body.status) {
+              selector.status =   req.body.status 
+          }
+          if(req.body.company) {
+              selector.company =  req.body.company } 
+          }*/
 
     selector["$and"] = [];
     var companyID = req.body.companyID;
@@ -4014,17 +4014,17 @@ exports.search_textCompRoleStatus = (req, res, next) => {
     // console.log(" search above selector==>",req.body.search);
 
     /*  if(req.body.search){
-			console.log(" search in if selector==>",req.body.search);
+      console.log(" search in if selector==>",req.body.search);
 
-	    	selector["$or"].push({ "profile.firstname"	: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "profile.lastname"	: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "profile.email"		: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "profile.mobile"		: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "role"				: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "profile.status"		: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "profile.companyName"	: { "$regex": req.body.search, $options: "i" } })
-			selector["$or"].push({ "profile.fullName"	: { "$regex": req.body.search, $options: "i" } })
-	    }*/
+        selector["$or"].push({ "profile.firstname"	: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "profile.lastname"	: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "profile.email"		: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "profile.mobile"		: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "role"				: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "profile.status"		: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "profile.companyName"	: { "$regex": req.body.search, $options: "i" } })
+      selector["$or"].push({ "profile.fullName"	: { "$regex": req.body.search, $options: "i" } })
+      }*/
     // console.log("selector in search ekse selector==>",selector);
 
     User.aggregate([
@@ -4079,7 +4079,7 @@ exports.search_textCompRoleStatus = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? data[i].services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
             });
           }
@@ -4230,7 +4230,7 @@ exports.search_text_delete = (req, res, next) => {
               lastLogin:
                 loginTokenscount > 0
                   ? user.services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    .loginTimeStamp
                   : null,
               statusupdatedAt:
                 statuslogLength > 0
