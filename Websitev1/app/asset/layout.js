@@ -237,17 +237,19 @@ export default function RootLayout({ children }) {
             title: "Department Master",
             link: "/asset/master-data/department-subdepartment",
           },
-          {
-            icon: <FaRegCircle />,
-            title: "Employee Master",
-            link: "/asset/management/employee-master",
-          },
-          {
-            icon: <FaRegCircle />,
-            title: "Vendor Master",
-            link: "/asset/master-data/vendor-master/vendor-list",
-          },
+
+
         ],
+      },
+      {
+        icon: <FaUser />,
+        title: "Employee Master",
+        link: "/asset/management/employee-master",
+      },
+      {
+        icon: <FaUserTie />,
+        title: "Vendor Master",
+        link: "/asset/master-data/vendor-master/vendor-list",
       },
       {
         title: "HRMS User Manual",

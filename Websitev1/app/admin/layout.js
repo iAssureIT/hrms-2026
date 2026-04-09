@@ -1052,6 +1052,7 @@ import {
   FaMoneyCheckAlt,
   FaChartPie,
   FaHeadset,
+  FaUserTie,
 } from "react-icons/fa";
 import { IoMdDocument, IoMdSettings } from "react-icons/io";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -1238,17 +1239,18 @@ export default function RootLayout({ children }) {
           title: "Department Master",
           link: "/asset/master-data/department-subdepartment",
         },
-        {
-          icon: <FaRegCircle />,
-          title: "Employee Master",
-          link: "/asset/management/employee-master",
-        },
-        {
-          icon: <FaRegCircle />,
-          title: "Vendor Master",
-          link: "/asset/master-data/vendor-master/vendor-list",
-        },
+
       ],
+    },
+    {
+      icon: <FaUser />,
+      title: "Employee Master",
+      link: "/asset/management/employee-master",
+    },
+    {
+      icon: <FaUserTie />,
+      title: "Vendor Master",
+      link: "/asset/master-data/vendor-master/vendor-list",
     },
     {
       title: "Reports Hub",
@@ -1293,17 +1295,15 @@ export default function RootLayout({ children }) {
       <div className={`block lg:flex sticky top-0 z-50`}>
         <div
           className={`sticky top-0 z-10 
-            ${
-              open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
+            ${open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
             } duration-300 `}
         >
           <Logo open={open} />
         </div>
         <div
           className={`sticky top-0 left-0 z-50
-              ${
-                open ? "w-[100%] lg:w-[82%]" : " w-[100%] lg:w-[95%]"
-              } duration-300`}
+              ${open ? "w-[100%] lg:w-[82%]" : " w-[100%] lg:w-[95%]"
+            } duration-300`}
         >
           <Navbar
             navbarData={navbarData}
@@ -1326,10 +1326,9 @@ export default function RootLayout({ children }) {
 
         <div
           className={`z-40 ${open ? "fixed lg:sticky w-[75%] shadow-2xl" : "w-0 lg:w-[5%]"} 
-            ${
-              open
-                ? "lg:w-[18%] lg:shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)]"
-                : ""
+            ${open
+              ? "lg:w-[18%] lg:shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)]"
+              : ""
             } duration-300 bg-white h-full lg:h-auto`}
         >
           <Sidebar
@@ -1342,8 +1341,7 @@ export default function RootLayout({ children }) {
 
         <div
           className={`w-full 
-            ${
-              open ? "lg:w-[82%] overflow-x-hidden" : "lg:w-[95%]"
+            ${open ? "lg:w-[82%] overflow-x-hidden" : "lg:w-[95%]"
             } duration-300`}
         >
           <idContext.Provider value={{ approvalId, setApprovalId }}>
