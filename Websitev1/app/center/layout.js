@@ -26,6 +26,8 @@ import {
   FaRegCalendarAlt,
   FaBuilding,
   FaTools,
+  FaCalendarCheck,
+  FaHeadset,
 } from "react-icons/fa";
 import { IoMdDocument, IoMdSettings } from "react-icons/io";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -191,6 +193,16 @@ export default function RootLayout({ children }) {
       ],
     },
 
+    {
+      title: "Leave Management",
+      icon: <FaCalendarCheck />,
+      link: "/admin/leaves",
+    },
+    {
+      title: "Helpdesk",
+      icon: <FaHeadset />,
+      link: "/admin/helpdesk",
+    },
     {
       title: "Center Profile",
       icon: <FaBuilding />,

@@ -36,6 +36,7 @@ import {
   FaFileImport,
   FaMoneyCheckAlt,
   FaChartPie,
+  FaHeadset,
 } from "react-icons/fa";
 import { IoMdDocument, IoMdSettings } from "react-icons/io";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -140,6 +141,16 @@ export default function RootLayout({ children }) {
         link: "/admin/payroll-management",
       },
       {
+        title: "Leave Management",
+        icon: <FaCalendarCheck />,
+        link: "/admin/leaves",
+      },
+      {
+        title: "Helpdesk",
+        icon: <FaHeadset />,
+        link: "/admin/helpdesk",
+      },
+      {
         title: "User Management",
         icon: <FaUser />,
         link: "/admin/user-management",
@@ -226,17 +237,17 @@ export default function RootLayout({ children }) {
             title: "Department Master",
             link: "/asset/master-data/department-subdepartment",
           },
+          {
+            icon: <FaRegCircle />,
+            title: "Employee Master",
+            link: "/asset/management/employee-master",
+          },
+          {
+            icon: <FaRegCircle />,
+            title: "Vendor Master",
+            link: "/asset/master-data/vendor-master/vendor-list",
+          },
         ],
-      },
-      {
-        title: "Employee Master",
-        icon: <FaUser />,
-        link: "/asset/management/employee-master",
-      },
-      {
-        title: "Vendor Master",
-        icon: <BsBank />,
-        link: "/asset/master-data/vendor-master/vendor-list",
       },
       {
         title: "HRMS User Manual",
@@ -317,16 +328,6 @@ export default function RootLayout({ children }) {
       ...(roleArray.includes("asset-admin")
         ? [
           {
-            title: "Employee Master",
-            icon: <FaUser />,
-            link: "/asset/management/employee-master",
-          },
-          {
-            title: "Vendor Master",
-            icon: <BsBank />,
-            link: "/asset/master-data/vendor-master/vendor-list",
-          },
-          {
             title: "Master Data",
             submenu: true,
             icon: <BsClipboardDataFill />,
@@ -355,6 +356,16 @@ export default function RootLayout({ children }) {
                 icon: <FaRegCircle />,
                 title: "Department Master",
                 link: "/asset/master-data/department-subdepartment",
+              },
+              {
+                icon: <FaRegCircle />,
+                title: "Employee Master",
+                link: "/asset/management/employee-master",
+              },
+              {
+                icon: <FaRegCircle />,
+                title: "Vendor Master",
+                link: "/asset/master-data/vendor-master/vendor-list",
               },
             ],
           },
