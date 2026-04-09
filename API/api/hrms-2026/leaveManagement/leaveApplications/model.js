@@ -4,7 +4,7 @@ const leaveApplicationSchema = new mongoose.Schema(
   {
     employeeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "employees",
+      ref: "Employees",
       required: true,
     },
 

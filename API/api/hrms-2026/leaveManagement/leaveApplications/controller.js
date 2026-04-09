@@ -1,4 +1,5 @@
 const LeaveApplication = require("./model");
+const Employee = require("../../employeeManagement/model");
 const LeaveBalance = require("../leaveBalance/model");
 const LeaveLedger = require("../leaveLedger/model");
 const LeaveType = require("../leaveTypes/model");
@@ -39,11 +40,38 @@ exports.applyLeave = async (req, res) => {
     }
 
     const year = moment(fromDate).year();
-    const balance = await LeaveBalance.findOne({ employeeId, leaveTypeId, year });
+    let balance = await LeaveBalance.findOne({ employeeId, leaveTypeId, year });
 
-    // Allow LOP even if balance is 0 or doesn't exist
+    // 4. Auto-initialize balance if missing (except for Loss of Pay)
+    if (!balance && leaveType.leaveCode !== "LOP") {
+      // Create initial balance from leaveType.maxDaysPerYear
+      balance = await LeaveBalance.create({
+        employeeId,
+        leaveTypeId,
+        year,
+        openingBalance: leaveType.maxDaysPerYear || 0,
+        remainingBalance: leaveType.maxDaysPerYear || 0,
+        earnedDays: 0,
+        usedDays: 0,
+        createdBy: createdBy || employeeId // Fallback to employeeId if createdBy is missing
+      });
+      
+      // Also create a ledger entry for initialization
+      await LeaveLedger.create({
+        employeeId,
+        leaveTypeId,
+        year,
+        transactionType: "OPENING",
+        days: leaveType.maxDaysPerYear || 0,
+        balanceAfter: leaveType.maxDaysPerYear || 0,
+        remarks: "Auto-initialized balance on first application",
+        createdBy: createdBy || employeeId
+      });
+    }
+
+    // 5. Validate Balance
     if (leaveType.leaveCode !== "LOP") {
-      if (!balance || balance.remainingBalance < totalDays) {
+      if (balance.remainingBalance < totalDays) {
         return res.status(400).json({ success: false, message: "Insufficient leave balance" });
       }
     }

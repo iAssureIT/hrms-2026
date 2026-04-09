@@ -1,4 +1,6 @@
 const LeaveLedger = require("./model");
+const Employee = require("../../employeeManagement/model");
+const LeaveType = require("../leaveTypes/model");
 
 // ADD LEDGER ENTRY (credit/debit)
 exports.addLedgerEntry = async (req, res) => {

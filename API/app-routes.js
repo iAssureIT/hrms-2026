@@ -44,6 +44,10 @@ const leaveBalanceRoutes = require("./api/hrms-2026/leaveManagement/leaveBalance
 const leaveLedgerRoutes = require("./api/hrms-2026/leaveManagement/leaveLedger/route.js");
 const leaveReportsRoutes = require("./api/hrms-2026/leaveManagement/leaveReports/route.js");
 
+// Helpdesk
+const ticketRoutes = require("./api/hrms-2026/helpdeskManagement/tickets/route.js");
+const ticketMessageRoutes = require("./api/hrms-2026/helpdeskManagement/ticketMessages/route.js");
+
 const appRoutes = (app) => {
   //lupin api
   app.use("/api/centers", centersRoutes);
@@ -87,6 +91,10 @@ const appRoutes = (app) => {
   app.use("/api/leave-balance", leaveBalanceRoutes);
   app.use("/api/leave-ledger", leaveLedgerRoutes);
   app.use("/api/leave-reports", leaveReportsRoutes);
+
+  // helpdesk
+  app.use("/api/tickets", ticketRoutes);
+  app.use("/api/ticket-messages", ticketMessageRoutes);
 };
 
 module.exports = appRoutes;

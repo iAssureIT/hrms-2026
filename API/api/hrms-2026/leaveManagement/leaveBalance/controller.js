@@ -1,4 +1,8 @@
 const LeaveBalance = require("./model");
+const Employee = require("../../employeeManagement/model");
+const LeaveType = require("../leaveTypes/model");
+const LeaveLedger = require("../leaveLedger/model");
+const moment = require("moment");
 
 // CREATE or INITIALIZE balance for employee
 exports.createLeaveBalance = async (req, res) => {
@@ -59,6 +63,69 @@ exports.updateLeaveBalance = async (req, res) => {
       new: true,
     });
     res.status(200).json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// SYNC ALL BALANCES for current year
+exports.syncAllBalances = async (req, res) => {
+  try {
+    const year = req.body.year || moment().year();
+    const createdBy = req.body.createdBy;
+
+    const employees = await Employee.find(); // Handle records without status field
+    const leaveTypes = await LeaveType.find({ 
+      leaveCode: { $ne: "LOP" },
+      $or: [{ status: "ACTIVE" }, { status: { $exists: false } }] 
+    });
+
+    let createdCount = 0;
+    let skippedCount = 0;
+
+    for (let emp of employees) {
+      for (let type of leaveTypes) {
+        // Check if balance already exists
+        const exists = await LeaveBalance.findOne({
+          employeeId: emp._id,
+          leaveTypeId: type._id,
+          year: year,
+        });
+
+        if (!exists) {
+          const balance = await LeaveBalance.create({
+            employeeId: emp._id,
+            leaveTypeId: type._id,
+            year: year,
+            openingBalance: type.maxDaysPerYear || 0,
+            remainingBalance: type.maxDaysPerYear || 0,
+            earnedDays: 0,
+            usedDays: 0,
+            createdBy: createdBy,
+          });
+
+          await LeaveLedger.create({
+            employeeId: emp._id,
+            leaveTypeId: type._id,
+            year: year,
+            transactionType: "OPENING",
+            days: type.maxDaysPerYear || 0,
+            balanceAfter: type.maxDaysPerYear || 0,
+            remarks: `Yearly balance initialization for ${year}`,
+            createdBy: createdBy,
+          });
+
+          createdCount++;
+        } else {
+          skippedCount++;
+        }
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Sync completed. Created: ${createdCount}, Skipped: ${skippedCount}`,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

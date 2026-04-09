@@ -255,7 +255,7 @@
 //     <div>
 //       <div className={`block lg:flex sticky top-0 z-50`}>
 //         <div
-//           className={`sticky top-0 z-10 
+//           className={`sticky top-0 z-10
 //             ${
 //               open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
 //             } duration-300 `}
@@ -295,7 +295,7 @@
 //           />
 //         </div>
 //         <div
-//           className={` 
+//           className={`
 //               ${
 //                 open
 //                   ? "w-[40%] lg:w-[82%] overflow-x-hidden"
@@ -311,16 +311,7 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-// changes by Neha 
+// changes by Neha
 "use client";
 import React, { useEffect, useState } from "react";
 import { idContext } from "@/context/IdContext";
@@ -390,14 +381,15 @@ export default function RootLayout({ children }) {
 
   const roles = userDetails?.role || userDetails?.roles || [];
   const roleArray = Array.isArray(roles)
-    ? roles.map(r => r.toString().toLowerCase())
+    ? roles.map((r) => r.toString().toLowerCase())
     : [roles.toString().toLowerCase()];
 
-  const isAssetRole = roleArray.some(r =>
-    r === "admin" ||
-    r === "account-admin" ||
-    r === "account-manager" ||
-    r === "account-incharge"
+  const isAssetRole = roleArray.some(
+    (r) =>
+      r === "admin" ||
+      r === "account-admin" ||
+      r === "account-manager" ||
+      r === "account-incharge",
   );
 
   const sidebarData = [
@@ -438,6 +430,16 @@ export default function RootLayout({ children }) {
       title: "Employee Master",
       icon: <FaUser />,
       link: "/asset/management/employee-master",
+    },
+    {
+      title: "Leaves",
+      icon: <FaRegCalendarAlt />,
+      link: "/admin/leaves",
+    },
+    {
+      title: "Helpdesk",
+      icon: <FaTools />,
+      link: "/admin/helpdesk",
     },
     {
       title: "Vendor Master",
@@ -481,8 +483,6 @@ export default function RootLayout({ children }) {
         },
       ],
     },
-
-
 
     {
       title: "User Management",
@@ -636,15 +636,17 @@ export default function RootLayout({ children }) {
       <div className={`block lg:flex sticky top-0 z-50`}>
         <div
           className={`sticky top-0 z-10 
-            ${open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
+            ${
+              open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
             } duration-300 `}
         >
           <Logo open={open} />
         </div>
         <div
           className={`sticky top-0 left-0 z-50
-              ${open ? "w-[100%] lg:w-[82%]" : " w-[100%] lg:w-[95%]"
-            } duration-300`}
+              ${
+                open ? "w-[100%] lg:w-[82%]" : " w-[100%] lg:w-[95%]"
+              } duration-300`}
         >
           <Navbar
             navbarData={navbarData}
@@ -667,7 +669,10 @@ export default function RootLayout({ children }) {
 
         <div
           className={`z-40 ${open ? "fixed lg:sticky w-[75%] shadow-2xl" : "w-0 lg:w-[5%]"} 
-            ${open ? "lg:w-[18%] lg:shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)]" : ""
+            ${
+              open
+                ? "lg:w-[18%] lg:shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)]"
+                : ""
             } duration-300 bg-white h-full lg:h-auto`}
         >
           <Sidebar
@@ -680,9 +685,8 @@ export default function RootLayout({ children }) {
 
         <div
           className={`w-full 
-            ${open
-              ? "lg:w-[82%] overflow-x-hidden"
-              : "lg:w-[95%]"
+            ${
+              open ? "lg:w-[82%] overflow-x-hidden" : "lg:w-[95%]"
             } duration-300`}
         >
           <idContext.Provider value={{ approvalId, setApprovalId }}>
@@ -695,4 +699,3 @@ export default function RootLayout({ children }) {
     // </html> */}
   );
 }
-

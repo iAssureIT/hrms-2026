@@ -30,8 +30,13 @@ const ApplyLeaveModal = ({ onClose, onSuccess }) => {
   const fetchEmployees = async () => {
     try {
       const res = await axios.get("/api/employees/get");
-      if (res.data) {
+      console.log("FETCH EMPLOYEES DATA:", res.data);
+      if (Array.isArray(res.data)) {
         setEmployees(res.data);
+      } else if (res.data && Array.isArray(res.data.data)) {
+        setEmployees(res.data.data);
+      } else if (res.data && Array.isArray(res.data.tableData)) {
+        setEmployees(res.data.tableData);
       }
     } catch (err) {
       console.error("Error fetching employees:", err);
@@ -41,10 +46,11 @@ const ApplyLeaveModal = ({ onClose, onSuccess }) => {
   const fetchLeaveTypes = async () => {
     try {
       const res = await axios.get("/api/leave-types");
-      if (res.data.success) {
+      console.log("FETCH LEAVE TYPES DATA:", res.data);
+      if (res.data.success && Array.isArray(res.data.data)) {
         setLeaveTypes(res.data.data);
-      } else {
-        setLeaveTypes(res.data); // Fallback if direct array
+      } else if (Array.isArray(res.data)) {
+        setLeaveTypes(res.data);
       }
     } catch (err) {
       console.error("Error fetching leave types:", err);
