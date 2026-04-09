@@ -1,32 +1,26 @@
 import React from "react";
-import Image from "next/image";
 
-const Logo = ({ sidebarData, open, setOpen }) => {
+const Logo = ({ open }) => {
   return (
-    <div className={`bg-white hover:bg-gray-50 justify-center sticky top-0`}>
+    <div className={`bg-white hover:bg-gray-50 flex items-center justify-start sticky top-0 h-[64px] transition-all duration-300 border-b border-gray-100`}>
       {open ? (
-        <div className="h-[52px] justify-center">
-          <Image
-            src={sidebarData[0].logoimgfull}
-            alt="Full Logo Image"
-            className={`h-12 w-40 justify-center mx-auto ${!open && "ps-1"}`}
-          />
+        <div className="flex items-center px-4 w-full cursor-pointer group">
+          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
+             <span className="text-white font-black text-xl italic tracking-tighter">H</span>
+          </div>
+          <div className="ml-3 flex flex-col">
+            <h1 className="text-2xl font-black text-slate-800 tracking-tight leading-none">
+              HRMS<span className="text-green-600">.</span>
+            </h1>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">
+              Management Suite
+            </span>
+          </div>
         </div>
       ) : (
-        <div>
-          <div className="h-[52px] hidden lg:block">
-            <Image
-              src={sidebarData[1].logoimgsm}
-              alt="Logo"
-              className={`h-12 w-12 ms-2 ${!open && ""}`}
-            />
-          </div>
-          <div className="h-[52px] block lg:hidden">
-            <Image
-              src={sidebarData[0].logoimgfull}
-              alt="Logo"
-              className={`h-12 w-40 justify-center mx-auto ${!open && ""}`}
-            />
+        <div className="flex items-center justify-center w-full h-full cursor-pointer">
+          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md transform hover:scale-110 transition-transform duration-300">
+             <span className="text-white font-black text-xl italic tracking-tighter">H</span>
           </div>
         </div>
       )}

@@ -328,15 +328,13 @@ import { Inter } from "next/font/google";
 import axios from "axios";
 import Image from "next/image";
 import Sidebar from "@/components/common/LeftSideBar/Sidebar";
-import Navbar from "@/components/common/HeaderView/Navbar";
-import Logo from "@/components/common/logo/logo";
-import { useRouter } from "next/navigation";
-import profileimg from "../../public/images/specific/user5.jpeg";
-import logoimgfull from "../../public/images/specific/logo.webp";
-import logoimgsm from "../../public/images/specific/logo-2.webp";
 import ls from "localstorage-slim";
 
 const inter = Inter({ subsets: ["latin"] });
+import Logo from "@/components/common/logo/logo";
+import Navbar from "@/components/common/HeaderView/Navbar";
+import { useRouter } from "next/navigation";
+import profileimg from "../../public/images/specific/user5.jpeg";
 import {
   BsBank,
   BsBoxes,
@@ -375,8 +373,8 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const metadata = {
-  title: "LupinMIS",
-  description: " ",
+  title: "HRMS 2026",
+  description: "Human Resource Management System",
 };
 
 export default function RootLayout({ children }) {
@@ -403,12 +401,11 @@ export default function RootLayout({ children }) {
   );
 
   const sidebarData = [
-    { logoimgfull: logoimgfull },
-    { logoimgsm: logoimgsm },
     { title: "Dashboard", link: "/admin/dashboard" },
 
     {
-      title: "Asset Registry",
+      title: "Asset Management",
+      submenu: true,
       icon: <BsBoxes />,
       link: "/asset/management",
     },
@@ -443,11 +440,6 @@ export default function RootLayout({ children }) {
       link: "/asset/management/employee-master",
     },
     {
-      title: "Leaves",
-      icon: <FaRegCalendarAlt />,
-      link: "/admin/leaves",
-    },
-    {
       title: "Vendor Master",
       icon: <BsBank />,
       link: "/asset/master-data/vendor-master/vendor-list",
@@ -459,46 +451,39 @@ export default function RootLayout({ children }) {
       submenuItems: [
         {
           icon: <FaRegCircle />,
-          title: "Center Details",
-          link: "/admin/master-data/center-details/center-details-list",
+          title: "Asset Registry",
+          link: "/asset/management",
         },
         {
           icon: <FaRegCircle />,
-          title: "Location",
-          link: "/asset/master-data/sublocation",
+          title: "Asset Maintenance",
+          link: "/asset/management/maintenance-list",
         },
         {
           icon: <FaRegCircle />,
-          title: "Asset Category",
-          link: "/asset/master-data/asset-category-subcategory",
-        },
-        {
-          icon: <FaRegCircle />,
-          title: "Bank Details",
-          link: "/admin/master-data/bank-details/bank-details-list",
-        },
-        {
-          icon: <FaRegCircle />,
-          title: "Unit of Measurement",
-          link: "/admin/master-data/unit",
-        },
-        {
-          icon: <FaRegCircle />,
-          title: "Asset Inspection Checklist",
-          link: "/asset/master-data/asset-inspection-checklist",
+          title: "Asset Audit",
+          link: "/asset/management/asset-audit",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Depreciation",
-          link: "/asset/master-data/asset-depreciation",
+          link: "/asset/management/depreciation",
         },
         {
           icon: <FaRegCircle />,
-          title: "Department",
-          link: "/asset/master-data/department-subdepartment",
+          title: "Gate Pass Management",
+          link: "/asset/management/gate-pass-management",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Disposal",
+          link: "/asset/management/asset-disposal",
         },
       ],
     },
+
+
+
     {
       title: "User Management",
       icon: <FaUser />,
@@ -552,6 +537,63 @@ export default function RootLayout({ children }) {
       link: "/admin/payroll-management",
     },
     {
+      title: "Master Data",
+      submenu: true,
+      icon: <BsClipboardDataFill />,
+      submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Center Details",
+          link: "/admin/master-data/center-details/center-details-list",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Location Master",
+          link: "/asset/master-data/sublocation",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Category Master",
+          link: "/asset/master-data/asset-category-subcategory",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Bank Details",
+          link: "/admin/master-data/bank-details/bank-details-list",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Unit of Measurement",
+          link: "/admin/master-data/unit",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Inspection Checklist Master",
+          link: "/asset/master-data/asset-inspection-checklist",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Depreciation Master",
+          link: "/asset/master-data/asset-depreciation",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Department Master",
+          link: "/asset/master-data/department-subdepartment",
+        },
+      ],
+    },
+    {
+      title: "Employee Master",
+      icon: <FaUser />,
+      link: "/asset/management/employee-master",
+    },
+    {
+      title: "Vendor Master",
+      icon: <BsBank />,
+      link: "/asset/master-data/vendor-master/vendor-list",
+    },
+    {
       title: "Reports Hub",
       icon: <FaChartPie />,
       link: "/admin/reports-hub",
@@ -597,7 +639,7 @@ export default function RootLayout({ children }) {
             ${open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
             } duration-300 `}
         >
-          <Logo sidebarData={sidebarData} open={open} setOpen={setOpen} />
+          <Logo open={open} />
         </div>
         <div
           className={`sticky top-0 left-0 z-50

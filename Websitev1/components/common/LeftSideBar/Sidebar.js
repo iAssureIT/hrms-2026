@@ -245,7 +245,7 @@ const Sidebar = ({ sidebarData, onItemClick, open, setOpen }) => {
     >
       <div>
         <ul className={`pt-0 ${!open && "px-0"}`}>
-          {sidebarData.slice(2).map((menu, index) => (
+          {sidebarData.map((menu, index) => (
             <div key={index}>
               <li
                 className={`text-sm flex gap-x-3 p-2 group cursor-pointer px-0 lg:px-1 hover:bg-lightgreen text-black mt-0 hover:text-Green h-auto ${

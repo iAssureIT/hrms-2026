@@ -282,7 +282,7 @@ const AddEmployee = () => {
                                         <input
                                             type="email"
                                             className="stdInputField w-full pl-12"
-                                            placeholder="email@lupin.com"
+                                            placeholder="employee@hrms.com"
                                             value={formData.employeeEmail}
                                             onChange={(e) => setFormData({ ...formData, employeeEmail: e.target.value })}
                                         />

@@ -23,7 +23,7 @@ function MenuBar2(props) {
 
             <div className="w-full lg:w-auto text-center lg:text-right mt-4 lg:mt-0 lg:ml-auto flex-1">
               <h1 className="heading text-xl md:text-3xl font-extrabold text-gray-800">
-                Lupin Human Welfare & Research Foundation
+                HRMS 2026 Management Suite
               </h1>
             </div>
           </div>

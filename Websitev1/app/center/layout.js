@@ -7,13 +7,10 @@ import axios from "axios";
 import Image from "next/image";
 import Sidebar from "@/components/common/LeftSideBar/Sidebar";
 import Navbar from "@/components/common/HeaderView/Navbar";
+import ls from "localstorage-slim";
 import Logo from "@/components/common/logo/logo";
 import { useRouter } from "next/navigation";
 import profileimg from "../../public/images/generic/userimage.jpg";
-import logoimgfull from "../../public/images/specific/logo.webp";
-import logoimgsm from "../../public/images/specific/logo-2.webp";
-import ls from "localstorage-slim";
-
 import {
   BsBank,
   BsBoxes,
@@ -44,8 +41,8 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const metadata = {
-  title: "LupinMIS",
-  description: " ",
+  title: "HRMS 2026",
+  description: "Human Resource Management System",
 };
 
 export default function RootLayout({ children }) {
@@ -59,8 +56,6 @@ export default function RootLayout({ children }) {
   }, []);
 
   const sidebarData = [
-    { logoimgfull: logoimgfull },
-    { logoimgsm: logoimgsm },
     { title: "Dashboard", link: "/center/dashboard" },
     {
       title: "Master-Data",
@@ -202,7 +197,7 @@ export default function RootLayout({ children }) {
       link: `/center/center-profile/${userDetails?.center_id}`,
     },
     {
-      title: "User Manual",
+      title: "HRMS User Manual",
       icon: <IoMdDocument />,
       link: "/files/User Manual_Lupin_Center.pdf",
     },
@@ -241,7 +236,7 @@ export default function RootLayout({ children }) {
             ${open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
             } duration-300 `}
         >
-          <Logo sidebarData={sidebarData} open={open} setOpen={setOpen} />
+          <Logo open={open} />
         </div>
         <div
           className={`sticky top-0 left-0 z-50

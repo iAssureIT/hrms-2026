@@ -183,8 +183,8 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 var currentYear = new Date().getFullYear();
 
 const metadata = {
-  title: "MIS for Lupin Foundation CSR",
-  description: "",
+  title: "HRMS 2026",
+  description: "Human Resource Management System",
 };
 
 const content_Menubar = {
@@ -217,7 +217,7 @@ const content_Footer = {
   copyrightText:
     '<span class="text-black font-normal">Copyright © ' +
     currentYear +
-    ', <span class="text-blue-600 font-bold underline hover:text-blue-800"><a href="/"  target="_blank" >Lupin Foundation</a></span> All Rights Reserved</span>',
+    ', <span class="text-blue-600 font-bold underline hover:text-blue-800"><a href="/"  target="_blank" >HRMS 2026</a></span> All Rights Reserved</span>',
   PrivacyPageURL: "/privacy-policy",
   footerText:
     '<span class="text-black mr-1">Designed & Developed By</span> <span class="text-blue-600 font-bold underline hover:text-blue-800"> <a href="https://iassureit.com/" target="_blank"> iAssure International Technologies Pvt. Ltd.</a></span>',

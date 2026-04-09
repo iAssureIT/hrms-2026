@@ -119,13 +119,11 @@ const ViewAssetDepreciation = ({ assetId }) => {
                 {/* Header Section */}
                 <div className="flex justify-between items-start mb-8 pb-8 border-b border-slate-100">
                     <div className="flex items-center gap-4">
-                        <img
-                            src="/images/specific/logo.webp"
-                            alt="Lupin Foundation Logo"
-                            className="h-16 w-auto object-contain"
-                        />
+                        <div className="flex-shrink-0 w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                             <span className="text-white font-black text-2xl italic tracking-tighter">H</span>
+                        </div>
                         <div className="border-l-2 border-slate-100 pl-4">
-                            <h1 className="text-lg font-black text-slate-800 tracking-tight leading-none uppercase">Lupin Foundation</h1>
+                            <h1 className="text-lg font-black text-slate-800 tracking-tight leading-none uppercase">HRMS 2026</h1>
                             <p className="text-[10px] font-black text-green-600 uppercase tracking-[0.2em] mt-1.5">Asset Depreciation Detail</p>
                             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Written Down Value (WDV) Analysis</p>
                         </div>
@@ -242,7 +240,7 @@ const ViewAssetDepreciation = ({ assetId }) => {
                     </div>
                     <div className="text-right min-w-[200px]">
                         <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none mb-2">End of Valuation Report</p>
-                        <p className="text-[9px] font-black text-slate-400 font-mono tracking-tighter opacity-60">REF: LF-{assetData.assetID}-WDV</p>
+                        <p className="text-[9px] font-black text-slate-400 font-mono tracking-tighter opacity-60">REF: HRMS-{assetData.assetID}-WDV</p>
                     </div>
                 </div>
 

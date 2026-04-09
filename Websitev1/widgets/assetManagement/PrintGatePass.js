@@ -145,13 +145,11 @@ const PrintGatePass = ({ passId }) => {
                 {/* Logo & Header */}
                 <div className="flex justify-between items-start mb-8">
                     <div className="flex items-center gap-4">
-                        <img
-                            src="/images/specific/logo.webp"
-                            alt="Lupin Foundation Logo"
-                            className="h-16 w-auto object-contain"
-                        />
-                        <div className="hidden">
-                            <h1 className="text-2xl font-black text-slate-800 tracking-tight leading-none">LUPIN FOUNDATION</h1>
+                        <div className="flex-shrink-0 w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                             <span className="text-white font-black text-2xl italic tracking-tighter">H</span>
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-black text-slate-800 tracking-tight leading-none uppercase">HRMS 2026</h1>
                         </div>
                         <div className="border-l-2 border-slate-100 pl-4">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Asset Management</p>

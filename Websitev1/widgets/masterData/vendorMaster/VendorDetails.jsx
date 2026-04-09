@@ -193,7 +193,7 @@ const VendorDetails = () => {
                             </div>
 
                             <div>
-                                <p className="text-gray-500 text-sm">Lupin Center</p>
+                                <p className="text-gray-500 text-sm">Registered Center</p>
                                 <p className="font-semibold">{v.lupinFoundationCenterName}</p>
                             </div>
 
