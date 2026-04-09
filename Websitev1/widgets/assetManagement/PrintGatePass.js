@@ -243,7 +243,7 @@ const PrintGatePass = ({ passId }) => {
                                         <td className="px-4 py-2 text-[10px] font-bold text-slate-700">{asset.model || "NA"}</td>
                                         <td className="px-4 py-2 text-[10px] font-black text-slate-800 text-center">{asset.quantity}</td>
                                         <td className="px-4 py-2">
-                                            <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${asset.type === 'RETURNABLE' ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-500'}`}>
+                                            <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${asset.type === 'RETURNABLE' ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-slate-500'}`}>
                                                 {asset.type}
                                             </span>
                                         </td>

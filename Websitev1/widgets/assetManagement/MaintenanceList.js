@@ -223,7 +223,7 @@ function MaintenanceList() {
               statusColor = "bg-green-600 text-white border-green-700";
               break;
             case "IN_PROGRESS":
-              statusColor = "bg-blue-600 text-white border-blue-700";
+              statusColor = "bg-green-600 text-white border-green-700";
               break;
             case "SCHEDULED":
               statusColor = "bg-cyan-600 text-white border-cyan-700";

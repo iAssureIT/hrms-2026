@@ -519,7 +519,7 @@ class SignUp extends Component {
                 </div>
 
                 {this.state.btnLoading ? (
-                  <button type="submit" className="stdBtn bg-blue-500">
+                  <button type="submit" className="stdBtn bg-green-500">
                     <span>
                       <i className="fa fa-spin fa-spinner"></i>
                     </span>
@@ -527,7 +527,7 @@ class SignUp extends Component {
                 ) : (
                   <button
                     type="submit"
-                    className="stdBtn bg-blue-600"
+                    className="stdBtn bg-green-600"
                     onClick={this.userSignupWithOtp}
                   >
                     Sign Up

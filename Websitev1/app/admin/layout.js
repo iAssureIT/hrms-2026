@@ -356,6 +356,10 @@ import {
   FaChartLine,
   FaIdCard,
   FaTrashAlt,
+  FaCalendarCheck,
+  FaFileImport,
+  FaMoneyCheckAlt,
+  FaChartPie,
 } from "react-icons/fa";
 import { IoMdDocument, IoMdSettings } from "react-icons/io";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -494,6 +498,26 @@ export default function RootLayout({ children }) {
       title: "User Management",
       icon: <FaUser />,
       link: "/admin/user-management",
+    },
+    {
+      title: "Attendance Matrix",
+      icon: <FaCalendarCheck />,
+      link: "/admin/attendance-management/matrix",
+    },
+    // {
+    //   title: "Attendance Data Entry",
+    //   icon: <FaFileImport />,
+    //   link: "/admin/attendance-management/data-entry",
+    // },
+    {
+      title: "Payroll Management",
+      icon: <FaMoneyCheckAlt />,
+      link: "/admin/payroll-management",
+    },
+    {
+      title: "Reports Hub",
+      icon: <FaChartPie />,
+      link: "/admin/reports-hub",
     },
     {
       title: "User Manual",

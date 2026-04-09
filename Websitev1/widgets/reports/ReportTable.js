@@ -1629,7 +1629,7 @@ const GenericReport = ({
                             className={
                               "page-item hover border border-gray-400 cursor-pointer text-center font-semibold flex items-center justify-center min-w-[32px] md:min-w-[40px] h-8 md:h-10 px-1 md:px-2 " +
                               (pageNumber === item
-                                ? " active bg-blue-500 text-white border-blue-500"
+                                ? " active bg-green-500 text-white border-green-500"
                                 : "bg-white text-gray-700")
                             }
                             onClick={() => {

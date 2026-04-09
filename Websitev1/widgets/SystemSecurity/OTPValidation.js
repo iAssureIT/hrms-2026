@@ -236,7 +236,7 @@ class ConfirmOTP extends Component {
                   ) : (
                     <a
                       href=""
-                      className="flex items-center text-blue-500 hover:text-blue-700 text-sm font-semibold underline underline-offset-2"
+                      className="flex items-center text-green-500 hover:text-green-700 text-sm font-semibold underline underline-offset-2"
                       onClick={this.resendOTP.bind(this)}
                     >
                       <span>Resend OTP</span>
@@ -257,7 +257,7 @@ class ConfirmOTP extends Component {
               <div className="text-left mt-4">
                 <a
                   href="/auth/login"
-                  className="underline underline-offset-2 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700"
+                  className="underline underline-offset-2 text-sm font-semibold inputLabel text-green-500 hover:text-green-700"
                 >
                   Back to Login
                 </a>

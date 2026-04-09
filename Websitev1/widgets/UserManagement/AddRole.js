@@ -180,7 +180,7 @@ function AddRole() {
                     {...register("role", { required: true })}
                     value={role}
                     className="stdInputField"
-                    // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                     placeholder="Add Role..."
                     required
                     onChange={(e) => setRole(e.value)}
@@ -214,7 +214,7 @@ function AddRole() {
                 <button
                   type="submit"
                   className="formButtons"
-                  // className="text-white bg-site hover:bg-site focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-10 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  // className="text-white bg-site hover:bg-site focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-10 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800"
                 >
                   {update ? "Update" : "Submit"}
                 </button>

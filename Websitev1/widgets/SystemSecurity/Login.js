@@ -337,18 +337,18 @@ function Login(props) {
             <div className="text-left lg:mt-4">
               <a
                 href="/auth/forgot-password"
-                className="underline underline-offset-2  text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
+                className="underline underline-offset-2  text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
                 onClick={() => {
                   setLoading(true);
                 }}
               >
                 {loading ? (
-                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
                     Forgot Password?
                     <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
                   </span>
                 ) : (
-                  <span className="text-sm text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                  <span className="text-sm text-green-500 hover:text-green-700 focus:text-blue-800">
                     Forgot Password?
                   </span>
                 )}

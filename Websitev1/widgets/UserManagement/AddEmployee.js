@@ -260,7 +260,7 @@ function AddEmployee(props) {
                     setFirstName(e.target.value);
                     clearErrors("first_name");
                   }}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                   placeholder="Enter Firstname..."
                 />
                 {errors?.first_name && (
@@ -285,7 +285,7 @@ function AddEmployee(props) {
                     setLastName(e.target.value);
                     clearErrors("last_name");
                   }}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                   placeholder="Enter Lastname..."
                 />
                 {errors?.last_name && (
@@ -310,7 +310,7 @@ function AddEmployee(props) {
                     clearErrors("phone");
                   }}
                   value={phone}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                   placeholder="Enter Mobile number..."
                   pattern="/^+91(7\d|8\d|9\d)\d{9}$/"
                 />
@@ -337,7 +337,7 @@ function AddEmployee(props) {
                     clearErrors("email");
                   }}
                   value={email}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                   placeholder="Enter Email..."
                 />
                 {errors?.email && (
@@ -361,7 +361,7 @@ function AddEmployee(props) {
                     setRole(e.target.value);
                     clearErrors("role");
                   }}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                 >
                   <option value="" selected>
                     Select Role
@@ -383,7 +383,7 @@ function AddEmployee(props) {
               </div>
               {/* <div >
                             <label for="department" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Department<span className="text-red-500">*</span></label>
-                            <select id="department"  value={department} {...register("department")} onChange={(e)=>{getDesignationList(e.target.value);clearErrors('department')}}  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
+                            <select id="department"  value={department} {...register("department")} onChange={(e)=>{getDesignationList(e.target.value);clearErrors('department')}}  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" >
                                 <option value=""  selected>Select Department</option>
                                 {departmentList &&
                                     departmentList.map((item,index)=>{
@@ -397,7 +397,7 @@ function AddEmployee(props) {
                         </div> 
                         <div >
                             <label for="designation" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Designation<span className="text-red-500">*</span></label>
-                            <select id="designation" value={designation} {...register("designation")} onChange={(e)=>{setDesignation(e.target.value);clearErrors('designation')}}  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <select id="designation" value={designation} {...register("designation")} onChange={(e)=>{setDesignation(e.target.value);clearErrors('designation')}}  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
                                 <option value="" selected >Select Designation</option>
                                 {designationList &&
                                     designationList.map((item,index)=>{
@@ -412,7 +412,7 @@ function AddEmployee(props) {
                         </div> 
                         <div >
                             <label for="reporting_manager" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Reporting Manager</label>
-                            <select id="reporting_manager" value={reporting_manager}  {...register("reporting_manager")} onChange={(e)=>{setReportingManager(e.target.value);clearErrors('reporting_manager')}}   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <select id="reporting_manager" value={reporting_manager}  {...register("reporting_manager")} onChange={(e)=>{setReportingManager(e.target.value);clearErrors('reporting_manager')}}   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
                                 <option value=""   selected>Select Reporting Manager</option>
                                     {managerList  && managerList.length> 0 &&
                                     managerList.map((item,index)=>{
@@ -428,7 +428,7 @@ function AddEmployee(props) {
 
             <button
               type="submit"
-              className="text-white bg-site hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="text-white bg-site hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800"
             >
               {props.edit ? "Update" : "Submit"}
             </button>

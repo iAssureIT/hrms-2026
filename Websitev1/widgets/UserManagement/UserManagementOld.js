@@ -782,7 +782,7 @@ export default function UserManagement() {
                 id="action"
                 value={action}
                 onChange={(e) => performAction(e.target.value)}
-                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                 className={stdSelectField}
               >
                 <option value="" disabled>
@@ -821,7 +821,7 @@ export default function UserManagement() {
                 onChange={(e) =>
                   getListByStatusRole(e.target.value, roleaction)
                 }
-                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                 className={stdSelectField}
               >
                 <option value="-" disabled>
@@ -841,7 +841,7 @@ export default function UserManagement() {
                   getListByStatusRole(statusaction, e.target.value)
                 }
                 // <select id="roleaction" value={roleaction} onChange={(e)=>getListByRole(e.target.value)}
-                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
                 className={stdSelectField}
               >
                 <option value="-" disabled>
@@ -1066,7 +1066,7 @@ export default function UserManagement() {
                               {/* {lastloggedin ? (
                                   <Tooltip content="User Login Details">
                                     <span
-                                      className="w-full capitalise text-blue-500 hover:underline"
+                                      className="w-full capitalise text-green-500 hover:underline"
                                       onClick={() => {
                                         setLoginDetailsModal(true);
                                         showUserDetails(_id);
@@ -1096,7 +1096,7 @@ export default function UserManagement() {
 
                             {/* <Tooltip content="Show" >
                                 <IconButton variant="text" onClick={()=>{showProfile(_id)}}>
-                                  <FontAwesomeIcon  className='pt-1 h-4 w-4  cursor-pointer text-blue-500'  icon={faEye} color='#000' /> 
+                                  <FontAwesomeIcon  className='pt-1 h-4 w-4  cursor-pointer text-green-500'  icon={faEye} color='#000' /> 
                                 </IconButton>
                               </Tooltip> */}
                             <Tooltip content="Delete">

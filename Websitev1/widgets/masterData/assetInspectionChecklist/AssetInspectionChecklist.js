@@ -322,7 +322,7 @@ const AssetInspectionChecklist = () => {
                                             <td className="px-6 py-4 border border-gray-200">
                                                 <div className="flex items-center justify-center gap-3">
                                                     <button onClick={() => handleEdit(data)}>
-                                                        <MdOutlineEdit className="text-gray-500 hover:text-blue-600 cursor-pointer" size={20} />
+                                                        <MdOutlineEdit className="text-gray-500 hover:text-green-600 cursor-pointer" size={20} />
                                                     </button>
                                                     <button onClick={() => handleDelete(data._id)}>
                                                         <RiDeleteBin6Line className="text-red-500 hover:text-red-700 cursor-pointer" size={20} />

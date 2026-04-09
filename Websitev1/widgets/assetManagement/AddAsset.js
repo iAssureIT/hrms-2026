@@ -904,7 +904,7 @@ const AddAsset = () => {
                                                     <div className="flex items-center gap-2 min-w-0">
                                                         {file.fileType === "application/pdf"
                                                             ? <MdPictureAsPdf className="text-red-500 text-lg flex-shrink-0" />
-                                                            : <MdImage className="text-blue-500 text-lg flex-shrink-0" />
+                                                            : <MdImage className="text-green-500 text-lg flex-shrink-0" />
                                                         }
                                                         <div className="min-w-0">
                                                             <p className="text-[12px] font-semibold text-gray-700 truncate max-w-[160px]">{file.fileName}</p>

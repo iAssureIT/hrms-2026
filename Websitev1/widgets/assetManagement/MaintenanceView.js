@@ -194,7 +194,7 @@ const MaintenanceView = () => {
                             <div className="flex flex-wrap gap-3">
                                 {data.status === "SCHEDULED" && (
                                     <button onClick={() => handleStatusUpdate("IN_PROGRESS")}
-                                        className="px-6 py-2 bg-blue-600 text-white rounded-md text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700 transition-all shadow-md">
+                                        className="px-6 py-2 bg-green-600 text-white rounded-md text-[10px] font-bold uppercase tracking-widest hover:bg-green-700 transition-all shadow-md">
                                         Start Repair
                                     </button>
                                 )}

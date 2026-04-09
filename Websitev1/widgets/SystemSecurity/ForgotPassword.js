@@ -148,19 +148,19 @@ class ForgotPassword extends Component {
             <div className="flex flex-col sm:flex-row sm:justify-between items-center sm:items-baseline gap-4 sm:gap-0">
               <a
                 href="/auth/login"
-                className="underline underline-offset-2 sm:pt-5 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
+                className="underline underline-offset-2 sm:pt-5 text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
                 onClick={() => {
                   this.setState({ loading: true });
                 }}
-                // className="text-blue-700 hover:text-blue-900 cursor-pointer font-sm"
+                // className="text-green-700 hover:text-blue-900 cursor-pointer font-sm"
               >
                 {this.state.loading ? (
-                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
                     Back to Login
                     <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
                   </span>
                 ) : (
-                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
                     Back to Login
                   </span>
                 )}

@@ -487,7 +487,7 @@ const AddMaintenance = () => {
                                             <div className="mt-4 flex flex-wrap gap-2">
                                                 {uploadedFiles.map((file, idx) => (
                                                     <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-100 rounded-lg shadow-sm text-[11px] font-bold text-gray-600">
-                                                        {file.fileName.endsWith('.pdf') ? <MdPictureAsPdf className="text-red-500" /> : <MdImage className="text-blue-500" />}
+                                                        {file.fileName.endsWith('.pdf') ? <MdPictureAsPdf className="text-red-500" /> : <MdImage className="text-green-500" />}
                                                         <span className="truncate max-w-[120px]">{file.fileName}</span>
                                                         <MdClose className="text-gray-400 cursor-pointer hover:text-red-500 ml-1" onClick={() => setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx))} />
                                                     </div>

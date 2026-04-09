@@ -338,7 +338,7 @@ const TwoFieldComponent = ({
                   <button
                     type="submit"
                     className="formButtons"
-                    // className="text-white bg-gradient-to-r bg-[#4285F4]  hover:bg-blue-700 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg   inline-flex items-center  font-medium rounded-sm text-sm px-5 h-8 text-center me-4 mb-2"
+                    // className="text-white bg-gradient-to-r bg-[#4285F4]  hover:bg-green-700 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg   inline-flex items-center  font-medium rounded-sm text-sm px-5 h-8 text-center me-4 mb-2"
                   >
                     {editingItem ? "Update" : "Submit"}
                   </button>

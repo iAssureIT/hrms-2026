@@ -115,7 +115,7 @@ function InactiveUsers(props) {
         <div className="flex justify-end m-4">
           <FontAwesomeIcon
             icon={faDownload}
-            className="text-blue-500 cursor-pointer"
+            className="text-green-500 cursor-pointer"
             onClick={handleDownload}
           />
         </div>

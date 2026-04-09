@@ -208,7 +208,7 @@ class Login extends Component {
             <form className="mt-6" action="#" method="POST">
               {/* <div>
                                 <label className="block text-gray-700">Email Address</label>
-                                <input type="email" name="" id="email" placeholder="Enter Email Address" className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus autocomplete required/>
+                                <input type="email" name="" id="email" placeholder="Enter Email Address" className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-green-500 focus:bg-white focus:outline-none" autofocus autocomplete required/>
                             </div> */}
               <div className="space-y-2 md:space-y-2 mb-4">
                 <label className="label">Email ID:</label>
@@ -278,13 +278,13 @@ class Login extends Component {
               </div>
               {/* <div className="mt-4">
                                 <label className="block text-gray-700">Password</label>
-                                <input type="password" name="" id="password" placeholder="Enter Password" minlength="6" className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500
+                                <input type="password" name="" id="password" placeholder="Enter Password" minlength="6" className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-green-500
                                         focus:bg-white focus:outline-none" required />
                             </div> */}
               <div className="text-right mt-2">
                 <a
                   href="/auth/forgot-password"
-                  className="text-sm font-semibold text-[#007bff] hover:text-blue-700 focus:text-blue-700"
+                  className="text-sm font-semibold text-[#007bff] hover:text-green-700 focus:text-green-700"
                 >
                   Forgot Password?
                 </a>
@@ -295,7 +295,7 @@ class Login extends Component {
                 disabled={this.state.loggedIn}
                 className={`
                   stdBtn 
-                  bg-blue-600 
+                  bg-green-600 
                   mt-4
                   relative 
                   transition-all 
@@ -317,7 +317,7 @@ class Login extends Component {
             {/* if signup provided */}
             {/* <hr className="my-3 border-gray-300 w-full" />
             <p className="mt-3">Need an account?
-                <a href="/auth/signup" className="text-blue-500 hover:text-blue-700 font-semibold">
+                <a href="/auth/signup" className="text-green-500 hover:text-green-700 font-semibold">
                     &nbsp; Create an account
                 </a>
             </p> */}

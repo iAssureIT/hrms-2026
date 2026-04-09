@@ -889,7 +889,7 @@ const ViewAsset = () => {
                 <div className="p-6 border-b border-gray-100 bg-gray-50/50">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                      <MdOutlineFactCheck className="text-blue-500" />
+                      <MdOutlineFactCheck className="text-green-500" />
                       {assetData.assetStatus === "ASSET_APPROVAL_PENDING"
                         ? "Asset Content Approval"
                         : "Allocation Request Approval"}
@@ -926,7 +926,7 @@ const ViewAsset = () => {
                       </p>
                     </div>
                     <textarea
-                      className="w-full stdSelectField p-4 min-h-[100px] bg-white border-2 border-gray-100 placeholder:text-gray-300 placeholder:italic resize-none focus:border-blue-500 font-medium outline-none transition-all"
+                      className="w-full stdSelectField p-4 min-h-[100px] bg-white border-2 border-gray-100 placeholder:text-gray-300 placeholder:italic resize-none focus:border-green-500 font-medium outline-none transition-all"
                       placeholder="Add verification notes or reason for rejection..."
                       value={remarks}
                       onChange={(e) => setRemarks(e.target.value)}
@@ -1012,7 +1012,7 @@ const ViewAsset = () => {
                           <h4 className="text-[14px] font-bold text-gray-800">{m.issue?.description}</h4>
                         </div>
                         <span className={`px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-wider border ${m.status === "COMPLETED" ? "bg-green-50 text-green-700 border-green-200" :
-                          m.status === "IN_PROGRESS" ? "bg-blue-50 text-blue-600 border-blue-200" :
+                          m.status === "IN_PROGRESS" ? "bg-green-50 text-green-600 border-green-200" :
                             "bg-amber-50 text-amber-600 border-amber-200"
                           }`}>
                           {m.status?.replace(/_/g, " ")}
@@ -1034,7 +1034,7 @@ const ViewAsset = () => {
                         <div className="flex items-end justify-end">
                           <button
                             onClick={() => router.push(`/${loggedInRole}/asset-management/maintenance-view/${m._id}`)}
-                            className="text-blue-500 hover:underline font-bold"
+                            className="text-green-500 hover:underline font-bold"
                           >
                             View Report
                           </button>
@@ -1082,7 +1082,7 @@ const ViewAsset = () => {
 
                     if (item.statusLabel === "MAKER") {
                       TimelineIcon = MdListAlt;
-                      iconColor = "text-blue-500";
+                      iconColor = "text-green-500";
                     }
 
                     return (
@@ -1104,7 +1104,7 @@ const ViewAsset = () => {
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest
                                 ${item.statusColor === 'green' ? 'bg-green-100 text-green-700' :
                                 item.statusColor === 'red' ? 'bg-red-100 text-red-700' :
-                                  item.statusColor === 'blue' ? 'bg-blue-100 text-blue-700' :
+                                  item.statusColor === 'blue' ? 'bg-green-100 text-green-700' :
                                     item.statusColor === 'yellow' ? 'bg-yellow-100 text-yellow-700' :
                                       'bg-gray-100 text-gray-600'
                               }

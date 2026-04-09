@@ -491,7 +491,7 @@ const VendorBulkUploadPage = () => {
             </div> */}
               {/* <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
-                className="bg-blue-600 h-4 rounded-full"
+                className="bg-green-600 h-4 rounded-full"
                 style={{ width: `${percentage}%` }}
               ></div>
             </div> */}

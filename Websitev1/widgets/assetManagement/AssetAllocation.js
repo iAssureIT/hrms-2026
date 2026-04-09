@@ -619,7 +619,7 @@ const AssetAllocation = () => {
                                                 {suggestions.map((asset) => (
                                                     <div
                                                         key={asset._id}
-                                                        className="px-5 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0 flex justify-between items-center transition-colors"
+                                                        className="px-5 py-3 hover:bg-green-50 cursor-pointer border-b border-gray-50 last:border-0 flex justify-between items-center transition-colors"
                                                         onClick={() => selectAsset(asset)}
                                                     >
                                                         <div>
@@ -640,7 +640,7 @@ const AssetAllocation = () => {
                                             <button
                                                 key={asset._id}
                                                 onClick={() => selectAsset(asset)}
-                                                className="text-blue-600 hover:text-blue-800 font-bold uppercase tracking-tight bg-blue-50/50 px-2 py-0.5 rounded border border-blue-100 transition-colors"
+                                                className="text-green-600 hover:text-blue-800 font-bold uppercase tracking-tight bg-green-50/50 px-2 py-0.5 rounded border border-green-100 transition-colors"
                                             >
                                                 {asset.assetID}
                                             </button>

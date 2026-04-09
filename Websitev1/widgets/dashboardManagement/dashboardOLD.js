@@ -88,7 +88,7 @@ const Dashboard = (props) => {
                           <div className="w-full ">
                             <a target="_blank" href={props.userButtonURL}>
                               {" "}
-                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800">
                               {
                                 props.userButton=== "Add"
                                 ?
@@ -124,7 +124,7 @@ const Dashboard = (props) => {
                           <div className="w-full ">
                             <a target="_blank" href={props.productsButtonURL}>
                               {" "}
-                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800">
                                 {
                                   props.productsButton==="Add"
                                   ?
@@ -160,7 +160,7 @@ const Dashboard = (props) => {
                           <div className="w-full ">
                             <a target="_blank" href={props.photoButtonURL}>
                               {" "}
-                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800">
                                 {
                                   props.photoButton==="Add"
                                   ?
@@ -210,7 +210,7 @@ const Dashboard = (props) => {
                           <div className="w-full ">
                             <a target="_blank" href={props.ArticleButtonURL}>
                               {" "}
-                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                              <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800">
                                 {
                                    props.ArticleButton     ==="Create"
                                    ?

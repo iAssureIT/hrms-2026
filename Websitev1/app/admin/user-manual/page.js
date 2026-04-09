@@ -28,7 +28,7 @@ const page = () => {
                   href="/files/User_Manual_Lupin_2.pptx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 underline underline-offset-4 hover:text-blue-800"
+                  className="text-green-600 underline underline-offset-4 hover:text-blue-800"
                 >
                   View Presentation Online
                 </a>
@@ -39,7 +39,7 @@ const page = () => {
                   href="https://test-lupin.s3.amazonaws.com/User Manual_Lupin_2.pptx"
                   download
                 >
-                  <span className="text-blue-600 underline underline-offset-4 hover:text-blue-800">
+                  <span className="text-green-600 underline underline-offset-4 hover:text-blue-800">
                     Download Presentation
                   </span>
                 </Link>
@@ -58,7 +58,7 @@ const page = () => {
                   href="/files/User Manual_Lupin.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 underline underline-offset-4 hover:text-blue-800"
+                  className="text-green-600 underline underline-offset-4 hover:text-blue-800"
                 >
                   Click to View
                 </a>
@@ -70,7 +70,7 @@ const page = () => {
                   target="_blank"
                   download
                 >
-                  <span className="text-blue-600 underline underline-offset-4 hover:text-blue-800">
+                  <span className="text-green-600 underline underline-offset-4 hover:text-blue-800">
                     Download PDF
                   </span>
                 </Link>

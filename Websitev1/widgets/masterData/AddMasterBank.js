@@ -549,7 +549,7 @@ const BankDetails = () => {
                   type="submit"
                   onClick={handleSubmit}
                   className="formButtons"
-                  // className="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 lg:py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:text-white"
+                  // className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 lg:py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800 dark:text-white"
                   style={{ transition: "background-color 0.3s" }} // Adding transition for smoother theme change
                 >
                   {loading2 && params._id ? (

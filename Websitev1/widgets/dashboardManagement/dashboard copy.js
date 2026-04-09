@@ -103,7 +103,7 @@ const Dashboard = () => {
                   <div className="w-full ">
                     <a target="_blank" href="/admin/add-new-location">
                       {" "}
-                      <button className="float-right px-2 py-1 mr-2 text-xs text-white rounded bg-lightBlue hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                      <button className="float-right px-2 py-1 mr-2 text-xs text-white rounded bg-lightBlue hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800">
                         <i className="mr-1 text-blue-900 bg-white fa-solid fa-plus"></i>
                         Add
                       </button>
@@ -130,7 +130,7 @@ const Dashboard = () => {
                   <div className="w-full ">
                     <a target="_blank" href="/admin/blogs/create-new-blog">
                       {" "}
-                      <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                      <button className="float-right px-2 py-1 mr-2 text-xs text-white bg-blue-800 rounded hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-sm dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800">
                         <i className="mr-1 text-blue-900 bg-white fa-solid fa-plus"></i>
                         Add
                       </button>

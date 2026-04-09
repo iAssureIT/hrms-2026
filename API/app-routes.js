@@ -25,6 +25,10 @@ const departmentMasterRoutes = require("./api/hrms-2026/oneFieldModules/departme
 const subdepartmentMasterRoutes = require("./api/hrms-2026/oneFieldModules/subdepartmentMaster/routes.js");
 // const assetAllocationRoutes = require("./api/hrms-2026/assetAllocation/route.js");
 const employeeManagementRoutes = require("./api/hrms-2026/employeeManagement/route.js");
+const attendanceManagementRoutes = require("./api/hrms-2026/attendanceManagement/route.js");
+const payrollManagementRoutes = require("./api/hrms-2026/payrollManagement/route.js");
+const reportingSystemRoutes = require("./api/hrms-2026/reportingSystem/route.js");
+const dashboardRoutes = require("./api/hrms-2026/dashboard/route.js");
 
 // const programRoutes = require("./api/hrms-2026/oneFieldModules/programManagement/routesNew.js");
 // const projectRoutes = require("./api/hrms-2026/oneFieldModules/projectManagement/routesNew.js");
@@ -59,6 +63,10 @@ const appRoutes = (app) => {
   // app.use("/api/account-header-master", accountHeaderMasterRoutes);
   app.use("/api/tdsmaster", tdsMasterRoutes);
   app.use("/api/vendor-master", vendorMasterRoutes);
+  app.use("/api/attendance", attendanceManagementRoutes);
+  app.use("/api/payroll", payrollManagementRoutes);
+  app.use("/api/reports", reportingSystemRoutes);
+  app.use("/api/dashboard", dashboardRoutes);
 
   // core-admin api
   app.use("/startup", startupRoutes);

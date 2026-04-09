@@ -170,13 +170,13 @@ export default class ForgotPasswordConfirmOtp extends Component {
                 ) : (
                   <a
                     href=""
-                    className="underline underline-offset-2 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
+                    className="underline underline-offset-2 text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
                     // className={
-                    //   "flex items-center text-blue-700 hover:text-blue-900 cursor-pointer"
+                    //   "flex items-center text-green-700 hover:text-blue-900 cursor-pointer"
                     // }
                     onClick={this.resendOTP.bind(this)}
                   >
-                    <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                    <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
                       Resend OTP
                     </span>
                     <i className="bx bx-caret-right ml-1"></i>
@@ -209,19 +209,19 @@ export default class ForgotPasswordConfirmOtp extends Component {
             <div className="flex justify-center">
               <a
                 href="/auth/login"
-                // className="text-sm  justify-left text-blue-700 hover:text-blue-900 cursor-pointer"
-                className="underline underline-offset-2 text-sm font-semibold inputLabel text-blue-500 hover:text-blue-700 focus:text-blue-800"
+                // className="text-sm  justify-left text-green-700 hover:text-blue-900 cursor-pointer"
+                className="underline underline-offset-2 text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
                 onClick={() => {
                   this.setState({ loading: true });
                 }}
               >
                 {this.state.loading ? (
-                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
                     Back to Login
                     <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
                   </span>
                 ) : (
-                  <span className="text-blue-500 hover:text-blue-700 focus:text-blue-800">
+                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
                     Back to Login
                   </span>
                 )}

@@ -368,7 +368,7 @@ const GenericTable = (props) => {
                             <td className="flex justify-center gap-1 px-4 py-2">
                               <FontAwesomeIcon
                                 icon={faPenToSquare}
-                                className="hover:text-blue-800 text-blue-600 cursor-pointer text-sm pt-1 ps-1"
+                                className="hover:text-blue-800 text-green-600 cursor-pointer text-sm pt-1 ps-1"
                                 onClick={() => redirect("edit", value._id)}
                               />
                               &nbsp;

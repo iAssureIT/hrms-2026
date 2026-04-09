@@ -170,7 +170,7 @@ const GatePassList = () => {
                     passNo: `
                         <a 
                             href="/${loggedInRole || pathname.split("/")[1]}/management/${pass.status === "Pending" ? "add-gate-pass?editId=" : "print-gate-pass/"}${pass._id}"
-                            class="font-black text-blue-600 hover:text-blue-800 cursor-pointer transition-all hover:underline"
+                            class="font-black text-green-600 hover:text-blue-800 cursor-pointer transition-all hover:underline"
                         >
                             ${pass.passNo}
                         </a>
@@ -199,7 +199,7 @@ const GatePassList = () => {
                                 statusColor = "bg-green-600 text-white border-green-700";
                                 break;
                             case "Returned":
-                                statusColor = "bg-blue-600 text-white border-blue-700";
+                                statusColor = "bg-green-600 text-white border-green-700";
                                 break;
                             case "Rejected":
                             case "Cancelled":

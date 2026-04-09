@@ -230,8 +230,8 @@ const ViewAssetDepreciation = ({ assetId }) => {
                 {/* Footer Notes */}
                 <div className="flex justify-between items-end gap-10 footer-notes">
                     <div className="flex-1">
-                        <div className="flex items-start gap-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
-                            <MdInfo className="text-blue-500 shrink-0 mt-0.5" size={18} />
+                        <div className="flex items-start gap-4 p-5 bg-green-50/50 rounded-2xl border border-green-100">
+                            <MdInfo className="text-green-500 shrink-0 mt-0.5" size={18} />
                             <div>
                                 <h4 className="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-1">Valuation Principles</h4>
                                 <p className="text-[10px] font-medium text-slate-600 leading-relaxed italic">

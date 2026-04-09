@@ -132,7 +132,7 @@ const DepreciationReport = () => {
                     // Using HTML string because GenericTable uses dangerouslySetInnerHTML
                     return {
                         ...item,
-                        assetIDLink: `<span class="asset-id-link text-blue-600 font-bold cursor-pointer hover:underline" data-id="${item._id}">${item.assetID}</span>`
+                        assetIDLink: `<span class="asset-id-link text-green-600 font-bold cursor-pointer hover:underline" data-id="${item._id}">${item.assetID}</span>`
                     };
                 });
                 setTableData(transformed);

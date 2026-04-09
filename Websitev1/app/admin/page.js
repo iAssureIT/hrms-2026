@@ -1,12 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function UserPage() {
+export default function AdminPage() {
+    const router = useRouter();
+
+    useEffect(() => {
+        router.replace("/admin/dashboard");
+    }, [router]);
 
     return (
-        <div className="block bg-white">
-            <h1 className="pt-36 pb-96 text-6xl font-bold text-center text-gray-600"> Welcome to Secured Area of User!</h1>
+        <div className="flex items-center justify-center min-h-screen bg-white">
+            <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 }

@@ -822,8 +822,8 @@ const AllocationApproval = () => {
 
               {/* Bottom Context Blocks */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                {/* <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-5 shadow-sm">
-                  <div className="flex items-center gap-2 text-blue-600 mb-3">
+                {/* <div className="bg-green-50/50 border border-green-100 rounded-xl p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-green-600 mb-3">
                     <MdDoneAll size={20} />
                     <h3 className="text-xs font-bold uppercase tracking-widest">
                       Approval Protocol
