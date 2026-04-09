@@ -500,6 +500,38 @@ export default function RootLayout({ children }) {
       link: "/admin/user-management",
     },
     {
+      title: "Notification Management",
+      submenu: true,
+      icon: <FaBell />,
+      submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Create New Template",
+          link: "/admin/notification-management/create-new-template",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Email Template",
+          link: "/admin/notification-management/email-template",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "SMS Template",
+          link: "/admin/notification-management/sms-template",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "IN-APP Template",
+          link: "/admin/notification-management/in-app-template",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Whatsapp Template",
+          link: "/admin/notification-management/whatsapp-template",
+        },
+      ],
+    },
+    {
       title: "Attendance Matrix",
       icon: <FaCalendarCheck />,
       link: "/admin/attendance-management/matrix",
