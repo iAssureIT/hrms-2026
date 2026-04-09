@@ -443,6 +443,11 @@ export default function RootLayout({ children }) {
       link: "/asset/management/employee-master",
     },
     {
+      title: "Leaves",
+      icon: <FaRegCalendarAlt />,
+      link: "/admin/leaves",
+    },
+    {
       title: "Vendor Master",
       icon: <BsBank />,
       link: "/asset/master-data/vendor-master/vendor-list",

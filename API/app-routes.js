@@ -38,6 +38,11 @@ const dashboardRoutes = require("./api/hrms-2026/dashboard/route.js");
 
 //LeaveRoute
 const leaveTypeRoutes = require("./api/hrms-2026/leaveManagement/leaveTypes/route.js");
+const leaveApplications = require("./api/hrms-2026/leaveManagement/leaveApplications/route");
+const leavePolicyRoutes = require("./api/hrms-2026/leaveManagement/leavePolicy/route.js");
+const leaveBalanceRoutes = require("./api/hrms-2026/leaveManagement/leaveBalance/route.js");
+const leaveLedgerRoutes = require("./api/hrms-2026/leaveManagement/leaveLedger/route.js");
+const leaveReportsRoutes = require("./api/hrms-2026/leaveManagement/leaveReports/route.js");
 
 const appRoutes = (app) => {
   //lupin api
@@ -77,6 +82,11 @@ const appRoutes = (app) => {
   app.use("/api/notifications", sendNotificationRoutes);
   //leaveRoutes
   app.use("/api/leave-types", leaveTypeRoutes);
+  app.use("/api/leave-applications", leaveApplications);
+  app.use("/api/leave-policy", leavePolicyRoutes);
+  app.use("/api/leave-balance", leaveBalanceRoutes);
+  app.use("/api/leave-ledger", leaveLedgerRoutes);
+  app.use("/api/leave-reports", leaveReportsRoutes);
 };
 
 module.exports = appRoutes;
