@@ -101,6 +101,9 @@ const appRoutes = (app) => {
 
   // Holiday
   app.use("/api/holidays", holidayRoutes);
+
+  // System Configurations
+  app.use("/api/system-configurations", require("./api/hrms-2026/systemConfigurations/route.js"));
 };
 
 module.exports = appRoutes;

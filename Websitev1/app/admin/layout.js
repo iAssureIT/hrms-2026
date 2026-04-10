@@ -1185,7 +1185,7 @@ export default function RootLayout({ children }) {
       link: "/admin/payroll-management",
     },
     {
-      title: "Holidays",
+      title: "Holiday Management",
       icon: <FaRegCalendarAlt />,
       link: "/admin/holidays",
     },
@@ -1266,6 +1266,11 @@ export default function RootLayout({ children }) {
       title: "User Manual",
       icon: <IoMdDocument />,
       link: "/files/User_Manual_Lupin_Admin.pdf",
+    },
+    {
+      title: "Settings",
+      icon: <IoMdSettings />,
+      link: "/admin/settings",
     },
   ];
 
