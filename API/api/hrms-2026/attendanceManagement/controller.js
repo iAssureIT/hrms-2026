@@ -61,6 +61,7 @@ exports.getAttendanceMatrix = async (req, res) => {
         if (department_id && department_id !== 'all') employeeQuery.department_id = department_id;
         
         const employees = await Employees.find(employeeQuery).lean();
+        const settings = await AttendanceSettings.findOne().lean(); // Fetch settings for holiday/weekly-off logic
 
         // 2. Get Attendance Logs for the month
         const logs = await AttendanceLogs.find({

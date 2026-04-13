@@ -1267,11 +1267,7 @@ export default function RootLayout({ children }) {
       icon: <FaChartPie />,
       link: "/admin/reports-hub",
     },
-    {
-      title: "User Manual",
-      icon: <IoMdDocument />,
-      link: "/files/User_Manual_Lupin_Admin.pdf",
-    },
+
   ];
 
   const handleSidebarItemClick = (link) => {

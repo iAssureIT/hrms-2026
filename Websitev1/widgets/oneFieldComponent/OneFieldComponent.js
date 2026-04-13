@@ -264,11 +264,10 @@ const OneFieldComponents = ({ fieldLabel, setCheckRelode }) => {
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300">
-            <h1 className="heading">
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-8">
+            <h1 className="hr-heading">
               {loading ? (
                 <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
               ) : oneField.fieldlabel === "Unit" ? (
@@ -277,46 +276,36 @@ const OneFieldComponents = ({ fieldLabel, setCheckRelode }) => {
                 oneField.fieldlabel
               )}
             </h1>
-          </div>
         </div>
 
-        <div>
-          <div className=" flex flex-col shadow-none z-50 w-10/12   mx-auto pt-20">
-            <div className="space-y-6 pb-10 ">
-              <form onSubmit={handleSubmit} className="">
-                <div className="lg:w-1/2 mx-auto w-full">
-                  <div className="inline-flex text-center">
-                    {/* <h2 className="font-semibold text-sm mt-1 text-gray-51"> */}
-                    <h2 className="inputLabel">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col pt-4">
+            <div className="space-y-8 pb-10">
+              <form onSubmit={handleSubmit} className="hr-card bg-slate-50/50 border-slate-100 shadow-none">
+                <div className="lg:w-3/4 mx-auto w-full py-4">
+                  <div className="hr-form-group">
+                    <label className="hr-label">
                       {loading ? (
                         <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
                       ) : (
                         oneField.fieldlabel
                       )}
                       <span className="text-red-500 ms-1">*</span>
-                    </h2>
-                  </div>
-                  <div className="flex w-full rounded-e-md">
-                    <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          <MdWidgets className="icon" />
-                        </span>
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-green-500">
+                        <MdWidgets className="text-lg text-slate-400 group-focus-within:text-green-500 transition-colors" />
                       </div>
                       <input
                         type="text"
-                        id="minStock"
-                        className="stdInputField "
-                        // className="text-gray-900 rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none"
-                        placeholder={`${
-                          oneField.fieldlabel ? oneField.fieldlabel : ""
-                        }`}
+                        className="hr-input !pl-12 !py-3"
+                        placeholder={`Enter ${oneField.fieldlabel ? oneField.fieldlabel : "value"}...`}
                         value={field}
                         required
                         onChange={(e) => {
                           setField(e.target.value);
                           if (errorMessage) {
-                            setErrorMessage(""); // Clear error message when user starts typing
+                            setErrorMessage("");
                           }
                         }}
                       />
@@ -328,7 +317,7 @@ const OneFieldComponents = ({ fieldLabel, setCheckRelode }) => {
                       {errorMessage}
                     </p>
                   )}
-                  <div className="mb-10 flex justify-between mt-10">
+                  <div className="flex justify-between items-center mt-6">
                     <div>
                       {oneField.showImg === true && (
                         <S3UploadComponent
@@ -341,22 +330,23 @@ const OneFieldComponents = ({ fieldLabel, setCheckRelode }) => {
                       )}
                     </div>
 
-                    <div className="">
+                    <div>
                       <button
                         type="submit"
-                        // className="text-white bg-gradient-to-r bg-[#4285F4] hover:bg-[#4285e4] focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg inline-flex items-center font-medium rounded-sm text-sm px-5 h-8 text-center mb-2"
-                        className="formButtons"
+                        className="hr-btn-primary"
                         onClick={handleSubmit}
                       >
-                        {checkUpdate ? "Update" : "Submit"}
+                        {checkUpdate ? "Update Record" : "Save Record"}
                       </button>
                     </div>
                   </div>
                 </div>
               </form>
-              <h1 className="heading uppercase py-2 ms-4 text-center">
-                {fieldLabel} List
-              </h1>
+              <div className="border-t border-slate-100 pt-8 mt-10">
+                <h1 className="hr-subheading text-center mb-6 uppercase tracking-wider">
+                  Existing {fieldLabel}s
+                </h1>
+              </div>
               {/* <div className="relative overflow-x-auto lg:mx-14 text-left lg:w-1/2 mx-auto w-full"></div> */}
               <div className="relative text-left mx-auto lg:w-5/6 w-full">
                 {data && data.length > 0 ? (

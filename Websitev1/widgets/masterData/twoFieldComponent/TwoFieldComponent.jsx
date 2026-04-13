@@ -130,7 +130,7 @@ const TwoFieldComponent = ({
         axios.post(twoField.insertAPI, item)
           .then((response) => {
             setCheckRelode((count) => count + 1);
-            Swal.fire(" ", `${twoFieldLable} added successfully.`);
+            Swal.fire("Success", `${twoFieldLable} added successfully.`);
             setDropdownValue("");
             setInputValue("");
             fetchItems();
@@ -176,7 +176,7 @@ const TwoFieldComponent = ({
             console.log("deletedUser", deletedUser);
 
             Swal.fire({
-              title: " ",
+              title: "Success",
               text: `${twoField?.fieldlabel} have been deleted.`,
             });
             // setRunCount((count) => count + 1);
@@ -263,145 +263,42 @@ const TwoFieldComponent = ({
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300">
-            <h1 className="heading">{oneField.fieldlabel} & {twoField.fieldlabel} Details</h1>
-          </div>
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-8">
+            <h1 className="hr-heading">{oneField.fieldlabel} & {twoField.fieldlabel} Details</h1>
         </div>
 
-        <div className="h-fit p-5 pb-10">
-          <div className=" rounded-sm  w-full h-fit pb-4">
-            <div className="   w-11/12 mx-auto   p-5 sm:px-1 sm:p-1 pb-10 mt-10 mb-5 rounded-md">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col pt-4">
+            <div className="space-y-8 pb-10">
               <form
                 onSubmit={handleSubmit}
-                className="bg-red lg:p-10 w-full lg:w-11/12 sm:px-2 pb-4  lg:mx-11 mx-0 "
+                className="hr-card bg-slate-50/50 border-slate-100 shadow-none p-8 lg:p-10"
               >
-                {/* <div className="flex flex-col lg:flex-row gap-5 w-full">
-
-                  <div className="xl:w-1/2 lg:w-1/2 sm:w-full my-2 lg:my-0 mt-3">
-                    <label
-                      htmlFor="website-admin"
-                      className="inputLabel flex mb-0"
-                    // className="mb-2 w-full flex text-sm font-normal text-gray-900 dark:text-white"
-                    >
-                      {oneField.fieldlabel}
-                      <span className="text-red-600 ms-1">*</span>
-                      <IoMdAdd
-                        className="bg-[#4285F4] ms-1 text-white cursor-pointer "
-                        size={"1.2rem"}
-                        onClick={() => setOpenModal(true)}
-                      />
-                    </label>
-                    <div className="">
-                      <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <select
-                          value={dropdownValue}
-                          onChange={(e) => {
-                            setDropdownValue(e.target.value);
-                            if (errorMessage) {
-                              setErrorMessage("");
-                            }
-                          }}
-                          className={`stdSelectField ${dropdownValue
-                            ? "selectOption"
-                            : "text-gray-400 font-normal"
-                            }`}
-                        // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
-                        >
-                          <option
-                            defaultValue=""
-                            disabled
-                            selected
-                            className="text-grayThree"
-                          >
-                            -- Select a value --
-                          </option>
-                          {Array.isArray(dropdownData) &&
-                            dropdownData.map((option, index) => (
-                              <option
-                                key={option._id}
-                                value={option.fieldValue + "|" + option._id}
-                                className="text-black"
-                              >
-                                {option.fieldValue}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                    </div>
-                    {errorMessage && (
-                      <p style={{ color: "red" }}>{errorMessage}</p>
-                    )}
-                  </div>
-
-                  <div className="xl:w-1/2 lg:w-1/2 sm:w-full my-2 lg:my-0">
-                    <label
-                      defaultValue="website-admin"
-                      // className="block mb-2 text-sm font-normal text-gray-900 dark:text-white"
-                      className="inputLabel mt-2"
-                    >
-                      {twoField.fieldlabel}
-                      <span className="text-red-600 ms-1">*</span>
-                    </label>
-                    <div className="flex">
-                      <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          id="minStock"
-                          className="stdInputField"
-                          placeholder={`Enter ${twoField.fieldlabel}`}
-
-                          // className="text-gray-900 rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none"
-                          value={inputValue}
-                          onChange={(e) => {
-                            setInputValue(e.target.value);
-                            if (errorMessage) {
-                              setErrorMessage(""); // Clear error message when user starts typing
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                    {errorMessage && (
-                      <p style={{ color: "red" }}>{errorMessage}</p>
-                    )}
-                  </div>
-                </div> */}
-                <div className="flex flex-col lg:flex-row gap-6 w-full">
-
+                <div className="flex flex-col lg:flex-row gap-8 w-full">
                   {/* First Field */}
                   <div className="w-full lg:w-1/2">
-                    <label className="inputLabel flex items-center mb-1">
+                    <label className="hr-label flex items-center">
                       {oneField.fieldlabel}
-                      <span className="text-red-600 ms-1">*</span>
+                      <span className="text-red-500 ms-1">*</span>
                       {
                         showAddButton && (
-                          <IoMdAdd
-                            className="bg-green hover:bg-Green ms-1 text-white cursor-pointer"
-                            size={"1.2rem"}
+                          <button 
+                            type="button"
+                            className="ms-3 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors shadow-sm"
                             onClick={() => setOpenModal(true)}
-                          />
+                            title={`Add New ${oneField.fieldlabel}`}
+                          >
+                            <IoMdAdd size={14} />
+                          </button>
                         )
                       }
                     </label>
 
-                    <div className="relative mt-3">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="pr-2 border-r">
-                          <MdWidgets className="icon" />
-                        </span>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-green-500 transition-colors">
+                          <MdWidgets className="text-lg" />
                       </div>
 
                       <select
@@ -410,11 +307,10 @@ const TwoFieldComponent = ({
                           setDropdownValue(e.target.value);
                           if (errorMessage) setErrorMessage("");
                         }}
-                        className={`stdSelectField w-full pl-12 ${dropdownValue ? "selectOption" : "text-gray-400"
-                          }`}
+                        className="hr-select !pl-12 !py-3"
                       >
                         <option value="" disabled>
-                          -- Select a value --
+                          -- Select {oneField.fieldlabel} --
                         </option>
 
                         {Array.isArray(dropdownData) &&
@@ -422,7 +318,7 @@ const TwoFieldComponent = ({
                             <option
                               key={option._id}
                               value={(option.fieldValue || option.centerName) + "|" + option._id}
-                              className="text-black"
+                              className="text-slate-800"
                             >
                               {option.fieldValue || option.centerName}
                             </option>
@@ -431,28 +327,26 @@ const TwoFieldComponent = ({
                     </div>
 
                     {errorMessage && (
-                      <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage}</p>
                     )}
                   </div>
 
 
                   {/* Second Field */}
                   <div className="w-full lg:w-1/2">
-                    <label className="inputLabel mb-1">
+                    <label className="hr-label">
                       {twoField.fieldlabel}
-                      <span className="text-red-600 ms-1">*</span>
+                      <span className="text-red-500 ms-1">*</span>
                     </label>
 
-                    <div className="relative mt-2">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="pr-2 border-r">
-                          <MdWidgets className="icon" />
-                        </span>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-green-500 transition-colors">
+                          <MdWidgets className="text-lg" />
                       </div>
 
                       <input
                         type="text"
-                        className="stdInputField w-full pl-12"
+                        className="hr-input !pl-12 !py-3"
                         placeholder={`Enter ${twoField.fieldlabel}`}
                         value={inputValue}
                         onChange={(e) => {
@@ -463,24 +357,26 @@ const TwoFieldComponent = ({
                     </div>
 
                     {errorMessage && (
-                      <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage}</p>
                     )}
                   </div>
-
                 </div>
 
-
-                <div className="mb-10 flex justify-end  mt-10 -me-3 w-full">
+                <div className="flex justify-end mt-10">
                   <button
                     type="submit"
-                    className="formButtons"
-                  // className="text-white bg-gradient-to-r bg-[#4285F4]  hover:bg-blue-700 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg   inline-flex items-center  font-medium rounded-sm text-sm px-5 h-8 text-center me-4 mb-2"
+                    className="hr-btn-primary"
                   >
-                    {editingItem ? "Update" : "Submit"}
+                    {editingItem ? "Update Changes" : "Save Record"}
                   </button>
                 </div>
               </form>
-              <div className="relative overflow-x-auto mt-2 lg:w-11/12 mx-auto  border-3 mb-10 rounderd-md ">
+              
+              <div className="border-t border-slate-100 pt-8 mt-10">
+                <h2 className="hr-subheading text-center mb-6 uppercase tracking-wider">
+                  Existing {twoField.fieldlabel} List
+                </h2>
+              </div>
                 {items && items.length > 0 ? (
                   <table className="w-full border-separate border-spacing-y-2 gap-2 text-sm text-left rtl:text-right">
                     <thead className="text-xs space-y-6 border-spacing-5 font-normal uppercase  mb-2 border border-gray-200 rounded-sm p-2">
@@ -568,8 +464,8 @@ const TwoFieldComponent = ({
                                 </td>
                               )}
                               <td className="px-6 py-4  border border-grayTwo border-l-0">
-                                <tr className="flex gap-3">
-                                  <td>
+                                <div className="flex gap-3">
+                                  <div>
                                     <MdOutlineEdit
                                       className="border border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
                                       size={"1.3rem"}
@@ -577,8 +473,8 @@ const TwoFieldComponent = ({
                                         handleEdit(data);
                                       }}
                                     />
-                                  </td>
-                                  <td>
+                                  </div>
+                                  <div>
                                     <RiDeleteBin6Line
                                       className="  border border-red-500 text-red-500 p-1 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
                                       size={"1.3rem"}
@@ -586,8 +482,8 @@ const TwoFieldComponent = ({
                                         handleDelete(data._id);
                                       }}
                                     />
-                                  </td>
-                                </tr>
+                                  </div>
+                                </div>
                               </td>
                             </tr>
                           );
@@ -631,7 +527,7 @@ const TwoFieldComponent = ({
                     openModal={openModal}
                     setOpenModal={setOpenModal}
                     fieldLabel={oneFieldLable}
-                    // oneField={oneField}
+                    apiPath={oneField.apiPath} // Pass apiPath to OneFieldComponent
                     updateDropdownValue={updateDropdownValue}
                     setUpdateDropdownValue={setUpdateDropdownValue}
                     checkRelode={checkRelode}
@@ -643,7 +539,6 @@ const TwoFieldComponent = ({
             </Modal>
           </div>
         </div>
-      </div>
     </section>
   );
 };

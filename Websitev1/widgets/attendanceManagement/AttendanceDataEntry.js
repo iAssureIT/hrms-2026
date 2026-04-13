@@ -88,8 +88,13 @@ const AttendanceDataEntry = () => {
                 });
                 setEmployees(res.data.data);
                 setManualData(initialManualData);
+            } else {
+                Swal.fire("Error", res.data.message || "Failed to fetch roster", "error");
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error(err); 
+            Swal.fire("Server Error", "Could not connect to attendance service", "error");
+        }
         finally { setLoading(false); }
     };
 

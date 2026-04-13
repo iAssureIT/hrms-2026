@@ -27,6 +27,7 @@ const OneFieldComponent = ({
   goodRecordsHeading,
   failedtableHeading,
   fileDetailUrl,
+  apiPath, // Added apiPath prop
 }) => {
   const [field, setField] = useState("");
   const [imageName, setImageName] = useState("");
@@ -55,14 +56,15 @@ const OneFieldComponent = ({
   // const [updateDropdownValue, setUpdateDropdownValue] = useState(initialValue);
 
   const createInputObj = (label, user_id) => {
-    const lowercaseLabel = label.toLowerCase().replace(/\s+/g, '-');
+    const lowercaseLabel = apiPath ? apiPath : label.toLowerCase().replace(/\s+/g, '-');
+    const apiBase = "/api/" + lowercaseLabel;
 
     return {
       fieldlabel: label,
-      insertAPI: "/api/" + lowercaseLabel + "/post",
-      getListAPI: "/api/" + lowercaseLabel + "/getdata",
-      editAPI: "/api/" + lowercaseLabel + "/put",
-      deleteAPI: "/api/" + lowercaseLabel + "/delete",
+      insertAPI: apiBase + "/post",
+      getListAPI: apiBase + "/getdata",
+      editAPI: apiBase + "/put",
+      deleteAPI: apiBase + "/delete",
       showImg: false,
       user_id: user_id,
     };
@@ -239,14 +241,14 @@ const OneFieldComponent = ({
       // ✅ UPDATE CASE
       if (isUpdate) {
         if (response.data.success === false) {
-          Swal.fire("", `${oneField.fieldlabel} was not changed hence no update.`);
+          Swal.fire("Info", `${oneField.fieldlabel} was not changed hence no update.`);
         } else {
-          Swal.fire("", `${oneField.fieldlabel} updated successfully.`);
+          Swal.fire("Success", `${oneField.fieldlabel} updated successfully.`);
         }
       }
       // ✅ ADD CASE
       else {
-        Swal.fire("", `${oneField.fieldlabel} added successfully.`);
+        Swal.fire("Success", `${oneField.fieldlabel} added successfully.`);
       }
 
       // ✅ Reset Everything
@@ -292,7 +294,7 @@ const OneFieldComponent = ({
           .delete(`${oneField.deleteAPI}/${id}`)
           .then((deletedUser) => {
             Swal.fire({
-              title: " ",
+              title: "Success",
               text: `${oneField.fieldlabel} have been deleted.`,
             });
             setRunCount((count) => count + 1);

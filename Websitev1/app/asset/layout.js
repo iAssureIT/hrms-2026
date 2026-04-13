@@ -261,11 +261,7 @@ export default function RootLayout({ children }) {
         icon: <IoMdSettings />,
         link: "/admin/settings",
       },
-      {
-        title: "HRMS User Manual",
-        icon: <IoMdDocument />,
-        link: "/files/User_Manual_Lupin_Admin.pdf",
-      },
+
     ];
   } else if (isAssetRole) {
     sidebarData = [

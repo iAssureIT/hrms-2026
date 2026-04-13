@@ -26,7 +26,7 @@ const SalaryStructure = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/get/list`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/get`);
             setEmployees(res.data);
         } catch (err) { console.error(err); }
     };

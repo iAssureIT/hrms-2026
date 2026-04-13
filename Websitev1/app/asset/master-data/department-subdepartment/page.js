@@ -7,6 +7,7 @@ const Page = () => {
     const departmentInputObj = {
         fieldlabel: "Department",
         getListAPI: "/api/department-master/get",
+        apiPath: "department-master", // Used by OneFieldComponent in modal
     };
 
     const subDepartmentInputObj = {

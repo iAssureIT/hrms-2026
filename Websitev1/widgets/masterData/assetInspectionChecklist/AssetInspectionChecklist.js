@@ -36,7 +36,7 @@ const AssetInspectionChecklist = () => {
     }, [checkReload]);
 
     const fetchCategories = () => {
-        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-category/get`)
+        axios.get(`/api/asset-category/get`)
             .then((res) => setCategoryList(Array.isArray(res.data) ? res.data : []))
             .catch(() => setCategoryList([]));
     };
@@ -46,7 +46,7 @@ const AssetInspectionChecklist = () => {
         setCategoryId(val);
         setSubCategoryId("");
         if (val) {
-            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-master-subcategory/get`)
+            axios.get(`/api/asset-master-subcategory/get`)
                 .then((res) => {
                     const data = Array.isArray(res.data) ? res.data : [];
                     setSubCategoryList(data.filter(item => item.dropdown_id?.toString() === val.toString()));
@@ -59,7 +59,7 @@ const AssetInspectionChecklist = () => {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-inspection-checklist/get`);
+            const response = await axios.get(`/api/asset-inspection-checklist/get`);
             setItems(response?.data || []);
         } catch (err) {
             setError("Error fetching checklists");
@@ -81,7 +81,7 @@ const AssetInspectionChecklist = () => {
         e.preventDefault();
 
         if (!categoryId || !subCategoryId || checklistArray.length === 0) {
-            Swal.fire(" ", "Category, Sub-Category, and at least one checklist item are required.");
+            Swal.fire("Warning", "Category, Sub-Category, and at least one checklist item are required.");
             return;
         }
 
@@ -94,22 +94,22 @@ const AssetInspectionChecklist = () => {
 
         try {
             if (editingItem) {
-                axios.patch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-inspection-checklist/update/${editingItem._id}`, payload)
+                axios.patch(`/api/asset-inspection-checklist/update/${editingItem._id}`, payload)
                     .then((response) => {
-                        Swal.fire(" ", "Checklist updated successfully.");
+                        Swal.fire("Success", "Checklist updated successfully.");
                         setCheckReload(c => c + 1);
                         resetForm();
                     }).catch((err) => {
-                        Swal.fire(" ", err.response?.data?.message || "Error updating checklist");
+                        Swal.fire("Error", err.response?.data?.message || "Error updating checklist");
                     });
             } else {
-                axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-inspection-checklist/post`, payload)
+                axios.post(`/api/asset-inspection-checklist/post`, payload)
                     .then((response) => {
-                        Swal.fire(" ", "Checklist added successfully.");
+                        Swal.fire("Success", "Checklist added successfully.");
                         setCheckReload(c => c + 1);
                         resetForm();
                     }).catch((err) => {
-                        Swal.fire(" ", err.response?.data?.message || "Error saving checklist");
+                        Swal.fire("Error", err.response?.data?.message || "Error saving checklist");
                     });
             }
         } catch (err) {
@@ -132,7 +132,7 @@ const AssetInspectionChecklist = () => {
 
         // Fetch subcategories for this category so dropdown works
         if (item.category_id?._id) {
-            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-master-subcategory/get`)
+            axios.get(`/api/asset-master-subcategory/get`)
                 .then((res) => {
                     const data = Array.isArray(res.data) ? res.data : [];
                     setSubCategoryList(data.filter(sub => sub.dropdown_id?.toString() === item.category_id._id.toString()));
@@ -146,7 +146,7 @@ const AssetInspectionChecklist = () => {
 
     const handleDelete = (id) => {
         Swal.fire({
-            title: ' ',
+            title: 'Delete Checklist',
             text: "Are you sure you want to delete this checklist?",
             showCancelButton: true,
             cancelButtonText: "No, cancel",
@@ -156,13 +156,13 @@ const AssetInspectionChecklist = () => {
             cancelButtonColor: "#dc1414ff"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-inspection-checklist/delete/${id}`)
+                axios.delete(`/api/asset-inspection-checklist/delete/${id}`)
                     .then(() => {
-                        Swal.fire(" ", "Checklist deleted successfully.");
+                        Swal.fire("Success", "Checklist deleted successfully.");
                         setCheckReload(c => c + 1);
                     })
                     .catch(() => {
-                        Swal.fire(" ", "Something went wrong while deleting");
+                        Swal.fire("Error", "Something went wrong while deleting");
                     });
             }
         });

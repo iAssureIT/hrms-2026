@@ -97,31 +97,10 @@ const ProcessingFlow = () => {
     const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
 
     return (
-        <section className="section p-6 md:p-10 bg-white min-h-screen">
+        <section className="bg-white rounded-[40px] border border-slate-100 shadow-2xl shadow-slate-200/50 p-10 mb-10 overflow-hidden relative animate-in fade-in duration-700">
             <div className="max-w-[1400px] mx-auto">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-6 border-b border-slate-100">
-                    <div>
-                        <h1 className="text-4xl font-black text-slate-800 tracking-tight mb-2">Payroll <span className="text-green-600">Management</span></h1>
-                        <p className="text-slate-400 font-bold text-sm">Process salaries, configure structures, and generate compliance reports.</p>
-                    </div>
-                    <button className="flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all shadow-sm">
-                        <FaCog /> Payroll Settings
-                    </button>
-                </div>
-
-                {/* Tabs (Simple Version) */}
-                <div className="flex gap-1 bg-slate-100 p-1.5 rounded-2xl w-fit mb-12 shadow-inner border border-slate-200/40">
-                    {['Processing Flow', 'Salary Structures', 'Compliance & Exports'].map(tab => (
-                        <button key={tab} className={`px-8 py-3 rounded-xl font-bold text-sm transition-all ${tab === 'Processing Flow' ? 'bg-white text-green-600 shadow-md' : 'text-slate-400'}`}>
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-
                 {/* Stepper Wizard */}
-                <div className="bg-white rounded-[40px] border border-slate-100 shadow-2xl shadow-slate-200/50 p-10 mb-10 overflow-hidden relative">
-                    <div className="flex items-center justify-center gap-6 mb-16 px-10">
+                <div className="flex items-center justify-center gap-6 mb-16 px-10">
                         {[
                             { n: 1, l: "Select Month", i: FaCalendarAlt },
                             { n: 2, l: "Review & Calculate", i: FaCalculator },
@@ -276,7 +255,6 @@ const ProcessingFlow = () => {
                 </div>
 
                 {previewData && <PayslipPreview data={previewData} onClose={() => setPreviewData(null)} />}
-            </div>
         </section>
     );
 };

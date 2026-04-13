@@ -474,308 +474,175 @@ const Dashboard = (props) => {
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 -md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">Dashboard</h1>
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in">
+        <div className="uppercase">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+            <h1 className="hr-heading transition-all">Dashboard Overview</h1>
+            <div className="flex gap-2">
+               {/* Filters or actions could go here */}
+            </div>
           </div>
-          <div className="px-10 py-6">
-            <div className="bg-white text-secondary">
-              <div className="grid grid-cols-1 w-full lg:grid-cols-5 gap-3 lg:gap-6">
-                <div className="justify-center h-20  content-center   shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 font-normal text-black">
-                    <div className="flex">
-                      <div className="w-2/5 h-auto  flex justify-center items-center">
-                        <div className="bg-[#4090FF]  h-20 w-full flex justify-center items-center">
-                          <HiOutlineBuildingOffice2
-                            size={40}
-                            className="text-white"
-                          />
-                        </div>
-                      </div>
-                      <div className="text-[13px] mx-auto my-auto">
-                        <div>
-                          <span className="flex font-semibold pb-2">
-                            {loggedInRole === "admin" ||
-                            loggedInRole === "executive"
-                              ? "Centers"
-                              : "CenterName"}
-                          </span>
-                        </div>
-                        <div className="font-bold text-center text-[20px] text-black">
-                          {loggedInRole === "admin" ||
-                          loggedInRole === "executive" ? (
-                            dashboardData && dashboardData.totalCenters ? (
-                              dashboardData.totalCenters
-                            ) : loading ? (
-                              <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                            ) : (
-                              0
-                            )
-                          ) : null}
-                          {loggedInRole === "center" ? (
-                            userDetails?.centerName ? (
-                              userDetails?.centerName
-                            ) : loading ? (
-                              <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                            ) : (
-                              "-NA-"
-                            )
-                          ) : null}
-                        </div>
-                      </div>
+          <div className="px-4">
+            <div className="bg-white">
+              <div className="grid grid-cols-1 w-full lg:grid-cols-5 gap-4 lg:gap-6">
+                {/* Centers Card */}
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#4090FF]">
+                    <HiOutlineBuildingOffice2 size={32} />
+                  </div>
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">
+                      {loggedInRole === "admin" || loggedInRole === "executive" ? "Centers" : "Center Name"}
+                    </span>
+                    <div className="hr-metric-value">
+                      {loggedInRole === "admin" || loggedInRole === "executive" ? (
+                        dashboardData?.totalCenters ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)
+                      ) : (
+                        userDetails?.centerName ?? (loading ? <FaSpinner className="animate-spin text-green" /> : "-NA-")
+                      )}
                     </div>
                   </div>
                 </div>
-                <div className="justify-center h-20  content-center   shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 font-normal text-black">
-                    <div className="flex">
-                      <div className="w-2/5 h-auto  flex justify-center items-center">
-                        <div className="bg-[#2ECFAD]  h-20 w-full flex justify-center items-center">
-                          <GrMapLocation size={40} className="text-white" />
-                        </div>
-                      </div>
-                      <div className="text-[13px] mx-auto my-auto">
-                        <div>
-                          <span className="flex font-semibold pb-2">
-                            Districts
-                          </span>
-                        </div>
-                        <div className="font-bold text-center text-[20px]">
-                          {dashboardData && dashboardData.totalDistricts ? (
-                            dashboardData.totalDistricts
-                          ) : loading ? (
-                            <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                          ) : (
-                            0
-                          )}
-                        </div>
-                      </div>
+
+                {/* Districts Card */}
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#2ECFAD]">
+                    <GrMapLocation size={32} />
+                  </div>
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">Districts</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalDistricts ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
-                <div className="justify-center h-20  content-center   shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 font-normal text-black">
-                    <div className="flex">
-                      <div className="w-2/5 h-auto  flex justify-center items-center">
-                        <div className="bg-[#FF5370]  h-20 w-full flex justify-center items-center">
-                          <LiaCubesSolid size={40} className="text-white" />
-                        </div>
-                      </div>
-                      <div className="text-[13px] mx-auto my-auto">
-                        <div>
-                          <span className="flex font-semibold pb-2">
-                            Blocks
-                          </span>
-                        </div>
-                        <div className="font-bold text-center text-[20px]">
-                          {dashboardData && dashboardData.totalBlocks ? (
-                            dashboardData.totalBlocks
-                          ) : loading ? (
-                            <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                          ) : (
-                            0
-                          )}
-                        </div>
-                      </div>
+
+                {/* Blocks Card */}
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#FF5370]">
+                    <LiaCubesSolid size={32} />
+                  </div>
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">Blocks</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalBlocks ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
-                <div className="justify-center h-20  content-center   shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 font-normal text-black">
-                    <div className="flex">
-                      <div className="w-2/5 h-auto  flex justify-center items-center">
-                        <div className="bg-[#FF9D4F]  h-20 w-full flex justify-center items-center">
-                          <MdOutlineHouse size={40} className="text-white" />
-                        </div>
-                      </div>
-                      <div className="text-[13px] mx-auto my-auto">
-                        <div>
-                          <span className="flex font-semibold pb-2">
-                            Villages
-                          </span>
-                        </div>
-                        <div className="font-bold text-center text-[20px]">
-                          {dashboardData && dashboardData.totalVillages ? (
-                            dashboardData.totalVillages
-                          ) : loading ? (
-                            <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                          ) : (
-                            0
-                          )}
-                        </div>
-                      </div>
+
+                {/* Villages Card */}
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#FF9D4F]">
+                    <MdOutlineHouse size={32} />
+                  </div>
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">Villages</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalVillages ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
-                <div className="justify-center h-20  content-center   shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 font-normal text-black">
-                    <div className="flex">
-                      <div className="w-2/5 h-auto  flex justify-center items-center">
-                        <div className="bg-[#5da5da]  h-20 w-full flex justify-center items-center">
-                          <PiUsersFourBold size={40} className="text-white" />
-                        </div>
-                      </div>
-                      <div className="text-[13px] mx-auto my-auto">
-                        <div>
-                          <span className="flex font-semibold pb-2 leading-4">
-                            Total <br /> Employees
-                          </span>
-                        </div>
-                        <div className="font-bold text-center text-[20px]">
-                          {dashboardData && dashboardData.totalEmpSum ? (
-                            dashboardData.totalEmpSum
-                          ) : loading ? (
-                            <FaSpinner className="animate-spin inline-flex mx-2  text-green" />
-                          ) : (
-                            0
-                          )}
-                        </div>
-                      </div>
+
+                {/* Employees Card */}
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#5da5da]">
+                    <PiUsersFourBold size={32} />
+                  </div>
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label leading-tight">Total Employees</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalEmpSum ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
               </div>
-              {/* <div className="text-[16px] font-bold flex mt-5 justify-center gap-1">
-                <div className="h-2 w-2 bg-Green rounded-full my-2"></div>
-                Current Year Data{" "}
-                <div className="h-2 w-2 bg-Green rounded-full my-2"></div>
-              </div> */}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full mt-10 gap-4 lg:gap-6">
-                {/* Reusable Card Component */}
-                <div className="flex h-24 bg-white shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px]">
-                  <div className="w-2/5 flex justify-center items-center bg-[#f15854]">
-                    <BsClipboard2Data size={36} className="text-white" />
-                  </div>
-                  <div className="w-3/5 flex flex-col justify-center px-3 text-[13px]">
-                    <span className="font-semibold mb-1">Select Duration</span>
+                {/* Duration Selector Card */}
+                <div className="hr-metric-card">
+                   <div className="hr-metric-icon-wrapper bg-slate-100 !text-slate-500">
+                    <BsClipboard2Data size={28} />
+                   </div>
+                   <div className="hr-metric-content">
+                    <span className="hr-metric-label">Select Duration</span>
                     <select
                       name="dataType"
-                      id="dataType"
-                      className={`stdSelectField font-normal pl-2 py-1.5 w-full rounded-md border border-gray-300 text-sm ${
-                        dataType ? "text-black" : "text-gray-400"
-                      }`}
+                      className="hr-select !py-1 !px-2 !bg-transparent !border-slate-200 mt-1"
                       value={dataType}
                       onChange={(e) => setDataType(e.target.value)}
                     >
-                      <option value="" disabled>
-                        Select Duration
-                      </option>
                       <option value="cumulative">Cumulative</option>
-                      <option value="priorToFinancialYear">
-                        Prior to {year}
-                      </option>
+                      <option value="priorToFinancialYear">Prior to {year}</option>
                       <option value="current">Current ({year})</option>
                     </select>
-                  </div>
+                   </div>
                 </div>
 
                 {/* Beneficiaries Card */}
-                <div className="flex h-24 bg-white shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px]">
-                  <div className="w-2/5 flex justify-center items-center bg-[#f15854]">
-                    <PiUsersThreeBold size={36} className="text-white" />
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#f15854]">
+                    <PiUsersThreeBold size={32} />
                   </div>
-                  <div className="w-3/5 flex flex-col justify-center px-3 text-[13px]">
-                    <span className="font-semibold mb-1">Reach (Beneficiaries)</span>
-                    <div className="font-bold text-[20px] text-center">
-                      {dashboardData?.totalBeneficiaries ??
-                        (loading ? (
-                          <FaSpinner className="animate-spin text-green" />
-                        ) : (
-                          0
-                        ))}
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">Reach (Beneficiaries)</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalBeneficiaries ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Families Card */}
-                <div className="flex h-24 bg-white shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px]">
-                  <div className="w-2/5 flex justify-center items-center bg-[#60bd68]">
-                    <MdPeopleOutline size={36} className="text-white" />
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#60bd68]">
+                    <MdPeopleOutline size={32} />
                   </div>
-                  <div className="w-3/5 flex flex-col justify-center px-3 text-[13px]">
-                    <span className="font-semibold mb-1">Impacted Households</span>
-                    <div className="font-bold text-[20px] text-center">
-                      {dashboardData?.totalFamilies ??
-                        (loading ? (
-                          <FaSpinner className="animate-spin text-green" />
-                        ) : (
-                          0
-                        ))}
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">Impacted Households</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalFamilies ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Financial Utilization Card */}
-                <div className="flex h-24 bg-white shadow-[rgba(0,_0,_0,_0.24)_2px_2px_8px]">
-                  <div className="w-2/5 flex justify-center items-center bg-[#b276b2]">
-                    <MdCurrencyRupee size={36} className="text-white" />
+                <div className="hr-metric-card">
+                  <div className="hr-metric-icon-wrapper bg-[#b276b2]">
+                    <MdCurrencyRupee size={32} />
                   </div>
-                  <div className="w-3/5 flex flex-col justify-center px-3 text-[13px]">
-                    <span className="font-semibold mb-1 leading-4">
-                      Financial <br className="sm:hidden" /> Utilization
-                    </span>
-                    <div className="font-bold text-[20px] text-center">
-                      {dashboardData?.totalCost ??
-                        (loading ? (
-                          <FaSpinner className="animate-spin text-green" />
-                        ) : (
-                          0
-                        ))}
+                  <div className="hr-metric-content">
+                    <span className="hr-metric-label">Financial Utilization</span>
+                    <div className="hr-metric-value">
+                      {dashboardData?.totalCost ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 w-full gap-3 lg:gap-6 mt-10">
-                <div className="justify-center h-auto content-center shadow-[rgba(0,0,0,0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 text-center font-normal text-black px-4 py-2">
-                    <h4 className="text-[13px] my-auto font-extrabold text-center mb-5 h-auto content-center">
-                      Plan vs Utilization Report (
-                      {loading ? (
-                        <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                      ) : (
-                        year
-                      )}
-                      )
+              <div className="grid grid-cols-1 w-full gap-6 mt-10">
+                <div className="hr-card">
+                  <div className="text-center px-4 py-2">
+                    <h4 className="hr-subheading text-center mb-6">
+                      Plan vs Utilization Report ({loading ? <FaSpinner className="animate-spin inline-flex mx-2 text-green" /> : year})
                     </h4>
-
                     <ComparisonChart1
                       planData={centerwisePlanvsUtil.planAmountArray}
-                      utilizationData={
-                        centerwisePlanvsUtil.utilisationAmountArray
-                      }
-                      utilizationLabels={
-                        centerwisePlanvsUtil.utilisationLabelArray
-                      }
+                      utilizationData={centerwisePlanvsUtil.utilisationAmountArray}
+                      utilizationLabels={centerwisePlanvsUtil.utilisationLabelArray}
                       labels={centerwisePlanvsUtil.centerArray}
                     />
                   </div>
                 </div>
 
-                <div className="justify-center h-auto content-center shadow-[rgba(0,0,0,0.24)_2px_2px_8px] bg-white">
-                  <div className="grid w-full grid-cols-1 text-center font-normal text-black px-4 py-2">
-                    <h4 className="text-[13px] my-auto font-extrabold text-center h-auto content-center">
-                      Approval Vs Utilization Report (
-                      {loading ? (
-                        <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-                      ) : (
-                        year
-                      )}
-                      )
+                <div className="hr-card">
+                  <div className="text-center px-4 py-2">
+                    <h4 className="hr-subheading text-center mb-6">
+                      Approval Vs Utilization Report ({loading ? <FaSpinner className="animate-spin inline-flex mx-2 text-green" /> : year})
                     </h4>
                     <ComparisonChart2
-                      approvalData={
-                        centerwiseApprovalvsUtil.approvalAmountArray
-                      }
-                      utilizationData={
-                        centerwiseApprovalvsUtil.utilisationAmountArray
-                      }
-                      utilizationLabels={
-                        centerwiseApprovalvsUtil.utilisationLabelArray
-                      }
+                      approvalData={centerwiseApprovalvsUtil.approvalAmountArray}
+                      utilizationData={centerwiseApprovalvsUtil.utilisationAmountArray}
+                      utilizationLabels={centerwiseApprovalvsUtil.utilisationLabelArray}
                       labels={centerwiseApprovalvsUtil.centerArray}
                     />
                   </div>

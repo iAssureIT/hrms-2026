@@ -15,6 +15,18 @@ body {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* Premium Palette V2 */
+  --primary: #8c5bf5;
+  --primary-dark: #3fb06a;
+  --primary-light: #d2f2d4;
+  --secondary: #283593;
+  --secondary-light: #3949ab;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,17 +36,21 @@ body {
     --background-end-rgb: 0, 0, 0;
   }
 }
+
 @layer base {
   html {
     font-family: "Montserrat", sans-serif;
   }
 }
+
 /* ----------CKEDITOR--------- */
 .custom-editor .ck-editor__editable_inline {
-  min-height: 300px; /* Set your desired height */
+  min-height: 300px;
+  /* Set your desired height */
   max-width: 1400px;
   padding-left: 10px;
 }
+
 /* ----------CKEDITOR--------- */
 
 /* body {
@@ -52,60 +68,167 @@ body {
 /* Standard elements must be defined here */
 
 @layer utilities {
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none !important;
   }
+
   /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
 @layer components {
-  .otpBtn {
-    @apply w-48 mx-auto text-white bg-blue-600
-		   focus:ring-4 focus:outline-none 
-		   font-medium rounded-lg text-sm px-5 
-		  py-2.5 text-center  
-		  hover:bg-white hover:text-black hover:shadow hover:border;
+  /* === HR PREMIUM STANDARD DESIGN SYSTEM === */
+
+  /* Layout & Cards */
+  .hr-section {
+    @apply p-4 md:p-6 bg-[#f8fafc] min-h-screen font-sans;
   }
+
+  .hr-card {
+    @apply bg-white rounded-xl shadow-sm border border-slate-200 p-4 transition-all duration-300 hover:shadow-md;
+  }
+
+  .hr-metric-card {
+    @apply flex items-center bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-24;
+  }
+
+  .hr-metric-icon-wrapper {
+    @apply w-20 h-full flex items-center justify-center text-white shrink-0;
+  }
+
+  .hr-metric-content {
+    @apply flex flex-col justify-center px-5 py-3 flex-grow;
+  }
+
+  .hr-metric-label {
+    @apply text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-1 leading-tight;
+  }
+
+  .hr-metric-value {
+    @apply text-slate-800 text-2xl font-extrabold;
+  }
+
+  /* Typography */
+  .hr-heading {
+    @apply text-2xl font-extrabold text-slate-800 tracking-tight;
+  }
+
+  .hr-subheading {
+    @apply text-lg font-bold text-slate-600;
+  }
+
+  /* Forms */
+  .hr-form-group {
+    @apply mb-5;
+  }
+
+  .hr-label {
+    @apply block text-[13px] font-bold text-slate-700 mb-2;
+  }
+
+  .hr-input {
+    @apply block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm transition-all duration-200 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none placeholder:text-slate-400 font-medium;
+  }
+
+  .hr-select {
+    @apply block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm transition-all duration-200 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none font-medium cursor-pointer;
+  }
+
+  .hr-textarea {
+    @apply block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm transition-all duration-200 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none font-medium min-h-[120px];
+  }
+
+  /* Buttons */
+  .hr-btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-2.5 bg-[#50c878] text-white font-bold rounded-lg shadow-sm transition-all duration-200 hover:bg-[#3fb06a] hover:shadow-emerald-200 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .hr-btn-secondary {
+    @apply inline-flex items-center justify-center px-8 py-2.5 bg-white text-slate-700 font-bold border border-slate-200 rounded-lg shadow-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-300 active:scale-95;
+  }
+
+  .hr-btn-danger {
+    @apply inline-flex items-center justify-center px-8 py-2.5 bg-red-500 text-white font-bold rounded-lg shadow-sm transition-all duration-200 hover:bg-red-600 hover:shadow-red-200 hover:shadow-lg active:scale-95;
+  }
+
+  /* Search & Utilities */
+  .hr-search-wrapper {
+    @apply relative flex items-center w-full max-w-sm;
+  }
+
+  .hr-search-icon {
+    @apply absolute left-3.5 text-slate-400 text-lg;
+  }
+
+  .hr-search-input {
+    @apply pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm w-full transition-all duration-200 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none shadow-sm;
+  }
+
+  .hr-fade-in {
+    animation: hrFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes hrFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .otpBtn {
+    @apply w-48 mx-auto text-white bg-blue-600 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-white hover:text-black hover:shadow hover:border;
+  }
+
   .active {
     @apply text-red-500 bg-blue-400 !important;
   }
+
   /* .menuText{
 		@apply block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:text-gray-700  md:hover:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500
 	   } */
   .label {
     @apply block text-gray-700 font-semibold;
   }
+
   .formWrapper {
-    @apply flex flex-col mx-auto border-t-4 border-blue-500 my-8  px-6 
-		lg:px-16 xl:px-8 items-center justify-center sm:w-1/4 md:w-1/2 xl:w-2/3 
-		bg-white shadow-xl py-10;
+    @apply flex flex-col mx-auto border-t-4 border-blue-500 my-8 px-6 lg:px-16 xl:px-8 items-center justify-center sm:w-1/4 md:w-1/2 xl:w-2/3 bg-white shadow-xl py-10;
   }
+
   .errorMsg {
     @apply text-red-700;
   }
 
-  .otpInputBox > div > input {
+  .otpInputBox>div>input {
     /* @apply w-full mr-10 rounded-xl px-4 border mx-auto text-red-600 */
-    @apply text-black border  mx-auto w-7 !important;
+    @apply text-black border mx-auto w-7 !important;
   }
+
   .picBack {
-    @apply border-dashed
-		bg-white
-		h-64;
+    @apply border-dashed bg-white h-64;
   }
+
   .fileInput {
     @apply absolute top-0 left-0;
   }
+
   .sidebarLink {
     @apply hover:bg-gray-300 w-full py-2 px-2 hover:text-white hover:font-semibold;
   }
+
   .h1 {
-    @apply font-bold text-black text-5xl	leading-10;
+    @apply font-bold text-black text-5xl leading-10;
   }
 
   .block-wrapper {
@@ -118,9 +241,11 @@ body {
   .image-wrapper {
     @apply w-auto object-cover;
   }
+
   .image-class {
     @apply object-cover w-full h-full top-0 left-0 rounded-xl;
   }
+
   .content-wrapper {
     @apply h-auto text-justify my-auto text-lg lg:text-xl;
   }
@@ -128,8 +253,9 @@ body {
   .gridWrapper {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 rounded-lg mt-5 md:mt-10;
   }
+
   .addIcon {
-    @apply mx-auto   ml-6  text-2xl text-gray-400 rounded my-auto;
+    @apply mx-auto ml-6 text-2xl text-gray-400 rounded my-auto;
   }
 
   .addListWrapper {
@@ -139,22 +265,25 @@ body {
   .formLabel {
     @apply block text-sm font-medium;
   }
+
   .submitBtnForm {
-    @apply bg-darkBlue py-1 px-8 rounded-md border border-transparent font-bold float-left
-			 text-white hover:border-white hover:text-white hover:bg-blue-600 focus:outline-none  transition-all text-sm  sm:p-4;
+    @apply bg-darkBlue py-1 px-8 rounded-md border border-transparent font-bold float-left text-white hover:border-white hover:text-white hover:bg-blue-600 focus:outline-none transition-all text-sm sm:p-4;
   }
+
   .select {
     @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
   }
 }
 
 .insideIcon {
-  @apply absolute inset-y-0  text-sm left-0 flex items-center pl-5 pointer-events-none;
+  @apply absolute inset-y-0 text-sm left-0 flex items-center pl-5 pointer-events-none;
 }
+
 .swal2-title {
   /*  background-color: #4ca75a !important;
   height: 40px;*/
 }
+
 .swal2-confirm {
   background-color: #50c878 !important;
   height: 40px;
@@ -193,6 +322,7 @@ body {
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   box-shadow: 2px 2px 8px 3px #dad6d6;
 }
+
 .pos0 {
   top: 0%;
   left: 30%;
@@ -212,29 +342,37 @@ body {
   top: 34%;
   left: 30%;
 }
+
 .pos3:hover {
-  animation: spin 4s linear infinite; /* Replace '1s' with the duration you desire */
+  animation: spin 4s linear infinite;
+  /* Replace '1s' with the duration you desire */
 }
+
 .pos3:hover::before {
-  animation: spin-4s 4s linear infinite; /* Adjust the duration as needed */
+  animation: spin-4s 4s linear infinite;
+  /* Adjust the duration as needed */
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 @keyframes spin-4s {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 .pos4 {
   top: 51%;
   left: 0%;
@@ -261,6 +399,7 @@ body {
   border: 2px dashed #dddddd;
   cursor: pointer;
 }
+
 .mainInnerCircle {
   height: 786px;
   padding: 50px;
@@ -272,6 +411,7 @@ body {
   border: 2px dashed #dddddd;
   cursor: pointer;
 }
+
 .Animatedcircle {
   width: 45px;
   height: 45px;
@@ -286,14 +426,17 @@ body {
   margin: auto;
   animation: circle 9s linear infinite;
 }
+
 @keyframes circle {
   0% {
     transform: rotate(0deg) translate(-165px) rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg) translate(-165px) rotate(-360deg);
   }
 }
+
 .animatedHexagon {
   width: 30px;
   height: 27px;
@@ -307,14 +450,17 @@ body {
   z-index: 999;
   animation: circle1 54s infinite linear;
 }
+
 @keyframes circle1 {
   0% {
     transform: rotate(0deg) translate(-420px) rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg) translate(-420px) rotate(-360deg);
   }
 }
+
 /* @keyframes Circulate{
 	0%{
 		transform:
@@ -342,18 +488,26 @@ body {
   z-index: 100;
   animation: Circulate2 54s infinite linear;
 }
+
 @keyframes Circulate2 {
   from {
     transform:
-			/* starting position offset */ rotate(-20deg)
-      /* half circle size + .5px(for precision) */ translate(390.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* starting position offset */
+      rotate(-20deg)
+      /* half circle size + .5px(for precision) */
+      translate(390.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
+
   to {
     transform:
-			/* full circle rotation: 360 + 20 offset */ rotate(-380deg)
-      /* half circle size + .5px(for precision) */ translate(390.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* full circle rotation: 360 + 20 offset */
+      rotate(-380deg)
+      /* half circle size + .5px(for precision) */
+      translate(390.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
 }
 
@@ -370,6 +524,7 @@ body {
   z-index: 100;
   /* animation: Circulate 10s infinite linear; */
 }
+
 .animatedCircle1Animation {
   width: 30px;
   height: 27px;
@@ -383,22 +538,29 @@ body {
   z-index: 100;
   animation: Circulate1 10s infinite linear;
 }
+
 @keyframes Circulate1 {
   from {
     transform:
-            /* starting position offset */ rotate(270deg)
-      /* half circle size + .5px(for precision) */ translate(-58.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-10deg);
+      /* starting position offset */
+      rotate(270deg)
+      /* half circle size + .5px(for precision) */
+      translate(-58.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-10deg);
   }
+
   to {
     transform:
-            /* full circle rotation: 360 + 20 offset */ rotate(
-        630deg
-      )
-      /* half circle size + .5px(for precision) */ translate(-58.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-10deg);
+      /* full circle rotation: 360 + 20 offset */
+      rotate(630deg)
+      /* half circle size + .5px(for precision) */
+      translate(-58.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-10deg);
   }
 }
+
 .animatedCircle2 {
   width: 34px;
   height: 34px;
@@ -412,6 +574,7 @@ body {
   z-index: 100;
   /* animation: reverseRotation 10s infinite linear; */
 }
+
 .animatedCircle2Animation {
   width: 34px;
   height: 34px;
@@ -425,20 +588,26 @@ body {
   z-index: 100;
   animation: reverseRotation 10s infinite linear;
 }
+
 @keyframes reverseRotation {
   from {
     transform:
-            /* starting position offset */ rotate(90deg)
-      /* half circle size + .5px(for precision) */ translate(-58.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* starting position offset */
+      rotate(90deg)
+      /* half circle size + .5px(for precision) */
+      translate(-58.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
+
   to {
     transform:
-            /* full circle rotation: 360 + 20 offset */ rotate(
-        450deg
-      )
-      /* half circle size + .5px(for precision) */ translate(-58.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* full circle rotation: 360 + 20 offset */
+      rotate(450deg)
+      /* half circle size + .5px(for precision) */
+      translate(-58.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
 }
 
@@ -455,22 +624,29 @@ body {
   z-index: 100;
   animation: reverseRotationBlk1 10s infinite linear;
 }
+
 @keyframes reverseRotationBlk1 {
   from {
     transform:
-            /* full circle rotation: 360 + 20 offset */ rotate(
-        380deg
-      )
-      /* half circle size + .5px(for precision) */ translate(-62.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* full circle rotation: 360 + 20 offset */
+      rotate(380deg)
+      /* half circle size + .5px(for precision) */
+      translate(-62.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
+
   to {
     transform:
-            /* starting position offset */ rotate(20deg)
-      /* half circle size + .5px(for precision) */ translate(-62.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* starting position offset */
+      rotate(20deg)
+      /* half circle size + .5px(for precision) */
+      translate(-62.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
 }
+
 .rotateCircle2Blk1 {
   width: 34px;
   height: 34px;
@@ -484,22 +660,29 @@ body {
   z-index: 100;
   animation: Rotation2Blk1 10s infinite linear;
 }
+
 @keyframes Rotation2Blk1 {
   from {
     transform:
-            /* starting position offset */ rotate(20deg)
-      /* half circle size + .5px(for precision) */ translate(-62.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* starting position offset */
+      rotate(20deg)
+      /* half circle size + .5px(for precision) */
+      translate(-62.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
+
   to {
     transform:
-            /* full circle rotation: 360 + 20 offset */ rotate(
-        380deg
-      )
-      /* half circle size + .5px(for precision) */ translate(-62.5px)
-      /* how much the icon should rotate as it goes around */ rotate(-40deg);
+      /* full circle rotation: 360 + 20 offset */
+      rotate(380deg)
+      /* half circle size + .5px(for precision) */
+      translate(-62.5px)
+      /* how much the icon should rotate as it goes around */
+      rotate(-40deg);
   }
 }
+
 .dash1 {
   height: 1px;
   width: 20px;
@@ -508,6 +691,7 @@ body {
   border-style: solid;
   border-radius: 10px;
 }
+
 .dash2 {
   height: 2px;
   width: 50px;
@@ -517,6 +701,7 @@ body {
   border-style: solid;
   border-radius: 10px;
 }
+
 .dash3 {
   height: 2px;
   width: 20px;
@@ -552,26 +737,33 @@ body {
 a {
   @apply underline text-blue-600;
 }
+
 .blogContent a {
   color: blue !important;
 }
+
 .blogContent p {
   line-height: 2.2;
 }
+
 .blogContent h1 {
   font-size: 36px;
 }
+
 .blogContent h2 {
   font-size: 32px;
 }
+
 .blogContent h3 {
   font-size: 24px;
 }
+
 .blogContent p,
 .blogContent li {
   font-size: 20px;
   line-height: 1.8;
 }
+
 .blogContent::first-letter {
   float: left;
   font-size: 1.875em;
@@ -588,6 +780,7 @@ a {
   padding: 10px 20px;
   box-shadow: 7px 5px 30px 0px rgb(72 73 121 / 15%);
 }
+
 .outline-title {
   color: rgba(0, 0, 0, 0);
   -webkit-text-stroke: 1px white;
@@ -599,78 +792,95 @@ a {
 .formIcon {
   @apply absolute border-r inset-y-0 left-0 flex items-center pl-5 pointer-events-none text-lightGray;
 }
+
 .addIconWrapper {
-  @apply rounded  w-16 h-14  pt-3;
+  @apply rounded w-16 h-14 pt-3;
 }
+
 .addDetailContent {
   @apply mt-5 text-xl lg:text-4xl text-left font-bold;
 }
+
 .formInput {
-  @apply py-3 pl-8 px-12 block w-full border border-light rounded-md text-sm  focus:outline-none;
+  @apply py-3 pl-8 px-12 block w-full border border-light rounded-md text-sm focus:outline-none;
 }
 
 .formInput {
-  @apply py-3 px-3 block w-full border border-gray-200 rounded-md text-sm  focus:outline-none bg-formColor;
+  @apply py-3 px-3 block w-full border border-gray-200 rounded-md text-sm focus:outline-none bg-formColor;
 }
 
 .formInput2 {
-  @apply py-2 pl-16 px-12 block w-full border  border-lightGray rounded-md text-sm  focus:outline-none;
+  @apply py-2 pl-16 px-12 block w-full border border-lightGray rounded-md text-sm focus:outline-none;
 }
+
 .submitBtnForm {
-  @apply py-1 px-8 rounded-md border border-transparent font-bold border-white text-white bg-submitBtn hover:bg-blue-600 focus:outline-none  transition-all text-sm xl:text-xl sm:p-4;
+  @apply py-1 px-8 rounded-md border border-transparent font-bold border-white text-white bg-submitBtn hover:bg-blue-600 focus:outline-none transition-all text-sm xl:text-xl sm:p-4;
 }
+
 .iconWrapper {
-  @apply shadow-[0_3px_10px_rgb(0,0,0,0.2)] p-4;
+  @apply shadow-[0_3px_10px_rgb(0, 0, 0, 0.2)] p-4;
 }
 
 .BlockTitle {
   @apply text-2xl md:text-3xl xl:text-4xl 2xl:text-4xl leading-[6rem];
 }
+
 .BlockTitleNew {
   @apply text-2xl md:text-3xl xl:text-4xl 2xl:text-4xl leading-[3rem];
 }
+
 .BlockTitle1 {
   @apply text-2xl md:text-3xl 2xl:text-4xl leading-[6rem];
 }
+
 .title {
   @apply text-lg md:text-xl lg:text-2xl xl:text-[28px] 2xl:text-[30px] font-bold leading-relaxed;
 }
+
 .subTitle {
   @apply text-lg md:text-2xl xl:text-xl 2xl:text-3xl;
 }
+
 .subTitle1 {
   @apply text-lg md:text-2xl 2xl:text-3xl;
 }
+
 .bodyTxt {
   @apply text-lg md:text-2xl xl:text-xl leading-relaxed;
 }
+
 .slideleft {
   animation: infinite-scroll 10s linear infinite;
 }
+
 .textAreaInput {
-  @apply py-3 pl-8 px-12 block w-full border border-gray-200 rounded-md text-sm  focus:border-blue-500 focus:ring-blue-500 
-  shadow focus:outline-slate-200 text-lightGray;
+  @apply py-3 pl-8 px-12 block w-full border border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow focus:outline-slate-200 text-lightGray;
 }
 
 @keyframes infinite-scroll {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-100%);
   }
 }
+
 .slideRight {
   animation: rightScroll 10s linear infinite;
 }
+
 @keyframes rightScroll {
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }
 }
+
 .noAnimation {
   /* -webkit-animation: none !important; */
   animation: none !important;
@@ -692,24 +902,25 @@ a {
 
 #sun,
 .orbit,
-.orbit + div,
-.orbit + div > div {
+.orbit+div,
+.orbit+div>div {
   position: absolute;
 }
 
 #sun,
 .orbit,
-.orbit + div {
+.orbit+div {
   top: 50%;
   left: 50%;
 }
-.orbit + div > div {
+
+.orbit+div>div {
   top: 0;
   left: 50%;
 }
 
 .orbit,
-.orbit + div div,
+.orbit+div div,
 #earth {
   border-radius: 50%;
 }
@@ -754,42 +965,52 @@ a {
 .mars-spin {
   animation: spin-right 68.7s linear infinite;
 }
+
 input::placeholder {
   font-weight: 600;
   font-size: 14px;
 }
+
 textarea::placeholder {
   font-weight: 600;
   font-size: 14px;
 }
+
 .contactFile {
   opacity: 10;
   width: 10px;
   height: 10px;
 }
+
 .menuBg {
   background-color: #000 !important;
   opacity: 0.3;
 }
+
 .submitBtn {
   background-color: #283593 !important;
 }
+
 .submitBtn:hover {
   background-color: #3979f0 !important;
   color: #fff !important;
 }
+
 .activeMenu {
   color: #376bff;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   /* box-shadow: rgba(0,_0,_0,_0.24)_0px_3px_8px; */
   /* background-color: #376bff; */
 }
+
 .activeSubMenu {
   color: #376bff;
 }
+
 .activeMenuImg {
   background-color: #376bff;
 }
+
 .mainMenuActive {
   @apply underline decoration-2 underline-offset-8;
 }
@@ -798,6 +1019,7 @@ textarea::placeholder {
   0% {
     left: 0;
   }
+
   100% {
     left: -100%;
   }
@@ -845,10 +1067,12 @@ textarea::placeholder {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
+
 .blogHImg:hover:before {
   opacity: 1;
   cursor: pointer;
 }
+
 .diamond-list {
   list-style-type: none;
   padding: 0;
@@ -858,8 +1082,10 @@ textarea::placeholder {
 .diamond-list li {
   position: relative;
   /* display: inline-block; */
-  margin-right: 1em; /* Adjust as needed */
-  padding-left: 1em; /* Adjust as needed */
+  margin-right: 1em;
+  /* Adjust as needed */
+  padding-left: 1em;
+  /* Adjust as needed */
 }
 
 .diamond-list li::before {
@@ -875,6 +1101,7 @@ textarea::placeholder {
   transform: rotate(45deg);
   transform-origin: 50% 44%;
 }
+
 .mainShareBtn {
   /* position: fixed; */
   right: 51px;
@@ -885,6 +1112,7 @@ textarea::placeholder {
   z-index: 1000;
   margin-top: 10px;
 }
+
 .sharebtn {
   /* position: fixed; */
   /* right: 34px; */
@@ -895,17 +1123,21 @@ textarea::placeholder {
   z-index: 1000;
   /* @apply relative flex z-10 bg-white border rounded-md p-2 opacity-50 hover:opacity-100 focus:outline-none focus:border-blue-400; */
 }
+
 .mainShareBtn:hover {
   /* height: 340px; */
 }
-.sharebtn:hover + .sharebtn-dropdown,
-.sharebtn:focus + .sharebtn-dropdown {
+
+.sharebtn:hover+.sharebtn-dropdown,
+.sharebtn:focus+.sharebtn-dropdown {
   display: block;
 }
+
 .mainShareBtn:hover .sharebtn-dropdown,
-.sharebtn:focus + .sharebtn-dropdown {
+.sharebtn:focus+.sharebtn-dropdown {
   display: block;
 }
+
 .sharebtn-dropdown {
   /* position: absolute; */
   height: auto;
@@ -926,15 +1158,19 @@ textarea::placeholder {
   transition-delay: 0s;
   transition-property: all;
 }
+
 .label2 {
   @apply block mb-2 text-sm font-medium text-gray-900;
 }
+
 .swal2-container {
   z-index: 10000;
 }
+
 .swal2-container .swal2-popup {
   border-top: 30px solid #4ca75a;
 }
+
 .verticlTxt {
   /* writing-mode: vertical-rl; */
   /* transform: scale(-1, -1); */
@@ -954,29 +1190,28 @@ textarea::placeholder {
 .swal-success-content {
   color: #fff;
 }
+
 .custom-header {
   color: #fff;
   font-size: 1.5em;
 }
 
 .custom-close-button {
-  color: #333333; /* White close button text color */
-  font-size: 0.8em; /* Adjust the font size as needed */
+  color: #333333;
+  /* White close button text color */
+  font-size: 0.8em;
+  /* Adjust the font size as needed */
   font-weight: 100;
   cursor: pointer;
   /* background-color: #dddddd;  */
   /* padding: 1px 1px 3px 1px; */
 }
+
 .html5-video-player:not(.ytp-big-mode) .ytp-chrome-top .ytp-watch-later-button {
   display: none !important;
 }
-.ytp-chrome-top-buttons
-  .html5-video-player:not(.ytp-big-mode)
-  .ytp-chrome-top
-  .ytp-watch-later-button
-  .ytp-button:not([aria-disabled="true"]):not([disabled]):not(
-    [aria-hidden="true"]
-  ) {
+
+.ytp-chrome-top-buttons .html5-video-player:not(.ytp-big-mode) .ytp-chrome-top .ytp-watch-later-button .ytp-button:not([aria-disabled="true"]):not([disabled]):not([aria-hidden="true"]) {
   display: none !important;
   opacity: 0;
 }
@@ -998,6 +1233,7 @@ textarea::placeholder {
   top: 50% !important;
   right: -69px !important;
 }
+
 .newFile {
   background-color: rgba(255, 255, 255, 0.469);
   /* color: white; */
@@ -1009,23 +1245,29 @@ textarea::placeholder {
   border-radius: 0.3rem;
   cursor: pointer;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  width: fit-content; /* Optional: Adjust width based on content */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+  width: fit-content;
+  /* Optional: Adjust width based on content */
 }
 
 /* Sarika added css for code Optimization*/
 .serviceBannerTitle {
-  @apply text-5xl  md:text-5xl  lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold text-center md:text-left    justify-center  mb-5;
+  @apply text-5xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold text-center md:text-left justify-center mb-5;
 }
+
 .bannerSubTitle {
-  @apply outline-title   font-bold text-5xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-center md:text-left  justify-center  mb-5;
+  @apply outline-title font-bold text-5xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-center md:text-left justify-center mb-5;
 }
+
 .serviceBgImgCss {
-  @apply py-20 h-auto  xl:h-auto md:py-28 xl:py-36 2xl:py-10   bg-cover bg-no-repeat relative  lg:bg-[image:var(--largeImage-url)]  bg-[image:var(--smallImage-url)];
+  @apply py-20 h-auto xl:h-auto md:py-28 xl:py-36 2xl:py-10 bg-cover bg-no-repeat relative lg:bg-[image:var(--largeImage-url)] bg-[image:var(--smallImage-url)];
 }
+
 .bannerGridCss {
-  @apply grid grid-cols-1 sm:grid-cols-1  md:grid-cols-2  py-10  md:py-20 xl:py-0 2xl:py-20 h-auto md:h-full lg:h-full   xl:h-full 2xl:h-full;
+  @apply grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 py-10 md:py-20 xl:py-0 2xl:py-20 h-auto md:h-full lg:h-full xl:h-full 2xl:h-full;
 }
 
 /* Supriya added css for Flip Cards*/
@@ -1075,48 +1317,36 @@ textarea::placeholder {
 }
 
 .stdInput2 {
-  @apply shadow border   py-2.5  pl-12 block w-full border-gray-200 rounded-md 
-  text-sm focus:border-blue-500 focus:ring-blue-500  lg:py-2.5		 
-  focus:outline-slate-200
-  text-lightGray 
-  /* focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)] */;
+  @apply shadow border py-2.5 pl-12 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 lg:py-2.5 focus:outline-slate-200 text-lightGray
+  /* focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)] */
+  ;
 }
 
 .stdInput {
-  @apply bg-gray-50 border border-gray-300 text-gray-900
-  sm:text-sm rounded-r-sm 
-  focus:ring-blue-500 
-  focus:bg-white
-  focus:outline-none
-  focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)]
-  block w-full p-2.5;
+  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-r-sm focus:ring-blue-500 focus:bg-white focus:outline-none focus:drop-shadow-[0_0px_5px_rgba(0, 0, 255, 0.4)] block w-full p-2.5;
 }
+
 .stdInput2 {
-  @apply shadow border   py-2.5  pl-12 block w-full border-gray-200 rounded-md 
-  text-sm focus:border-blue-500 focus:ring-blue-500  lg:py-2.5		 
-  focus:outline-slate-200
-  text-lightGray 
-  /* focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)] */;
+  @apply shadow border py-2.5 pl-12 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 lg:py-2.5 focus:outline-slate-200 text-lightGray
+  /* focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)] */
+  ;
 }
+
 .stdInput3 {
-  @apply shadow border   py-2.5  pl-3 block w-full border-gray-200 rounded-md 
-  text-sm focus:border-blue-500 focus:ring-blue-500  lg:py-2.5 pr-3
-      focus:outline-slate-200
-  text-lightGray 
-  /* focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)] */;
+  @apply shadow border py-2.5 pl-3 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 lg:py-2.5 pr-3 focus:outline-slate-200 text-lightGray
+  /* focus:drop-shadow-[0_0px_5px_rgba(0,0,255,0.4)] */
+  ;
 }
+
 .insideIcon {
-  @apply absolute inset-y-0  text-sm left-0 flex items-center pl-5 pointer-events-none;
+  @apply absolute inset-y-0 text-sm left-0 flex items-center pl-5 pointer-events-none;
 }
+
 /* .blogForm{
   @apply border-gray-300
    } */
 .stdBtn {
-  @apply w-full text-white bg-blue-600
-    hover:focus:outline-none focus:ring-0 
-    hover:bg-blue-700
-    hover:shadow hover:border  font-bold
-    rounded-lg text-lg px-5 py-2.5 text-center mb-3;
+  @apply w-full text-white bg-blue-600 hover:focus:outline-none focus:ring-0 hover:bg-blue-700 hover:shadow hover:border font-bold rounded-lg text-lg px-5 py-2.5 text-center mb-3;
 }
 
 /* 27-05-24 Siddhant Made changes */
@@ -1141,7 +1371,7 @@ textarea::placeholder {
 }
 
 .inputLabel {
-  @apply text-[13px] font-medium	 text-black;
+  @apply text-[13px] font-medium text-black;
 }
 
 .selectOption {
@@ -1161,12 +1391,13 @@ textarea::placeholder {
 }
 
 .formButtons {
-  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-white  bg-green hover:bg-Green hover:shadow font-medium active:scale-90 rounded text-base  text-center;
+  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-white bg-green hover:bg-Green hover:shadow font-medium active:scale-90 rounded text-base text-center;
 }
 
 .navButtons {
-  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-green  bg-white hover:bg-white hover:shadow font-medium active:scale-90 rounded text-base  text-center;
+  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-green bg-white hover:bg-white hover:shadow font-medium active:scale-90 rounded text-base text-center;
 }
+
 /* 
 .formButtons {
   @apply w-full lg:w-auto my-1 lg:my-3 px-16 h-[32px] text-white 
@@ -1175,13 +1406,15 @@ textarea::placeholder {
     rounded-lg text-base  text-center;
 } */
 
-.otpInputBox > div > input {
+.otpInputBox>div>input {
   /* @apply w-full mr-10 rounded-xl px-4 border mx-auto text-red-600 */
-  @apply text-black border  mx-auto w-7 !important;
+  @apply text-black border mx-auto w-7 !important;
 }
+
 @layer components {
   .placeholder-font-normal::placeholder {
-    font-weight: normal; /* Adjust this according to your needs */
+    font-weight: normal;
+    /* Adjust this according to your needs */
   }
 
   * {
@@ -1205,15 +1438,11 @@ textarea::placeholder {
 }
 
 .stdInputField {
-  @apply block rounded-md border-0 py-0.5 w-full pl-12 font-normal
-   text-gray-900 ring-1 ring-inset ring-grayThree text-[13px] placeholder:text-[14px]
-   placeholder:text-grayThree placeholder-font-normal focus:ring-2 focus:ring-inset focus:ring-green;
+  @apply block rounded-md border-0 py-0.5 w-full pl-12 font-normal text-gray-900 ring-1 ring-inset ring-grayThree text-[13px] placeholder:text-[14px] placeholder:text-grayThree placeholder-font-normal focus:ring-2 focus:ring-inset focus:ring-green;
 }
 
 .stdSelectField {
-  @apply block bg-white text-gray-900 font-normal rounded-md border-0 py-1 pl-12 w-full text-[13px]
-   ring-1 ring-inset ring-grayThree placeholder-grayThree focus:ring-2 focus:ring-inset
-    focus:ring-green;
+  @apply block bg-white text-gray-900 font-normal rounded-md border-0 py-1 pl-12 w-full text-[13px] ring-1 ring-inset ring-grayThree placeholder-grayThree focus:ring-2 focus:ring-inset focus:ring-green;
 }
 
 /* Aniket added Pop up classes */
@@ -1227,7 +1456,7 @@ textarea::placeholder {
 } */
 
 .modalBody {
-  @apply text-center h-auto content-center  dark:text-white;
+  @apply text-center h-auto content-center dark:text-white;
 }
 
 .modalText {
@@ -1235,11 +1464,11 @@ textarea::placeholder {
 }
 
 .modalSuccessBtn {
-  @apply bg-green px-8 py-1 rounded hover:bg-Green text-white font-medium  dark:text-white;
+  @apply bg-green px-8 py-1 rounded hover:bg-Green text-white font-medium dark:text-white;
 }
 
 .modalFailBtn {
-  @apply border-2 border-[#50C878] hover:bg-Green hover:text-white px-8 py-1 rounded text-black font-medium  dark:text-white;
+  @apply border-2 border-[#50C878] hover:bg-Green hover:text-white px-8 py-1 rounded text-black font-medium dark:text-white;
 }
 
 @layer components {
@@ -1303,6 +1532,7 @@ textarea::placeholder {
   .h-screen-minus-52px {
     height: calc(100vh - 104px);
   }
+
   .userprofile::before {
     left: 200px;
   }
@@ -1317,17 +1547,21 @@ textarea::placeholder {
   text-align: left;
   list-style: disc;
 }
+
 .bulkEmployeeImg {
   height: 100px;
 }
+
 .bulkEmployeeImg img {
   height: 115px;
   margin-bottom: 1px;
 }
+
 .bulkEmployeeImg a {
   font-size: 13px;
   color: #00b8ff !important;
 }
+
 .bulkEmployeeContent {
   /*margin-bottom: 50px;*/
   margin-top: 4px;
@@ -1335,6 +1569,7 @@ textarea::placeholder {
   padding-top: 20px;
   padding-bottom: 15px;
 }
+
 .bulkEmployeeFile p span,
 .bulkEmployeeFile p span:hover,
 .bulkEmployeeFile p span:focus,
@@ -1346,20 +1581,25 @@ textarea::placeholder {
   cursor: pointer;
   border-radius: 0px;
 }
+
 .bulkuploadFileouter {
   margin-top: 2%;
   box-shadow: 0px 0px 6px #999;
   padding: 1%;
 }
+
 .h4HeadMarg {
   margin-right: 20px;
 }
+
 .aHeadMarg {
   margin-right: 10px;
 }
+
 .NOpadding {
   padding: 0;
 }
+
 .marginAll {
   margin: 2%;
 }
@@ -1396,10 +1636,12 @@ textarea::placeholder {
   background: #1a1a1a;
   color: rgba(54, 162, 235, 1);
 }
+
 .chartMenu p {
   padding: 10px;
   font-size: 20px;
 }
+
 .chartCard {
   width: 100vw;
   height: calc(100vh - 40px);
@@ -1408,6 +1650,7 @@ textarea::placeholder {
   align-items: center;
   justify-content: center;
 }
+
 .chartBox {
   width: 700px;
   padding: 20px;
