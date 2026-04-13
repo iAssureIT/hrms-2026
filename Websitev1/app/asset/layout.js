@@ -36,10 +36,7 @@ import {
   FaFileImport,
   FaMoneyCheckAlt,
   FaChartPie,
-<<<<<<< Updated upstream
   FaHeadset,
-=======
->>>>>>> Stashed changes
 } from "react-icons/fa";
 import { IoMdDocument, IoMdSettings } from "react-icons/io";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -144,10 +141,14 @@ export default function RootLayout({ children }) {
         link: "/admin/payroll-management",
       },
       {
-<<<<<<< Updated upstream
         title: "Leave Management",
         icon: <FaCalendarCheck />,
         link: "/admin/leaves",
+      },
+      {
+        title: "Holidays",
+        icon: <FaRegCalendarAlt />,
+        link: "/admin/holidays",
       },
       {
         title: "Helpdesk",
@@ -155,8 +156,6 @@ export default function RootLayout({ children }) {
         link: "/admin/helpdesk",
       },
       {
-=======
->>>>>>> Stashed changes
         title: "User Management",
         icon: <FaUser />,
         link: "/admin/user-management",
@@ -243,7 +242,6 @@ export default function RootLayout({ children }) {
             title: "Department Master",
             link: "/asset/master-data/department-subdepartment",
           },
-<<<<<<< Updated upstream
 
 
         ],
@@ -256,19 +254,12 @@ export default function RootLayout({ children }) {
       {
         icon: <FaUserTie />,
         title: "Vendor Master",
-=======
-        ],
-      },
-      {
-        title: "Employee Master",
-        icon: <FaUser />,
-        link: "/asset/management/employee-master",
-      },
-      {
-        title: "Vendor Master",
-        icon: <BsBank />,
->>>>>>> Stashed changes
         link: "/asset/master-data/vendor-master/vendor-list",
+      },
+      {
+        title: "Settings",
+        icon: <IoMdSettings />,
+        link: "/admin/settings",
       },
       {
         title: "HRMS User Manual",
@@ -349,19 +340,6 @@ export default function RootLayout({ children }) {
       ...(roleArray.includes("asset-admin")
         ? [
           {
-<<<<<<< Updated upstream
-=======
-            title: "Employee Master",
-            icon: <FaUser />,
-            link: "/asset/management/employee-master",
-          },
-          {
-            title: "Vendor Master",
-            icon: <BsBank />,
-            link: "/asset/master-data/vendor-master/vendor-list",
-          },
-          {
->>>>>>> Stashed changes
             title: "Master Data",
             submenu: true,
             icon: <BsClipboardDataFill />,
@@ -391,7 +369,6 @@ export default function RootLayout({ children }) {
                 title: "Department Master",
                 link: "/asset/master-data/department-subdepartment",
               },
-<<<<<<< Updated upstream
               {
                 icon: <FaRegCircle />,
                 title: "Employee Master",
@@ -402,8 +379,6 @@ export default function RootLayout({ children }) {
                 title: "Vendor Master",
                 link: "/asset/master-data/vendor-master/vendor-list",
               },
-=======
->>>>>>> Stashed changes
             ],
           },
         ]
