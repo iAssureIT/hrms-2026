@@ -1137,6 +1137,11 @@ export default function RootLayout({ children }) {
       ],
     },
 
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
     {
       title: "User Management",
       icon: <FaUser />,
@@ -1185,6 +1190,7 @@ export default function RootLayout({ children }) {
       link: "/admin/payroll-management",
     },
     {
+<<<<<<< Updated upstream
       title: "Holiday Management",
       icon: <FaRegCalendarAlt />,
       link: "/admin/holidays",
@@ -1200,6 +1206,8 @@ export default function RootLayout({ children }) {
       link: "/admin/helpdesk",
     },
     {
+=======
+>>>>>>> Stashed changes
       title: "Master Data",
       submenu: true,
       icon: <BsClipboardDataFill />,
@@ -1244,6 +1252,7 @@ export default function RootLayout({ children }) {
           title: "Department Master",
           link: "/asset/master-data/department-subdepartment",
         },
+<<<<<<< Updated upstream
 
       ],
     },
@@ -1255,6 +1264,18 @@ export default function RootLayout({ children }) {
     {
       icon: <FaUserTie />,
       title: "Vendor Master",
+=======
+      ],
+    },
+    {
+      title: "Employee Master",
+      icon: <FaUser />,
+      link: "/asset/management/employee-master",
+    },
+    {
+      title: "Vendor Master",
+      icon: <BsBank />,
+>>>>>>> Stashed changes
       link: "/asset/master-data/vendor-master/vendor-list",
     },
     {
