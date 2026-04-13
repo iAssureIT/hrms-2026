@@ -18,6 +18,8 @@ import {
   Filler,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +32,46 @@ ChartJS.register(
   Tooltip,
   Legend,
   Filler
+);
+
+const MetricCard = ({ label, value, sub, icon: Icon, gradient, secondaryColor }) => (
+    <div className="relative overflow-hidden rounded-[32px] transition-all duration-500 cursor-pointer group h-[160px] p-[1.5px] bg-gradient-to-br from-slate-100 to-slate-200 hover:from-green-400 hover:to-green-600 hover:scale-[1.02] shadow-sm hover:shadow-2xl hover:shadow-green-100 active:scale-95">
+        <div className="w-full h-full rounded-[30.5px] p-6 relative overflow-hidden transition-colors duration-500 bg-white group-hover:bg-white/95 flex flex-col justify-between">
+            {/* Subtle Background Icon */}
+            <div className={`absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 transform group-hover:scale-110 group-hover:-rotate-12 ${secondaryColor}`}>
+                <Icon size={140} />
+            </div>
+
+            {/* Top Row: Label & Icon */}
+            <div className="flex justify-between items-start relative z-10">
+                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.2em] block group-hover:text-green-600 transition-colors duration-300">
+                    {label}
+                </span>
+                <div className={`p-3.5 rounded-2xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${gradient} text-white`}>
+                    <Icon size={18} />
+                </div>
+            </div>
+
+            {/* Middle Row: Value (Horizontally aligned across all cards) */}
+            <div className="relative z-10 flex items-center h-10">
+                <h3 className={`${value?.toString().length > 5 ? 'text-lg' : 'text-3xl'} font-black text-slate-800 tracking-tighter transition-all duration-300`}>
+                    {value}
+                </h3>
+            </div>
+
+            {/* Bottom Row: Pinned Sub-text (Aligned across all cards) */}
+            <div className="relative z-10 border-t border-slate-50 pt-2">
+                <p className={`text-[10px] font-bold transition-colors duration-300 ${label === 'Absent' ? 'text-red-500' : label === 'Late pulse' ? 'text-amber-500' : label === 'Payroll Status' ? 'text-indigo-500' : 'text-green-500'} group-hover:text-green-600`}>
+                    {sub}
+                </p>
+            </div>
+            
+            <div className="absolute top-4 right-16 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-25"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500/20"></span>
+            </div>
+        </div>
+    </div>
 );
 
 const HRMSDashboard = () => {
@@ -93,6 +135,67 @@ const HRMSDashboard = () => {
         }]
     };
 
+    const handleGenerateReport = () => {
+        if (!data) return;
+        const doc = new jsPDF();
+        const timestamp = moment().format("MMMM Do YYYY, h:mm:ss a");
+
+        // Header
+        doc.setFillColor(22, 163, 74); // green-600
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.text("HRMS Dashboard Report", 15, 25);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${timestamp}`, 15, 32);
+
+        // KPI Summary
+        doc.setTextColor(51, 65, 85); // slate-700
+        doc.setFontSize(16);
+        doc.text("Summary KPIs", 15, 55);
+        
+        autoTable(doc, {
+            startY: 60,
+            head: [['Indicator', 'Value', 'Details']],
+            body: [
+                ['Total Employees', kpis.totalEmployees, 'Active in system'],
+                ['Present Today', kpis.presentToday, `${((kpis.presentToday/kpis.totalEmployees)*100).toFixed(1)}% attendance`],
+                ['Absent Today', kpis.absentToday, 'Including leaves'],
+                ['Late Arrivals', kpis.lateToday, '> 15 mins late'],
+                ['Payroll Status', kpis.payrollStatus, 'Current cycle']
+            ],
+            theme: 'striped',
+            headStyles: { fillColor: [22, 163, 74] }
+        });
+
+        // Department Distribution
+        doc.text("Department Headcount", 15, doc.lastAutoTable.finalY + 15);
+        autoTable(doc, {
+            startY: doc.lastAutoTable.finalY + 20,
+            head: [['Department', 'Employee Count']],
+            body: departmentDistribution.map(d => [d._id || "Unassigned", d.count]),
+            theme: 'grid',
+            headStyles: { fillColor: [51, 65, 85] }
+        });
+
+        // Recent Leaves
+        doc.text("Recent Leave Requests", 15, doc.lastAutoTable.finalY + 15);
+        autoTable(doc, {
+            startY: doc.lastAutoTable.finalY + 20,
+            head: [['Employee', 'Leave Type', 'Period', 'Status']],
+            body: recentLeaves.map(l => [
+                l.employeeName, 
+                l.leaveType, 
+                `${moment(l.startDate).format("MMM D")} - ${moment(l.endDate).format("MMM D")}`,
+                l.status
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [22, 163, 74] }
+        });
+
+        doc.save(`HRMS_Dashboard_Report_${moment().format("YYYYMMDD")}.pdf`);
+    };
+
     return (
         <section className="p-6 md:p-10 bg-slate-50/30 min-h-screen">
             <div className="max-w-[1600px] mx-auto">
@@ -104,7 +207,7 @@ const HRMSDashboard = () => {
                         <p className="text-slate-400 font-bold text-sm">Here's what's happening today, {moment().format("dddd, MMMM D")}.</p>
                     </div>
                     <div className="flex gap-4 mt-4 md:mt-0">
-                        <button className="bg-white border-2 border-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
+                        <button onClick={handleGenerateReport} className="bg-white border-2 border-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
                              <FaFileAlt /> Generate Report
                         </button>
                         <button onClick={() => window.location.href='/admin/payroll-management'} className="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-200 transition-all flex items-center gap-2">
@@ -115,27 +218,46 @@ const HRMSDashboard = () => {
 
                 {/* KPI Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-                    {[
-                        { label: "Total Employees", value: kpis.totalEmployees, sub: "+12 this month", icon: <FaUsers />, color: "green" },
-                        { label: "Present Today", value: kpis.presentToday, sub: `${((kpis.presentToday/kpis.totalEmployees)*100).toFixed(1)}% Attendance`, icon: <FaUserCheck />, color: "green" },
-                        { label: "Absent", value: kpis.absentToday, sub: "Leaves + Unplanned", icon: <FaUserTimes />, color: "red" },
-                        { label: "Late Arrivals", value: kpis.lateToday, sub: "> 15 mins late", icon: <FaClock />, color: "amber" },
-                        { label: "Payroll Status", value: kpis.payrollStatus, sub: "Due in 3 days", icon: <FaMoneyCheckAlt />, color: "slate" }
-                    ].map((kpi, i) => (
-                        <div key={i} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/30 group hover:scale-[1.02] transition-all">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-${kpi.color}-500 bg-${kpi.color}-50`}>
-                                    {kpi.icon}
-                                </div>
-                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live</span>
-                            </div>
-                            <h3 className="text-3xl font-black text-slate-800 tracking-tighter mb-1">{kpi.value}</h3>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{kpi.label}</p>
-                                <p className="text-[11px] font-bold text-slate-400 mt-3 flex items-center gap-1">
-                                    <span className={`text-${kpi.color}-500`}>{kpi.sub}</span>
-                                </p>
-                        </div>
-                    ))}
+                    <MetricCard 
+                        label="Total Employees" 
+                        value={kpis.totalEmployees} 
+                        sub="+12 this month" 
+                        icon={FaUsers} 
+                        gradient="bg-gradient-to-br from-teal-400 to-teal-600" 
+                        secondaryColor="text-teal-600"
+                    />
+                    <MetricCard 
+                        label="Present Today" 
+                        value={kpis.presentToday} 
+                        sub={`${((kpis.presentToday/kpis.totalEmployees)*100).toFixed(1)}% Attendance`} 
+                        icon={FaUserCheck} 
+                        gradient="bg-gradient-to-br from-green-400 to-green-600" 
+                        secondaryColor="text-green-600"
+                    />
+                    <MetricCard 
+                        label="Absent" 
+                        value={kpis.absentToday} 
+                        sub="Leaves + Unplanned" 
+                        icon={FaUserTimes} 
+                        gradient="bg-gradient-to-br from-rose-400 to-rose-600" 
+                        secondaryColor="text-rose-600"
+                    />
+                    <MetricCard 
+                        label="Late pulse" 
+                        value={kpis.lateToday} 
+                        sub="> 15 mins late" 
+                        icon={FaClock} 
+                        gradient="bg-gradient-to-br from-amber-400 to-amber-600" 
+                        secondaryColor="text-amber-600"
+                    />
+                    <MetricCard 
+                        label="Payroll Status" 
+                        value={kpis.payrollStatus} 
+                        sub="Due in 3 days" 
+                        icon={FaMoneyCheckAlt} 
+                        gradient="bg-gradient-to-br from-indigo-400 to-indigo-600" 
+                        secondaryColor="text-indigo-600"
+                    />
                 </div>
 
                 {/* Main Content Area */}
