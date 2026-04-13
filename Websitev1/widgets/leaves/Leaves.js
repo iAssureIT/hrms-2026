@@ -67,7 +67,7 @@ const Leaves = () => {
         </div>
         <button
           onClick={() => setShowApplyModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md"
         >
           <FaPlus size={14} /> Apply Leave
         </button>
@@ -80,17 +80,17 @@ const Leaves = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-4 text-sm font-medium transition-colors relative ${
-                activeTab === tab ? "text-blue-600" : "text-gray-500 hover:text-gray-700"
+                activeTab === tab ? "text-green-600" : "text-gray-500 hover:text-gray-700"
               }`}
             >
               {tab}
               {tab === "Pending Requests" && leaves.filter(l => l.status === "PENDING").length > 0 && (
-                <span className="ml-2 bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs">
+                <span className="ml-2 bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs">
                   {leaves.filter(l => l.status === "PENDING").length}
                 </span>
               )}
               {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full" />
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600 rounded-t-full" />
               )}
             </button>
           ))}
@@ -101,7 +101,7 @@ const Leaves = () => {
             <input
               type="text"
               placeholder="Search employee..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
             />
             <div className="absolute left-3 top-2.5 text-gray-400">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@ const Leaves = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-[10px] font-bold uppercase text-blue-600 mb-1">
+                      <div className="text-[10px] font-bold uppercase text-green-600 mb-1">
                         {item.leaveTypeId?.leaveTypeName || "Leave"}
                       </div>
                       <div className="text-xs text-gray-500">
@@ -172,7 +172,7 @@ const Leaves = () => {
                   <tr key={leave._id} className="hover:bg-gray-50/80 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold overflow-hidden">
                           {leave.employeeId?.employeeName?.charAt(0) || "U"}
                         </div>
                         <div>

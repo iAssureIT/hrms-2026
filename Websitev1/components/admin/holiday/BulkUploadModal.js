@@ -61,14 +61,14 @@ const BulkUploadModal = ({ onClose, onSuccess }) => {
         </div>
 
         <div className="p-8 space-y-6">
-           <div className="p-10 border-2 border-dashed border-gray-100 rounded-3xl bg-gray-50/50 flex flex-col items-center justify-center text-center group hover:border-blue-200 hover:bg-blue-50/30 transition-all cursor-pointer relative">
+           <div className="p-10 border-2 border-dashed border-gray-100 rounded-3xl bg-gray-50/50 flex flex-col items-center justify-center text-center group hover:border-green-200 hover:bg-green-50/30 transition-all cursor-pointer relative">
              <input 
                type="file" 
                accept=".csv, .xlsx, .xls"
                onChange={handleFileUpload}
                className="absolute inset-0 opacity-0 cursor-pointer"
              />
-             <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+             <div className="p-4 bg-white rounded-2xl shadow-sm border border-gray-100 text-green-600 mb-4 group-hover:scale-110 transition-transform">
                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                </svg>
@@ -116,7 +116,7 @@ const BulkUploadModal = ({ onClose, onSuccess }) => {
              <button
                onClick={handleUpload}
                disabled={data.length === 0 || loading}
-               className="flex-1 px-4 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/30 transition-all active:scale-95 disabled:opacity-50"
+               className="flex-1 px-4 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-white bg-green-600 hover:bg-green-700 shadow-xl shadow-green-500/30 transition-all active:scale-95 disabled:opacity-50"
              >
                {loading ? "Uploading..." : `Upload ${data.length} Records`}
              </button>

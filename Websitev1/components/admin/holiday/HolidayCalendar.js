@@ -28,10 +28,10 @@ const HolidayCalendar = ({ holidays }) => {
     const dateHolidays = holidays.filter(h => moment(h.date).isSame(fullDate, "day"));
 
     days.push(
-      <div key={d} className={`h-32 border border-blue-50/50 p-2 transition-all relative group hover:bg-blue-50/10 ${isToday ? "bg-blue-50/20" : "bg-white"}`}>
+      <div key={d} className={`h-32 border border-green-50/50 p-2 transition-all relative group hover:bg-green-50/10 ${isToday ? "bg-green-50/20" : "bg-white"}`}>
         <div className="flex justify-between items-start">
           <span className={`text-sm font-black tabular-nums transition-colors ${
-            isToday ? "bg-blue-600 text-white w-7 h-7 rounded-lg flex items-center justify-center -mt-1 -ml-1 shadow-md shadow-blue-500/20" : "text-gray-400 group-hover:text-gray-800"
+            isToday ? "bg-green-600 text-white w-7 h-7 rounded-lg flex items-center justify-center -mt-1 -ml-1 shadow-md shadow-green-500/20" : "text-gray-400 group-hover:text-gray-800"
           }`}>
             {d}
           </span>
@@ -40,7 +40,7 @@ const HolidayCalendar = ({ holidays }) => {
         <div className="mt-2 space-y-1 overflow-hidden h-20">
           {dateHolidays.map((h, i) => (
             <div key={i} className={`px-2 py-1 rounded-md text-[9px] font-black uppercase leading-tight tracking-tight shadow-sm border border-transparent ${
-              h.locations.includes("Global") ? "bg-blue-600 text-white" : 
+              h.locations.includes("Global") ? "bg-green-600 text-white" : 
               h.locations.includes("US") ? "bg-red-500 text-white" :
               h.locations.includes("India") ? "bg-orange-500 text-white" :
               "bg-gray-100 text-gray-700"
@@ -67,7 +67,7 @@ const HolidayCalendar = ({ holidays }) => {
 
           <div className="flex items-center gap-3">
              <div className="flex items-center gap-1.5 capitalize">
-               <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+               <div className="w-2 h-2 rounded-full bg-green-600"></div>
                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global</span>
              </div>
              <div className="flex items-center gap-1.5 capitalize">

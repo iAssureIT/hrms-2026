@@ -27,7 +27,7 @@ const Holidays = () => {
     try {
       setLoading(true);
       const res = await axios.get("/api/holidays/list", {
-        params: { location: selectedLocation, year: currentYear }
+        params: { location: selectedLocation, year: currentYear },
       });
       if (res.data.success) {
         setHolidays(res.data.data);
@@ -39,42 +39,52 @@ const Holidays = () => {
     }
   };
 
-  const filteredHolidays = holidays.filter(h => 
-    h.holidayName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredHolidays = holidays.filter((h) =>
+    h.holidayName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const upcomingHolidays = filteredHolidays.filter(h => moment(h.date).isAfter(moment().subtract(1, 'day')));
+  const upcomingHolidays = filteredHolidays.filter((h) =>
+    moment(h.date).isAfter(moment().subtract(1, "day")),
+  );
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-800 tracking-tight">Holiday Management</h1>
-          <p className="text-sm font-bold text-gray-400 mt-1">Configure organizational holidays and location-based calendars.</p>
+          <h1 className="text-3xl font-black text-gray-800 tracking-tight">
+            Holiday Management
+          </h1>
+
+          <p className="text-sm font-bold text-gray-400 mt-1">
+            Configure organizational holidays and location-based calendars.
+          </p>
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <FaSearch className="absolute left-4 top-3.5 text-gray-300" size={14} />
-            <input 
-              type="text" 
+            <FaSearch
+              className="absolute left-4 top-3.5 text-gray-300"
+              size={14}
+            />
+            <input
+              type="text"
               placeholder="Search holidays..."
-              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium text-gray-700 shadow-sm"
+              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-medium text-gray-700 shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button 
+          <button
             onClick={() => setShowBulkModal(true)}
-            className="p-3.5 bg-white text-gray-500 rounded-2xl border border-gray-100 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm active:scale-95"
+            className="p-3.5 bg-white text-gray-500 rounded-2xl border border-gray-100 hover:text-green-600 hover:border-green-100 transition-all shadow-sm active:scale-95"
             title="Bulk Import"
           >
             <FaFileImport size={16} />
           </button>
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-2xl shadow-xl shadow-blue-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[10px]"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[10px]"
           >
             <FaPlus size={12} /> Add Holiday
           </button>
@@ -93,9 +103,11 @@ const Holidays = () => {
                 : "bg-white text-gray-500 border-transparent hover:border-gray-200"
             }`}
           >
-            {loc === "All" ? "📍 All Locations" : 
-             loc === "Global" ? "🌍 Global" : 
-             `🏙️ ${loc}`}
+            {loc === "All"
+              ? "📍 All Locations"
+              : loc === "Global"
+                ? "🌍 Global"
+                : `🏙️ ${loc}`}
           </button>
         ))}
       </div>
@@ -114,16 +126,22 @@ const Holidays = () => {
       </div>
 
       {showAddModal && (
-        <AddHolidayModal 
-          onClose={() => setShowAddModal(false)} 
-          onSuccess={() => { setShowAddModal(false); fetchHolidays(); }}
+        <AddHolidayModal
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            setShowAddModal(false);
+            fetchHolidays();
+          }}
         />
       )}
 
       {showBulkModal && (
-        <BulkUploadModal 
-          onClose={() => setShowBulkModal(false)} 
-          onSuccess={() => { setShowBulkModal(false); fetchHolidays(); }}
+        <BulkUploadModal
+          onClose={() => setShowBulkModal(false)}
+          onSuccess={() => {
+            setShowBulkModal(false);
+            fetchHolidays();
+          }}
         />
       )}
 

@@ -85,7 +85,7 @@ const LeavePolicySetup = ({ data, updateData }) => {
                 <div className="flex justify-between items-end">
                     <div>
                         <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                            <div className="p-2 bg-blue-100 text-blue-600 rounded-xl">
+                            <div className="p-2 bg-green-100 text-green-600 rounded-xl">
                                 <MdEventNote size={20} />
                             </div>
                             Leave Types & Entitlements

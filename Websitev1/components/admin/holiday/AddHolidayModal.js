@@ -66,7 +66,7 @@ const AddHolidayModal = ({ onClose, onSuccess }) => {
               <input
                 type="text"
                 required
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium text-gray-800"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-medium text-gray-800"
                 placeholder="e.g. Thanksgiving, Diwali..."
                 value={formData.holidayName}
                 onChange={(e) => setFormData({ ...formData, holidayName: e.target.value })}
@@ -79,7 +79,7 @@ const AddHolidayModal = ({ onClose, onSuccess }) => {
                 <input
                   type="date"
                   required
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium text-gray-800"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-medium text-gray-800"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 />
@@ -87,7 +87,7 @@ const AddHolidayModal = ({ onClose, onSuccess }) => {
               <div>
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block">Holiday Type</label>
                 <select
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium text-gray-800"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-medium text-gray-800"
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                 >
@@ -106,12 +106,12 @@ const AddHolidayModal = ({ onClose, onSuccess }) => {
                     onClick={() => handleLocationChange(loc)}
                     className={`flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition-all ${
                       formData.locations.includes(loc) 
-                        ? "bg-blue-50 border-blue-200" 
+                        ? "bg-green-50 border-green-200" 
                         : "bg-white border-gray-100 hover:border-gray-200"
                     }`}
                   >
                     <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                      formData.locations.includes(loc) ? "bg-blue-600 border-blue-600" : "bg-gray-100 border-gray-200"
+                      formData.locations.includes(loc) ? "bg-green-600 border-green-600" : "bg-gray-100 border-gray-200"
                     }`}>
                       {formData.locations.includes(loc) && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@ const AddHolidayModal = ({ onClose, onSuccess }) => {
                         </svg>
                       )}
                     </div>
-                    <span className={`text-xs font-bold ${formData.locations.includes(loc) ? "text-blue-900" : "text-gray-600"}`}>
+                    <span className={`text-xs font-bold ${formData.locations.includes(loc) ? "text-green-900" : "text-gray-600"}`}>
                       {loc === "Global" ? "Global (All)" : loc}
                     </span>
                   </div>
@@ -139,7 +139,7 @@ const AddHolidayModal = ({ onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/30 transition-all active:scale-95 disabled:opacity-50"
+              className="flex-1 px-4 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-white bg-green-600 hover:bg-green-700 shadow-xl shadow-green-500/30 transition-all active:scale-95 disabled:opacity-50"
             >
               {loading ? "Saving..." : "Save Holiday"}
             </button>

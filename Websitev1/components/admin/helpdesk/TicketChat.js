@@ -117,7 +117,7 @@ const TicketChat = ({ ticket, onRefresh }) => {
       {/* Ticket Header */}
       <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center shadow-sm z-10">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 font-bold shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600 font-bold shadow-sm">
             {ticket.employeeId?.employeeName?.charAt(0) || "U"}
           </div>
           <div>
@@ -125,7 +125,7 @@ const TicketChat = ({ ticket, onRefresh }) => {
               <h3 className="font-bold text-gray-800">{ticket.subject}</h3>
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                 ticket.status === "Open" ? "bg-green-100 text-green-700" :
-                ticket.status === "In Progress" ? "bg-blue-100 text-blue-700" :
+                ticket.status === "In Progress" ? "bg-teal-100 text-teal-700" :
                 ticket.status === "Resolved" ? "bg-gray-100 text-gray-600" :
                 "bg-red-100 text-red-700"
               }`}>
@@ -166,16 +166,16 @@ const TicketChat = ({ ticket, onRefresh }) => {
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex items-start gap-3 ${msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "flex-row-reverse" : ""}`}>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shadow-sm ${
-              msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "bg-blue-600 text-white" : "bg-white border border-gray-100 text-gray-800"
+              msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "bg-green-600 text-white" : "bg-white border border-gray-100 text-gray-800"
             }`}>
               {msg.senderId?.profile?.firstname?.charAt(0) || msg.senderId?.username?.charAt(0) || "U"}
             </div>
             <div className={`max-w-md p-4 rounded-2xl shadow-sm text-sm ${
-              msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "bg-blue-600 text-white rounded-tr-none" : "bg-white border border-gray-100 text-gray-700 rounded-tl-none font-medium"
+              msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "bg-green-600 text-white rounded-tr-none" : "bg-white border border-gray-100 text-gray-700 rounded-tl-none font-medium"
             }`}>
               {msg.message}
               <div className={`text-[9px] mt-2 font-bold tracking-tight uppercase ${
-                msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "text-blue-100/70" : "text-gray-400"
+                msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "text-green-100/70" : "text-gray-400"
               }`}>
                 {moment(msg.createdAt).fromNow()}
               </div>
@@ -188,7 +188,7 @@ const TicketChat = ({ ticket, onRefresh }) => {
       {/* Reply Box */}
       {ticket.status !== "Closed" && (
         <div className="p-4 bg-white border-t border-gray-100">
-          <form onSubmit={handleSendMessage} className="relative bg-gray-50 border border-gray-100 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all shadow-inner group overflow-hidden">
+          <form onSubmit={handleSendMessage} className="relative bg-gray-50 border border-gray-100 rounded-2xl focus-within:ring-2 focus-within:ring-green-500/20 focus-within:border-green-500 transition-all shadow-inner group overflow-hidden">
             <textarea
               className="w-full bg-transparent p-4 pr-32 text-sm text-gray-700 placeholder:text-gray-400 outline-none resize-none min-h-[100px] font-medium"
               placeholder="Type your response here..."
@@ -206,7 +206,7 @@ const TicketChat = ({ ticket, onRefresh }) => {
               <div className="px-4 pb-2 flex flex-wrap gap-2">
                 {attachments.map((file, idx) => (
                   <div key={idx} className="flex items-center gap-2 px-2 py-1 bg-white border border-gray-200 rounded-lg shadow-sm animate-in slide-in-from-bottom-1">
-                    <FaFileAlt className="text-blue-500" size={10} />
+                    <FaFileAlt className="text-green-500" size={10} />
                     <span className="text-[10px] font-bold text-gray-700 truncate max-w-[100px]">{file.fileName}</span>
                     <button type="button" onClick={() => removeAttachment(idx)} className="text-gray-400 hover:text-red-500">
                       <FaTimes size={10} />
@@ -227,7 +227,7 @@ const TicketChat = ({ ticket, onRefresh }) => {
               <button 
                 type="button" 
                 onClick={() => fileInputRef.current.click()}
-                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-white rounded-lg transition-all shadow-none hover:shadow-sm"
+                className="p-2 text-gray-400 hover:text-green-600 hover:bg-white rounded-lg transition-all shadow-none hover:shadow-sm"
               >
                 <FaPaperclip size={16} />
               </button>
@@ -236,7 +236,7 @@ const TicketChat = ({ ticket, onRefresh }) => {
               <button
                 type="submit"
                 disabled={loading || !newMessage.trim()}
-                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:shadow-none translate-y-0 active:translate-y-0.5"
+                className="flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-green-700 shadow-lg shadow-green-500/30 transition-all disabled:opacity-50 disabled:shadow-none translate-y-0 active:translate-y-0.5"
               >
                 <FaPaperPlane size={12} /> {loading ? "Sending..." : "Send"}
               </button>

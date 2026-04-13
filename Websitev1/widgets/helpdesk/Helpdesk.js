@@ -55,7 +55,7 @@ const Helpdesk = () => {
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-95"
+              className="bg-green-600 hover:bg-green-700 text-white p-2.5 rounded-xl shadow-lg shadow-green-500/30 transition-all active:scale-95"
               title="Create Ticket"
             >
               <FaPlus size={16} />
@@ -63,11 +63,11 @@ const Helpdesk = () => {
           </div>
 
           <div className="relative mb-5 group">
-            <FaSearch className="absolute left-3.5 top-3.5 text-gray-300 group-focus-within:text-blue-500 transition-colors" size={14} />
+            <FaSearch className="absolute left-3.5 top-3.5 text-gray-300 group-focus-within:text-green-500 transition-colors" size={14} />
             <input
               type="text"
               placeholder="Search tickets, employees..."
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium text-gray-700"
+              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-medium text-gray-700"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -80,7 +80,7 @@ const Helpdesk = () => {
                 onClick={() => setActiveFilter(f)}
                 className={`px-4 py-1.5 rounded-full text-[10px] font-bold tracking-wide uppercase transition-all ${
                   activeFilter === f
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
+                    ? "bg-green-600 text-white shadow-md shadow-green-500/20"
                     : "bg-white text-gray-500 border border-gray-100 hover:bg-gray-50"
                 }`}
               >
@@ -102,7 +102,7 @@ const Helpdesk = () => {
                 onClick={() => setSelectedTicket(t)}
                 className={`p-5 rounded-2xl border transition-all cursor-pointer relative group ${
                   selectedTicket?._id === t._id
-                    ? "bg-blue-50/50 border-blue-200 shadow-sm"
+                    ? "bg-green-50/50 border-green-200 shadow-sm"
                     : "bg-white border-transparent hover:border-gray-200 hover:bg-gray-50/50"
                 }`}
               >
@@ -124,7 +124,7 @@ const Helpdesk = () => {
                 <div className="flex items-center justify-between">
                   <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
                     t.status === "Open" ? "bg-green-100 text-green-700" :
-                    t.status === "In Progress" ? "bg-blue-100 text-blue-700" :
+                    t.status === "In Progress" ? "bg-teal-100 text-teal-700" :
                     t.status === "Resolved" ? "bg-gray-100 text-gray-500" :
                     "bg-red-100 text-red-700"
                   }`}>
