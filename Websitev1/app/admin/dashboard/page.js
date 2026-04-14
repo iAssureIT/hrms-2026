@@ -5,7 +5,7 @@ import axios from "axios";
 import { FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCheckCircle, FaMoneyCheckAlt, FaChevronRight, FaFileAlt, FaBell } from "react-icons/fa";
 import moment from "moment";
 import {
-    ChartJS,
+    Chart as ChartJS,
     CategoryScale,
     LinearScale,
     BarElement,
@@ -18,8 +18,6 @@ import {
     Filler,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 ChartJS.register(
     CategoryScale,
@@ -162,8 +160,13 @@ const HRMSDashboard = () => {
         }]
     };
 
-    const handleGenerateReport = () => {
+    const handleGenerateReport = async () => {
         if (!data) return;
+        
+        // Dynamically import jsPDF and autoTable exactly when needed to prevent Next.js SSR crashes
+        const { default: jsPDF } = await import("jspdf");
+        const { default: autoTable } = await import("jspdf-autotable");
+        
         const doc = new jsPDF();
         const timestamp = moment().format("MMMM Do YYYY, h:mm:ss a");
 
