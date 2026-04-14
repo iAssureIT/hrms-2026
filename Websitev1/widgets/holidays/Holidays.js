@@ -4,16 +4,15 @@ import axios from "axios";
 import { FaPlus, FaSearch, FaFileImport, FaCog } from "react-icons/fa";
 import HolidayCalendar from "@/components/admin/holiday/HolidayCalendar";
 import HolidayList from "@/components/admin/holiday/HolidayList";
-import AddHolidayModal from "@/components/admin/holiday/AddHolidayModal";
-import BulkUploadModal from "@/components/admin/holiday/BulkUploadModal";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 const Holidays = () => {
+  const router = useRouter();
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [currentYear, setCurrentYear] = useState(moment().year());
 
@@ -83,7 +82,7 @@ const Holidays = () => {
             <FaFileImport size={16} />
           </button>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => router.push("/admin/holidays/add")}
             className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[10px]"
           >
             <FaPlus size={12} /> Add Holiday
@@ -99,7 +98,7 @@ const Holidays = () => {
             onClick={() => setSelectedLocation(loc)}
             className={`px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border ${
               selectedLocation === loc
-                ? "bg-gray-800 text-white border-gray-800 shadow-gray-800/20"
+                ? "bg-green-600 text-white border-green-600 shadow-green-500/20"
                 : "bg-white text-gray-500 border-transparent hover:border-gray-200"
             }`}
           >
@@ -124,16 +123,6 @@ const Holidays = () => {
           <HolidayCalendar holidays={filteredHolidays} />
         </div>
       </div>
-
-      {showAddModal && (
-        <AddHolidayModal
-          onClose={() => setShowAddModal(false)}
-          onSuccess={() => {
-            setShowAddModal(false);
-            fetchHolidays();
-          }}
-        />
-      )}
 
       {showBulkModal && (
         <BulkUploadModal

@@ -9,7 +9,8 @@ const moment = require("moment");
 // ✅ APPLY LEAVE
 exports.applyLeave = async (req, res) => {
   try {
-    const { employeeId, leaveTypeId, fromDate, toDate, reason, createdBy } = req.body;
+    const { employeeId, leaveTypeId, fromDate, toDate, reason, createdBy } =
+      req.body;
 
     // 1. Calculate Total Days
     const start = moment(fromDate).startOf("day");
@@ -17,26 +18,33 @@ exports.applyLeave = async (req, res) => {
     const totalDays = end.diff(start, "days") + 1;
 
     if (totalDays <= 0) {
-      return res.status(400).json({ success: false, message: "Invalid date range" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid date range" });
     }
 
     // 2. Prevent Overlapping Leaves
     const overlap = await LeaveApplication.findOne({
       employeeId,
       status: { $ne: "REJECTED" },
-      $or: [
-        { fromDate: { $lte: toDate }, toDate: { $gte: fromDate } }
-      ]
+      $or: [{ fromDate: { $lte: toDate }, toDate: { $gte: fromDate } }],
     });
 
     if (overlap) {
-      return res.status(400).json({ success: false, message: "Leave already applied for these dates" });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Leave already applied for these dates",
+        });
     }
 
     // 3. Validate Leave Balance
     const leaveType = await LeaveType.findById(leaveTypeId);
     if (!leaveType) {
-      return res.status(404).json({ success: false, message: "Leave type not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Leave type not found" });
     }
 
     const year = moment(fromDate).year();
@@ -53,9 +61,9 @@ exports.applyLeave = async (req, res) => {
         remainingBalance: leaveType.maxDaysPerYear || 0,
         earnedDays: 0,
         usedDays: 0,
-        createdBy: createdBy || employeeId // Fallback to employeeId if createdBy is missing
+        createdBy: createdBy || employeeId, // Fallback to employeeId if createdBy is missing
       });
-      
+
       // Also create a ledger entry for initialization
       await LeaveLedger.create({
         employeeId,
@@ -65,21 +73,23 @@ exports.applyLeave = async (req, res) => {
         days: leaveType.maxDaysPerYear || 0,
         balanceAfter: leaveType.maxDaysPerYear || 0,
         remarks: "Auto-initialized balance on first application",
-        createdBy: createdBy || employeeId
+        createdBy: createdBy || employeeId,
       });
     }
 
     // 5. Validate Balance
     if (leaveType.leaveCode !== "LOP") {
       if (balance.remainingBalance < totalDays) {
-        return res.status(400).json({ success: false, message: "Insufficient leave balance" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Insufficient leave balance" });
       }
     }
 
     // 4. Create Application
     const data = await LeaveApplication.create({
       ...req.body,
-      totalDays
+      totalDays,
     });
 
     // 5. If status is APPROVED (Pre-authorized), update Balance and Ledger
@@ -99,7 +109,7 @@ exports.applyLeave = async (req, res) => {
             remainingBalance: -data.totalDays,
           },
         },
-        { new: true, upsert: true }
+        { new: true, upsert: true },
       );
 
       // Create Ledger Entry
@@ -158,17 +168,22 @@ exports.updateLeaveStatus = async (req, res) => {
   try {
     const previousApplication = await LeaveApplication.findById(req.params.id);
     if (!previousApplication) {
-      return res.status(404).json({ success: false, message: "Application not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Application not found" });
     }
 
     const data = await LeaveApplication.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { new: true },
     );
 
     // If status changed to APPROVED, update Balance and Ledger
-    if (req.body.status === "APPROVED" && previousApplication.status !== "APPROVED") {
+    if (
+      req.body.status === "APPROVED" &&
+      previousApplication.status !== "APPROVED"
+    ) {
       const year = moment(data.fromDate).year();
 
       // 1. Update Leave Balance
@@ -184,7 +199,7 @@ exports.updateLeaveStatus = async (req, res) => {
             remainingBalance: -data.totalDays,
           },
         },
-        { new: true, upsert: true }
+        { new: true, upsert: true },
       );
 
       // 2. Create Ledger Entry
@@ -217,7 +232,7 @@ exports.updateLeaveStatus = async (req, res) => {
             status: "LEAVE",
             remarks: `Approved ${data.leaveTypeId?.leaveCode || "Leave"}`,
           },
-          { upsert: true, new: true }
+          { upsert: true, new: true },
         );
       }
     }
