@@ -13,13 +13,16 @@ function MenuBar2(props) {
             }
           >
             <a className={props?.inputData?.classForLogoLink} href="/">
-              <img
-                id="navLogo"
-                src={props.inputData.logo}
-                className={props.inputData?.classForLogo + " lazyload"}
-                alt="Logo"
-              />
+              {props.inputData.logo && (
+                <img
+                  id="navLogo"
+                  src={props.inputData.logo}
+                  className={props.inputData?.classForLogo + " lazyload"}
+                  alt="Logo"
+                />
+              )}
             </a>
+
 
             <div className="w-full lg:w-auto text-center lg:text-right mt-4 lg:mt-0 lg:ml-auto flex-1">
               <h1 className="heading text-xl md:text-3xl font-extrabold text-gray-800">

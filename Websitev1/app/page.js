@@ -17,7 +17,7 @@ const page = () => {
       }}
     >
       <div className="relative flex-1 flex items-center justify-center lg:justify-end w-full h-full px-2 sm:px-4 lg:px-28 xxl:px-32 py-4 lg:py-0">
-        <Login logo="/images/specific/logo.webp" bgColor="bg-white" />
+        <Login logo="" bgColor="bg-white" />
       </div>
     </div>
   );

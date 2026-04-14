@@ -188,7 +188,7 @@ const metadata = {
 };
 
 const content_Menubar = {
-  logo: "/images/specific/logo.webp",
+  logo: "",
   smallLogo: "/images/specific/logo-2.webp",
   navCss:
     "m-2 sm:m-3 flex flex-wrap items-center justify-center md:justify-between py-2 ",

@@ -169,22 +169,15 @@ const LeftSideBar = ({ handleCallback, openSidebar }) => {
       {open ? (
         <a href="/">
           <div className="flex-none bg-white flex items-center">
-            <div className="flex items-center content-center mx-auto">
-              <img
-                src="/images/specific/logo.webp"
-                className="w-32 h-16 ml-4"
-              />
+            <div className="flex items-center content-center mx-auto py-4">
+              <span className="text-2xl font-black text-slate-800 italic">HRMS</span>
             </div>
           </div>
         </a>
       ) : (
         <a href="/">
-          <div className="h-8 w-8 mx-auto mt-4">
-            {/* <FontAwesomeIcon  className='cursor-pointer -right-3 top-9 w-7 border-dark-purple  float-start h-5'  icon={faAngleRight} color='#000' onClick={()=>handleDrawer(!open)}/>  */}
-            <img
-              src="/images/specific/logo-2.webp"
-              className="cursor-pointer -right-3  w-7 border-dark-purple  float-start h-7"
-            />
+          <div className="h-8 w-8 mx-auto mt-4 flex items-center justify-center">
+            <span className="text-green-600 font-bold text-xl">H</span>
           </div>
         </a>
       )}
@@ -309,25 +302,6 @@ const LeftSideBar = ({ handleCallback, openSidebar }) => {
             })}
         </List>
       ) : null}
-      {/* <nav>
-        <ul className='pt-0 nav justify-center '>
-          {Menus&& Menus.length>0 && Menus.map((menu,index)=>{
-            return(
-                <Link to={'/'+menu.link}>
-                  <li key={index} className=' text-sm flex mt-4 items-center gap-x-4 cursor-pointer p-4 hover:bg-light-white rounded-md'>
-                  <FontAwesomeIcon  className=' cursor-pointer -right-3 top-9 w-7 h-5 '  icon={menu.src} color='#000' /> 
-                  <span className={!open ? 'hidden': 'origin-left duration-200'}>{menu.title}</span>
-                  <ul>
-                      <li><a href="history">Our History</a></li> 
-                      <li><a href="team">Our Team</a></li>
-                    </ul>
-                </li>
-                  </Link>
-    
-                )
-            })}
-        </ul>  
-        </nav> */}
     </div>
   );
 };

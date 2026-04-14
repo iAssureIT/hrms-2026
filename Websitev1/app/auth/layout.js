@@ -61,7 +61,7 @@ import MenuBar from "@/components/PreLoginLayout/MenuBar2";
 var currentYear = new Date().getFullYear();
 
 const content_Menubar = {
-  logo: "/images/specific/logo.webp",
+  logo: "",
   smallLogo: "/images/specific/logo-2.webp",
   navCss: "grid  2xl:m-10 flex-wrap md:flex   py-0 ",
   // "m-3 2xl:m-10 flex flex-wrap items-center md:gap-x-5 lg:gap-auto justify-between  md:justify-start lg:justify-between  py-0 ",
@@ -88,7 +88,7 @@ const content_Footer2 = {
   copyrightText:
     '<span class="w-full text-black font-normal">Copyright © ' +
     currentYear +
-    ', <span class="text-black font-bold hover:text-blue-600 hover:underline"><a href="/"  target="_blank" >Lupin Foundation</a></span> All Rights Reserved</span>',
+    ', <span class="text-black font-bold hover:text-blue-600 hover:underline"><a href="/"  target="_blank" >HRMS 2026</a></span> All Rights Reserved</span>',
   PrivacyPageURL: "/privacy-policy",
   footerText:
     '<span class="text-black mr-1 mb-3">Designed & Developed By</span> <span class="text-black font-bold hover:text-blue-600 hover:underline"> <a href="https://iassureit.com/" target="_blank"> iAssure International Technologies Pvt. Ltd.</a></span>',
