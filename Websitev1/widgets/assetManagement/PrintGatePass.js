@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FaSpinner, FaPrint, FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import moment from "moment";
-import html2pdf from "html2pdf.js";
+
 
 const PrintGatePass = ({ passId }) => {
     const router = useRouter();
@@ -76,7 +76,8 @@ const PrintGatePass = ({ passId }) => {
         }
     };
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
+        const html2pdf = (await import("html2pdf.js")).default;
         const element = printRef.current;
         const opt = {
             margin: [0.2, 0.2, 0.2, 0.2],

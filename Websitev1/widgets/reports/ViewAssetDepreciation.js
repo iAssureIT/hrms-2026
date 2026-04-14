@@ -11,7 +11,7 @@ import {
     HiCurrencyRupee
 } from "react-icons/hi2";
 
-import html2pdf from "html2pdf.js";
+
 
 const ViewAssetDepreciation = ({ assetId }) => {
     const router = useRouter();
@@ -51,7 +51,8 @@ const ViewAssetDepreciation = ({ assetId }) => {
         }).format(num);
     };
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
+        const html2pdf = (await import("html2pdf.js")).default;
         const element = printRef.current;
         const opt = {
             margin: [10, 10, 10, 10],

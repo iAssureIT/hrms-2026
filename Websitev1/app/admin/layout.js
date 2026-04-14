@@ -399,37 +399,37 @@
 //       title: "Asset Management",
 //       submenu: true,
 //       icon: <BsBoxes />,
-//       link: "/asset/management",
+//       link: "/admin/asset-management",
 //     },
 //     {
 //       title: "Asset Maintenance",
 //       icon: <FaTools />,
-//       link: "/asset/management/maintenance-list",
+//       link: "/admin/asset-management/maintenance-list",
 //     },
 //     {
 //       title: "Asset Audit",
 //       icon: <FaClipboardCheck />,
-//       link: "/asset/management/asset-audit",
+//       link: "/admin/asset-management/asset-audit",
 //     },
 //     {
 //       title: "Asset Depreciation",
 //       icon: <FaChartLine />,
-//       link: "/asset/management/depreciation",
+//       link: "/admin/asset-management/depreciation",
 //     },
 //     {
 //       title: "Gate Pass Management",
 //       icon: <FaIdCard />,
-//       link: "/asset/management/gate-pass-management",
+//       link: "/admin/asset-management/gate-pass-management",
 //     },
 //     {
 //       title: "Asset Disposal",
 //       icon: <FaTrashAlt />,
-//       link: "/asset/management/asset-disposal",
+//       link: "/admin/asset-management/asset-disposal",
 //     },
 //     {
 //       title: "Employee Master",
 //       icon: <FaUser />,
-//       link: "/asset/management/employee-master",
+//       link: "/admin/asset-management/employee-master",
 //     },
 //     {
 //       title: "Leaves",
@@ -444,7 +444,7 @@
 //     {
 //       title: "Vendor Master",
 //       icon: <BsBank />,
-//       link: "/asset/master-data/vendor-master/vendor-list",
+//       link: "/admin/master-data/vendor-master/vendor-list",
 //     },
 //     {
 //       title: "Master-Data",
@@ -454,32 +454,32 @@
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Registry",
-//           link: "/asset/management",
+//           link: "/admin/asset-management",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Maintenance",
-//           link: "/asset/management/maintenance-list",
+//           link: "/admin/asset-management/maintenance-list",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Audit",
-//           link: "/asset/management/asset-audit",
+//           link: "/admin/asset-management/asset-audit",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Depreciation",
-//           link: "/asset/management/depreciation",
+//           link: "/admin/asset-management/depreciation",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Gate Pass Management",
-//           link: "/asset/management/gate-pass-management",
+//           link: "/admin/asset-management/gate-pass-management",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Disposal",
-//           link: "/asset/management/asset-disposal",
+//           link: "/admin/asset-management/asset-disposal",
 //         },
 //       ],
 //     },
@@ -549,12 +549,12 @@
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Location Master",
-//           link: "/asset/master-data/sublocation",
+//           link: "/admin/master-data/sublocation",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Category Master",
-//           link: "/asset/master-data/asset-category-subcategory",
+//           link: "/admin/master-data/asset-category-subcategory",
 //         },
 //         {
 //           icon: <FaRegCircle />,
@@ -569,29 +569,29 @@
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Inspection Checklist Master",
-//           link: "/asset/master-data/asset-inspection-checklist",
+//           link: "/admin/master-data/asset-inspection-checklist",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Asset Depreciation Master",
-//           link: "/asset/master-data/asset-depreciation",
+//           link: "/admin/master-data/asset-depreciation",
 //         },
 //         {
 //           icon: <FaRegCircle />,
 //           title: "Department Master",
-//           link: "/asset/master-data/department-subdepartment",
+//           link: "/admin/master-data/department-subdepartment",
 //         },
 //       ],
 //     },
 //     {
 //       title: "Employee Master",
 //       icon: <FaUser />,
-//       link: "/asset/management/employee-master",
+//       link: "/admin/asset-management/employee-master",
 //     },
 //     {
 //       title: "Vendor Master",
 //       icon: <BsBank />,
-//       link: "/asset/master-data/vendor-master/vendor-list",
+//       link: "/admin/master-data/vendor-master/vendor-list",
 //     },
 //     {
 //       title: "Reports Hub",
@@ -1107,32 +1107,32 @@ export default function RootLayout({ children }) {
         {
           icon: <FaRegCircle />,
           title: "Asset Registry",
-          link: "/asset/management",
+          link: "/admin/asset-management",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Maintenance",
-          link: "/asset/management/maintenance-list",
+          link: "/admin/asset-management/maintenance-list",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Audit",
-          link: "/asset/management/asset-audit",
+          link: "/admin/asset-management/asset-audit",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Depreciation",
-          link: "/asset/management/depreciation",
+          link: "/admin/asset-management/depreciation",
         },
         {
           icon: <FaRegCircle />,
           title: "Gate Pass Management",
-          link: "/asset/management/gate-pass-management",
+          link: "/admin/asset-management/gate-pass-management",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Disposal",
-          link: "/asset/management/asset-disposal",
+          link: "/admin/asset-management/asset-disposal",
         },
       ],
     },
@@ -1212,12 +1212,12 @@ export default function RootLayout({ children }) {
         {
           icon: <FaRegCircle />,
           title: "Location Master",
-          link: "/asset/master-data/sublocation",
+          link: "/admin/master-data/sublocation",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Category Master",
-          link: "/asset/master-data/asset-category-subcategory",
+          link: "/admin/master-data/asset-category-subcategory",
         },
         {
           icon: <FaRegCircle />,
@@ -1232,17 +1232,17 @@ export default function RootLayout({ children }) {
         {
           icon: <FaRegCircle />,
           title: "Asset Inspection Checklist Master",
-          link: "/asset/master-data/asset-inspection-checklist",
+          link: "/admin/master-data/asset-inspection-checklist",
         },
         {
           icon: <FaRegCircle />,
           title: "Asset Depreciation Master",
-          link: "/asset/master-data/asset-depreciation",
+          link: "/admin/master-data/asset-depreciation",
         },
         {
           icon: <FaRegCircle />,
           title: "Department Master",
-          link: "/asset/master-data/department-subdepartment",
+          link: "/admin/master-data/department-subdepartment",
         },
 
       ],
@@ -1250,12 +1250,12 @@ export default function RootLayout({ children }) {
     {
       icon: <FaUser />,
       title: "Employee Master",
-      link: "/asset/management/employee-master",
+      link: "/admin/asset-management/employee-master",
     },
     {
       icon: <FaUserTie />,
       title: "Vendor Master",
-      link: "/asset/master-data/vendor-master/vendor-list",
+      link: "/admin/master-data/vendor-master/vendor-list",
     },
     {
       title: "Settings",

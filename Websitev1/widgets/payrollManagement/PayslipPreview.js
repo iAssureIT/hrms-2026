@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import html2pdf from "html2pdf.js";
+
 import { FaDownload, FaTimes } from "react-icons/fa";
 import moment from "moment";
 
 const PayslipPreview = ({ data, onClose }) => {
-    const downloadPDF = () => {
+    const downloadPDF = async () => {
+        const html2pdf = (await import("html2pdf.js")).default;
         const element = document.getElementById('payslip-content');
         const opt = {
             margin: 10,

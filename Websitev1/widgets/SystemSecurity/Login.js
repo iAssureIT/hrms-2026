@@ -135,7 +135,7 @@ function Login(props) {
             userDetails.roles.includes("asset-admin") ||
             userDetails.roles.includes("fa-accounts")
           ) {
-            window.location.replace("/asset/management");
+            window.location.replace("/admin/asset-management");
           } else if (
             userDetails.roles.includes("accounts-manager") 
           ) {

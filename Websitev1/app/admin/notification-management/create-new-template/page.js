@@ -1,4 +1,8 @@
-import AddTemplate from "@/widgets/NotificationManagement/AddTemplate";
+"use client";
+import dynamic from "next/dynamic";
+const AddTemplate = dynamic(() => import("@/widgets/NotificationManagement/AddTemplate"), {
+  ssr: false,
+});
 
 const page = (props) => {
   return (
@@ -8,3 +12,4 @@ const page = (props) => {
   );
 };
 export default page;
+

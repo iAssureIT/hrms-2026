@@ -1,4 +1,3 @@
-import TdsMaster from "@/widgets/masterData/tdsMaster/TdsMaster";
 import VendorList from "@/widgets/masterData/vendorMaster/Vendorlist";
 
 const page = () => {
@@ -9,4 +8,3 @@ const page = () => {
     );
 };
 export default page;
-
