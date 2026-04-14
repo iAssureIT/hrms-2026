@@ -178,7 +178,7 @@ import "./globals.css";
 import Swal from "sweetalert2";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-// console.log("NEXT_PUBLIC_BASE_URL", process.env.NEXT_PUBLIC_BASE_URL)
+console.log("NEXT_PUBLIC_BASE_URL", process.env.NEXT_PUBLIC_BASE_URL, axios.defaults.baseURL)
 axios.defaults.headers.post["Content-Type"] = "application/json";
 var currentYear = new Date().getFullYear();
 
