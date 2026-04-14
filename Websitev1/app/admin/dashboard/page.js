@@ -5,33 +5,33 @@ import axios from "axios";
 import { FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCheckCircle, FaMoneyCheckAlt, FaChevronRight, FaFileAlt, FaBell } from "react-icons/fa";
 import moment from "moment";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
+    ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
 );
 
 const MetricCard = ({ label, value, sub, icon: Icon, gradient, secondaryColor }) => (
@@ -65,7 +65,7 @@ const MetricCard = ({ label, value, sub, icon: Icon, gradient, secondaryColor })
                     {sub}
                 </p>
             </div>
-            
+
             <div className="absolute top-4 right-16 flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-25"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500/20"></span>
@@ -87,18 +87,18 @@ const HRMSDashboard = () => {
         try {
             setLoading(true);
             setError(null);
-            
+
             // Remove the env variable from the template literal because axios.defaults.baseURL is already set in layout.js
             const res = await axios.get(`/api/dashboard/get/stats`);
-            
+
             if (res.data && res.data.success) {
                 setData(res.data);
             } else {
                 console.log("Invalid API Response:", res.data);
                 setError(`API reached but returned unexpected format: ${JSON.stringify(res.data).substring(0, 100)}...`);
             }
-        } catch (err) { 
-            console.error(err); 
+        } catch (err) {
+            console.error(err);
             setError(err.message || "A network error occurred while fetching dashboard data.");
         }
         finally { setLoading(false); }
@@ -180,13 +180,13 @@ const HRMSDashboard = () => {
         doc.setTextColor(51, 65, 85); // slate-700
         doc.setFontSize(16);
         doc.text("Summary KPIs", 15, 55);
-        
+
         autoTable(doc, {
             startY: 60,
             head: [['Indicator', 'Value', 'Details']],
             body: [
                 ['Total Employees', kpis.totalEmployees, 'Active in system'],
-                ['Present Today', kpis.presentToday, `${((kpis.presentToday/kpis.totalEmployees)*100).toFixed(1)}% attendance`],
+                ['Present Today', kpis.presentToday, `${((kpis.presentToday / kpis.totalEmployees) * 100).toFixed(1)}% attendance`],
                 ['Absent Today', kpis.absentToday, 'Including leaves'],
                 ['Late Arrivals', kpis.lateToday, '> 15 mins late'],
                 ['Payroll Status', kpis.payrollStatus, 'Current cycle']
@@ -211,8 +211,8 @@ const HRMSDashboard = () => {
             startY: doc.lastAutoTable.finalY + 20,
             head: [['Employee', 'Leave Type', 'Period', 'Status']],
             body: recentLeaves.map(l => [
-                l.employeeName, 
-                l.leaveType, 
+                l.employeeName,
+                l.leaveType,
                 `${moment(l.startDate).format("MMM D")} - ${moment(l.endDate).format("MMM D")}`,
                 l.status
             ]),
@@ -226,7 +226,7 @@ const HRMSDashboard = () => {
     return (
         <section className="p-6 md:p-10 bg-slate-50/30 min-h-screen">
             <div className="max-w-[1600px] mx-auto">
-                
+
                 {/* Header Row */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
                     <div>
@@ -235,61 +235,61 @@ const HRMSDashboard = () => {
                     </div>
                     <div className="flex gap-4 mt-4 md:mt-0">
                         <button onClick={handleGenerateReport} className="bg-white border-2 border-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
-                             <FaFileAlt /> Generate Report
+                            <FaFileAlt /> Generate Report
                         </button>
-                        <button onClick={() => window.location.href='/admin/payroll-management'} className="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-200 transition-all flex items-center gap-2">
-                             <FaMoneyCheckAlt /> Run Payroll
+                        <button onClick={() => window.location.href = '/admin/payroll-management'} className="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-200 transition-all flex items-center gap-2">
+                            <FaMoneyCheckAlt /> Run Payroll
                         </button>
                     </div>
                 </div>
 
                 {/* KPI Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-                    <MetricCard 
-                        label="Total Employees" 
-                        value={kpis.totalEmployees} 
-                        sub="+12 this month" 
-                        icon={FaUsers} 
-                        gradient="bg-gradient-to-br from-teal-400 to-teal-600" 
+                    <MetricCard
+                        label="Total Employees"
+                        value={kpis.totalEmployees}
+                        sub="+12 this month"
+                        icon={FaUsers}
+                        gradient="bg-gradient-to-br from-teal-400 to-teal-600"
                         secondaryColor="text-teal-600"
                     />
-                    <MetricCard 
-                        label="Present Today" 
-                        value={kpis.presentToday} 
-                        sub={`${((kpis.presentToday/kpis.totalEmployees)*100).toFixed(1)}% Attendance`} 
-                        icon={FaUserCheck} 
-                        gradient="bg-gradient-to-br from-green-400 to-green-600" 
+                    <MetricCard
+                        label="Present Today"
+                        value={kpis.presentToday}
+                        sub={`${((kpis.presentToday / kpis.totalEmployees) * 100).toFixed(1)}% Attendance`}
+                        icon={FaUserCheck}
+                        gradient="bg-gradient-to-br from-green-400 to-green-600"
                         secondaryColor="text-green-600"
                     />
-                    <MetricCard 
-                        label="Absent" 
-                        value={kpis.absentToday} 
-                        sub="Leaves + Unplanned" 
-                        icon={FaUserTimes} 
-                        gradient="bg-gradient-to-br from-rose-400 to-rose-600" 
+                    <MetricCard
+                        label="Absent"
+                        value={kpis.absentToday}
+                        sub="Leaves + Unplanned"
+                        icon={FaUserTimes}
+                        gradient="bg-gradient-to-br from-rose-400 to-rose-600"
                         secondaryColor="text-rose-600"
                     />
-                    <MetricCard 
-                        label="Late pulse" 
-                        value={kpis.lateToday} 
-                        sub="> 15 mins late" 
-                        icon={FaClock} 
-                        gradient="bg-gradient-to-br from-amber-400 to-amber-600" 
+                    <MetricCard
+                        label="Late pulse"
+                        value={kpis.lateToday}
+                        sub="> 15 mins late"
+                        icon={FaClock}
+                        gradient="bg-gradient-to-br from-amber-400 to-amber-600"
                         secondaryColor="text-amber-600"
                     />
-                    <MetricCard 
-                        label="Payroll Status" 
-                        value={kpis.payrollStatus} 
-                        sub="Due in 3 days" 
-                        icon={FaMoneyCheckAlt} 
-                        gradient="bg-gradient-to-br from-indigo-400 to-indigo-600" 
+                    <MetricCard
+                        label="Payroll Status"
+                        value={kpis.payrollStatus}
+                        sub="Due in 3 days"
+                        icon={FaMoneyCheckAlt}
+                        gradient="bg-gradient-to-br from-indigo-400 to-indigo-600"
                         secondaryColor="text-indigo-600"
                     />
                 </div>
 
                 {/* Main Content Area */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-                    
+
                     {/* Attendance Trends (2/3 width) */}
                     <div className="lg:col-span-2 bg-white rounded-[40px] border border-slate-100 shadow-2xl p-10 flex flex-col justify-between">
                         <div>
@@ -324,8 +324,8 @@ const HRMSDashboard = () => {
                             <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">{pendingLeaves.length + (kpis.lateToday > 0 ? 1 : 0)} pending alerts require attention</p>
                         </div>
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                             {/* Late Alert */}
-                             {kpis.lateToday > 0 && (
+                            {/* Late Alert */}
+                            {kpis.lateToday > 0 && (
                                 <div className="p-4 bg-amber-50 rounded-3xl border border-amber-100 flex gap-4 items-start">
                                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-amber-500 shadow-sm shrink-0">
                                         <FaClock size={16} />
@@ -335,10 +335,10 @@ const HRMSDashboard = () => {
                                         <p className="text-[11px] font-bold text-amber-700/80 leading-tight mt-0.5">{kpis.lateToday} employees arrived &gt; 15 mins late today.</p>
                                     </div>
                                 </div>
-                             )}
+                            )}
 
-                             {/* Pending Leaves */}
-                             {pendingLeaves.map(leave => (
+                            {/* Pending Leaves */}
+                            {pendingLeaves.map(leave => (
                                 <div key={leave._id} className="p-4 bg-slate-50/50 rounded-3xl border border-slate-100 flex gap-4 items-start hover:bg-green-50/30 transition-colors group">
                                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-500 shadow-sm shrink-0 group-hover:bg-green-600 group-hover:text-white transition-all">
                                         <FaFileAlt size={16} />
@@ -349,14 +349,14 @@ const HRMSDashboard = () => {
                                     </div>
                                     <FaChevronRight className="text-slate-200 mt-3 shrink-0" size={12} />
                                 </div>
-                             ))}
+                            ))}
 
-                             {pendingLeaves.length === 0 && !kpis.lateToday && (
+                            {pendingLeaves.length === 0 && !kpis.lateToday && (
                                 <div className="h-full flex flex-col items-center justify-center text-center p-10 opacity-30">
                                     <FaCheckCircle size={48} className="text-green-500 mb-4" />
                                     <p className="font-black text-xs uppercase tracking-widest">All caught up!</p>
                                 </div>
-                             )}
+                            )}
                         </div>
                         <div className="p-8 pt-4">
                             <button className="w-full bg-slate-50 hover:bg-slate-100 text-slate-400 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[3px] transition-all border border-slate-100">Open Helpdesk Tickets</button>
@@ -366,7 +366,7 @@ const HRMSDashboard = () => {
 
                 {/* Bottom Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    
+
                     {/* Recent Leave Requests Table (2/3 width) */}
                     <div className="lg:col-span-2 bg-white rounded-[40px] border border-slate-100 shadow-2xl overflow-hidden">
                         <div className="p-8 pb-4 flex justify-between items-center">
