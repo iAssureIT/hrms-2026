@@ -44,7 +44,7 @@ const Leaves = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.patch(`/api/leave-applications/update-status/${id}`, { status });
+      await axios.patch(`/api/leave-applications/${id}`, { status });
       fetchLeaves();
       fetchLedger();
     } catch (err) {
@@ -54,6 +54,8 @@ const Leaves = () => {
 
   const filteredLeaves = leaves.filter((leave) => {
     if (activeTab === "Pending Requests") return leave.status === "PENDING";
+    if (activeTab === "Approved") return leave.status === "APPROVED";
+    if (activeTab === "Rejected") return leave.status === "REJECTED";
     if (activeTab === "Leave Ledger") return true; // Show all for ledger view
     return true; // All Records
   });
@@ -75,7 +77,7 @@ const Leaves = () => {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="flex border-b border-gray-100 px-4">
-          {["Pending Requests", "Leave Ledger", "All Records"].map((tab) => (
+          {["Pending Requests", "Approved", "Rejected", "Leave Ledger", "All Records"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}

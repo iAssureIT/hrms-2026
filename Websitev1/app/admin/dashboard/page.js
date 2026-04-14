@@ -368,7 +368,7 @@ const HRMSDashboard = () => {
                                             <td className="px-6 py-4 font-bold text-slate-500 text-xs">{leave.leaveType}</td>
                                             <td className="px-6 py-4 font-bold text-slate-500 text-xs">{moment(leave.startDate).format("MMM D")} - {moment(leave.endDate).format("MMM D")}</td>
                                             <td className="px-8 py-4 text-right">
-                                                <span className={`px-4 py-1.5 rounded-full font-black text-[9px] uppercase tracking-widest ${leave.status === 'Approved' ? 'bg-green-50 text-green-600' : leave.status === 'Rejected' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
+                                                <span className={`px-4 py-1.5 rounded-full font-black text-[9px] uppercase tracking-widest ${leave.status === 'APPROVED' ? 'bg-green-50 text-green-600' : leave.status === 'REJECTED' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
                                                     {leave.status}
                                                 </span>
                                             </td>
