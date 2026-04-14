@@ -77,6 +77,7 @@ const MetricCard = ({ label, value, sub, icon: Icon, gradient, secondaryColor })
 const HRMSDashboard = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchDashboardData();
@@ -85,17 +86,43 @@ const HRMSDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard/get/stats`);
-            if (res.data.success) setData(res.data);
-        } catch (err) { console.error(err); }
+            setError(null);
+            
+            // Remove the env variable from the template literal because axios.defaults.baseURL is already set in layout.js
+            const res = await axios.get(`/api/dashboard/get/stats`);
+            
+            if (res.data && res.data.success) {
+                setData(res.data);
+            } else {
+                console.log("Invalid API Response:", res.data);
+                setError(`API reached but returned unexpected format: ${JSON.stringify(res.data).substring(0, 100)}...`);
+            }
+        } catch (err) { 
+            console.error(err); 
+            setError(err.message || "A network error occurred while fetching dashboard data.");
+        }
         finally { setLoading(false); }
     };
 
-    if (loading || !data) return (
-        <div className="flex items-center justify-center min-h-[400px]">
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center min-h-[400px]">
             <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-slate-500 font-bold uppercase tracking-widest text-xs">Loading Dashboard...</p>
         </div>
     );
+
+    if (error) return (
+        <div className="p-10 flex flex-col items-center justify-center min-h-[400px]">
+            <FaUserTimes size={48} className="text-red-500 mb-4" />
+            <h2 className="text-xl font-black text-slate-800">Failed to Load Dashboard</h2>
+            <p className="text-red-500 font-bold text-sm mt-2">{error}</p>
+            <p className="text-slate-400 text-xs mt-4 max-w-lg text-center">
+                Check the developer console (F12) for the full response payload.
+            </p>
+        </div>
+    );
+
+    if (!data) return null;
 
     const { kpis, trends, departmentDistribution, pendingLeaves, recentLeaves } = data;
 
