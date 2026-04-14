@@ -47,48 +47,52 @@ const Holidays = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-8">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-gray-800 tracking-tight">
-            Holiday Management
-          </h1>
-
-          <p className="text-sm font-bold text-gray-400 mt-1">
-            Configure organizational holidays and location-based calendars.
+    <div className="section p-6 md:p-10 bg-white min-h-screen">
+      <div className="max-w-[1440px] mx-auto">
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-green-600">Holiday Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Organizational <span className="text-green-600 font-black">Calendar</span>
+              </h1>
+            </div>
+            
+            <div className="flex items-center gap-3 mt-4 md:mt-0 mb-1">
+              <div className="relative w-64 group">
+                <FaSearch
+                  className="absolute left-4 top-3.5 text-slate-300 group-focus-within:text-green-500 transition-colors"
+                  size={14}
+                />
+                <input
+                  type="text"
+                  placeholder="Search holidays..."
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-bold text-slate-700 shadow-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button
+                onClick={() => setShowBulkModal(true)}
+                className="p-3.5 bg-white text-slate-400 rounded-2xl border border-slate-100 hover:text-green-600 hover:border-green-100 hover:bg-green-50 transition-all shadow-sm active:scale-95"
+                title="Bulk Import"
+              >
+                <FaFileImport size={16} />
+              </button>
+              <button
+                onClick={() => router.push("/admin/holidays/add")}
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-[0.2em] text-[10px]"
+              >
+                <FaPlus size={12} /> Add Holiday
+              </button>
+            </div>
+          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-[11px] leading-relaxed mt-3 pl-1">
+            Configure organizational holidays, location-based calendars, and regional time-off policies with real-time tracking and planning.
           </p>
         </div>
-
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
-            <FaSearch
-              className="absolute left-4 top-3.5 text-gray-300"
-              size={14}
-            />
-            <input
-              type="text"
-              placeholder="Search holidays..."
-              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all font-medium text-gray-700 shadow-sm"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <button
-            onClick={() => setShowBulkModal(true)}
-            className="p-3.5 bg-white text-gray-500 rounded-2xl border border-gray-100 hover:text-green-600 hover:border-green-100 transition-all shadow-sm active:scale-95"
-            title="Bulk Import"
-          >
-            <FaFileImport size={16} />
-          </button>
-          <button
-            onClick={() => router.push("/admin/holidays/add")}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-widest text-[10px]"
-          >
-            <FaPlus size={12} /> Add Holiday
-          </button>
-        </div>
-      </div>
 
       {/* Location Filter Tabs */}
       <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
@@ -133,7 +137,6 @@ const Holidays = () => {
           }}
         />
       )}
-
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
@@ -153,7 +156,8 @@ const Holidays = () => {
         }
       `}</style>
     </div>
-  );
+  </div>
+);
 };
 
 export default Holidays;

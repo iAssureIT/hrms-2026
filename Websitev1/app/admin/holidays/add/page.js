@@ -58,34 +58,36 @@ const AddHolidayPage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6 lg:p-10 font-sans">
-      <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <main className="section p-6 md:p-10 bg-white min-h-screen">
+      <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
         
         {/* Header Section */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200 pb-8">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 pb-3">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-green-600 mb-2">
-              <span className="w-8 h-[1px] bg-green-600"></span>
-              Management Section
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+              <span className="text-green-600">Holiday Management</span>
             </div>
-            <h1 className="text-4xl font-black text-slate-800 tracking-tighter">
-              Add New <span className="text-green-600">Holiday</span>
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+              Add New <span className="text-green-600 font-black">Holiday</span>
             </h1>
-            <p className="text-sm text-slate-400 font-medium">Define organizational time-off and location-based rules.</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 md:mb-1">
             <button 
               onClick={() => router.push("/admin/holidays")}
-              className="flex items-center gap-2 px-6 py-3 bg-white text-slate-500 border-2 border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:border-slate-300 hover:text-slate-700 transition-all active:scale-95 shadow-sm"
+              className="flex items-center gap-2 px-6 py-3 bg-white text-slate-500 border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-slate-300 hover:text-slate-700 transition-all active:scale-95 shadow-sm"
             >
-              <MdRefresh size={18} /> Cancel
+              <MdRefresh size={14} /> Back to Calendar
             </button>
           </div>
         </header>
 
+        <p className="text-slate-500 font-medium max-w-xl text-[11px] leading-relaxed -mt-6 pl-1">
+          Create a new organizational holiday entry. Define the date, type, and specify which global regions are affected.
+        </p>
+
         {/* Form Section */}
-        <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 shadow-sm overflow-hidden p-8 lg:p-12 relative transition-all duration-500">
+        <div className="bg-white rounded-[2.5rem] border-2 border-slate-50 shadow-sm overflow-hidden p-8 lg:p-14 relative transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/20">
           <form onSubmit={handleSubmit} className="space-y-10 relative z-10">
             
             <div className="grid md:grid-cols-2 gap-10">

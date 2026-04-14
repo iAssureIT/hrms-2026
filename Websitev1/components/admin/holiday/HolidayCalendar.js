@@ -54,41 +54,41 @@ const HolidayCalendar = ({ holidays }) => {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
-      <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-        <h2 className="text-xl font-black text-gray-800 tracking-tight">{monthName}</h2>
+    <div className="bg-white rounded-3xl border-2 border-slate-50 shadow-sm overflow-hidden flex flex-col h-full transition-all hover:shadow-md">
+      <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/10">
+        <h2 className="text-xl font-black text-slate-800 tracking-tighter">{monthName}</h2>
         
         <div className="flex items-center gap-4">
-          <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
-            <button onClick={prevMonth} className="p-2 text-gray-400 hover:text-gray-800 transition-colors"><FaChevronLeft size={14} /></button>
-            <button onClick={resetToToday} className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-gray-800 transition-colors">Today</button>
-            <button onClick={nextMonth} className="p-2 text-gray-400 hover:text-gray-800 transition-colors"><FaChevronRight size={14} /></button>
+          <div className="flex bg-slate-100/50 p-1 rounded-2xl border border-slate-100">
+            <button onClick={prevMonth} className="p-2.5 text-slate-400 hover:text-slate-800 hover:bg-white rounded-xl transition-all"><FaChevronLeft size={12} /></button>
+            <button onClick={resetToToday} className="px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-slate-800 transition-colors">Today</button>
+            <button onClick={nextMonth} className="p-2.5 text-slate-400 hover:text-slate-800 hover:bg-white rounded-xl transition-all"><FaChevronRight size={12} /></button>
           </div>
 
-          <div className="flex items-center gap-3">
-             <div className="flex items-center gap-1.5 capitalize">
-               <div className="w-2 h-2 rounded-full bg-green-600"></div>
-               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global</span>
+          <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
+             <div className="flex items-center gap-2">
+               <div className="w-2 h-2 rounded-full bg-green-600 shadow-[0_0_8px_rgba(22,163,74,0.4)]"></div>
+               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Global</span>
              </div>
-             <div className="flex items-center gap-1.5 capitalize">
-               <div className="w-2 h-2 rounded-full bg-red-500"></div>
-               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">US</span>
+             <div className="flex items-center gap-2">
+               <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]"></div>
+               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">US</span>
              </div>
-             <div className="flex items-center gap-1.5 capitalize">
-               <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">India</span>
+             <div className="flex items-center gap-2">
+               <div className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]"></div>
+               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">India</span>
              </div>
           </div>
         </div>
       </div>
 
-      <div className="p-4 flex-1">
-        <div className="grid grid-cols-7 mb-2">
+      <div className="p-6 flex-1">
+        <div className="grid grid-cols-7 mb-4">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-            <div key={day} className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center py-2">{day}</div>
+            <div key={day} className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] text-center">{day}</div>
           ))}
         </div>
-        <div className="grid grid-cols-7 border-t border-l border-gray-50 rounded-lg overflow-hidden">
+        <div className="grid grid-cols-7 border-t border-l border-slate-50 rounded-[2rem] overflow-hidden shadow-inner bg-slate-50/30">
           {days}
         </div>
       </div>
