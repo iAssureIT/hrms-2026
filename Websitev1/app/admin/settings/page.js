@@ -38,11 +38,14 @@ const SettingsPage = () => {
         setLoading(true);
         try {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/system-configurations/get`);
-            setSettings(res.data);
-            setOriginalSettings(res.data);
+            const data = res.data && typeof res.data === 'object' ? res.data : {};
+            setSettings(data);
+            setOriginalSettings(data);
         } catch (error) {
             console.error("Error fetching settings:", error);
             Swal.fire('Error', 'Failed to load settings', 'error');
+            setSettings({});
+            setOriginalSettings({});
         } finally {
             setLoading(false);
         }

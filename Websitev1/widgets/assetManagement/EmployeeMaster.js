@@ -5,13 +5,7 @@ import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import { Tooltip } from "flowbite-react";
 import { CiViewList } from "react-icons/ci";
-import {
-  FaUserTie,
-  FaFileUpload,
-  FaListUl,
-  FaUserPlus,
-  FaUsers,
-} from "react-icons/fa";
+import { FaUserTie, FaFileUpload, FaListUl, FaUserPlus, FaUsers } from "react-icons/fa";
 import { BsPlusSquare } from "react-icons/bs";
 import ls from "localstorage-slim";
 import FilterTable from "@/widgets/GenericTable/FilterTable";
@@ -20,9 +14,7 @@ const EmployeeMaster = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [loggedInRole, setLoggedInRole] = useState("admin");
-  const [userDetails, setUserDetails] = useState(
-    ls.get("userDetails", { decrypt: true }),
-  );
+  const [userDetails, setUserDetails] = useState(ls.get("userDetails", { decrypt: true }));
 
   const [tableData, setTableData] = useState([]);
   const [recsPerPage, setRecsPerPage] = useState(10);
@@ -96,7 +88,7 @@ const EmployeeMaster = () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
-        formValues,
+        formValues
       );
       if (response.data) {
         setTableData(response.data.tableData || []);
@@ -120,17 +112,10 @@ const EmployeeMaster = () => {
         <div className="uppercase text-xl font-semibold border-b-2 border-gray-300 flex justify-between px-10">
           <div className="flex items-center gap-3 py-5">
             {/* <FaUsers className="text-green-600" size={24} /> */}
-            <h1 className="text-2xl text-gray-900 tracking-tight">
-              Employee Master
-            </h1>
+            <h1 className="text-2xl text-gray-900 tracking-tight">Employee Master</h1>
           </div>
           <div className="flex gap-3 my-5 items-center">
-            <Tooltip
-              content="Add Employee"
-              placement="bottom"
-              className="bg-green"
-              arrow={false}
-            >
+            <Tooltip content="Add Employee" placement="bottom" className="bg-green" arrow={false}>
               <FaUserPlus
                 className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
                 onClick={() => {
@@ -138,27 +123,15 @@ const EmployeeMaster = () => {
                 }}
               />
             </Tooltip>
-            <Tooltip
-              content="Bulk Upload"
-              placement="bottom"
-              className="bg-green"
-              arrow={false}
-            >
+            <Tooltip content="Bulk Upload" placement="bottom" className="bg-green" arrow={false}>
               <FaFileUpload
                 className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
                 onClick={() => {
-                  router.push(
-                    `/${loggedInRole}/asset-management/employee-bulk-upload`,
-                  );
+                  router.push(`/${loggedInRole}/asset-management/employee-bulk-upload`);
                 }}
               />
             </Tooltip>
-            <Tooltip
-              content="Asset Registry"
-              placement="bottom"
-              className="bg-green"
-              arrow={false}
-            >
+            <Tooltip content="Asset Registry" placement="bottom" className="bg-green" arrow={false}>
               <CiViewList
                 className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[1.5rem]"
                 onClick={() => {

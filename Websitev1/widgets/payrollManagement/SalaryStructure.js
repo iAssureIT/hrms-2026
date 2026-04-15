@@ -27,7 +27,8 @@ const SalaryStructure = () => {
     const fetchEmployees = async () => {
         try {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/get`);
-            setEmployees(res.data);
+            const data = Array.isArray(res.data) ? res.data : (res.data?.data || []);
+            setEmployees(data);
         } catch (err) { console.error(err); }
     };
 
@@ -67,7 +68,7 @@ const SalaryStructure = () => {
     };
 
     return (
-        <section className="bg-white rounded-[40px] border border-slate-100 shadow-2xl overflow-hidden min-h-[600px] flex flex-col md:flex-row animate-in fade-in duration-700">
+        <section className="bg-white rounded-[40px] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden min-h-[600px] flex flex-col md:flex-row">
             {/* Left Column: Emp List */}
             <div className="w-full md:w-80 border-r border-slate-100 bg-slate-50/30">
                 <div className="p-8 border-b border-slate-100 bg-white">

@@ -60,8 +60,10 @@ const ReportsHub = () => {
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`),
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/department-master/get`)
             ]);
-            setCenters(cRes.data);
-            setDepartments(dRes.data);
+            const centersData = Array.isArray(cRes.data) ? cRes.data : (cRes.data?.data || []);
+            const deptsData = Array.isArray(dRes.data) ? dRes.data : (dRes.data?.data || []);
+            setCenters(centersData);
+            setDepartments(deptsData);
         } catch (err) { console.error(err); }
     };
 

@@ -90,7 +90,10 @@ const AssetDisposal = () => {
 
     const getCenterList = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`)
-            .then((res) => setCenterNameList(res.data))
+            .then((res) => {
+                const data = Array.isArray(res.data) ? res.data : (res.data?.data || []);
+                setCenterNameList(data);
+            })
             .catch((err) => console.error(err));
     };
 

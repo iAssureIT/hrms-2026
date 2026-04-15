@@ -1158,7 +1158,7 @@
 //                                                     handleChange("addressDetails", "pinCode", e.target.value)
 //                                                 }
 //                                                 placeholder="Enter PIN Code"
-//                                                 className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.pinCode ? "border-red-500" : ""}`}
+//                                                 className={`hr-input !pl-12 !py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.pinCode ? "border-red-500" : ""}`}
 //                                             />
 //                                         </div>
 //                                         {errors.pinCode && (
@@ -1255,16 +1255,23 @@ import {
 import S3FileUpload from "react-s3";
 import { Buffer } from "buffer";
 import { MdFileUpload, MdPictureAsPdf, MdImage, MdClose } from "react-icons/md";
-import { CiBank, CiViewList } from "react-icons/ci";
-import { Data } from "@react-google-maps/api";
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
 
-if (typeof window !== "undefined") {
-    window.Buffer = window.Buffer || Buffer;
-}
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
 
-
-
-const initialState = {
+export default function VendorFormPage() {
     vendorStatus: "Active",
     vendorInfo: {
         nameOfCompany: "",
@@ -1820,852 +1827,531 @@ export default function VendorFormPage() {
             setLoading(false);
         }
     };
-
-
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md">
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300 flex items-center justify-between">
+        <section className="hr-section">
+            <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+                <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+                    <h1 className="hr-heading">Vendor Management</h1>
 
-                        <h1 className="heading">
-                            Vendor Registration
-                        </h1>
+                    <div className="flex items-center gap-4 lg:me-10">
+                        <Tooltip
+                            content="Bulk Upload"
+                            placement="bottom"
+                            arrow={false}
+                            className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                        >
+                            <div>
+                                <FaFileUpload
+                                    className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                                    onClick={() => {
+                                        const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
+                                        router.push(`${basePath}/master-data/vendor-master/bulk-upload`);
+                                    }}
+                                />
+                            </div>
+                        </Tooltip>
 
-                        <div className="flex items-center gap-4 lg:me-10">
-                            <Tooltip
-                                content="Bulk Upload"
-                                placement="bottom"
-                                arrow={false}
-                                className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
-                            >
-                                <div>
-
-                                    <FaFileUpload className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
-                                        onClick={() => {
-                                            const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
-                                            router.push(`${basePath}/master-data/vendor-master/bulk-upload`);
-                                        }}
-                                    />
-                                </div>
-                            </Tooltip>
-
-                            <Tooltip
-                                content="Vendor List"
-                                placement="bottom"
-                                className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
-                                arrow={false}
-                            >
-                                <CiViewList className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]" onClick={() => {
+                        <Tooltip
+                            content="Vendor List"
+                            placement="bottom"
+                            className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                            arrow={false}
+                        >
+                            <CiViewList
+                                className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                                onClick={() => {
                                     const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
-                                    router.push(`${basePath}/master-data/vendor-master/vendor-list`)
-                                }} />
-                            </Tooltip>
-                        </div>
-
+                                    router.push(`${basePath}/master-data/vendor-master/vendor-list`);
+                                }}
+                            />
+                        </Tooltip>
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="">
+                <div className="px-8 pb-8">
+                    <form onSubmit={handleSubmit} className="space-y-10 mt-6">
+                        {/* ================= VENDOR INFO ================= */}
+                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2">
+                            <SectionHeader 
+                                title="Vendor Information" 
+                                subtitle="Core company details and categorization for the vendor." 
+                            />
 
-                    {/* ================= VENDOR INFO ================= */}
-                    <div className="p-6  py-4 mx-4 mb-4">
-                        <h2 className="text-lg font-semibold mb-3">Vendor Information</h2>
-
-
-                        <div className="grid md:grid-cols-3 gap-6">
-
-                            {/* Vendor Name */}
-                            <div>
-                                <label className="text-sm font-normal">Vendor Name</label>
-                                <span className="text-red-500 ml-1">*</span>
-
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdBusiness className="icon" />
-                                        </span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                                {/* Vendor Name */}
+                                <div>
+                                    <label className="hr-label">
+                                        Vendor Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdBusiness} />
+                                        <input
+                                            value={formData.vendorInfo.nameOfCompany}
+                                            onChange={(e) => handleChange("vendorInfo", "nameOfCompany", e.target.value)}
+                                            placeholder="Enter Vendor Name"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        value={formData.vendorInfo.nameOfCompany}
-                                        onChange={(e) =>
-                                            handleChange("vendorInfo", "nameOfCompany", e.target.value)
-                                        }
-                                        placeholder="Enter Vendor Name"
-                                        className={`stdInputField py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.nameOfCompany ? "border-red-500" : ""}`}
-                                    />
-                                </div>
-                                {errors.nameOfCompany && (
-                                    <p className="error">{errors.nameOfCompany}</p>
-                                )}
-                            </div>
-
-                            {/* Vendor Category */}
-                            {/* <div>
-                                        <label className="text-sm font-normal">Vendor Category</label><span className="text-red-500 ml-1">*</span>
-
-                                        <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                                    <MdCategory className="icon" />
-                                                </span>
-                                            </div>
-                                            <select
-                                                value={formData.vendorInfo.vendorCategory}
-                                                onChange={(e) =>
-                                                    handleChange("vendorInfo", "vendorCategory", e.target.value)
-                                                }
-                                                className={`${stdInputFieldClass} ${errors.vendorCategory ? "border-red-500 " : ""}`}
-                                            >
-                                                <option value="">Select Vendor Category</option>
-                                                {dropdownOptions.vendorCategories.map((cat) => (
-                                                    <option key={cat} value={cat}>
-                                                        {cat}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        {errors.vendorCategory && (
-                                            <p className="error">{errors.vendorCategory}</p>
-                                        )}
-                                    </div> */}
-
-                            {/* Vendor Type */}
-                            {/* <div>
-                                        <label className="text-sm font-normal">Vendor Type</label><span className="text-red-500 ml-1">*</span>
-
-                                        <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                                    <MdLayers className="icon" />
-                                                </span>
-                                            </div>
-                                            <select
-                                                value={formData.vendorInfo.vendorType}
-                                                onChange={(e) =>
-                                                    handleChange("vendorInfo", "vendorType", e.target.value)
-                                                }
-                                                className={`${stdInputFieldClass} ${errors.vendorType ? "border-red-500" : ""}`}
-                                            >
-                                                <option value="">Select Vendor Type</option>
-                                                {dropdownOptions.vendorTypes.map((type) => (
-                                                    <option key={type} value={type}>
-                                                        {type}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        {errors.vendorType && (
-                                            <p className="error">{errors.vendorType}</p>
-                                        )}
-                                    </div> */}
-
-                            {/* Vendor Category */}
-                            <div>
-                                <label className="text-sm font-normal">
-                                    Vendor Category
-                                </label>
-                                {/* <span className="text-red-500 ml-1">*</span> */}
-
-                                <div className="relative border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdCategory className="icon" />
-                                        </span>
-                                    </div>
-
-                                    <select
-                                        value={formData.vendorInfo.vendorCategory_id || ""}
-                                        onChange={(e) => handleCategoryChange(e.target.value)}
-                                        className={`stdSelectField py-1.5 ${errors.vendorCategory ? "border-red-500" : ""
-                                            }`}
-                                    >
-                                        <option value="">Select Vendor Category</option>
-
-                                        {dropdownOptions.vendorCategories.map((cat) => (
-                                            <option key={cat._id} value={cat._id}>
-                                                {cat.name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {errors.nameOfCompany && <p className="error">{errors.nameOfCompany}</p>}
                                 </div>
 
-                                {errors.vendorCategory && (
-                                    <p className="error">{errors.vendorCategory}</p>
-                                )}
-                            </div>
-
-                            {/* Vendor Subcategory */}
-                            <div>
-                                <label className="text-sm font-normal">
-                                    Vendor SubCategory
-                                </label>
-                                {/* <span className="text-red-500 ml-1">*</span> */}
-
-                                <div className="relative border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdLayers className="icon" />
-                                        </span>
+                                {/* Vendor Category */}
+                                <div>
+                                    <label className="hr-label">Vendor Category</label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdCategory} />
+                                        <select
+                                            value={formData.vendorInfo.vendorCategory_id || ""}
+                                            onChange={(e) => handleCategoryChange(e.target.value)}
+                                            className="hr-select"
+                                        >
+                                            <option value="">Select Vendor Category</option>
+                                            {dropdownOptions.vendorCategories.map((cat) => (
+                                                <option key={cat._id} value={cat._id}>{cat.name}</option>
+                                            ))}
+                                        </select>
                                     </div>
-
-                                    <select
-                                        value={formData.vendorInfo.vendorSubCategory_id || ""}
-                                        // onChange={(e) =>
-                                        //     handleChange(
-                                        //         "vendorInfo",
-                                        //         "vendorSubCategory",
-                                        //         e.target.value
-                                        //     )
-                                        // }
-                                        onChange={(e) => handleSubCategoryChange(e.target.value)}
-                                        className={`stdSelectField py-1.5 ${errors.vendorSubCategory ? "border-red-500" : ""
-                                            }`}
-                                    >
-                                        <option value="">Select Vendor SubCategory</option>
-
-                                        {filteredSubCategories.map((sub) => (
-                                            <option key={sub._id} value={sub._id}>
-                                                {sub.name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {errors.vendorCategory && <p className="error">{errors.vendorCategory}</p>}
                                 </div>
 
-                                {errors.vendorSubCategory && (
-                                    <p className="error">{errors.vendorSubCategory}</p>
-                                )}
-                            </div>
-
-                            {/* PAN Number */}
-                            <div>
-                                <label className="text-sm font-normal">PAN Number</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdFingerprint className="icon" />
-                                        </span>
+                                {/* Vendor Subcategory */}
+                                <div>
+                                    <label className="hr-label">Vendor SubCategory</label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdLayers} />
+                                        <select
+                                            value={formData.vendorInfo.vendorSubCategory_id || ""}
+                                            onChange={(e) => handleSubCategoryChange(e.target.value)}
+                                            className="hr-select"
+                                        >
+                                            <option value="">Select Vendor SubCategory</option>
+                                            {filteredSubCategories.map((sub) => (
+                                                <option key={sub._id} value={sub._id}>{sub.name}</option>
+                                            ))}
+                                        </select>
                                     </div>
-                                    <input
-                                        maxLength={10}
-                                        value={formData.vendorInfo.panNumber}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "vendorInfo",
-                                                "panNumber",
-                                                e.target.value.toUpperCase()
-                                            )
-                                        }
-                                        placeholder="Enter PAN Number"
-                                        className={`stdInputField py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.panNumber ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.vendorSubCategory && <p className="error">{errors.vendorSubCategory}</p>}
                                 </div>
-                                {errors.panNumber && (
-                                    <p className="error">{errors.panNumber}</p>
-                                )}
-                            </div>
 
-                            {/* GSTIN */}
-                            <div>
-                                <label className="text-sm font-normal">GSTIN</label>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdConfirmationNumber className="icon" />
-                                        </span>
+                                {/* PAN Number */}
+                                <div>
+                                    <label className="hr-label">
+                                        PAN Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdFingerprint} />
+                                        <input
+                                            maxLength={10}
+                                            value={formData.vendorInfo.panNumber}
+                                            onChange={(e) => handleChange("vendorInfo", "panNumber", e.target.value.toUpperCase())}
+                                            placeholder="Enter PAN Number"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        maxLength={15}
-                                        value={formData.vendorInfo.gstin}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "vendorInfo",
-                                                "gstin",
-                                                e.target.value.toUpperCase()
-                                            )
-                                        }
-                                        placeholder="Enter GSTIN"
-                                        className={`stdInputField py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.gstin ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.panNumber && <p className="error">{errors.panNumber}</p>}
                                 </div>
-                                {errors.gstin && (
-                                    <p className="error">{errors.gstin}</p>
-                                )}
-                            </div>
 
-                            {/* Center Name */}
-                            <div>
-                                <label className="text-sm font-normal">
-                                    Center Name
-                                </label>
-                                {/* <span className="text-red-500 ml-1">*</span> */}
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdLocationCity className="icon" />
-                                        </span>
+                                {/* GSTIN */}
+                                <div>
+                                    <label className="hr-label">GSTIN</label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdConfirmationNumber} />
+                                        <input
+                                            maxLength={15}
+                                            value={formData.vendorInfo.gstin}
+                                            onChange={(e) => handleChange("vendorInfo", "gstin", e.target.value.toUpperCase())}
+                                            placeholder="Enter GSTIN"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <select
-                                        value={formData.vendorInfo.lupinFoundationCenterName}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "vendorInfo",
-                                                "lupinFoundationCenterName",
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={!!pid}   // 👈 makes it uneditable if pid exists
-                                        className={`${stdInputFieldClass} 
-        ${errors.lupinFoundationCenterName ? "border-red-500" : ""} 
-        ${pid ? "bg-gray-100 cursor-not-allowed" : ""}
-    `}
-                                    >
-                                        <option value="">Select Center Name</option>
-                                        {dropdownOptions.centers.map((center) => (
-                                            <option key={center._id} value={center.centerName}>
-                                                {center.centerName}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {errors.gstin && <p className="error">{errors.gstin}</p>}
                                 </div>
-                                {errors.lupinFoundationCenterName && (
-                                    <p className="error">
-                                        {errors.lupinFoundationCenterName}
-                                    </p>
-                                )}
+
+                                {/* Center Name */}
+                                <div>
+                                    <label className="hr-label">Center Name</label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdLocationCity} />
+                                        <select
+                                            value={formData.vendorInfo.lupinFoundationCenterName}
+                                            onChange={(e) => handleChange("vendorInfo", "lupinFoundationCenterName", e.target.value)}
+                                            disabled={!!pid}
+                                            className={`hr-select ${pid ? "bg-gray-100 cursor-not-allowed border-gray-200" : ""}`}
+                                        >
+                                            <option value="">Select Center Name</option>
+                                            {dropdownOptions.centers.map((center) => (
+                                                <option key={center._id} value={center.centerName}>{center.centerName}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    {errors.lupinFoundationCenterName && <p className="error">{errors.lupinFoundationCenterName}</p>}
+                                </div>
+
+                                {/* TDS Applicable */}
+                                <div className="flex items-end pb-2">
+                                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg w-full transition-all hover:bg-slate-100">
+                                        <input
+                                            type="checkbox"
+                                            id="tdsApplicable"
+                                            checked={formData.vendorInfo.tdsApplicable}
+                                            onChange={(e) => handleChange("vendorInfo", "tdsApplicable", e.target.checked)}
+                                            className="h-5 w-5 rounded border-gray-300 text-[#00b207] focus:ring-[#00b207]"
+                                        />
+                                        <label htmlFor="tdsApplicable" className="text-sm font-semibold text-slate-700 cursor-pointer">
+                                            TDS Applicable <span className="text-red-500 ml-1">*</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-
-                            {/* TDS Applicable */}
-                            <div className="flex items-center gap-2 ">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.vendorInfo.tdsApplicable}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "vendorInfo",
-                                            "tdsApplicable",
-                                            e.target.checked
-                                        )
-                                    }
-                                />
-                                <label className="text-sm font-normal">
-                                    TDS Applicable
-                                </label><span className="text-red-500 ml-1">*</span>
-                            </div>
-
-
                         </div>
-
-
-                    </div>
+                    </form>
+                </div>
+            </div>
 
                     <div className="border-b-2 mx-6"></div>
 
-                    {/* ================= CONTACT PERSON DETAILS ================= */}
-                    <div className="p-6  py-4 mx-4 mb-4">
-                        <h2 className="text-lg font-semibold mb-3">Contact Person Details</h2>
-                        {/* Primary Contact Person */}
+                        {/* ================= CONTACT PERSON DETAILS ================= */}
+                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                            <SectionHeader 
+                                title="Contact Person Details" 
+                                subtitle="Information of the primary contact person for this vendor." 
+                            />
 
-                        <div className="grid md:grid-cols-3 gap-6">
-
-                            <div>
-                                <label className="text-sm font-normal">
-                                    Primary Contact Person
-                                </label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdPerson className="icon" />
-                                        </span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-6">
+                                {/* Primary Contact Person */}
+                                <div>
+                                    <label className="hr-label">
+                                        Primary Contact Person <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdPerson} />
+                                        <input
+                                            value={formData.vendorInfo.primaryContactPersonName}
+                                            onChange={(e) => handleChange("vendorInfo", "primaryContactPersonName", e.target.value)}
+                                            placeholder="Enter Person Name"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        value={formData.vendorInfo.primaryContactPersonName}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "vendorInfo",
-                                                "primaryContactPersonName",
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="Enter Person Name"
-                                        className={`stdInputField py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.primaryContactPersonName ? "border-red-500" : ""
-                                            }`}
-                                    />
-                                </div>
-                                {errors.primaryContactPersonName && (
-                                    <p className="error">
-                                        {errors.primaryContactPersonName}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Designation */}
-                            <div>
-                                <label className="text-sm font-normal">Designation</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdWork className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        value={formData.vendorInfo.designation}
-                                        onChange={(e) =>
-                                            handleChange("vendorInfo", "designation", e.target.value)
-                                        }
-                                        placeholder="Enter Designation"
-                                        className={`stdInputField py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.designation ? "border-red-500" : ""
-                                            }`}
-                                    />
-                                </div>
-                                {errors.designation && (
-                                    <p className="error">{errors.designation}</p>
-                                )}
-                            </div>
-
-                            {/* Mobile Number */}
-                            <div>
-                                <label className="text-sm font-normal">Mobile Number</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdPhone className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        maxLength={10}
-                                        value={formData.vendorInfo.mobileNumber}
-                                        onChange={(e) =>
-                                            handleChange("vendorInfo", "mobileNumber", e.target.value)
-                                        }
-                                        placeholder="Enter Mobile Number"
-                                        className={`stdInputField py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.mobileNumber ? "border-red-500" : ""}`}
-                                    />
-
-                                </div>
-                                {errors.mobileNumber && (
-                                    <p className="error">{errors.mobileNumber}</p>
-                                )}
-                            </div>
-
-                            {/* Official Email */}
-                            <div>
-                                <label className="text-sm font-normal">Official Email</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdEmail className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        type="email"
-                                        value={formData.vendorInfo.officialEmailId}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "vendorInfo",
-                                                "officialEmailId",
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="Enter Official Email"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.officialEmailId ? "border-red-500" : ""}`}
-                                    />
-
-                                </div>
-                                {errors.officialEmailId && (
-                                    <p className="error">
-                                        {errors.officialEmailId}
-                                    </p>
-                                )}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div className="border-b-2 mx-6"></div>
-
-                    {/* ================= BANK ================= */}
-                    <div className="p-6  py-4 mx-4 mb-4">
-                        <h2 className="text-lg font-semibold mb-3">Bank Details</h2>
-
-                        <div className="grid md:grid-cols-3 gap-6">
-
-                            {/* Bank Name */}
-                            <div>
-                                <label className="text-sm font-normal">Bank Name</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <CiBank className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        value={formData.bankDetails.bankName}
-                                        onChange={(e) =>
-                                            handleChange("bankDetails", "bankName", e.target.value)
-                                        }
-                                        placeholder="Enter Bank Name"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.bankName ? "border-red-500" : ""}`}
-                                    />
-
-                                </div>
-                                {errors.bankName && (
-                                    <p className="error">{errors.bankName}</p>
-                                )}
-                            </div>
-
-                            {/* Branch Name */}
-                            <div>
-                                <label className="text-sm font-normal">Branch Name</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <CiBank className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        value={formData.bankDetails.branchName}
-                                        onChange={(e) =>
-                                            handleChange("bankDetails", "branchName", e.target.value)
-                                        }
-                                        placeholder="Enter Branch Name"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.branchName ? "border-red-500" : ""}`}
-                                    />
-
-                                </div>
-                                {errors.branchName && (
-                                    <p className="error">{errors.branchName}</p>
-                                )}
-                            </div>
-
-                            {/* Account Holder Name */}
-                            <div>
-                                <label className="text-sm font-normal">Account Holder Name</label><span className="text-red-500 ml-1">*</span>
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdPerson className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        value={formData.bankDetails.accountHolderName}
-                                        onChange={(e) =>
-                                            handleChange("bankDetails", "accountHolderName", e.target.value)
-                                        }
-                                        placeholder="Enter Account Holder Name"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.accountHolderName ? "border-red-500" : ""}`}
-                                    />
-
-                                </div>
-                                {errors.accountHolderName && (
-                                    <p className="error">{errors.accountHolderName}</p>
-                                )}
-                            </div>
-
-                            {/* Account Number */}
-                            <div>
-                                <label className="text-sm font-normal">Account Number</label><span className="text-red-500 ml-1">*</span>
-
-
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdNumbers className="icon" />
-                                        </span>
-                                    </div>
-                                    <input
-                                        type="number"
-                                        value={formData.bankDetails.accountNumber}
-                                        onChange={(e) =>
-                                            handleChange("bankDetails", "accountNumber", e.target.value)
-                                        }
-                                        placeholder="Enter Account Number"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.accountNumber ? "border-red-500" : ""}`}
-                                    />
-
+                                    {errors.primaryContactPersonName && <p className="error">{errors.primaryContactPersonName}</p>}
                                 </div>
 
-                                {errors.accountNumber && (
-                                    <p className="error">{errors.accountNumber}</p>
-                                )}
-                            </div>
-
-                            {/* IFSC Code */}
-                            <div>
-                                <label className="text-sm font-normal">IFSC Code</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdQrCode className="icon" />
-                                        </span>
+                                {/* Designation */}
+                                <div>
+                                    <label className="hr-label">
+                                        Designation <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdWork} />
+                                        <input
+                                            value={formData.vendorInfo.designation}
+                                            onChange={(e) => handleChange("vendorInfo", "designation", e.target.value)}
+                                            placeholder="Enter Designation"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        value={formData.bankDetails.ifscCode}
-                                        onChange={(e) =>
-                                            handleChange("bankDetails", "ifscCode", e.target.value)
-                                        }
-                                        placeholder="Enter IFSC Code"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.ifscCode ? "border-red-500" : ""}`}
-                                    />
-
+                                    {errors.designation && <p className="error">{errors.designation}</p>}
                                 </div>
-                                {errors.ifscCode && (
-                                    <p className="error">{errors.ifscCode}</p>
-                                )}
-                            </div>
 
-                            {/* Account Type */}
-                            <div>
-                                <label className="text-sm font-normal">Account Type</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdAccountBalance className="icon" />
-                                        </span>
+                                {/* Mobile Number */}
+                                <div>
+                                    <label className="hr-label">
+                                        Mobile Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdPhone} />
+                                        <input
+                                            maxLength={10}
+                                            value={formData.vendorInfo.mobileNumber}
+                                            onChange={(e) => handleChange("vendorInfo", "mobileNumber", e.target.value)}
+                                            placeholder="Enter Mobile Number"
+                                            className="hr-input"
+                                        />
                                     </div>
-
-                                    <select
-                                        value={formData.bankDetails.accountType}
-                                        onChange={(e) =>
-                                            handleChange("bankDetails", "accountType", e.target.value)
-                                        }
-                                        className={`${stdInputFieldClass} ${errors.accountType ? "border-red-500" : ""
-                                            }`}
-                                    >
-                                        <option value="">Select Center Name</option>
-                                        {bankAccountTypes.map((type, i) => (
-                                            <option key={i} value={type.value}>
-                                                {type.label}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {errors.mobileNumber && <p className="error">{errors.mobileNumber}</p>}
                                 </div>
-                                {errors.accountType && (
-                                    <p className="error">{errors.accountType}</p>
-                                )}
+
+                                {/* Official Email */}
+                                <div>
+                                    <label className="hr-label">
+                                        Official Email <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdEmail} />
+                                        <input
+                                            type="email"
+                                            value={formData.vendorInfo.officialEmailId}
+                                            onChange={(e) => handleChange("vendorInfo", "officialEmailId", e.target.value)}
+                                            placeholder="Enter Official Email"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.officialEmailId && <p className="error">{errors.officialEmailId}</p>}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="border-b-2 mx-6"></div>
+                        {/* ================= BANK DETAILS ================= */}
+                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                            <SectionHeader 
+                                title="Bank Details" 
+                                subtitle="Payment and banking information for vendor settlements." 
+                            />
 
-                    {/* ================= ADDRES DETAILS ================= */}
-                    <div className="p-6  py-4 mx-4 mb-4">
-                        <h2 className="text-lg font-semibold mb-3">Address Details</h2>
-
-                        <div className="grid md:grid-cols-3 gap-6">
-
-                            {/* Address Line 1 */}
-                            <div>
-                                <label className="text-sm font-normal">Address Line 1</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdHome className="icon" />
-                                        </span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                                {/* Bank Name */}
+                                <div>
+                                    <label className="hr-label">
+                                        Bank Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={CiBank} />
+                                        <input
+                                            value={formData.bankDetails.bankName}
+                                            onChange={(e) => handleChange("bankDetails", "bankName", e.target.value)}
+                                            placeholder="Enter Bank Name"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        value={formData.addressDetails.addressLine1}
-                                        onChange={(e) =>
-                                            handleChange("addressDetails", "addressLine1", e.target.value)
-                                        }
-                                        placeholder="Enter Address Line 1"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.addressLine1 ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.bankName && <p className="error">{errors.bankName}</p>}
                                 </div>
-                                {errors.addressLine1 && (
-                                    <p className="error">{errors.addressLine1}</p>
-                                )}
-                            </div>
 
-                            {/* City */}
-                            <div>
-                                <label className="text-sm font-normal">City</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdLocationCity className="icon" />
-                                        </span>
+                                {/* Branch Name */}
+                                <div>
+                                    <label className="hr-label">
+                                        Branch Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={CiBank} />
+                                        <input
+                                            value={formData.bankDetails.branchName}
+                                            onChange={(e) => handleChange("bankDetails", "branchName", e.target.value)}
+                                            placeholder="Enter Branch Name"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        value={formData.addressDetails.city}
-                                        onChange={(e) =>
-                                            handleChange("addressDetails", "city", e.target.value)
-                                        }
-                                        placeholder="Enter City"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.city ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.branchName && <p className="error">{errors.branchName}</p>}
                                 </div>
-                                {errors.city && (
-                                    <p className="error">{errors.city}</p>
-                                )}
-                            </div>
 
-                            {/* District */}
-                            <div>
-                                <label className="text-sm font-normal">District</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdLocationOn className="icon" />
-                                        </span>
+                                {/* Account Holder Name */}
+                                <div>
+                                    <label className="hr-label">
+                                        Account Holder <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdPerson} />
+                                        <input
+                                            value={formData.bankDetails.accountHolderName}
+                                            onChange={(e) => handleChange("bankDetails", "accountHolderName", e.target.value)}
+                                            placeholder="Enter Holder Name"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        value={formData.addressDetails.district}
-                                        onChange={(e) =>
-                                            handleChange("addressDetails", "district", e.target.value)
-                                        }
-                                        placeholder="Enter District"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.district ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.accountHolderName && <p className="error">{errors.accountHolderName}</p>}
                                 </div>
-                                {errors.district && (
-                                    <p className="error">{errors.district}</p>
-                                )}
-                            </div>
 
-                            {/* State */}
-                            <div>
-                                <label className="text-sm font-normal">State</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdLocationOn className="icon" />
-                                        </span>
+                                {/* Account Number */}
+                                <div>
+                                    <label className="hr-label">
+                                        Account Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdNumbers} />
+                                        <input
+                                            type="number"
+                                            value={formData.bankDetails.accountNumber}
+                                            onChange={(e) => handleChange("bankDetails", "accountNumber", e.target.value)}
+                                            placeholder="Enter Account Number"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        value={formData.addressDetails.state}
-                                        onChange={(e) =>
-                                            handleChange("addressDetails", "state", e.target.value)
-                                        }
-                                        placeholder="Enter State"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.state ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.accountNumber && <p className="error">{errors.accountNumber}</p>}
                                 </div>
-                                {errors.state && (
-                                    <p className="error">{errors.state}</p>
-                                )}
-                            </div>
 
-                            {/* Country */}
-                            <div>
-                                <label className="text-sm font-normal">Country</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdPublic className="icon" />
-                                        </span>
+                                {/* IFSC Code */}
+                                <div>
+                                    <label className="hr-label">
+                                        IFSC Code <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdQrCode} />
+                                        <input
+                                            value={formData.bankDetails.ifscCode}
+                                            onChange={(e) => handleChange("bankDetails", "ifscCode", e.target.value)}
+                                            placeholder="Enter IFSC Code"
+                                            className="hr-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        value={formData.addressDetails.country}
-                                        onChange={(e) =>
-                                            handleChange("addressDetails", "country", e.target.value)
-                                        }
-                                        placeholder="Enter Country"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.country ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.ifscCode && <p className="error">{errors.ifscCode}</p>}
                                 </div>
-                                {errors.country && (
-                                    <p className="error">{errors.country}</p>
-                                )}
-                            </div>
 
-                            {/* PIN Code */}
-                            <div>
-                                <label className="text-sm font-normal">PIN Code</label><span className="text-red-500 ml-1">*</span>
-                                <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                            <MdLocalPostOffice className="icon" />
-                                        </span>
+                                {/* Account Type */}
+                                <div>
+                                    <label className="hr-label">
+                                        Account Type <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdAccountBalance} />
+                                        <select
+                                            value={formData.bankDetails.accountType}
+                                            onChange={(e) => handleChange("bankDetails", "accountType", e.target.value)}
+                                            className="hr-select"
+                                        >
+                                            <option value="">Select Account Type</option>
+                                            {bankAccountTypes.map((type, i) => (
+                                                <option key={i} value={type.value}>{type.label}</option>
+                                            ))}
+                                        </select>
                                     </div>
-                                    <input
-                                        type="number"
-                                        maxLength={6}
-                                        value={formData.addressDetails.pinCode}
-                                        onChange={(e) =>
-                                            handleChange("addressDetails", "pinCode", e.target.value)
-                                        }
-                                        placeholder="Enter PIN Code"
-                                        className={`stdInputField py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.pinCode ? "border-red-500" : ""}`}
-                                    />
+                                    {errors.accountType && <p className="error">{errors.accountType}</p>}
                                 </div>
-                                {errors.pinCode && (
-                                    <p className="error">{errors.pinCode}</p>
-                                )}
                             </div>
-
                         </div>
 
+                        {/* ================= ADDRESS DETAILS ================= */}
+                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                            <SectionHeader 
+                                title="Address Details" 
+                                subtitle="Physical location and mailing address of the vendor." 
+                            />
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                                {/* Address Line 1 */}
+                                <div>
+                                    <label className="hr-label">
+                                        Address Line 1 <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdHome} />
+                                        <input
+                                            value={formData.addressDetails.addressLine1}
+                                            onChange={(e) => handleChange("addressDetails", "addressLine1", e.target.value)}
+                                            placeholder="Enter Address"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.addressLine1 && <p className="error">{errors.addressLine1}</p>}
+                                </div>
 
-                    </div>
+                                {/* City */}
+                                <div>
+                                    <label className="hr-label">
+                                        City <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdLocationCity} />
+                                        <input
+                                            value={formData.addressDetails.city}
+                                            onChange={(e) => handleChange("addressDetails", "city", e.target.value)}
+                                            placeholder="Enter City"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.city && <p className="error">{errors.city}</p>}
+                                </div>
 
-                    <div className="border-b-2 mx-6"></div>
+                                {/* District */}
+                                <div>
+                                    <label className="hr-label">
+                                        District <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdLocationOn} />
+                                        <input
+                                            value={formData.addressDetails.district}
+                                            onChange={(e) => handleChange("addressDetails", "district", e.target.value)}
+                                            placeholder="Enter District"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.district && <p className="error">{errors.district}</p>}
+                                </div>
 
-                    {/* file upload section */}
-                    <div className="p-6 py-4 mx-4">
-                        <div className="border border-gray-200 rounded-lg p-5 mt-5 shadow-md">
+                                {/* State */}
+                                <div>
+                                    <label className="hr-label">
+                                        State <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdLocationOn} />
+                                        <input
+                                            value={formData.addressDetails.state}
+                                            onChange={(e) => handleChange("addressDetails", "state", e.target.value)}
+                                            placeholder="Enter State"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.state && <p className="error">{errors.state}</p>}
+                                </div>
 
-                            <h3 className="text-[15px] font-bold text-black uppercase tracking-tight">
-                                Document Upload
-                            </h3>
+                                {/* Country */}
+                                <div>
+                                    <label className="hr-label">
+                                        Country <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdPublic} />
+                                        <input
+                                            value={formData.addressDetails.country}
+                                            onChange={(e) => handleChange("addressDetails", "country", e.target.value)}
+                                            placeholder="Enter Country"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.country && <p className="error">{errors.country}</p>}
+                                </div>
 
-                            <p className="text-[11px] font-normal text-gray-500 mb-4">
-                                Upload vendor documents.
-                            </p>
+                                {/* PIN Code */}
+                                <div>
+                                    <label className="hr-label">
+                                        PIN Code <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative group">
+                                        <IconWrapper icon={MdLocalPostOffice} />
+                                        <input
+                                            type="number"
+                                            maxLength={6}
+                                            value={formData.addressDetails.pinCode}
+                                            onChange={(e) => handleChange("addressDetails", "pinCode", e.target.value)}
+                                            placeholder="Enter PIN"
+                                            className="hr-input"
+                                        />
+                                    </div>
+                                    {errors.pinCode && <p className="error">{errors.pinCode}</p>}
+                                </div>
+                            </div>
+                        </div>
 
-                            <div className="flex flex-col lg:flex-row gap-5">
+                        {/* file upload section */}
+                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                            <SectionHeader 
+                                title="Document Upload" 
+                                subtitle="Upload supporting vendor documents (PDF, PNG, JPG)." 
+                            />
 
+                            <div className="flex flex-col lg:flex-row gap-8">
                                 <div
-                                    className={`flex-1 border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all
-      ${isDragOver ? "border-green bg-green/5" : "border-gray-300 bg-gray-50 hover:border-green hover:bg-green/5"}`}
+                                    className={`flex-1 border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+                                        ${isDragOver ? "border-[#4285F4] bg-[#4285F4]/5 shadow-inner" : "border-slate-200 bg-slate-50/50 hover:border-[#4285F4] hover:bg-white hover:shadow-md"}`}
                                     onDrop={handleDrop}
                                     onDragOver={handleDragOver}
                                     onDragLeave={handleDragLeave}
                                     onClick={() => fileInputRef.current?.click()}
                                 >
-
-                                    <MdFileUpload className="text-4xl mb-2 text-gray-400" />
-
-                                    <p className="text-[13px] font-semibold text-gray-600 text-center">
-                                        Drop documents here to upload
-                                    </p>
-
-                                    <p className="text-[11px] text-gray-400 mt-1 text-center">
-                                        Supports PDF, PNG, JPG (Max 10MB per file)
-                                    </p>
-
+                                    <div className="bg-white p-4 rounded-full shadow-sm mb-4 border border-slate-100 group-hover:scale-110 transition-transform">
+                                        <MdFileUpload className="text-3xl text-[#4285F4]" />
+                                    </div>
+                                    <p className="text-[14px] font-bold text-slate-700 text-center">Drag & drop files here</p>
+                                    <p className="text-[12px] text-slate-400 mt-1 mb-6 text-center">or click to browse from computer</p>
+                                    
                                     <button
                                         type="button"
-                                        className="mt-4 px-4 py-1.5 border border-gray-300 rounded text-[12px] font-medium text-gray-600 bg-white hover:bg-gray-100"
+                                        className="px-6 py-2 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-600 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all font-sans"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             fileInputRef.current?.click();
                                         }}
                                     >
-                                        Select Files from Computer
+                                        Select Files
                                     </button>
 
                                     <input
@@ -2673,79 +2359,58 @@ export default function VendorFormPage() {
                                         type="file"
                                         multiple
                                         accept=".pdf,.png,.jpg,.jpeg"
-                                        // accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls"
                                         className="hidden"
                                         onChange={handleFileSelect}
                                     />
                                 </div>
 
                                 {uploadedFiles.length > 0 && (
-
-                                    <div className="flex-1 flex flex-col gap-2">
-
+                                    <div className="flex-1 space-y-3">
+                                        <h4 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Uploaded Files ({uploadedFiles.length})</h4>
                                         {uploadedFiles.map((file, index) => (
-
                                             <div
                                                 key={index}
-                                                className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm"
+                                                className="flex items-center justify-between bg-white border border-slate-100 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow animate__animated animate__fadeInRight"
                                             >
-
-                                                <div className="flex items-center gap-2">
-
-                                                    {file.fileType === "application/pdf" ? (
-                                                        <MdPictureAsPdf className="text-red-500 text-lg" />
-                                                    ) : (
-                                                        <MdImage className="text-blue-500 text-lg" />
-                                                    )}
-
-                                                    <div>
-                                                        <p className="text-[12px] font-semibold text-gray-700">
-                                                            {file.fileName}
-                                                        </p>
-
-                                                        <p className="text-[10px] text-gray-400">
-                                                            {file.fileSize > 0 && (
-                                                                <p className="text-[10px] text-gray-400">
-                                                                    {formatFileSize(file.fileSize)}
-                                                                </p>
-                                                            )}
-                                                        </p>
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`p-2 rounded-lg ${file.fileType === "application/pdf" ? "bg-red-50" : "bg-blue-50"}`}>
+                                                        {file.fileType === "application/pdf" ? (
+                                                            <MdPictureAsPdf className="text-red-500 text-xl" />
+                                                        ) : (
+                                                            <MdImage className="text-blue-500 text-xl" />
+                                                        )}
                                                     </div>
-
+                                                    <div>
+                                                        <p className="text-[13px] font-bold text-slate-700 truncate max-w-[200px]">{file.fileName}</p>
+                                                        {file.fileSize > 0 && (
+                                                            <p className="text-[11px] text-slate-400 font-medium">{formatFileSize(file.fileSize)}</p>
+                                                        )}
+                                                    </div>
                                                 </div>
-
                                                 <button
                                                     type="button"
                                                     onClick={() => removeFile(index)}
-                                                    className="text-gray-400 hover:text-red-500"
+                                                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
                                                 >
-                                                    <MdClose />
+                                                    <MdClose size={18} />
                                                 </button>
-
                                             </div>
-
                                         ))}
-
                                     </div>
-
                                 )}
-
                             </div>
-
                         </div>
-                    </div>
 
-                    {/* ================= SUBMIT ================= */}
-                    <div className="flex p-6 py-4 mx-4 my-2 justify-end">
-                        <button
-                            type="submit"
-                            className="formButtons"
-                        >
-                            {loading ? "Saving..." : pid ? "Update" : "Submit"}
-                        </button>
-                    </div>
-
-                </form>
+                        <div className="flex justify-end pt-10">
+                            <button
+                                type="submit"
+                                className="hr-btn-primary min-w-[200px]"
+                                disabled={loading}
+                            >
+                                {loading ? "Processing..." : pid ? "Update Vendor Profile" : "Register Vendor"}
+                            </button>
+                        </div>
+                    </form>
 
             </div>
 

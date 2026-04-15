@@ -6,6 +6,22 @@ import { MdOutlineEdit, MdWidgets } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 const AssetInspectionChecklist = () => {
     const [items, setItems] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
@@ -169,133 +185,140 @@ const AssetInspectionChecklist = () => {
     };
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md bg-white">
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300 p-5">
-                        <h1 className="heading">Asset Inspection Checklist Master</h1>
-                    </div>
+        <section className="hr-section">
+            <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+                <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+                    <h1 className="hr-heading">Asset Inspection Management</h1>
                 </div>
 
-                <div className="p-8">
-                    <form onSubmit={handleSubmit} className="w-full lg:w-11/12 mx-auto">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                            {/* Category */}
-                            <div>
-                                <label className="inputLabel mb-2 block">
-                                    Asset Category <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="pr-2 border-r text-gray-500"><MdWidgets /></span>
-                                    </div>
-                                    <select
-                                        value={categoryId}
-                                        onChange={handleCategoryChange}
-                                        className={`stdSelectField w-full pl-12 ${categoryId ? "selectOption" : "text-gray-400"}`}
-                                    >
-                                        <option value="" disabled>-- Select Category --</option>
-                                        {categoryList.map(cat => (
-                                            <option key={cat._id} value={cat._id}>{cat.fieldValue}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
+                <div className="px-8 pb-8">
+                    <div className="flex flex-col">
+                        <div className="space-y-8 pb-10">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
+                            >
+                                <SectionHeader 
+                                    title="Asset Verification Details" 
+                                    subtitle="Select category and define the items to be checked during inspection." 
+                                />
 
-                            {/* Sub-Category */}
-                            <div>
-                                <label className="inputLabel mb-2 block">
-                                    Asset Sub-Category <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span className="pr-2 border-r text-gray-500"><MdWidgets /></span>
-                                    </div>
-                                    <select
-                                        value={subCategoryId}
-                                        onChange={(e) => setSubCategoryId(e.target.value)}
-                                        className={`stdSelectField w-full pl-12 ${subCategoryId ? "selectOption" : "text-gray-400"}`}
-                                        disabled={!categoryId}
-                                    >
-                                        <option value="" disabled>-- Select Sub-Category --</option>
-                                        {subCategoryList.map(sub => (
-                                            <option key={sub._id} value={sub._id}>{sub.inputValue}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Checklist Array Builder */}
-                        <div className="mb-8 border border-gray-200 rounded-lg p-5 bg-gray-50">
-                            <h3 className="text-sm font-semibold mb-4 text-gray-700">Define Checklist Items</h3>
-                            <div className="flex items-center gap-3">
-                                <div className="flex-1">
-                                    <input
-                                        type="text"
-                                        className="stdInputField w-full"
-                                        placeholder="Enter checklist item (e.g. Physical Damage)"
-                                        value={checklistItemText}
-                                        onChange={(e) => setChecklistItemText(e.target.value)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                e.preventDefault();
-                                                handleAddChecklistItem();
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={handleAddChecklistItem}
-                                    className="formButtons"
-                                >
-                                    Add
-                                </button>
-                            </div>
-
-                            {/* Render Map */}
-                            {checklistArray.length > 0 && (
-                                <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                    {checklistArray.map((item, idx) => (
-                                        <div key={idx} className="flex items-center justify-between bg-white border border-gray-200 p-2 rounded-md shadow-sm">
-                                            <span className="text-[13px] text-gray-700">{item}</span>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeChecklistItem(idx)}
-                                                className="text-red-500 hover:text-red-700"
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                                    {/* Category */}
+                                    <div>
+                                        <label className="hr-label">
+                                            Asset Category <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative group">
+                                            <IconWrapper icon={MdWidgets} />
+                                            <select
+                                                value={categoryId}
+                                                onChange={handleCategoryChange}
+                                                className="hr-select"
                                             >
-                                                <RiDeleteBin6Line size={16} />
-                                            </button>
+                                                <option value="" disabled>-- Select Category --</option>
+                                                {categoryList.map(cat => (
+                                                    <option key={cat._id} value={cat._id}>{cat.fieldValue}</option>
+                                                ))}
+                                            </select>
                                         </div>
-                                    ))}
+                                    </div>
+
+                                    {/* Sub-Category */}
+                                    <div>
+                                        <label className="hr-label">
+                                            Asset Sub-Category <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative group">
+                                            <IconWrapper icon={MdWidgets} />
+                                            <select
+                                                value={subCategoryId}
+                                                onChange={(e) => setSubCategoryId(e.target.value)}
+                                                className="hr-select"
+                                                disabled={!categoryId}
+                                            >
+                                                <option value="" disabled>-- Select Sub-Category --</option>
+                                                {subCategoryList.map(sub => (
+                                                    <option key={sub._id} value={sub._id}>{sub.inputValue}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
 
-                        <div className="flex justify-end mt-6">
-                            {editingItem && (
-                                <button type="button" onClick={resetForm} className="formButtons bg-gray-400 hover:bg-gray-500 mr-4">Cancel</button>
-                            )}
-                            <button type="submit" className="formButtons min-w-[150px]">
-                                {editingItem ? "Update Master" : "Submit Master"}
-                            </button>
-                        </div>
-                    </form>
+                                {/* Checklist Builder */}
+                                <div className="mt-8 border border-gray-200 rounded-lg p-6 bg-slate-50/50">
+                                    <h3 className="text-[13px] font-bold text-slate-700 uppercase tracking-wider mb-4">Define Checklist Items</h3>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex-1 relative">
+                                            <IconWrapper icon={MdWidgets} />
+                                            <input
+                                                type="text"
+                                                className="hr-input"
+                                                placeholder="Enter checklist item (e.g. Physical Damage)"
+                                                value={checklistItemText}
+                                                onChange={(e) => setChecklistItemText(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        handleAddChecklistItem();
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={handleAddChecklistItem}
+                                            className="hr-btn-primary min-w-[100px]"
+                                        >
+                                            Add Item
+                                        </button>
+                                    </div>
 
-                    {/* Table */}
-                    <div className="mt-12 overflow-x-auto border-3 mb-10 mx-auto lg:w-11/12 rounded-md">
-                        {items && items.length > 0 ? (
-                            <table className="w-full border-separate border-spacing-y-2 text-sm text-left rtl:text-right">
-                                <thead className="text-xs uppercase bg-gray-100 border border-gray-200 rounded-sm">
-                                    <tr>
-                                        <th className="px-6 py-4 border border-gray-200">SR. No.</th>
-                                        <th className="px-6 py-4 border border-gray-200">Category</th>
-                                        <th className="px-6 py-4 border border-gray-200">Sub-Category</th>
-                                        <th className="px-6 py-4 border border-gray-200">Total Items</th>
-                                        <th className="px-6 py-4 border border-gray-200 text-center">Action</th>
-                                    </tr>
-                                </thead>
+                                    {/* Item Badges */}
+                                    {checklistArray.length > 0 && (
+                                        <div className="mt-6 flex flex-wrap gap-3">
+                                            {checklistArray.map((item, idx) => (
+                                                <div key={idx} className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-1.5 rounded-md shadow-sm animate__animated animate__fadeIn">
+                                                    <span className="text-[12px] font-medium text-slate-700">{item}</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeChecklistItem(idx)}
+                                                        className="text-red-400 hover:text-red-600 transition-colors"
+                                                    >
+                                                        <RiDeleteBin6Line size={14} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex justify-end mt-10">
+                                    {editingItem && (
+                                        <button type="button" onClick={resetForm} className="hr-btn-secondary mr-4">Cancel Edit</button>
+                                    )}
+                                    <button type="submit" className="hr-btn-primary min-w-[180px]">
+                                        {editingItem ? "Update Master" : "Save Checklist Master"}
+                                    </button>
+                                </div>
+                            </form>
+
+                <div className="mt-12">
+                    <SectionHeader title="Existing Checklists" subtitle="List of all defined inspection frameworks by category." />
+
+                    {items && items.length > 0 ? (
+                        <div className="overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
+                            <table className="w-full border-collapse text-sm text-left">
+                                        <thead className="text-xs uppercase bg-slate-50 text-slate-600 border-b border-slate-100">
+                                            <tr>
+                                                <th className="px-6 py-4 font-bold">SR. No.</th>
+                                                <th className="px-6 py-4 font-bold">Category</th>
+                                                <th className="px-6 py-4 font-bold">Sub-Category</th>
+                                                <th className="px-6 py-4 font-bold">Checklist Items</th>
+                                                <th className="px-6 py-4 font-bold text-center">Action</th>
+                                            </tr>
+                                        </thead>
                                 <tbody>
                                     {items.map((data, index) => (
                                         <tr key={data._id} className="bg-white border-b hover:bg-gray-50">
@@ -332,17 +355,20 @@ const AssetInspectionChecklist = () => {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                                </table>
+                            </div>
                         ) : (
                             <div className="w-full text-center py-6 bg-gray-50 border border-gray-200 rounded-md text-gray-500">
                                 No checklists found. Give it a start!
                             </div>
                         )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-    );
+        </div>
+    </section>
+);
 };
 
 export default AssetInspectionChecklist;

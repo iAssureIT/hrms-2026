@@ -11,6 +11,22 @@ import OneFieldComponent from "@/widgets/masterData/oneFieldComponent/OneFieldCo
 import { IoMdClose } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 const TwoFieldComponent = ({
   oneField,
   oneFieldLable,
@@ -264,21 +280,26 @@ const TwoFieldComponent = ({
 
   return (
     <section className="hr-section">
-      <div className="hr-card hr-fade-in border-0">
-        <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-8">
-            <h1 className="hr-heading">{oneField.fieldlabel} & {twoField.fieldlabel} Details</h1>
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-6 flex items-center justify-between">
+            <h1 className="hr-heading">{oneField.fieldlabel} & {twoField.fieldlabel} Management</h1>
         </div>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col pt-4">
+        <div className="px-8 pb-8">
+          <div className="flex flex-col">
             <div className="space-y-8 pb-10">
               <form
                 onSubmit={handleSubmit}
-                className="hr-card bg-slate-50/50 border-slate-100 shadow-none p-8 lg:p-10"
+                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
               >
-                <div className="flex flex-col lg:flex-row gap-8 w-full">
+                <SectionHeader 
+                  title="Basic Information" 
+                  subtitle={`Primary identification details for ${oneField.fieldlabel} and ${twoField.fieldlabel}.`} 
+                />
+
+                <div className="grid lg:grid-cols-2 gap-8 w-full mt-6">
                   {/* First Field */}
-                  <div className="w-full lg:w-1/2">
+                  <div className="w-full">
                     <label className="hr-label flex items-center">
                       {oneField.fieldlabel}
                       <span className="text-red-500 ms-1">*</span>
@@ -286,7 +307,7 @@ const TwoFieldComponent = ({
                         showAddButton && (
                           <button 
                             type="button"
-                            className="ms-3 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors shadow-sm"
+                            className="ms-3 p-1 bg-[#4285F4] text-white rounded-full hover:bg-blue-600 transition-colors shadow-sm"
                             onClick={() => setOpenModal(true)}
                             title={`Add New ${oneField.fieldlabel}`}
                           >
@@ -297,17 +318,14 @@ const TwoFieldComponent = ({
                     </label>
 
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-green-500 transition-colors">
-                          <MdWidgets className="text-lg" />
-                      </div>
-
+                      <IconWrapper icon={MdWidgets} />
                       <select
                         value={dropdownValue}
                         onChange={(e) => {
                           setDropdownValue(e.target.value);
                           if (errorMessage) setErrorMessage("");
                         }}
-                        className="hr-select !pl-12 !py-3"
+                        className="hr-select"
                       >
                         <option value="" disabled>
                           -- Select {oneField.fieldlabel} --
@@ -333,20 +351,17 @@ const TwoFieldComponent = ({
 
 
                   {/* Second Field */}
-                  <div className="w-full lg:w-1/2">
+                  <div className="w-full">
                     <label className="hr-label">
                       {twoField.fieldlabel}
                       <span className="text-red-500 ms-1">*</span>
                     </label>
 
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-green-500 transition-colors">
-                          <MdWidgets className="text-lg" />
-                      </div>
-
+                      <IconWrapper icon={MdWidgets} />
                       <input
                         type="text"
-                        className="hr-input !pl-12 !py-3"
+                        className="hr-input"
                         placeholder={`Enter ${twoField.fieldlabel}`}
                         value={inputValue}
                         onChange={(e) => {
@@ -365,7 +380,7 @@ const TwoFieldComponent = ({
                 <div className="flex justify-end mt-10">
                   <button
                     type="submit"
-                    className="hr-btn-primary"
+                    className="hr-btn-primary min-w-[140px]"
                   >
                     {editingItem ? "Update Changes" : "Save Record"}
                   </button>

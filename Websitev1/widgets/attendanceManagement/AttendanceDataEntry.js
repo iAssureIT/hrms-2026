@@ -55,8 +55,8 @@ const AttendanceDataEntry = () => {
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`),
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/department-master/get`)
             ]);
-            setCenters(cRes.data);
-            setDepartments(dRes.data);
+            setCenters(cRes.data?.value || cRes.data || []);
+            setDepartments(dRes.data?.value || dRes.data || []);
         } catch (err) { console.error(err); }
     };
 

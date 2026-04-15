@@ -36,8 +36,10 @@ const AttendanceMatrix = () => {
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`),
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/department-master/get`)
             ]);
-            setCenters(cRes.data);
-            setDepartments(dRes.data);
+            const centersData = cRes.data?.value || cRes.data?.data || (Array.isArray(cRes.data) ? cRes.data : []);
+            const deptsData = dRes.data?.value || dRes.data?.data || (Array.isArray(dRes.data) ? dRes.data : []);
+            setCenters(centersData);
+            setDepartments(deptsData);
         } catch (err) {
             console.error("Filter Fetch Error:", err);
         }

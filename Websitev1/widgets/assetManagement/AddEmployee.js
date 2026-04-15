@@ -94,30 +94,38 @@ const AddEmployee = () => {
 
     const getCenterList = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`)
-            .then(res => setCenterList(Array.isArray(res.data) ? res.data : []))
+            .then(res => {
+                const data = res.data?.value || res.data;
+                setCenterList(Array.isArray(data) ? data : []);
+            })
             .catch(err => console.error("Error fetching centers:", err));
     };
 
     const getSubLocationList = (center_id) => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/location-subcategory/get`)
             .then(res => {
-                const data = Array.isArray(res.data) ? res.data : [];
-                setSubLocationList(data.filter(item => item.dropdown_id === center_id));
+                const data = res.data?.value || res.data;
+                const list = Array.isArray(data) ? data : [];
+                setSubLocationList(list.filter(item => item.dropdown_id === center_id));
             })
             .catch(err => console.error("Error fetching sub-locations:", err));
     };
 
     const getDepartmentList = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/department-master/get`)
-            .then(res => setDepartmentList(Array.isArray(res.data) ? res.data : []))
+            .then(res => {
+                const data = res.data?.value || res.data;
+                setDepartmentList(Array.isArray(data) ? data : []);
+            })
             .catch(err => console.error("Error fetching departments:", err));
     };
 
     const getSubDepartmentList = (dept_id) => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/subdepartment-master/get`)
             .then(res => {
-                const data = Array.isArray(res.data) ? res.data : [];
-                setSubDepartmentList(data.filter(item => item.dropdown_id === dept_id));
+                const data = res.data?.value || res.data;
+                const list = Array.isArray(data) ? data : [];
+                setSubDepartmentList(list.filter(item => item.dropdown_id === dept_id));
             })
             .catch(err => console.error("Error fetching sub-departments:", err));
     };
@@ -180,7 +188,7 @@ const AddEmployee = () => {
                 });
                 if (res.data.employee_id) {
                     Swal.fire("Success!", `Employee ${employeeId ? "updated" : "added"} successfully.`, "success");
-                    router.push(`/${loggedInRole}/management/employee-master`);
+                    router.push(`/${loggedInRole}/asset-management/employee-master`);
                 }
             } catch (err) {
                 console.error("Submit error:", err);
@@ -219,7 +227,7 @@ const AddEmployee = () => {
                             <FaUsers
                                 className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
                                 onClick={() => {
-                                    router.push(`/${loggedInRole}/management/employee-master`);
+                                    router.push(`/${loggedInRole}/asset-management/employee-master`);
                                 }}
                             />
                         </Tooltip>

@@ -5,6 +5,22 @@ import Swal from "sweetalert2";
 import { MdOutlineEdit, MdWidgets } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 const AssetDepreciationCategoryMaster = () => {
   const [items, setItems] = useState([]);
   const [categoryName, setCategoryName] = useState("");
@@ -165,183 +181,149 @@ const AssetDepreciationCategoryMaster = () => {
 
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 p-4">
-            <h1 className="heading">Asset Category & Depreciation Details</h1>
-          </div>
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+            <h1 className="hr-heading">Depreciation Management</h1>
         </div>
 
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className="lg:p-10 w-full lg:w-11/12 mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Category Name */}
-              <div>
-                <label className="inputLabel mb-1">Asset Category <span className="text-red-600">*</span></label>
-                <div className="relative mt-2">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="pr-2 border-r"><MdWidgets className="icon" /></span>
-                  </div>
-                  <input
-                    type="text"
-                    className="stdInputField w-full pl-12"
-                    placeholder="Enter Asset Category"
-                    value={categoryName}
-                    onChange={(e) => {
-                      setCategoryName(e.target.value);
-                      if (errorMessage) setErrorMessage("");
-                    }}
-                  />
-                </div>
-              </div>
+        <div className="px-8 pb-8">
+          <div className="flex flex-col">
+            <div className="space-y-8 pb-10">
+              <form
+                onSubmit={handleSubmit}
+                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
+              >
+                <SectionHeader 
+                  title="Asset Depreciation Parameters" 
+                  subtitle="Configure depreciation rates for specific asset categories." 
+                />
 
-              {/* Category Short Name */}
-              <div>
-                <label className="inputLabel mb-1">Category Short Name <span className="text-red-600">*</span></label>
-                <div className="relative mt-2">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="pr-2 border-r"><MdWidgets className="icon" /></span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+                  {/* Category Name */}
+                  <div>
+                    <label className="hr-label">
+                      Asset Category <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <input
+                        type="text"
+                        className="hr-input"
+                        placeholder="Enter Asset Category"
+                        value={categoryName}
+                        onChange={(e) => {
+                          setCategoryName(e.target.value);
+                          if (errorMessage) setErrorMessage("");
+                        }}
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    className="stdInputField w-full pl-12"
-                    placeholder="Enter Category Short Name"
-                    value={categoryShortName}
-                    onChange={(e) => {
-                      setCategoryShortName(e.target.value);
-                      if (errorMessage) setErrorMessage("");
-                    }}
-                  />
-                </div>
-              </div>
 
-              {/* Depreciation Rate */}
-              <div>
-                <label className="inputLabel mb-1">Depreciation Rate (%) <span className="text-red-600">*</span></label>
-                <div className="relative mt-2">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="pr-2 border-r"><MdWidgets className="icon" /></span>
+                  {/* Category Short Name */}
+                  <div>
+                    <label className="hr-label">
+                      Category Short Name <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <input
+                        type="text"
+                        className="hr-input"
+                        placeholder="Enter Short Name"
+                        value={categoryShortName}
+                        onChange={(e) => {
+                          setCategoryShortName(e.target.value);
+                          if (errorMessage) setErrorMessage("");
+                        }}
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="number"
-                    className="stdInputField w-full pl-12"
-                    placeholder="Enter Depreciation Rate"
-                    value={depreciationRate}
-                    onChange={(e) => {
-                      setDepreciationRate(e.target.value);
-                      if (errorMessage) setErrorMessage("");
-                    }}
-                  />
-                </div>
-              </div>
 
+                  {/* Depreciation Rate */}
+                  <div>
+                    <label className="hr-label">
+                      Depreciation Rate (%) <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <input
+                        type="number"
+                        className="hr-input"
+                        placeholder="Enter Rate (%)"
+                        value={depreciationRate}
+                        onChange={(e) => {
+                          setDepreciationRate(e.target.value);
+                          if (errorMessage) setErrorMessage("");
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {errorMessage && (
+                  <p className="text-red-500 text-xs mt-3 font-medium">{errorMessage}</p>
+                )}
+
+                <div className="mt-10 flex justify-end">
+                  <button
+                    type="submit"
+                    className="hr-btn-primary min-w-[140px]"
+                  >
+                    {editingItem ? "Update Changes" : "Save Record"}
+                  </button>
+                </div>
+              </form>
+
+                            <div className="mt-12">
+                                <SectionHeader title="Category List" subtitle="Overview of categories and their depreciation settings." />
+
+                                <div className="overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
+                                    <table className="w-full border-collapse text-sm text-left">
+                                        <thead className="text-xs uppercase bg-slate-50 text-slate-600 border-b border-slate-100">
+                                            <tr>
+                                                <th className="px-6 py-4 font-bold">SR. No.</th>
+                                                <th className="px-6 py-4 font-bold">Asset Category</th>
+                                                <th className="px-6 py-4 font-bold">Short Name</th>
+                                                <th className="px-6 py-4 font-bold">Depreciation Rate</th>
+                                                <th className="px-6 py-4 font-bold text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 bg-white">
+                                            {items.length > 0 ? (
+                                                items.map((data, index) => (
+                                                    <tr key={data._id} className="hover:bg-slate-50 transition-colors">
+                                                        <td className="px-6 py-4 text-slate-500">{index + 1}</td>
+                                                        <td className="px-6 py-4 font-medium text-slate-900">{data.dropdownvalue}</td>
+                                                        <td className="px-6 py-4 text-slate-600">{data.categoryShortName || "-"}</td>
+                                                        <td className="px-6 py-4 text-slate-600">{data.inputValue}%</td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center justify-center gap-3">
+                                                                <button onClick={() => handleEdit(data)} className="p-1.5 text-slate-400 hover:text-[#4285F4] transition-colors">
+                                                                    <MdOutlineEdit size={18} />
+                                                                </button>
+                                                                <button onClick={() => handleDelete(data._id, data.dropdown_id)} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors">
+                                                                    <RiDeleteBin6Line size={18} />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={5} className="px-6 py-10 text-center text-slate-400 italic">No depreciation records found.</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            {errorMessage && (
-              <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
-            )}
-
-            <div className="mb-10 flex justify-end  mt-10 -me-3 w-full">
-              <button type="submit" className="formButtons">
-                {editingItem ? "Update" : "Submit"}
-              </button>
-            </div>
-          </form>
-
-          {/* Table */}
-          <div className="relative overflow-x-auto mt-2 lg:w-11/12 mx-auto  border-3 mb-10 rounderd-md ">
-            {items.length > 0 ? (
-              <table className="w-full border-separate border-spacing-y-2 gap-2 text-sm text-left rtl:text-right">
-                <thead className="text-xs space-y-6 border-spacing-5 font-normal uppercase  mb-2 border border-gray-200 rounded-sm p-2">
-                  <tr className="mb-3  border-spacing-5 font-bold">
-                    <th
-                      scope="col"
-                      className="px-6 py-4 border border-grayTwo border-r-0"
-                    >
-                      SR. No.
-                    </th>
-                    <td
-                      scope="col"
-                      className="px-6 py-4 border border-grayTwo border-r-0 border-l-0"
-                    >
-                      Asset Category
-                    </td>
-                    <td
-                      scope="col"
-                      className="px-6 py-4 border border-grayTwo border-r-0 border-l-0"
-                    >
-                      Category Short Name
-                    </td>
-                    <td
-                      scope="col"
-                      className="px-6 py-4 border border-grayTwo border-r-0 border-l-0"
-                    >
-                      Depreciation Rate (%)
-                    </td>
-                    <td
-                      scope="col"
-                      className="px-6 py-4 border border-grayTwo border-l-0"
-                    >
-                      ACTION
-                    </td>
-                  </tr>
-                </thead>
-
-                <tbody className="border-spacing-5 mt-2 border py-5 p-5 border-gray-200 bg-gray-50 rounded-sm">
-                  {items.map((data, index) => (
-                    <tr
-                      key={data._id}
-                      className="p-3 row space-x-3 border-spacing-5 font-normal odd:bg-grayOne odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 border border-grayTwo border-r-0 font-normal text-black whitespace-nowrap"
-                      >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 border border-grayTwo border-r-0 border-l-0">
-                        {data.dropdownvalue}
-                      </td>
-                      <td className="px-6 py-4 border border-grayTwo border-r-0 border-l-0">
-                        {data.categoryShortName ? data.categoryShortName : "-"}
-                      </td>
-                      <td className="px-6 py-4 border border-grayTwo border-r-0 border-l-0">
-                        {data.inputValue}
-                      </td>
-                      <td className="px-6 py-4 border border-grayTwo border-l-0">
-                        <tr className="flex gap-3">
-                          <td>
-                            <MdOutlineEdit
-                              className="border border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                              size={"1.3rem"}
-                              onClick={() => handleEdit(data)}
-                            />
-                          </td>
-                          <td>
-                            <RiDeleteBin6Line
-                              className="  border border-red-500 text-red-500 p-1 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
-                              size={"1.3rem"}
-                              onClick={() => handleDelete(data._id, data.dropdown_id)}
-                            />
-                          </td>
-                        </tr>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <div className="w-full text-center py-4 bg-gray-100 border border-gray-200">
-                Data not found
-              </div>
-            )}
-          </div>
-
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 };
 
 export default AssetDepreciationCategoryMaster;

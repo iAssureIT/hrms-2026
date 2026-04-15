@@ -308,16 +308,10 @@ export default function RootLayout({ children }) {
             ></iframe>
           </noscript> */}
 
-          {/* {children} */}
-          {pathname !== "/" ? (
-            children
-          ) : (
-            <div className="bg-white flex-1 flex flex-col">
-              <MenuBar inputData={content_Menubar} />
-              <main className="flex-1 flex flex-col">{children}</main>
-              <Footer inputData={content_Footer} />
-            </div>
-          )}
+          {/* Main Content Area */}
+          <main className="flex-1 flex flex-col w-full h-full relative">
+            {children}
+          </main>
           {/* <div
             onClick={scrollToTop}
             className={` fixed bottom-5 right-5 rounded-full hover:scale-110 px-2 py-1 h-8 w-8 text-white bg-green shadow-[0_3px_10px_rgb(0,0,0,0.2)]  cursor-pointer  scroll-to-top ${

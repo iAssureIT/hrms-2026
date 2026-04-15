@@ -21,8 +21,20 @@ import GenericTable from "@/widgets/GenericTable/FilterTable";
 import { CiViewList } from "react-icons/ci";
 import { FaSpinner } from "react-icons/fa";
 
-const districtList = ["Pune", "Nashik", "Mumbai"];
-const stateList = ["Maharashtra", "Karnataka", "Goa"];
+const SectionHeader = ({ title, subtitle }) => (
+  <div className="mb-5 border-b border-gray-100 pb-2">
+    <h3 className="hr-subheading">{title}</h3>
+    <p className="hr-section-subtitle text-xs text-gray-400 mt-1">{subtitle}</p>
+  </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+      <Icon className="icon" />
+    </span>
+  </div>
+);
 
 const CenterManagement = (props) => {
   const [centerName, setCenterName] = useState("");
@@ -269,13 +281,12 @@ const CenterManagement = (props) => {
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">Center Details</h1>
-            <div className="flex gap-3 my-6 me-10">
-            {loggedInRole === "admin" ? 
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+          <h1 className="hr-heading">Center Management</h1>
+          <div className="flex gap-3 me-10">
+            {loggedInRole === "admin" ? (
               <Tooltip
                 content="Center Details List"
                 placement="bottom"
@@ -286,475 +297,246 @@ const CenterManagement = (props) => {
                   <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
                 ) : (
                   <CiViewList
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
                     onClick={() => {
-                      // setLoading(true);
-                      window.open(
-                        "/admin/master-data/center-details/center-details-list",
-                        '_self'
-                        // "noopener,noreferrer"
-                      );
+                      router.push("/admin/master-data/center-details/center-details-list");
                     }}
                   />
                 )}
               </Tooltip>
-                : null
-              }
-            </div>
+            ) : null}
           </div>
         </div>
-        <div className="px-10 py-6">
-          <div className="bg-white text-secondary ">
-            <div>
-              <div className="rounded-md">
-                <div className="mt-5">
-                  <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex-[2] my-2">
-                      <label htmlFor="center-name" className="inputLabel">
-                        Center Name <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative mt-2 rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <HiBuildingOffice2 className="icon" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          name="centerName"
-                          id="centerName"
-                          value={centerName}
-                          className="stdInputField"
-                          placeholder="Enter Center Name"
-                          onChange={(e) => {
-                            setCenterName(e.target.value.trim());
-                            setError((prevState) => ({
-                              ...prevState,
-                              centerNameError: "",
-                            }));
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="text-red-500"
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "normal",
-                        }}
-                      >
-                        {error.centerNameError}
-                      </div>
-                    </div>
-                    <div className="flex-[1] my-2">
-                      <label htmlFor="assetManagementCenterCode" className="inputLabel">
-                        Asset Management Center Code
-                      </label>
-                      <div className="relative mt-2 rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <Md123 className="icon" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          name="assetManagementCenterCode"
-                          id="assetManagementCenterCode"
-                          value={assetManagementCenterCode}
-                          className="stdInputField"
-                          placeholder="Enter Code"
-                          onChange={(e) => {
-                            setAssetManagementCenterCode(e.target.value);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-1 mt-4 my-2">
-                    <label htmlFor="productId" className="inputLabel">
-                      Address <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          <IoLocationOutline className="icon" />
-                        </span>
-                      </div>
-                      <input
-                        type="text"
-                        name="productId"
-                        id="productId"
-                        value={addressLine}
-                        className={
-                          error.centerInchargeNameError
-                            ? "stdInputField"
-                            : "stdInputField"
-                        }
-                        placeholder="Enter Address"
-                        onChange={(e) => {
-                          setAddressLine(e.target.value);
-                          setError((prevState) => ({
-                            ...prevState,
-                            addressLineError: "",
-                          }));
-                        }}
-                      />
-                    </div>
-                    <div
-                      className="text-red-500"
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "normal",
+
+        <div className="px-8 pb-8">
+          <form onSubmit={handleSubmit} className="space-y-10 mt-6">
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2">
+              <SectionHeader 
+                title="Center Details" 
+                subtitle="Primary identification and location information for the center." 
+              />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                {/* Center Name */}
+                <div className="lg:col-span-2">
+                  <label className="hr-label">
+                    Center Name <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={HiBuildingOffice2} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="Enter Center Name"
+                      value={centerName}
+                      onChange={(e) => {
+                        setCenterName(e.target.value);
+                        setError((prev) => ({ ...prev, centerNameError: "" }));
                       }}
-                    >
-                      {error.addressLineError}
-                    </div>
+                    />
                   </div>
-                  <div className="flex lg:flex-row md:flex-row flex-col lg:mt-4 lg:my-2">
-                    <div className="flex-1 me-2 mt-4 lg:mt-0">
-                      <label htmlFor="productId" className="inputLabel">
-                        District <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <IoLocationOutline className="icon" />
-                          </span>
-                        </div>
-                        {/* <select
-                          name="activityName"
-                          id="activityName"
-                          className={
-                            `${
-                            error.districtError
-                              ? "stdSelectField"
-                              : "stdSelectField"
-                          } ${
-                              district
-                                ? "selectOption"
-                                : "font-normal text-gray-400"
-                            }`
-                            
-                          }
-                          value={district}
-                          onChange={(e) => {
-                            setDistrict(e.target.value);
-                            setError((prevState) => ({
-                              ...prevState,
-                              districtError: "",
-                            }));
-                          }}
-                        >
-                          <option
-                            value=""
-                            disabled
-                            selected
-                            className="disabledOption"
-                          >
-                            Select District
-                          </option>
-                          {districtList.map((district, index) => (
-                            <option
-                              className="selectOption"
-                              key={index}
-                              value={district}
-                            >
-                              {district}
-                            </option>
-                          ))}
-                        </select> */}
-                        <input
-                          type="text"
-                          name="productId"
-                          id="productId"
-                          value={district}
-                          className={
-                            error.districtError
-                              ? "stdInputField"
-                              : "stdInputField"
-                          }
-                          placeholder="Enter District"
-                          onChange={(e) => {
-                            setDistrict(e.target.value);
-                            setError((prevState) => ({
-                              ...prevState,
-                              districtError: "",
-                            }));
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="text-red-500"
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "normal",
-                        }}
-                      >
-                        {error.districtError}
-                      </div>
-                    </div>
-                    <div className="flex-1 me-2 mt-4 lg:mt-0">
-                      <label htmlFor="productId" className="inputLabel">
-                        State <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <IoLocationOutline className="icon" />
-                          </span>
-                        </div>
-                        {/* <select
-                          name="activityName"
-                          id="activityName"
-                          className={
-                            `
-                         ${
-                           error.stateError
-                             ? "stdSelectField"
-                             : "stdSelectField"
-                         } ${
-                            state ? "selectOption" : "font-normal text-gray-400"
-                          }
-                        `}
-                          
+                  {error.centerNameError && <p className="error">{error.centerNameError}</p>}
+                </div>
 
-                          value={state}
-                          onChange={(e) => {
-                            setState(e.target.value);
-                            setError((prevState) => ({
-                              ...prevState,
-                              stateError: "",
-                            }));
-                          }}
-                        >
-                          <option
-                            className="text-gray-500"
-                            selected
-                            disabled
-                            value=""
-                          >
-                            Select State
-                          </option>
-                          {stateList.map((state, index) => (
-                            <option className="selectOption" value={state}>
-                              {state}
-                            </option>
-                          ))}
-                        </select> */}
-                        <input
-                          type="text"
-                          name="productId"
-                          id="productId"
-                          value={state}
-                          className={
-                            error.stateError ? "stdInputField" : "stdInputField"
-                          }
-                          placeholder="Enter State"
-                          onChange={(e) => {
-                            setState(e.target.value);
-                            setError((prevState) => ({
-                              ...prevState,
-                              stateError: "",
-                            }));
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="text-red-500"
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "normal",
-                        }}
-                      >
-                        {error.stateError}
-                      </div>
-                    </div>
-                    <div className="flex-1 mt-4 lg:mt-0">
-                      <label htmlFor="productId" className="inputLabel">
-                        Pincode <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative mt-2 rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <Md123 className="icon" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          name="productId"
-                          id="productId"
-                          maxLength={6}
-                          value={pincode}
-                          className={
-                            error.pincodeError
-                              ? "stdInputField"
-                              : "stdInputField"
-                          }
-                          placeholder="Enter Pincode"
-                          onChange={(e) => {
-                            setPincode(e.target.value);
-                            setError((prevState) => ({
-                              ...prevState,
-                              pincodeError: "",
-                            }));
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="text-red-500"
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "normal",
-                        }}
-                      >
-                        {error.pincodeError}
-                      </div>
-                    </div>
+                {/* Center Code */}
+                <div>
+                  <label className="hr-label">
+                    Asset Mgmt. Code
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={Md123} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="Enter Code"
+                      value={assetManagementCenterCode}
+                      onChange={(e) => setAssetManagementCenterCode(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div className="lg:col-span-3">
+                  <label className="hr-label">
+                    Address <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={IoLocationOutline} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="Enter full physical address"
+                      value={addressLine}
+                      onChange={(e) => {
+                        setAddressLine(e.target.value);
+                        setError((prev) => ({ ...prev, addressLineError: "" }));
+                      }}
+                    />
+                  </div>
+                  {error.addressLineError && <p className="error">{error.addressLineError}</p>}
+                </div>
+
+                {/* District */}
+                <div>
+                  <label className="hr-label">
+                    District <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={IoLocationOutline} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="Enter District"
+                      value={district}
+                      onChange={(e) => {
+                        setDistrict(e.target.value);
+                        setError((prev) => ({ ...prev, districtError: "" }));
+                      }}
+                    />
+                  </div>
+                  {error.districtError && <p className="error">{error.districtError}</p>}
+                </div>
+
+                {/* State */}
+                <div>
+                  <label className="hr-label">
+                    State <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={IoLocationOutline} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="Enter State"
+                      value={state}
+                      onChange={(e) => {
+                        setState(e.target.value);
+                        setError((prev) => ({ ...prev, stateError: "" }));
+                      }}
+                    />
+                  </div>
+                  {error.stateError && <p className="error">{error.stateError}</p>}
+                </div>
+
+                {/* Pincode */}
+                <div>
+                  <label className="hr-label">
+                    Pincode <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={Md123} />
+                    <input
+                      type="text"
+                      maxLength={6}
+                      className="hr-input"
+                      placeholder="Enter 6-digit Pincode"
+                      value={pincode}
+                      onChange={(e) => {
+                        setPincode(e.target.value);
+                        setError((prev) => ({ ...prev, pincodeError: "" }));
+                      }}
+                    />
+                  </div>
+                  {error.pincodeError && <p className="error">{error.pincodeError}</p>}
+                </div>
+              </div>
+            </div>
+
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+              <SectionHeader 
+                title="Staff Statistics" 
+                subtitle="Breakdown of center workforce by employment type." 
+              />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+                <div>
+                  <label className="hr-label">
+                    On-Roll Staff <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={Md123} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="0"
+                      value={onRoll}
+                      onChange={(e) => {
+                        setOnRoll(e.target.value);
+                        setError((prev) => ({ ...prev, onRollError: "" }));
+                      }}
+                    />
+                  </div>
+                  {error.onRollError && <p className="error">{error.onRollError}</p>}
+                </div>
+
+                <div>
+                  <label className="hr-label">
+                    Third Party Staff <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={Md123} />
+                    <input
+                      type="text"
+                      className="hr-input"
+                      placeholder="0"
+                      value={thirdParty}
+                      onChange={(e) => {
+                        setThirdParty(e.target.value);
+                        setError((prev) => ({ ...prev, thirdPartyError: "" }));
+                      }}
+                    />
+                  </div>
+                  {error.thirdPartyError && <p className="error">{error.thirdPartyError}</p>}
+                </div>
+
+                <div>
+                  <label className="hr-label">
+                    Total Staff
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={Md123} />
+                    <input
+                      disabled
+                      type="text"
+                      className="hr-input bg-gray-50 border-gray-200 text-gray-400 font-bold"
+                      value={totalEmp}
+                    />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex lg:flex-row md:flex-row flex-col lg:mt-4 lg:my-2">
-              <div className="flex-1 me-2 mt-4 lg:mt-0">
-                <label htmlFor="onRoll" className="inputLabel">
-                  On-Roll Staff <span className="text-red-500">*</span>
-                </label>
-                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                      <Md123 className="icon" />
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    name="onRoll"
-                    id="onRoll"
-                    value={onRoll}
-                    className={
-                      error.onRollError ? "stdInputField" : "stdInputField"
-                    }
-                    placeholder="Enter On Roll Emp"
-                    onChange={(e) => {
-                      setOnRoll(e.target.value);
-                      setError((prevState) => ({
-                        ...prevState,
-                        onRollError: "",
-                      }));
-                    }}
-                  />
-                </div>
-                <div
-                  className="text-red-500"
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "normal",
-                  }}
-                >
-                  {error.onRollError}
-                </div>
-              </div>
-              <div className="flex-1 me-2 mt-4 lg:mt-0">
-                <label htmlFor="thirdParty" className="inputLabel">
-                  Third Party Staff <span className="text-red-500">*</span>
-                </label>
-                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                      <Md123 className="icon" />
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    name="thirdParty"
-                    id="thirdParty"
-                    value={thirdParty}
-                    className={
-                      error.thirdPartyError ? "stdInputField" : "stdInputField"
-                    }
-                    placeholder="Enter Third Party Emp"
-                    onChange={(e) => {
-                      setThirdParty(e.target.value);
-                      setError((prevState) => ({
-                        ...prevState,
-                        thirdPartyError: "",
-                      }));
-                    }}
-                  />
-                </div>
-                <div
-                  className="text-red-500"
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "normal",
-                  }}
-                >
-                  {error.thirdPartyError}
-                </div>
-              </div>
-              <div className="flex-1 mt-4 lg:mt-0">
-                <label htmlFor="totalEmp" className="inputLabel">
-                  Total Staff
-                </label>
-                <div className="relative mt-2 rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                      <Md123 className="icon" />
-                    </span>
-                  </div>
-                  <input
-                    disabled
-                    type="text"
-                    name="totalEmp"
-                    id="totalEmp"
-                    value={totalEmp}
-                    className={
-                      error.totalEmpError ? "stdInputField" : "stdInputField"
-                    }
-                    onChange={(e) => {
-                      setTotalEmp(e.target.value);
-                      setError((prevState) => ({
-                        ...prevState,
-                        totalEmpError: "",
-                      }));
-                    }}
-                  />
-                </div>
-                <div
-                  className="text-red-500"
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "normal",
-                  }}
-                >
-                  {error.totalEmpError}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-6">
               <button
                 type="submit"
-                className="formButtons mt-5"
-                onClick={handleSubmit}
+                className="hr-btn-primary min-w-[200px]"
+                disabled={loading || loading2}
               >
-                {params._id && loading2 ? (
-                  <span>
-                    Update
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                  </span>
-                ) : loading ? (
-                  <span>
-                    Submit
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
+                {loading || loading2 ? (
+                  <span className="flex items-center justify-center">
+                    Processing
+                    <FaSpinner className="animate-spin ml-2" />
                   </span>
                 ) : (
                   button
                 )}
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
+
+      <style jsx>{`
+        .error {
+          color: #ef4444;
+          font-size: 12px;
+          margin-top: 4px;
+          animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </section>
   );
 };

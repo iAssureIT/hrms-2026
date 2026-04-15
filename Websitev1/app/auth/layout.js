@@ -94,11 +94,5 @@ const content_Footer2 = {
     '<span class="text-black mr-1 mb-3">Designed & Developed By</span> <span class="text-black font-bold hover:text-blue-600 hover:underline"> <a href="https://iassureit.com/" target="_blank"> iAssure International Technologies Pvt. Ltd.</a></span>',
 };
 export default function RootLayout({ children }) {
-  return (
-    <div className="fixed inset-0 h-[100dvh] overflow-hidden bg-white">
-      <MenuBar inputData={content_Menubar} />
-      {children}
-      <Footer inputData={content_Footer2} />
-    </div>
-  );
+  return <>{children}</>;
 }

@@ -19,6 +19,23 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 // import { AiFillProduct } from "react-icons/ai";
 // import S3UploadComponent from "../S3UploadComponent/S3UploadComponent";
 import BulkUpload from "./BulkUpload.js";
+
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 const OneFieldComponent = ({
   fieldLabel,
   setCheckReload,
@@ -367,19 +384,18 @@ const OneFieldComponent = ({
   };
 
   return (
-    <section className="font-body box border-2 rounded-md shadow-md">
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md">
       {/* <div className="text-xl font-semibold">
         <div className="border-b uppercase py-5 ps-6">
           <h1>Add {oneField.fieldlabel}</h1>
         </div>
       </div> */}
-      <div className="border-b py-5 px-6 flex items-center justify-between">
-        {/* Heading */}
-        <h1 className="text-xl font-semibold uppercase">
-          Add {oneField.fieldlabel}
+      <div className="border-b border-slate-100 py-4 px-6 mb-6 flex items-center justify-between">
+        <h1 className="hr-heading">
+          {oneField.fieldlabel} Management
         </h1>
 
-        {/* Small Buttons */}
         <div className="flex gap-2">
           <Tooltip
             content={activeTab === "bulk" ? "Go to Form" : "Bulk Upload"}
@@ -387,15 +403,15 @@ const OneFieldComponent = ({
             arrow={false}
             className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
           >
-            <div>
+            <div className="flex items-center">
               {activeTab === "failure" ? (
                 <BsPlusSquare
-                  className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                  className="cursor-pointer text-[#4285F4] border border-blue-200 p-1 rounded-md text-[32px] hover:bg-blue-50 transition-colors"
                   onClick={() => setActiveTab("active")}
                 />
               ) : (
                 <FaFileUpload
-                  className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                  className="cursor-pointer text-[#4285F4] border border-blue-200 p-1 rounded-md text-[32px] hover:bg-blue-50 transition-colors"
                   onClick={() => setActiveTab("failure")}
                 />
               )}
@@ -427,77 +443,70 @@ const OneFieldComponent = ({
         {/* form tab */}
         <div>
           {activeTab === "active" ? (
-            <div className=" flex flex-col shadow-none z-50 w-10/12   mx-auto pt-10">
+            <div className="flex flex-col w-full px-6">
               <div className="space-y-6 pb-10">
-                <form onSubmit={handleSubmit} className="lg:ps-4 mx-auto">
-                  <div className="lg:w-8/12 mx-auto w-full">
-                    <div className="inline-flex text-center">
-                      <h2
-                        // className="font-semibold text-sm mt-1 text-gray-51"
-                        className="inputLabel"
-                      >
-                        {oneField.fieldlabel}
-                        <span className="text-red-400 ms-1">*</span>
-                      </h2>
-                    </div>
-                    <div className="flex mt-2 justify-center">
-                      <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          id="inputField"
-                          className="stdInputField"
-                          // className="text-gray-900 rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none"
-                          placeholder={`${oneField.fieldlabel ? oneField.fieldlabel : ""
-                            }`}
-                          // defaultValue={field}
-                          value={field}
-                          required
-                          onChange={(e) => {
-                            setField(e.target.value.trim());
-                            if (errorMessage) {
-                              setErrorMessage(""); // Clear error message when user starts typing
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                    {errorMessage && (
-                      <p style={{ color: "red" }}>{errorMessage}</p>
-                    )}
-                    <div className="mb-10 flex justify-between mt-3">
-                      <div>
-                        {oneField.showImg === true && (
-                          <S3UploadComponent
-                            setImageName={setImageName}
-                            setImageUrl={setImageUrl}
-                            imageUrl={imageUrl}
-                            imageName={imageName}
-                            handleEditClick={handleEditClick}
+                <form 
+                  onSubmit={handleSubmit} 
+                  className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
+                >
+                  <SectionHeader 
+                    title={`Basic Information`} 
+                    subtitle={`Primary ${oneField.fieldlabel} identification details.`} 
+                  />
+                  
+                  <div className="lg:w-full space-y-4">
+                    <div className="flex lg:flex-row flex-col gap-x-6 items-end">
+                      <div className="flex-1">
+                        <label className="hr-label">
+                          {oneField.fieldlabel}
+                          <span className="text-red-500 ms-1">*</span>
+                        </label>
+                        <div className="relative group">
+                          <IconWrapper icon={MdWidgets} />
+                          <input
+                            type="text"
+                            className="hr-input"
+                            placeholder={`Enter ${oneField.fieldlabel}`}
+                            value={field}
+                            required
+                            onChange={(e) => {
+                              setField(e.target.value);
+                              if (errorMessage) setErrorMessage("");
+                            }}
                           />
+                        </div>
+                        {errorMessage && (
+                          <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage}</p>
                         )}
                       </div>
 
                       <div className="w-full lg:w-auto">
                         <button
                           type="submit"
-                          className="formButtons"
-                        // className="text-white bg-gradient-to-r bg-[#4285F4] hover:bg-[#4879be] focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg inline-flex items-center font-medium rounded-sm text-sm px-5 h-8 text-center mb-2"
+                          className="hr-btn-primary min-w-[140px]"
                         >
-                          {checkUpdate ? "Update" : "Submit"}
+                          {checkUpdate ? "Update Record" : "Save Record"}
                         </button>
                       </div>
                     </div>
+
+                    {oneField.showImg === true && (
+                      <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                        <S3UploadComponent
+                          setImageName={setImageName}
+                          setImageUrl={setImageUrl}
+                          imageUrl={imageUrl}
+                          imageName={imageName}
+                          handleEditClick={handleEditClick}
+                        />
+                      </div>
+                    )}
                   </div>
                 </form>
                 {/* <div className="relative overflow-x-auto lg:mx-14 text-left lg:w-1/2 mx-auto w-full"></div> */}
-                <h1 className="heading uppercase py-2 ms-4 text-center">
+                <h2 className="hr-subheading uppercase py-2 ms-4 text-center">
                   {fieldLabel} List
-                </h1>
+                </h2>
                 <div className="relative  lg:mx-auto text-left mx-auto lg:w-8/12 w-full">
                   <div>
                     <div className="flex lg:flex-row md:flex-col flex-col mt-2 ps-3 justify-between w-full">
@@ -505,7 +514,7 @@ const OneFieldComponent = ({
                         <label
                           htmlFor="recsPerPage"
                           // className="mb-4 font-semibold"
-                          className="inputLabel"
+                          className="hr-label"
                         >
                           Records per Page
                         </label>
@@ -513,11 +522,7 @@ const OneFieldComponent = ({
                           <select
                             // className="w-full border mt-2 text-sm"
                             // className="stdSelectField py-1.5"
-                            className={`${recsPerPage
-                              ? "stdSelectField pl-3 w-3/4"
-                              : "stdSelectField pl-3 w-3/4"
-                              } ${recsPerPage ? "selectOption" : "font-normal"}
-                                `}
+                            className="hr-select pl-3 w-full"
                             onChange={(event) => {
                               setRecsPerPage(event.target.value);
                             }}
@@ -737,6 +742,7 @@ const OneFieldComponent = ({
             />
           )}
         </div>
+      </div>
       </div>
     </section>
   );

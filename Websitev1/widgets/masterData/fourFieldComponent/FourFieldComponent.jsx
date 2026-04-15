@@ -17,6 +17,22 @@ import { useRouter } from "next/navigation";
 import { FaWpforms, FaSpinner } from "react-icons/fa";
 import { Tooltip } from "flowbite-react";
 
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 const FourFieldComponent = ({
   field1,
   field2,
@@ -339,7 +355,7 @@ const FourFieldComponent = ({
               } else {
                 Swal.fire(" ", response.data.message);
               }
-              
+
               setRunCount((count) => count + 1);
               setCheckReload((count) => count + 1);
               getData();
@@ -388,14 +404,13 @@ const FourFieldComponent = ({
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">
-              Program-Project-Activity & Subactivity Details
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+            <h1 className="hr-heading">
+              {field1.fieldLabel}-{field2.fieldLabel}-{field3.fieldLabel} & {field4.fieldLabel} Management
             </h1>
-            <div className="flex gap-3 my-5 me-10">
+            <div className="flex gap-3">
               <Tooltip
                 content="Bulk Upload"
                 placement="bottom"
@@ -406,248 +421,171 @@ const FourFieldComponent = ({
                   <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
                 ) : (
                   <FaFileUpload
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#4285F4] border border-blue-200 p-1 rounded-md text-[32px] hover:bg-blue-50 transition-colors"
                     onClick={() => {
                       window.open(
                         "/admin/master-data/program-project-activity-subactivity/bulk-upload",
                         '_self'
-                        // "noopener,noreferrer"
                       );
-                      // setLoading2(true);
                     }}
                   />
                 )}
               </Tooltip>
             </div>
           </div>
-        </div>
-
-        <div className="h-fit px-0 lg:px-5 py-5 pb-10">
-          <div className=" rounded-sm  w-full h-fit pb-4">
-            <div className="w-11/12 mx-auto   p-5 sm:px-1 sm:p-1 pb-10 mb-5 rounded-md">
+        
+        <div className="px-8 pb-8">
+          <div className="flex flex-col">
+            <div className="space-y-8 pb-10">
               <form
                 onSubmit={handleSubmit}
-                className="bg-red lg:p-10 w-full lg:w-11/12 sm:px-2 pb-4  lg:mx-11 mx-0 "
+                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
               >
-                <div className="mb-0 lg:mb-10 lg:flex xl:flex sm:block gap-5 sm:w-full">
-                  <div className="xl:w-1/2 lg:w-1/2 sm:w-full my-2 lg:my-0">
-                    <label for="programs" className="inputLabel flex mb-0">
+                <SectionHeader 
+                  title="Basic Information" 
+                  subtitle={`Identification details for ${field1.fieldLabel}, ${field2.fieldLabel}, ${field3.fieldLabel}, and ${field4.fieldLabel}.`} 
+                />
+
+                <div className="grid lg:grid-cols-2 gap-8 w-full mt-6">
+                  {/* Field 1 */}
+                  <div className="w-full">
+                    <label className="hr-label flex items-center">
                       {field1.fieldLabel}
                       <span className="text-red-500 ms-1">*</span>
-                      <IoMdAdd
-                        className="bg-green hover:bg-Green ms-1 text-white cursor-pointer "
-                        size={"1.2rem"}
+                      <button 
+                        type="button"
+                        className="ms-3 p-1 bg-[#4285F4] text-white rounded-full hover:bg-blue-600 transition-colors shadow-sm focus:outline-none"
                         onClick={() => setOpenModal1(true)}
-                      />
+                        title={`Add New ${field1.fieldLabel}`}
+                      >
+                        <IoMdAdd size={14} />
+                      </button>
                     </label>
-                    <div className="mt-2 lg:mt-0">
-                      <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <select
-                          value={field1Value}
-                          onChange={(e) => {
-                            setField1Value(e.target.value);
-                            if (errorMessage1) {
-                              setErrorMessage1("");
-                            }
-                          }}
-                          name="programs"
-                          className={`stdSelectField ${field1Value
-                            ? "selectOption"
-                            : "text-gray-400 font-normal"
-                            }`}
-                        // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
-                        >
-                          <option value="" disabled className="text-grayThree">
-                            -- Select Program --
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <select
+                        value={field1Value}
+                        onChange={(e) => {
+                          setField1Value(e.target.value);
+                          if (errorMessage1) setErrorMessage1("");
+                        }}
+                        className="hr-select"
+                      >
+                        <option value="" disabled>-- Select {field1.fieldLabel} --</option>
+                        {field1Data.map((option) => (
+                          <option key={option._id} value={option.fieldValue + "|" + option._id}>
+                            {option.fieldValue}
                           </option>
-                          {field1Data.map((option) => (
-                            <option
-                              key={option._id}
-                              value={option.fieldValue + "|" + option._id}
-                              className="text-black"
-                            >
-                              {option.fieldValue}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        ))}
+                      </select>
                     </div>
                     {errorMessage1 && (
-                      <p
-                        style={{ color: "red", fontSize: "12px" }}
-                        className="font-normal "
-                      >
-                        {errorMessage1}
-                      </p>
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage1}</p>
                     )}
                   </div>
 
-                  <div className="xl:w-1/2 lg:w-1/2 sm:w-full mt-4 lg:mt-0 lg:my-0">
-                    <label for="projects" className="inputLabel flex mb-0">
+                  {/* Field 2 */}
+                  <div className="w-full">
+                    <label className="hr-label flex items-center">
                       {field2.fieldLabel}
                       <span className="text-red-500 ms-1">*</span>
-                      <IoMdAdd
-                        className="bg-green hover:bg-Green ms-1 text-white cursor-pointer "
-                        size={"1.2rem"}
+                      <button 
+                        type="button"
+                        className="ms-3 p-1 bg-[#4285F4] text-white rounded-full hover:bg-blue-600 transition-colors shadow-sm focus:outline-none"
                         onClick={() => setOpenModal2(true)}
-                      />
+                        title={`Add New ${field2.fieldLabel}`}
+                      >
+                        <IoMdAdd size={14} />
+                      </button>
                     </label>
-                    <div className="">
-                      <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <select
-                          value={field2Value}
-                          onChange={(e) => {
-                            setField2Value(e.target.value);
-                            if (errorMessage2) {
-                              setErrorMessage2("");
-                            }
-                          }}
-                          className={`stdSelectField ${field2Value
-                            ? "selectOption"
-                            : "text-gray-400 font-normal"
-                            }`}
-                        >
-                          <option value="" disabled className="text-grayThree">
-                            -- Select Project --
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <select
+                        value={field2Value}
+                        onChange={(e) => {
+                          setField2Value(e.target.value);
+                          if (errorMessage2) setErrorMessage2("");
+                        }}
+                        className="hr-select"
+                      >
+                        <option value="" disabled>-- Select {field2.fieldLabel} --</option>
+                        {field2Data.map((option) => (
+                          <option key={option._id} value={option.fieldValue + "|" + option._id}>
+                            {option.fieldValue}
                           </option>
-                          {field2Data.map((option) => (
-                            <option
-                              key={option._id}
-                              value={option.fieldValue + "|" + option._id}
-                              className="text-black"
-                            >
-                              {option.fieldValue}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        ))}
+                      </select>
                     </div>
                     {errorMessage2 && (
-                      <p
-                        style={{ color: "red", fontSize: "12px" }}
-                        className="font-normal "
-                      >
-                        {errorMessage2}
-                      </p>
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage2}</p>
                     )}
                   </div>
-                </div>
 
-                <div className="lg:flex xl:flex sm:block gap-5 mt-4 lg:mt-0 sm:w-full">
-                  <div className="xl:w-1/2 lg:w-1/2 sm:w-full">
-                    <label for="activity" className="inputLabel flex mb-0">
+                  {/* Field 3 */}
+                  <div className="w-full">
+                    <label className="hr-label flex items-center">
                       {field3.fieldLabel}
                       <span className="text-red-500 ms-1">*</span>
-                      <IoMdAdd
-                        className="bg-green hover:bg-Green ms-1 text-white cursor-pointer "
-                        size={"1.2rem"}
+                      <button 
+                        type="button"
+                        className="ms-3 p-1 bg-[#4285F4] text-white rounded-full hover:bg-blue-600 transition-colors shadow-sm focus:outline-none"
                         onClick={() => setOpenModal3(true)}
-                      />
+                        title={`Add New ${field3.fieldLabel}`}
+                      >
+                        <IoMdAdd size={14} />
+                      </button>
                     </label>
-                    <div className="">
-                      <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <select
-                          value={field3Value}
-                          onChange={(e) => {
-                            setField3Value(e.target.value);
-                            if (errorMessage3) {
-                              setErrorMessage3("");
-                            }
-                          }}
-                          name="activity"
-                          className={`stdSelectField ${field3Value
-                            ? "selectOption"
-                            : "text-gray-400 font-normal"
-                            }`}
-                        // className="rounded-none outline-none rounded-e-lg bg-gray-50 border text-gray-900  block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  "
-                        >
-                          <option value="" disabled className="text-grayThree">
-                            -- Select Activity --
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <select
+                        value={field3Value}
+                        onChange={(e) => {
+                          setField3Value(e.target.value);
+                          if (errorMessage3) setErrorMessage3("");
+                        }}
+                        className="hr-select"
+                      >
+                        <option value="" disabled>-- Select {field3.fieldLabel} --</option>
+                        {field3Data.map((option) => (
+                          <option key={option._id} value={option.fieldValue + "|" + option._id}>
+                            {option.fieldValue}
                           </option>
-                          {field3Data.map((option) => (
-                            <option
-                              key={option._id}
-                              value={option.fieldValue + "|" + option._id}
-                              className="text-black"
-                            >
-                              {option.fieldValue}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        ))}
+                      </select>
                     </div>
                     {errorMessage3 && (
-                      <p
-                        style={{ color: "red", fontSize: "12px" }}
-                        className="font-normal "
-                      >
-                        {errorMessage3}
-                      </p>
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage3}</p>
                     )}
                   </div>
 
-                  <div className="xl:w-1/2 lg:w-1/2 sm:w-full mt-4 lg:mt-0 lg:my-0">
-                    <label htmlFor="subactivity" className="inputLabel mt-2">
+                  {/* Field 4 (Input) */}
+                  <div className="w-full">
+                    <label className="hr-label">
                       {field4.fieldLabel}
                       <span className="text-red-500 ms-1">*</span>
                     </label>
-                    <div className="flex">
-                      <div className="relative mt-1 border border-gray-300 rounded-md shadow-sm w-full">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                            <MdWidgets className="icon" />
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          id="minStock"
-                          // className="stdInputField"
-                          className={`stdInputField ${inputValue
-                            ? "selectOption"
-                            : "text-gray-400 font-normal"
-                            }`}
-                          placeholder="Enter Subactivity"
-                          // className="text-gray-900 rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none"
-                          value={inputValue}
-                          name="subactivity"
-                          onChange={(e) => {
-                            setInputValue(e.target.value.trim());
-                            if (errorMessage4) {
-                              setErrorMessage4(""); // Clear error message when user starts typing
-                            }
-                          }}
-                        />
-                      </div>
+                    <div className="relative group">
+                      <IconWrapper icon={MdWidgets} />
+                      <input
+                        type="text"
+                        className="hr-input"
+                        placeholder={`Enter ${field4.fieldLabel}`}
+                        value={inputValue}
+                        onChange={(e) => {
+                          setInputValue(e.target.value);
+                          if (errorMessage4) setErrorMessage4("");
+                        }}
+                      />
                     </div>
                     {errorMessage4 && (
-                      <p
-                        style={{ color: "red", fontSize: "12px" }}
-                        className="font-normal "
-                      >
-                        {errorMessage4}
-                      </p>
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage4}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="flex justify-end mt-6 lg:mt-10 -me-3 w-full">
-                  <button type="submit" className="formButtons">
-                    {params._id ? "Update" : "Submit"}
+                <div className="flex justify-end mt-10">
+                  <button type="submit" className="hr-btn-primary min-w-[140px]">
+                    {params._id ? "Update Changes" : "Save Record"}
                   </button>
                 </div>
               </form>
@@ -790,7 +728,7 @@ const FourFieldComponent = ({
           </div>
         </Modal.Body>
       </Modal>
-    </section>
+    </section >
   );
 };
 

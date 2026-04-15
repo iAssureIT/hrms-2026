@@ -120,8 +120,8 @@ function Login(props) {
             "fa-accounts",
           ],
         });
-        console.log("response of login api -->",response);
-        
+        console.log("response of login api -->", response);
+
         if (response.data.message === "Login Auth Successful") {
           const userDetails = response.data.userDetails || {};
 
@@ -137,13 +137,13 @@ function Login(props) {
           ) {
             window.location.replace("/admin/asset-management");
           } else if (
-            userDetails.roles.includes("accounts-manager") 
+            userDetails.roles.includes("accounts-manager")
           ) {
             window.location.replace("/account/utilization-management/utilization-list");
           } else {
             window.location.replace("/executive/dashboard");
           }
-            // userDetails.roles.includes("account-person") ||
+          // userDetails.roles.includes("account-person") ||
           setLoggedIn(true);
         } else {
           handleError(response.data.message);
@@ -238,237 +238,107 @@ function Login(props) {
   };
 
   return (
-    // <section className="formWrapper bg-white mx-20 sm:w-3/4 md:w-1/2 xl:w-1/3 bg-white-100 px-5 shadow-xl border rounded-lg  my-20 py-10 xxl:py-20 mx-20">
-    <section className="bg-white rounded shadow-md w-full max-w-sm max-h-[80dvh] overflow-y-auto">
-      <div className="w-full">
-        <div className="w-full bg-lightgreen border border-2 border-t-green py-6 h-20">
-          <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
-            Login
-          </h1>
+    <section className="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-8 h-8 rounded-lg bg-[#50c878] flex items-center justify-center">
+            <i className="fa fa-user text-white text-sm"></i>
+          </div>
+          <span className="text-xs font-bold uppercase tracking-widest text-[#50c878]">HRMS 2026</span>
         </div>
-        <form className="p-4 sm:p-8" action="#" method="POST">
-          <div className="mb-4 relative">
-            <label
-              htmlFor="email"
-              className="block inputLabel font-semibold mb-2"
-            >
-              Username
-            </label>
-            <div className="relative">
-              <input
-                className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email ID"
-                onChange={handleChange}
-                value={email}
-                onKeyDown={onlyEmail}
-                autoFocus
-                autoComplete="true"
-                required
-              />
-
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-              </span>
-            </div>
-
-            <div className="text-left pl-0 errorMsg mt-1 text-red-500">
-              {errors.email}
-            </div>
-          </div>
-          <div className="mb-4 relative">
-            <label
-              htmlFor="password"
-              className="block inputLabel font-semibold mb-2"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                className="w-full p-2 border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green  bg-white border-none outline-none"
-                placeholder="Password"
-                onChange={handleChange}
-                value={password}
-                required
-                autoFocus
-                autoComplete="true"
-              />
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                <i className="fas fa-lock absolute left-0 top-1/2 transform -translate-y-1/2 ml-3 text-gray-400"></i>
-              </span>
-              <span
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <span
-                    id="id-password"
-                    className={
-                      "fa fa-eye toggleEye absolute top-3 text-gray-400 right-4"
-                    }
-                  ></span>
-                ) : (
-                  <span
-                    id="id-password"
-                    className={
-                      "fa fa-eye-slash toggleEye absolute top-3 text-gray-400 right-4"
-                    }
-                  ></span>
-                )}
-              </span>
-            </div>
-            <div className="text-left pl-0 errorMsg mt-1 text-red-500">
-              {errors.password}
-            </div>
-          </div>
-          <div className="flex flex-col lg:flex-row lg:justify-between gap-4 items-center sm:items-baseline  md:items-center lg:items-center">
-            {" "}
-            <div className="text-left lg:mt-4">
-              <a
-                href="/auth/forgot-password"
-                className="underline underline-offset-2  text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
-                onClick={() => {
-                  setLoading(true);
-                }}
-              >
-                {loading ? (
-                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
-                    Forgot Password?
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
-                  </span>
-                ) : (
-                  <span className="text-sm text-green-500 hover:text-green-700 focus:text-blue-800">
-                    Forgot Password?
-                  </span>
-                )}
-              </a>
-            </div>
-            <button
-              type="submit"
-              onClick={userlogin}
-              disabled={btnLoading || loggedIn}
-              className="formButtons px-10"
-            >
-              {loggedIn ? (
-                <span>
-                  Login
-                  <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                </span>
-              ) : (
-                "Login"
-              )}
-            </button>
-          </div>
-        </form>
+        <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight mb-1">
+          Welcome Back
+        </h1>
+        <p className="text-sm text-slate-500 font-medium">Sign in to your account to continue</p>
       </div>
 
-      {/* <Modal
-        show={requestModal}
-        size="md"
-        onClose={() => setRequestModal(false)}
-        popup
-      >
-        <Modal.Header className="modalHeader justify-end">
-          <div
-            className="modalCloseButton"
-            onClick={() => setRequestModal(false)}
-          >
-            <MdClose className="icon text-white font-medium" />
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="modalBody">
-            <h3 className="modalText">
-              Activation request submitted successfully
-            </h3>
-            <div className="flex justify-center gap-4">
-              <button
-                className="modalSuccessBtn"
-                onClick={() => setRequestModal(false)}
-              >
-                Ok
-              </button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <form className="w-full" action="#" method="POST">
+        {/* Email Field */}
+        <div className="hr-form-group">
+          <label className="hr-label" htmlFor="email">
+            <i className="fa-regular fa-envelope mr-2 text-slate-400"></i>Email Address
+          </label>
+          <input
+            className="hr-input"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Enter your email address"
+            onChange={handleChange}
+            value={email}
+            onKeyDown={onlyEmail}
+            autoFocus
+            autoComplete="true"
+            required
+          />
+          {errors.email && (
+            <p className="mt-1.5 text-red-500 text-xs font-semibold">{errors.email}</p>
+          )}
+        </div>
 
-      <Modal
-        show={requestSubmitModal}
-        size="md"
-        onClose={() => setRequestSubmitModal(false)}
-        popup
-      >
-        <Modal.Header className="modalHeader justify-end">
-          <div
-            className="modalCloseButton"
-            onClick={() => setRequestSubmitModal(false)}
-          >
-            <MdClose className="icon text-white font-medium" />
+        {/* Password Field */}
+        <div className="hr-form-group">
+          <label className="hr-label" htmlFor="password">
+            <i className="fa fa-lock mr-2 text-slate-400"></i>Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              className="hr-input pr-10"
+              placeholder="Enter your password"
+              onChange={handleChange}
+              value={password}
+              required
+            />
+            <span
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 cursor-pointer hover:text-slate-600 transition-colors"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <span id="id-password" className="fa fa-eye text-sm"></span>
+              ) : (
+                <span id="id-password" className="fa fa-eye-slash text-sm"></span>
+              )}
+            </span>
           </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="modalBody">
-            <h3 className="modalText">Your request submitted successfully</h3>
-            <div className="flex justify-center gap-4">
-              <button
-                className="modalSuccessBtn"
-                onClick={() => setRequestSubmitModal(false)}
-              >
-                Ok
-              </button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+          {errors.password && (
+            <p className="mt-1.5 text-red-500 text-xs font-semibold">{errors.password}</p>
+          )}
+        </div>
 
-      <Modal
-        show={errorModal}
-        size="md"
-        onClose={() => setErrorModal(false)}
-        popup
-      >
-        <Modal.Header className="modalHeader justify-end">
-          <div
-            className="modalCloseButton"
-            onClick={() => setErrorModal(false)}
+        {/* Forgot Password */}
+        <div className="text-right mb-6">
+          <a
+            href="/auth/forgot-password"
+            className="text-xs font-bold text-[#50c878] hover:text-[#3fb06a] transition-colors"
+            onClick={() => setLoading(true)}
           >
-            <MdClose className="icon text-white font-medium" />
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="modalBody">
-            {errorMsg ? (
-              <h3 className="modalText">{errorMsg}</h3>
-            ) : (
-              <>
-                <h3 className="modalText">Oops!</h3>
-                <div className="modalText">Something went wrong</div>
-              </>
-            )}
+            {loading ? (
+              <><FaSpinner className="animate-spin inline-flex mr-1" /> Loading...</>
+            ) : "Forgot Password?"}
+          </a>
+        </div>
 
-            <div className="flex justify-center gap-4">
-              <button
-                className="modalSuccessBtn"
-                onClick={() => setErrorModal(false)}
-              >
-                Ok
-              </button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal> */}
+        {/* Submit Button */}
+        <button
+          type="submit"
+          onClick={userlogin}
+          disabled={btnLoading || loggedIn}
+          className="hr-btn-primary w-full py-3 text-sm"
+        >
+          {btnLoading || loggedIn ? (
+            <>
+              <FaSpinner className="animate-spin mr-2" />
+              {loggedIn ? "Redirecting..." : "Signing in..."}
+            </>
+          ) : (
+            <>Sign In</>
+          )}
+        </button>
+      </form>
     </section>
   );
 }

@@ -12,6 +12,22 @@ import { FaFileDownload } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 export default function TdsMaster() {
 
     const [formData, setFormData] = useState({
@@ -206,170 +222,121 @@ export default function TdsMaster() {
 
 
     return (
-        <section className="section ">
-            <div className="box border-2 rounded-md shadow-md bg-white" >
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300">
-                        <h1 className="heading">ADD TDS MASTER</h1>
-                    </div>
+        <section className="hr-section">
+            <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+                <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+                    <h1 className="hr-heading">TDS Management</h1>
                 </div>
 
-                <div className="h-fit p-5 pb-10">
-                    <div className="rounded-sm  w-full h-fit pb-4">
-                        <div className="   w-11/12 mx-auto   p-5 sm:px-1 sm:p-1 pb-10 mt-10 mb-5 rounded-md">
+                <div className="px-8 pb-8">
+                    <div className="flex flex-col">
+                        <div className="space-y-8 pb-10">
                             <form
                                 onSubmit={handleSubmit}
-                                className="bg-red lg:p-10 w-full lg:w-11/12 sm:px-2 pb-4  lg:mx-11 mx-0 "
+                                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
                             >
+                                <SectionHeader 
+                                    title={editingId ? "Update TDS Detail" : "Basic Information"} 
+                                    subtitle="Define section codes and their corresponding tax rates." 
+                                />
 
-                                {/* Input Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
                                     {/* Section Code */}
                                     <div>
-                                        <label className="inputLabel">
+                                        <label className="hr-label">
                                             Section Code <span className="text-red-500">*</span>
                                         </label>
-
-
-                                        <div className="flex mt-2 justify-center">
-                                            <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                                        <MdWidgets className="icon" />
-                                                    </span>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    name="sectionCode"
-                                                    className="stdInputField"
-                                                    placeholder="Enter Section Code"
-                                                    required
-                                                    value={formData.sectionCode}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
+                                        <div className="relative group">
+                                            <IconWrapper icon={MdWidgets} />
+                                            <input
+                                                type="text"
+                                                name="sectionCode"
+                                                className="hr-input"
+                                                placeholder="Enter Section Code"
+                                                required
+                                                value={formData.sectionCode}
+                                                onChange={handleChange}
+                                            />
                                         </div>
                                     </div>
 
                                     {/* Section Name */}
                                     <div>
-                                        <label className="inputLabel">
+                                        <label className="hr-label">
                                             Name of Section <span className="text-red-500">*</span>
                                         </label>
-                                        {/* <input
-                                        type="text"
-                                        name="sectionName"
-                                        value={formData.sectionName}
-                                        onChange={handleChange}
-                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
-                                        placeholder="Enter Section Name"
-                                        required
-                                    /> */}
-                                        <div className="flex mt-2 justify-center">
-                                            <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                                        <MdWidgets className="icon" />
-                                                    </span>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    name="sectionName"
-                                                    className="stdInputField"
-                                                    placeholder="Enter Section Name"
-                                                    required
-                                                    value={formData.sectionName}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
+                                        <div className="relative group">
+                                            <IconWrapper icon={MdWidgets} />
+                                            <input
+                                                type="text"
+                                                name="sectionName"
+                                                className="hr-input"
+                                                placeholder="Enter Section Name"
+                                                required
+                                                value={formData.sectionName}
+                                                onChange={handleChange}
+                                            />
                                         </div>
                                     </div>
 
                                     {/* TDS Rate */}
                                     <div>
-                                        <label className="inputLabel">
+                                        <label className="hr-label">
                                             TDS Rate (%) <span className="text-red-500">*</span>
                                         </label>
-                                        {/* <input
-                                        type="number"
-                                        name="tdsRate"
-                                        value={formData.tdsRate}
-                                        onChange={handleChange}
-                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
-                                        placeholder="Enter TDS Rate"
-                                        required
-                                    /> */}
-
-                                        <div className="flex mt-2 justify-center">
-                                            <div className="relative  border border-gray-300 mt-2 rounded-md shadow-sm w-full">
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                                                        <MdWidgets className="icon" />
-                                                    </span>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    name="tdsRate"
-                                                    className="stdInputField"
-                                                    placeholder="Enter TDS Rate"
-                                                    required
-                                                    value={formData.tdsRate}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
+                                        <div className="relative group">
+                                            <IconWrapper icon={MdWidgets} />
+                                            <input
+                                                type="number"
+                                                name="tdsRate"
+                                                className="hr-input"
+                                                placeholder="Enter TDS Rate"
+                                                required
+                                                value={formData.tdsRate}
+                                                onChange={handleChange}
+                                            />
                                         </div>
                                     </div>
-
                                 </div>
 
-                                {/* Button Row */}
-                                <div className="mt-6 flex justify-end">
+                                <div className="mt-10 flex justify-end">
                                     <button
                                         type="submit"
-                                        className="formButtons"
-                                    // className="bg-green-500 text-white px-8 py-2 rounded hover:bg-green-600 transition"
+                                        className="hr-btn-primary min-w-[140px]"
                                     >
-                                        Submit
+                                        {editingId ? "Update Changes" : "Save Record"}
                                     </button>
                                 </div>
-
                             </form>
 
 
 
-                            <div className=" p-6 ">
-
-                                {/* Top Controls */}
-                                <div className="flex justify-between items-center mb-4">
-
-                                    <div className="space-x-2">
-                                        <label className="text-sm font-medium ms-2">
-                                            Records Per Page:
-                                        </label>
-                                        <div>
+                            <div className="mt-10">
+                                <SectionHeader title="Existing TDS Sections" subtitle="List of all registered TDS categories and rates." />
+                                
+                                <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex flex-col">
+                                            <label className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Show</label>
                                             <select
                                                 value={limit}
                                                 onChange={(e) => setLimit(Number(e.target.value))}
-                                                className="border px-2 py-1 text-sm rounded focus:outline-none"
+                                                className="hr-select !pl-4 !py-1.5 w-20"
                                             >
                                                 <option value={5}>5</option>
                                                 <option value={10}>10</option>
                                                 <option value={20}>20</option>
                                             </select>
                                         </div>
-
                                     </div>
 
-                                    <div className="flex items-end gap-4">
-                                        <div className="items-center gap-2">
-                                            <label className="text-sm font-medium text-gray-600">
-                                                Search
-                                            </label>
-
-                                            <div className="flex items-center bg-white border border-gray-300 rounded-md px-2 h-8 w-48 focus-within:border-blue-500 transition-all">
-                                                <FaSearch className="text-gray-400 text-xs mr-2" />
-
+                                    <div className="flex items-end gap-3 w-full md:w-auto">
+                                        <div className="flex-1 md:w-64">
+                                            <label className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Search</label>
+                                            <div className="relative group">
+                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                                                    <FaSearch size={14} />
+                                                </div>
                                                 <input
                                                     type="text"
                                                     value={search}
@@ -377,27 +344,26 @@ export default function TdsMaster() {
                                                         setPage(1);
                                                         setSearch(e.target.value);
                                                     }}
-                                                    placeholder="Search..."
-                                                    className="text-sm w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus:border-none shadow-none"
+                                                    placeholder="Type to filter..."
+                                                    className="hr-input !pl-10 !py-1.5"
                                                 />
-
                                             </div>
                                         </div>
 
                                         <Tooltip
-                                            content="Download as Excel"
+                                            content="Export to Excel"
                                             placement="top"
-                                            className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                                            className="z-50 bg-[#4285F4] text-white text-xs px-2 py-1 rounded"
                                             arrow={false}
                                         >
-                                            <FaFileDownload
+                                            <button 
                                                 onClick={exportToExcel}
-                                                size={"2rem"}
-                                                className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
-                                            />
+                                                className="p-2 text-[#4285F4] border border-blue-100 rounded-md hover:bg-blue-50 transition-colors shadow-sm"
+                                            >
+                                                <FaFileDownload size={20} />
+                                            </button>
                                         </Tooltip>
                                     </div>
-
                                 </div>
 
                                 <table className="w-full overflow-x-auto border-separate border-spacing-y-2 text-sm text-center ps-3 rtl:text-right text-gray-500 dark:text-gray-400">

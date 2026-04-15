@@ -19,6 +19,21 @@ const authorityNameList = [
   "head-csr",
 ];
 
+const SectionHeader = ({ title, subtitle }) => (
+  <div className="mb-5 border-b border-gray-100 pb-2">
+    <h3 className="hr-subheading">{title}</h3>
+    <p className="hr-section-subtitle text-xs text-gray-400 mt-1">{subtitle}</p>
+  </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+    <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+      <Icon className="icon" />
+    </span>
+  </div>
+);
+
 const AddApprovalLevel = () => {
   const [approverLevel, setApproverLevel] = useState("");
   const [maxCost, setMaxCost] = useState("");
@@ -136,11 +151,7 @@ const AddApprovalLevel = () => {
 
                 getAuthourityData();
                 // setLoading2(true);
-                window.open(
-                  "/admin/master-data/approval-level-management/approval-level-list",
-                  "_blank",
-                  "noopener,noreferrer"
-                );
+                router.push("/admin/master-data/approval-level-management/approval-level-list");
               } else {
                 Swal.fire(
                   " ",
@@ -162,23 +173,14 @@ const AddApprovalLevel = () => {
             if (response.data.message === "Data already exists") {
               Swal.fire(" ", "Data already exists");
             } else {
-              let ID = response.data.insertedLevel._id;
-
               Swal.fire(" ", "Activity Approval level  details submitted successfully!!");
-              // setApprovalSuccessModal(true);
               setLoading2(true);
-              window.open(
-                "/admin/master-data/approval-level-management/approval-level-list",
-                "_blank",
-                "noopener,noreferrer"
-              );
+              router.push("/admin/master-data/approval-level-management/approval-level-list");
               getAuthourityData();
               setApproverLevel("");
               setMaxCost("");
+              setPlainMaxCost("");
               setApproverAuthRole("");
-            }
-            if (error.mesage) {
-              Swal.fire(" ", "Something went wrong! <br/>" + error.message);
             }
           })
           .catch((error) => {
@@ -214,237 +216,129 @@ const AddApprovalLevel = () => {
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md min-h-screen">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">Activity Approval Level</h1>
-            <div className="flex gap-3 my-6 me-10">
-              <Tooltip
-                content="Activity Approval level  List"
-                placement="bottom"
-                className="bg-green"
-                arrow={false}
-              >
-                {loading ? (
-                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
-                ) : (
-                  <CiViewList
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
-                    onClick={() => {
-                      window.open(
-                        "/admin/master-data/approval-level-management/approval-level-list",
-                        '_self'
-                        // "noopener,noreferrer"
-                      );
-                    }}
-                  />
-                )}
-              </Tooltip>
-            </div>
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+          <h1 className="hr-heading">Activity Approval Level</h1>
+          <div className="flex gap-3 me-10">
+            <Tooltip
+              content="Approval Level List"
+              placement="bottom"
+              className="bg-green"
+              arrow={false}
+            >
+              {loading ? (
+                <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+              ) : (
+                <CiViewList
+                  className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                  onClick={() => {
+                    router.push("/admin/master-data/approval-level-management/approval-level-list");
+                  }}
+                />
+              )}
+            </Tooltip>
           </div>
         </div>
-        <div className="px-10 py-6">
-          <div className="bg-white text-secondary">
-            <div className="rounded-md">
-              <div className="mt-5 mb-5 flex lg:flex-row md:flex-row flex-col">
-                <div className="flex-1 md:me-4 my-2 lg:my-0">
-                  <label
-                    htmlFor="approverLevel"
-                    // className="block text-sm font-medium leading-6 text-gray-900"
-                    className="inputLabel"
-                  >
+
+        <div className="px-8 pb-8">
+          <form className="space-y-10 mt-6 overflow-visible">
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2">
+              <SectionHeader 
+                title="Level Configuration" 
+                subtitle="Define threshold and authority roles for approval workflow." 
+              />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                {/* Approver Level */}
+                <div>
+                  <label className="hr-label">
                     Approver Level <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                        <IoPersonCircleOutline className="icon" />
-                      </span>
-                    </div>
+                  <div className="relative group">
+                    <IconWrapper icon={IoPersonCircleOutline} />
                     <input
                       type="text"
-                      name="approverLevel"
-                      id="approverLevel"
-                      className={
-                        error.approverLevelError
-                          ? "stdInputField"
-                          : "stdInputField"
-                        // ? "block rounded-md border-0 py-2 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        // : "block rounded-md border-0 py-2 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                      }
+                      className="hr-input"
                       placeholder="e.g. Level-1"
                       value={approverLevel}
                       onChange={(e) => {
                         setApproverLevel(e.target.value);
-                        setError((prevState) => ({
-                          ...prevState,
-                          approverLevelError: "",
-                        }));
+                        setError((prev) => ({ ...prev, approverLevelError: "" }));
                       }}
                     />
                   </div>
-                  <div
-                    className="text-red-500 ps-10"
-                    style={{ fontSize: "12px", fontWeight: "normal" }}
-                  >
-                    {error.approverLevelError}
-                  </div>
+                  {error.approverLevelError && (
+                    <p className="text-red-500 text-xs mt-1">{error.approverLevelError}</p>
+                  )}
                 </div>
-                {/* <div className="flex-1 md:me-4 my-2 lg:my-0">
-                  <label
-                    htmlFor="maxCost"
-                    // className="block text-sm font-medium leading-6 text-gray-900"
-                    className="inputLabel"
-                  >
-                    Approval Limit <span className="text-red-500">*</span>
+
+                {/* Approval Limit */}
+                <div>
+                  <label className="hr-label">
+                    Approval Limit (₹) <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                        <FaIndianRupeeSign className="icon" />
-                      </span>
-                    </div>
+                  <div className="relative group">
+                    <IconWrapper icon={FaIndianRupeeSign} />
                     <input
                       type="text"
-                      name="maxCost"
-                      id="maxCost"
-                      className={
-                        error.maxCostError ? "stdInputField" : "stdInputField"
-                        // ? "block rounded-md border-0 py-2 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        // : "block rounded-md border-0 py-2 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                      }
-                      placeholder="Max Cost of Approval"
-                      value={maxCost}
-                      onChange={(e) => {
-                        setMaxCost(e.target.value);
-                        setError((prevState) => ({
-                          ...prevState,
-                          maxCostError: "",
-                        }));
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="text-red-500 ps-10"
-                    style={{ fontSize: "12px", fontWeight: "normal" }}
-                  >
-                    {error.maxCostError}
-                  </div>
-                </div> */}
-                <div className="flex-1 md:me-4 my-2 lg:my-0">
-                  <label htmlFor="maxCost" className="inputLabel">
-                    Approval Limit <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                        <FaIndianRupeeSign className="icon" />
-                      </span>
-                    </div>
-                    <input
-                      type="text"
-                      name="maxCost"
-                      id="maxCost"
-                      className={
-                        error.maxCostError ? "stdInputField" : "stdInputField"
-                      }
+                      className="hr-input"
                       placeholder="Max Cost of Approval"
                       value={maxCost}
                       onChange={handleMaxCostChange}
                     />
                   </div>
-                  <div
-                    className="text-red-500 ps-10"
-                    style={{ fontSize: "12px", fontWeight: "normal" }}
-                  >
-                    {error.maxCostError}
-                  </div>
+                  {error.maxCostError && (
+                    <p className="text-red-500 text-xs mt-1">{error.maxCostError}</p>
+                  )}
                 </div>
-                <div className="flex-1 my-2 lg:my-0">
-                  <label
-                    htmlFor="approverAuthRole"
-                    // className="block text-sm font-medium leading-6 text-gray-900"
-                    className="inputLabel"
-                  >
-                    Designation of Authority{" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                        <IoPersonCircleOutline className="icon" />
-                      </span>
-                    </div>
 
+                {/* Designation */}
+                <div>
+                  <label className="hr-label">
+                    Designation of Authority <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative group">
+                    <IconWrapper icon={IoPersonCircleOutline} />
                     <select
-                      name="approverAuthRole"
-                      id="approverAuthRole"
-                      className={`${
-                        error.approverAuthRoleError
-                          ? "stdSelectField"
-                          : "stdSelectField"
-                      } ${
-                        approverAuthRole
-                          ? "selectOption"
-                          : "font-normal text-gray-400"
-                      }
-                    `}
+                      className="hr-select"
                       value={approverAuthRole}
                       onChange={(e) => {
                         setApproverAuthRole(e.target.value);
-
-                        setError((prevState) => ({
-                          ...prevState,
-                          approverAuthRoleError: "",
-                        }));
+                        setError((prev) => ({ ...prev, approverAuthRoleError: "" }));
                       }}
                     >
-                      <option value="" disabled>
-                        -- Select Designation of Authority --
-                      </option>
+                      <option value="" disabled>-- Select Designation --</option>
                       {authorityNameList?.map((authority, i) => (
-                        <option
-                          className="text-black"
-                          key={i}
-                          value={authority}
-                        >
-                          {authority}
-                        </option>
+                        <option key={i} value={authority}>{authority}</option>
                       ))}
                     </select>
                   </div>
-                  <div
-                    className="text-red-500 ps-10"
-                    style={{ fontSize: "12px", fontWeight: "normal" }}
-                  >
-                    {error.approverAuthRoleError}
-                  </div>
+                  {error.approverAuthRoleError && (
+                    <p className="text-red-500 text-xs mt-1">{error.approverAuthRoleError}</p>
+                  )}
                 </div>
               </div>
             </div>
-            <div className="flex justify-end mb-6">
+
+            <div className="flex justify-end pt-6">
               <button
                 type="submit"
+                className="hr-btn-primary min-w-[200px]"
                 onClick={handleSumbit}
-                className="formButtons"
+                disabled={loading || loading2}
               >
-                {loading2 && params._id ? (
-                  <span>
-                    Update
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                  </span>
-                ) : loading ? (
-                  <span>
-                    Submit
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
+                {loading || loading2 ? (
+                  <span className="flex items-center justify-center">
+                    Processing
+                    <FaSpinner className="animate-spin ml-2" />
                   </span>
                 ) : (
                   button
                 )}
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </section>

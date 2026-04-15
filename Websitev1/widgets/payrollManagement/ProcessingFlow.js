@@ -97,7 +97,7 @@ const ProcessingFlow = () => {
     const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
 
     return (
-        <section className="bg-white rounded-[40px] border border-slate-100 shadow-2xl shadow-slate-200/50 p-10 mb-10 overflow-hidden relative animate-in fade-in duration-700">
+        <section className="bg-white rounded-[40px] border border-slate-100 shadow-xl shadow-slate-200/50 p-10 mb-10 overflow-hidden relative">
             <div className="max-w-[1400px] mx-auto">
                 {/* Stepper Wizard */}
                 <div className="flex items-center justify-center gap-6 mb-16 px-10">

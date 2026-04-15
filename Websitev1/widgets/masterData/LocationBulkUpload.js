@@ -117,40 +117,30 @@ const Page = () => {
   // console.log("goodRecordsTable", goodRecordsTable);
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">Location Master Bulk Upload</h1>
-            <div className="flex gap-3 my-6 me-10">
-              <Tooltip content="Add Center Details" placement="bottom">
-                <FaWpforms
-                  className="icon hover:text-gray-800 border border-gray-400 p-0.5 hover:border-gray-700 rounded text-[30px]"
-                  onClick={() => {
-                    window.open(
-                      "/admin/master-data/center-details/center-details-submission",
-                      "_blank",
-                      "noopener,noreferrer"
-                    );
-                  }}
-                />
-              </Tooltip>
-              <Tooltip content="Center Details List" placement="bottom">
-                <CiViewList
-                  className="icon hover:text-gray-800 border border-gray-400 p-0.5 hover:border-gray-700 rounded text-[30px]"
-                  onClick={() => {
-                    window.open(
-                      "/admin/master-data/center-details/center-details-list",
-                      "_blank",
-                      "noopener,noreferrer"
-                    );
-                  }}
-                />
-              </Tooltip>
-            </div>
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+          <h1 className="hr-heading">Location Master Bulk Upload</h1>
+          <div className="flex gap-3 me-10">
+            <Tooltip content="Add Center Details" placement="bottom" arrow={false}>
+              <FaWpforms
+                className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                onClick={() => {
+                  router.push("/admin/master-data/center-details/center-details-submission");
+                }}
+              />
+            </Tooltip>
+            <Tooltip content="Center Details List" placement="bottom" arrow={false}>
+              <CiViewList
+                className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                onClick={() => {
+                  router.push("/admin/master-data/center-details/center-details-list");
+                }}
+              />
+            </Tooltip>
           </div>
         </div>
-        <div className="">
+        <div className="px-8 pb-8">
           <BulkUpload
             url={process.env.NEXT_PUBLIC_BASE_URL + "/api/centers/bulkUpload"}
             data={[]}

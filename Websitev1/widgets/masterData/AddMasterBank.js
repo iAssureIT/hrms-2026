@@ -15,6 +15,22 @@ import { IoPersonCircleOutline } from "react-icons/io5";
 import { CiBank, CiViewList } from "react-icons/ci";
 import { FaSpinner } from "react-icons/fa";
 
+// === Asset Management Style Helpers ===
+const SectionHeader = ({ title, subtitle }) => (
+    <div className="mb-5 border-b border-gray-100 pb-2">
+        <h3 className="hr-subheading">{title}</h3>
+        <p className="hr-section-subtitle">{subtitle}</p>
+    </div>
+);
+
+const IconWrapper = ({ icon: Icon }) => (
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
+            <Icon className="icon" />
+        </span>
+    </div>
+);
+
 const BankDetails = () => {
   const [accountHolderName, setAccountHolderName] = useState("");
 
@@ -200,12 +216,11 @@ const BankDetails = () => {
   };
 
   return (
-    <section className="section ">
-      <div className="box border-2 rounded-md shadow-md min-h-screen">
-        <div className="uppercase  text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">Bank Details</h1>
-            <div className="flex gap-3 my-6 me-10">
+    <section className="hr-section">
+      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
+        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
+            <h1 className="hr-heading">Bank Management</h1>
+            <div className="flex gap-3">
               <Tooltip
                 content="Bank Details List"
                 placement="bottom"
@@ -216,18 +231,11 @@ const BankDetails = () => {
                   <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
                 ) : (
                   <CiViewList
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
-                    // onClick={() => {
-                    //   setLoading(true);
-                    //   router.push(
-                    //     "/admin/master-data/bank-details/bank-details-list"
-                    //   );
-                    // }}
+                    className="cursor-pointer text-[#4285F4] border border-blue-200 p-1 rounded-md text-[32px] hover:bg-blue-50 transition-colors"
                     onClick={() => {
                       window.open(
                         "/admin/master-data/bank-details/bank-details-list",
                         '_self'
-                        // "noopener,noreferrer"
                       );
                     }}
                   />
@@ -235,341 +243,170 @@ const BankDetails = () => {
               </Tooltip>
             </div>
           </div>
-        </div>
-        <div className="px-10 py-6">
-          <div className="bg-white text-secondary">
-            <div>
-              <div className="me-2 rounded-md w-full">
-                <div className="flex-1 my-2 lg:my-0">
-                  <label
-                    htmlFor="productId"
-                    // className="block text-sm font-medium leading-6 text-gray-900"
-                    className="inputLabel"
-                  >
-                    Account Holder Name <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                        <IoPersonCircleOutline className="icon" />
-                      </span>
+        
+        <div className="px-8 pb-8">
+          <div className="flex flex-col">
+            <div className="space-y-8 pb-10">
+              <form
+                onSubmit={handleSubmit}
+                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
+              >
+                <SectionHeader 
+                  title="Bank & Account Information" 
+                  subtitle="Primary identification and branch details for the bank account." 
+                />
+
+                <div className="grid lg:grid-cols-2 gap-8 w-full mt-6">
+                  {/* Account Holder Name */}
+                  <div className="lg:col-span-2">
+                    <label className="hr-label">
+                      Account Holder Name <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative group">
+                      <IconWrapper icon={IoPersonCircleOutline} />
+                      <input
+                        type="text"
+                        className="hr-input"
+                        placeholder="Name of Account Holder"
+                        value={accountHolderName}
+                        onChange={(e) => {
+                          setAccountHolderName(e.target.value);
+                          setError((prevState) => ({ ...prevState, accountHolderNameError: "" }));
+                        }}
+                      />
                     </div>
-                    <input
-                      type="text"
-                      name="productId"
-                      id="productId"
-                      value={accountHolderName}
-                      className={
-                        error.accountHolderNameError
-                          ? "stdInputField"
-                          : "stdInputField"
-                        // ? "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        // : "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                      }
-                      placeholder="Name of Account Holder"
-                      onChange={(e) => {
-                        setAccountHolderName(e.target.value);
-                        setError((prevState) => ({
-                          ...prevState,
-                          accountHolderNameError: "",
-                        }));
-                      }}
-                    />
+                    {error.accountHolderNameError && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{error.accountHolderNameError}</p>
+                    )}
                   </div>
-                  <div
-                    className="text-red-500 "
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "normal",
-                    }}
-                  >
-                    {error.accountHolderNameError}
-                  </div>
-                </div>
-                <div className="flex lg:flex-row md:flex-col flex-col mt-2 lg:mt-4">
-                  <div className="flex-1 me-2 my-2 lg:my-0">
-                    <label
-                      htmlFor="productId"
-                      // className="block text-sm font-medium leading-6 text-gray-900"
-                      className="inputLabel"
-                    >
+
+                  {/* Bank Name */}
+                  <div className="w-full">
+                    <label className="hr-label">
                       Bank Name <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          {/* <HiBuildingOffice2 size={20} /> */}
-                          <CiBank className="icon" />
-                        </span>
-                      </div>
+                    <div className="relative group">
+                      <IconWrapper icon={CiBank} />
                       <input
                         type="text"
-                        name="productId"
-                        id="productId"
+                        className="hr-input"
+                        placeholder="Enter Bank Name"
                         value={bankName}
-                        className={
-                          error.bankNameError
-                            ? "stdInputField"
-                            : "stdInputField"
-                          // ? "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                          // : "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        }
-                        placeholder="Bank Name"
                         onChange={(e) => {
                           setBankName(e.target.value.trim());
-                          setError((prevState) => ({
-                            ...prevState,
-                            bankNameError: "",
-                          }));
+                          setError((prevState) => ({ ...prevState, bankNameError: "" }));
                         }}
-                        // value={bankName_id ? `${bankName_id}|${bankName}` : ""}
-                        // value={centerName}
-                        // onChange={(e) => {
-                        //   const [bankName_id, bankName] =
-                        //     e.target.value.split("|");
-                        //   setBankName(bankName);
-                        //   setBankName_id(bankName_id);
-                        //   setError((prevState) => ({
-                        //     ...prevState,
-                        //     bankNameError: "",
-                        //   }));
-                        // }}
                       />
                     </div>
-                    <div
-                      className="text-red-500 "
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      {error.bankNameError}
-                    </div>
+                    {error.bankNameError && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{error.bankNameError}</p>
+                    )}
                   </div>
-                  <div className="flex-1 me-2 my-2 lg:my-0">
-                    <label
-                      htmlFor="productId"
-                      // className="block text-sm font-medium leading-6 text-gray-900"
-                      className="inputLabel"
-                    >
+
+                  {/* Branch */}
+                  <div className="w-full">
+                    <label className="hr-label">
                       Branch <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          {/* <HiBuildingOffice2 size={20} /> */}
-                          <CiBank className="icon" />
-                        </span>
-                      </div>
+                    <div className="relative group">
+                      <IconWrapper icon={CiBank} />
                       <input
                         type="text"
-                        name="productId"
+                        className="hr-input"
+                        placeholder="Enter Branch Name"
                         value={branchName}
-                        id="productId"
-                        className={
-                          error.branchNameError
-                            ? "stdInputField"
-                            : "stdInputField"
-                          // ? "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                          // : "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        }
-                        placeholder="Branch Name"
                         onChange={(e) => {
                           setBranchName(e.target.value.trim());
-                          setError((prevState) => ({
-                            ...prevState,
-                            branchNameError: "",
-                          }));
+                          setError((prevState) => ({ ...prevState, branchNameError: "" }));
                         }}
-                        // value={
-                        //   branchName_id ? `${branchName_id}|${branchName}` : ""
-                        // }
-                        // value={centerName}
-                        // onChange={(e) => {
-                        //   const [branchName_id, branchName] =
-                        //     e.target.value.split("|");
-                        //   setBranchName(branchName);
-                        //   setBranchName_id(branchName_id);
-                        //   setError((prevState) => ({
-                        //     ...prevState,
-                        //     branchNameError: "",
-                        //   }));
-                        // }}
                       />
                     </div>
-                    <div
-                      className="text-red-500 "
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      {error.branchNameError}
-                    </div>
+                    {error.branchNameError && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{error.branchNameError}</p>
+                    )}
                   </div>
-                  <div className="flex-1 me-2 my-2 lg:my-0">
-                    <label htmlFor="productId" className="inputLabel">
+
+                  {/* IFSC Code */}
+                  <div className="w-full">
+                    <label className="hr-label">
                       IFSC Code <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          <CiBank className="icon" />
-                        </span>
-                      </div>
+                    <div className="relative group">
+                      <IconWrapper icon={CiBank} />
                       <input
                         type="text"
-                        name="productId"
-                        id="productId"
+                        className="hr-input"
                         maxLength={11}
+                        placeholder="e.g. PQRS0473456"
                         value={ifscCode}
-                        className={
-                          error.ifscCodeError
-                            ? "stdInputField"
-                            : "stdInputField"
-                        }
-                        placeholder="e.g.PQRS0473456"
                         onChange={(e) => {
                           setIfscCode(e.target.value.trim());
-                          setError((prevState) => ({
-                            ...prevState,
-                            ifscCodeError: "",
-                          }));
+                          setError((prevState) => ({ ...prevState, ifscCodeError: "" }));
                         }}
                       />
                     </div>
-                    <div
-                      className="text-red-500 "
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      {error?.ifscCodeError}
-                    </div>
+                    {error.ifscCodeError && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{error.ifscCodeError}</p>
+                    )}
                   </div>
-                  <div className="flex-1 my-2 lg:my-0">
-                    <label
-                      htmlFor="productId"
-                      // className="block text-sm font-medium leading-6 text-gray-900"
-                      className="inputLabel"
-                    >
+
+                  {/* Account Number */}
+                  <div className="w-full">
+                    <label className="hr-label">
                       Account Number <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                          {/* <HiBuildingOffice2 size={20} /> */}
-                          <CiBank className="icon" />
-                        </span>
-                      </div>
+                    <div className="relative group">
+                      <IconWrapper icon={CiBank} />
                       <input
                         type="text"
-                        name="productId"
-                        id="productId"
+                        className="hr-input"
                         minLength={8}
                         maxLength={18}
+                        placeholder="Enter Account Number"
                         value={bankAccountNumber}
-                        className={
-                          error.bankAccountNumberError
-                            ? "stdInputField"
-                            : "stdInputField"
-                          // ? "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                          // : "block rounded-md border-0 py-1.5 pl-12 w-full text-gray-900 ring-1 ring-inset ring-gray-300 placeholder-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        }
-                        placeholder="Account Number"
                         onChange={(e) => {
                           setBankAccountNumber(e.target.value.trim());
-                          setError((prevState) => ({
-                            ...prevState,
-                            bankAccountNumberError: "",
-                          }));
+                          setError((prevState) => ({ ...prevState, bankAccountNumberError: "" }));
                         }}
-                        // value={
-                        //   bankAccountNumber_id
-                        //     ? `${bankAccountNumber_id}|${bankAccountNumber}`
-                        //     : ""
-                        // }
-                        // value={centerName}
-                        // onChange={(e) => {
-                        //   const [bankAccountNumber_id, bankAccountNumber] =
-                        //     e.target.value.split("|");
-                        //   setBankAccountNumber(bankAccountNumber);
-                        //   setBankAccountNumber_id(bankAccountNumber_id);
-                        //   setError((prevState) => ({
-                        //     ...prevState,
-                        //     bankAccountNumberError: "",
-                        //   }));
-                        // }}
                       />
                     </div>
-                    <div
-                      className="text-red-500 "
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      {error.bankAccountNumberError}
-                    </div>
+                    {error.bankAccountNumberError && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">{error.bankAccountNumberError}</p>
+                    )}
                   </div>
-                </div>
-                <div className="flex-1 my-2 lg:my-4">
-                  <label
-                    htmlFor="productId"
-                    // className="block text-sm font-medium leading-6 text-gray-900"
-                    className="inputLabel"
-                  >
-                    Project Remark
-                  </label>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-                        <IoPersonCircleOutline className="icon" />
-                      </span>
-                    </div>
-                    <input
-                      type="text"
-                      name="productId"
-                      id="productId"
-                      value={projectRemark}
-                      className="stdInputField"
-                      placeholder="Project Remark"
-                      onChange={(e) => {
-                        setProjectRemark(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="">
-              <div className="flex justify-end mb-6 mt-6">
-                <button
-                  type="submit"
-                  onClick={handleSubmit}
-                  className="formButtons"
-                  // className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 lg:py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800 dark:text-white"
-                  style={{ transition: "background-color 0.3s" }} // Adding transition for smoother theme change
-                >
-                  {loading2 && params._id ? (
-                    <span>
-                      Update
-                      <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                    </span>
-                  ) : loading2 ? (
-                    <span>
-                      Submit
-                      <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                    </span>
-                  ) : (
-                    button
-                  )}
-                </button>
-              </div>
-            </div>
 
-            <div className=" border-b-1 border-gray-300 "></div>
+                  {/* Project Remark */}
+                  <div className="lg:col-span-2">
+                    <label className="hr-label">Project Remark</label>
+                    <div className="relative group">
+                      <IconWrapper icon={IoPersonCircleOutline} />
+                      <input
+                        type="text"
+                        className="hr-input"
+                        placeholder="Enter Project Remark"
+                        value={projectRemark}
+                        onChange={(e) => setProjectRemark(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-10 flex justify-end">
+                  <button
+                    type="submit"
+                    className="hr-btn-primary min-w-[140px]"
+                  >
+                    {loading2 ? (
+                      <span className="flex items-center gap-2 text-white">
+                        Processing <FaSpinner className="animate-spin" />
+                      </span>
+                    ) : (
+                      params._id ? "Update Changes" : "Save Record"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
