@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaSearch, FaFileImport, FaCog } from "react-icons/fa";
+import { Tooltip } from "flowbite-react";
+import { FaPlus, FaSearch, FaFileUpload } from "react-icons/fa";
+import { CiViewList } from "react-icons/ci";
 import {
   HiMapPin,
   HiGlobeAlt,
@@ -9,7 +11,6 @@ import {
 } from "react-icons/hi2";
 import HolidayCalendar from "@/components/admin/holiday/HolidayCalendar";
 import HolidayList from "@/components/admin/holiday/HolidayList";
-import BulkUploadModal from "@/components/admin/holiday/BulkUploadModal";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +20,6 @@ const Holidays = () => {
   const [loading, setLoading] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [showBulkModal, setShowBulkModal] = useState(false);
   const [currentYear, setCurrentYear] = useState(moment().year());
 
   const locations = ["All", "Global", "New York", "London", "Bangalore"];
@@ -55,19 +55,63 @@ const Holidays = () => {
   return (
     <div className="section p-6 md:p-10 bg-white min-h-screen">
       <div className="max-w-[1440px] mx-auto">
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                <span className="text-green-600">Holiday Management</span>
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Organizational <span className="text-green-600 font-black">Calendar</span>
+        <div className="box border-2 rounded-md shadow-md bg-white mb-8">
+          <div className="uppercase text-xl font-semibold border-b-2 border-gray-300 flex justify-between px-10">
+            <div className="flex items-center gap-3 py-5">
+              <h1 className="text-2xl text-gray-900 tracking-tight">
+                Holiday Master
               </h1>
             </div>
-            
-            <div className="flex items-center gap-3 mt-4 md:mt-0 mb-1">
-              <div className="relative w-64 group">
+            <div className="flex gap-3 my-5 items-center">
+              <Tooltip
+                content="Add Holiday"
+                placement="bottom"
+                className="bg-green"
+                arrow={false}
+              >
+                <FaPlus
+                  className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                  onClick={() => {
+                    router.push("/admin/holidays/add");
+                  }}
+                />
+              </Tooltip>
+              <Tooltip
+                content="Bulk Upload"
+                placement="bottom"
+                className="bg-green"
+                arrow={false}
+              >
+                <FaFileUpload
+                  className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                  onClick={() => {
+                    router.push("/admin/holidays/bulk-upload");
+                  }}
+                />
+              </Tooltip>
+              <Tooltip
+                content="Holiday Registry"
+                placement="bottom"
+                className="bg-green"
+                arrow={false}
+              >
+                <CiViewList
+                  className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[1.5rem]"
+                  onClick={() => {
+                    router.push("/admin/holidays");
+                  }}
+                />
+              </Tooltip>
+            </div>
+          </div>
+
+          <div className="px-10 py-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-slate-500 font-medium max-w-xl text-[11px] leading-relaxed">
+                Configure organizational holidays, location-based calendars, and
+                regional time-off policies with real-time tracking and planning.
+              </p>
+              <div className="relative w-72 group">
                 <FaSearch
                   className="absolute left-4 top-3.5 text-slate-300 group-focus-within:text-green-500 transition-colors"
                   size={14}
@@ -80,24 +124,8 @@ const Holidays = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <button
-                onClick={() => setShowBulkModal(true)}
-                className="p-3.5 bg-white text-slate-400 rounded-2xl border border-slate-100 hover:text-green-600 hover:border-green-100 hover:bg-green-50 transition-all shadow-sm active:scale-95"
-                title="Bulk Import"
-              >
-                <FaFileImport size={16} />
-              </button>
-              <button
-                onClick={() => router.push("/admin/holidays/add")}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-[0.2em] text-[10px]"
-              >
-                <FaPlus size={12} /> Add Holiday
-              </button>
             </div>
           </div>
-          <p className="text-slate-500 font-medium max-w-xl text-[11px] leading-relaxed mt-3 pl-1">
-            Configure organizational holidays, location-based calendars, and regional time-off policies with real-time tracking and planning.
-          </p>
         </div>
 
       <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
@@ -159,15 +187,7 @@ const Holidays = () => {
         </div>
       </div>
 
-      {showBulkModal && (
-        <BulkUploadModal
-          onClose={() => setShowBulkModal(false)}
-          onSuccess={() => {
-            setShowBulkModal(false);
-            fetchHolidays();
-          }}
-        />
-      )}
+
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;

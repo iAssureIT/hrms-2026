@@ -26,6 +26,10 @@ const holidaySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
     },
+    fileName: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
