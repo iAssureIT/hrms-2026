@@ -34,28 +34,39 @@ const MetricCard = ({
   <div
     onClick={onClick}
     className={`relative overflow-hidden rounded-3xl transition-all duration-500 cursor-pointer group h-[120px] p-[1.5px]
-            ${isActive
-        ? `${activeGradient} shadow-xl scale-[1.02]`
-        : "bg-gradient-to-br from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400 hover:scale-[1.02] shadow-sm active:scale-95"
-      }`}
+            ${
+              isActive
+                ? `${activeGradient} shadow-xl scale-[1.02]`
+                : "bg-gradient-to-br from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400 hover:scale-[1.02] shadow-sm active:scale-95"
+            }`}
   >
-    <div className={`w-full h-full rounded-[22px] p-5 relative overflow-hidden transition-colors duration-500 ${isActive ? "bg-white/95" : "bg-white"}`}>
+    <div
+      className={`w-full h-full rounded-[22px] p-5 relative overflow-hidden transition-colors duration-500 ${isActive ? "bg-white/95" : "bg-white"}`}
+    >
       {/* Subtle Background Icon */}
-      <div className={`absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 transform group-hover:scale-110 group-hover:-rotate-12 ${secondaryColor}`}>
+      <div
+        className={`absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 transform group-hover:scale-110 group-hover:-rotate-12 ${secondaryColor}`}
+      >
         <Icon size={140} />
       </div>
 
       <div className="flex justify-between items-start relative z-10">
         <div className="space-y-4">
-          <span className={`text-[10px] font-extrabold uppercase tracking-[0.2em] block transition-colors duration-300 ${isActive ? activeTextColor : "text-slate-400"}`}>
+          <span
+            className={`text-[10px] font-extrabold uppercase tracking-[0.2em] block transition-colors duration-300 ${isActive ? activeTextColor : "text-slate-400"}`}
+          >
             {title}
           </span>
           <h3 className="text-3xl font-black text-slate-800 tracking-tighter items-baseline flex gap-1">
             {value}
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{value > 1 ? "Tickets" : "Ticket"}</span>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              {value > 1 ? "Tickets" : "Ticket"}
+            </span>
           </h3>
         </div>
-        <div className={`p-3.5 rounded-2xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${gradient} text-white`}>
+        <div
+          className={`p-3.5 rounded-2xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${gradient} text-white`}
+        >
           <Icon size={24} />
         </div>
       </div>
@@ -63,8 +74,12 @@ const MetricCard = ({
       {/* Active Indicator Pulse */}
       {isActive && (
         <div className="absolute top-3 right-3 flex h-2 w-2">
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${activeIndicator} opacity-75`}></span>
-          <span className={`relative inline-flex rounded-full h-2 w-2 ${activeIndicator} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}></span>
+          <span
+            className={`animate-ping absolute inline-flex h-full w-full rounded-full ${activeIndicator} opacity-75`}
+          ></span>
+          <span
+            className={`relative inline-flex rounded-full h-2 w-2 ${activeIndicator} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
+          ></span>
         </div>
       )}
     </div>

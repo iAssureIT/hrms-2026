@@ -2,6 +2,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaPlus, FaSearch, FaFileImport, FaCog } from "react-icons/fa";
+import {
+  HiMapPin,
+  HiGlobeAlt,
+  HiBuildingOffice2,
+} from "react-icons/hi2";
 import HolidayCalendar from "@/components/admin/holiday/HolidayCalendar";
 import HolidayList from "@/components/admin/holiday/HolidayList";
 import BulkUploadModal from "@/components/admin/holiday/BulkUploadModal";
@@ -95,25 +100,50 @@ const Holidays = () => {
           </p>
         </div>
 
-      {/* Location Filter Tabs */}
       <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-        {locations.map((loc) => (
-          <button
-            key={loc}
-            onClick={() => setSelectedLocation(loc)}
-            className={`px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border ${
-              selectedLocation === loc
-                ? "bg-green-600 text-white border-green-600 shadow-green-500/20"
-                : "bg-white text-gray-500 border-transparent hover:border-gray-200"
-            }`}
-          >
-            {loc === "All"
-              ? "📍 All Locations"
-              : loc === "Global"
-                ? "🌍 Global"
-                : `🏙️ ${loc}`}
-          </button>
-        ))}
+        {locations.map((loc) => {
+          const icon =
+            loc === "All" ? (
+              <span className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                selectedLocation === loc
+                  ? "bg-white/20 text-white"
+                  : "bg-green-100 text-green-600"
+              }`}>
+                <HiMapPin size={14} />
+              </span>
+            ) : loc === "Global" ? (
+              <span className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                selectedLocation === loc
+                  ? "bg-white/20 text-white"
+                  : "bg-slate-100 text-slate-500"
+              }`}>
+                <HiGlobeAlt size={14} />
+              </span>
+            ) : (
+              <span className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                selectedLocation === loc
+                  ? "bg-white/20 text-white"
+                  : "bg-slate-100 text-slate-500"
+              }`}>
+                <HiBuildingOffice2 size={14} />
+              </span>
+            );
+
+          return (
+            <button
+              key={loc}
+              onClick={() => setSelectedLocation(loc)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border ${
+                selectedLocation === loc
+                  ? "bg-green-600 text-white border-green-600 shadow-green-500/20"
+                  : "bg-white text-gray-500 border-transparent hover:border-gray-200"
+              }`}
+            >
+              {icon}
+              {loc === "All" ? "All Locations" : loc}
+            </button>
+          );
+        })}
       </div>
 
       {/* Main Grid Layout */}

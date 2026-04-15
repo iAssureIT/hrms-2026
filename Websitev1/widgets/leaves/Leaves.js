@@ -1,22 +1,26 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaFilter, FaCheck, FaTimes } from "react-icons/fa";
+import { FaPlus, FaFilter, FaCheck, FaTimes, FaFileUpload } from "react-icons/fa";
 import { MdHistory, MdFilterList } from "react-icons/md";
 import moment from "moment";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const Leaves = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  const [loggedInRole, setLoggedInRole] = React.useState("admin");
   const [activeTab, setActiveTab] = useState("Pending Requests");
   const [leaves, setLeaves] = useState([]);
   const [ledger, setLedger] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (pathname?.includes("admin")) setLoggedInRole("admin");
+    else if (pathname?.includes("center")) setLoggedInRole("center");
     fetchLeaves();
     fetchLedger();
-  }, []);
+  }, [pathname]);
 
   const fetchLeaves = async () => {
     try {
@@ -77,9 +81,15 @@ const Leaves = () => {
               </h1>
             </div>
             
-            <div className="flex items-center gap-4 mt-6 md:mt-0 mb-1">
+            <div className="flex items-center gap-3 mt-6 md:mt-0 mb-1">
               <button
-                onClick={() => router.push("/admin/leaves/apply")}
+                onClick={() => router.push(`/${loggedInRole}/leaves/bulk-upload`)}
+                className="flex items-center gap-3 bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-100 hover:border-slate-200 px-6 py-3.5 rounded-2xl shadow-sm transition-all active:scale-95 font-black uppercase tracking-[0.2em] text-[10px]"
+              >
+                <FaFileUpload size={12} /> Bulk Upload
+              </button>
+              <button
+                onClick={() => router.push(`/${loggedInRole}/leaves/apply`)}
                 className="flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-8 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-[0.2em] text-[10px]"
               >
                 <FaPlus size={12} /> Apply Leave
