@@ -172,17 +172,6 @@ const SettingsPage = () => {
                                 );
                             })}
                             
-                            {/* Support Card */}
-                            <div className="mt-8 p-6 bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2.5rem] border border-slate-700 shadow-2xl overflow-hidden relative group">
-                                <div className="absolute -right-4 -bottom-4 text-white/5 rotate-12 group-hover:scale-110 transition-transform duration-700">
-                                    <MdSettings size={120} />
-                                </div>
-                                <h4 className="text-white text-sm font-black relative z-10">VeriTime Support</h4>
-                                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-1 relative z-10">Need help? Contact our HR Tech team.</p>
-                                <button className="mt-4 w-full py-2 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl border border-white/10 transition-all relative z-10">
-                                    Open Ticket
-                                </button>
-                            </div>
                         </nav>
                     </aside>
 

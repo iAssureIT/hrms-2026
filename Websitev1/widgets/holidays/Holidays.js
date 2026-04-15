@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaPlus, FaSearch, FaFileImport, FaCog } from "react-icons/fa";
 import HolidayCalendar from "@/components/admin/holiday/HolidayCalendar";
 import HolidayList from "@/components/admin/holiday/HolidayList";
+import BulkUploadModal from "@/components/admin/holiday/BulkUploadModal";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 

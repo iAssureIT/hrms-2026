@@ -3,12 +3,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaPlus, FaFilter, FaCheck, FaTimes } from "react-icons/fa";
 import { MdHistory, MdFilterList } from "react-icons/md";
-import ApplyLeaveModal from "@/components/admin/leaves/ApplyLeaveModal";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 const Leaves = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("Pending Requests");
-  const [showApplyModal, setShowApplyModal] = useState(false);
   const [leaves, setLeaves] = useState([]);
   const [ledger, setLedger] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,8 +78,8 @@ const Leaves = () => {
             </div>
             
             <div className="flex items-center gap-4 mt-6 md:mt-0 mb-1">
-               <button
-                onClick={() => setShowApplyModal(true)}
+              <button
+                onClick={() => router.push("/admin/leaves/apply")}
                 className="flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-8 py-3.5 rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-95 font-black uppercase tracking-[0.2em] text-[10px]"
               >
                 <FaPlus size={12} /> Apply Leave
@@ -267,15 +267,6 @@ const Leaves = () => {
             </tbody>
           </table>
         </div>
-        {showApplyModal && (
-          <ApplyLeaveModal
-            onClose={() => setShowApplyModal(false)}
-            onSuccess={() => {
-              setShowApplyModal(false);
-              fetchLeaves();
-            }}
-          />
-        )}
       </div>
     </div>
   </main>

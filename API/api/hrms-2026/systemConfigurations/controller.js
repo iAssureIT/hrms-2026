@@ -18,23 +18,53 @@ exports.getSettings = async (req, res) => {
 exports.updateSettings = async (req, res) => {
     try {
         const updateData = req.body;
+        
+        // Exclude internal MongoDB fields from the update payload
+        const clean = (obj) => {
+            if (!obj || typeof obj !== 'object') return obj;
+            const newObj = { ...obj };
+            delete newObj._id;
+            delete newObj.__v;
+            delete newObj.createdAt;
+            delete newObj.updatedAt;
+            return newObj;
+        };
+
         let settings = await SystemConfiguration.findOne();
         
         if (!settings) {
-            settings = new SystemConfiguration(updateData);
+            settings = new SystemConfiguration(clean(updateData));
         } else {
-            // Deep merge or specific section merge
-            if (updateData.attendance) settings.attendance = { ...settings.attendance.toObject(), ...updateData.attendance };
-            if (updateData.leave) settings.leave = { ...settings.leave.toObject(), ...updateData.leave };
-            if (updateData.payroll) settings.payroll = { ...settings.payroll.toObject(), ...updateData.payroll };
-            if (updateData.notifications) settings.notifications = { ...settings.notifications.toObject(), ...updateData.notifications };
-            if (updateData.general) settings.general = { ...settings.general.toObject(), ...updateData.general };
-            settings.updatedBy = req.body.updatedBy || settings.updatedBy;
+            // Safely merge sections if they exist in the update payload
+            const sections = ['attendance', 'leave', 'payroll', 'notifications', 'general'];
+            
+            sections.forEach(section => {
+                if (updateData[section]) {
+                    const currentSectionData = settings[section] 
+                        ? (settings[section].toObject ? settings[section].toObject() : settings[section]) 
+                        : {};
+                    
+                    // Merge existing data with incoming updates, cleaning internal fields
+                    settings[section] = { 
+                        ...currentSectionData, 
+                        ...clean(updateData[section]) 
+                    };
+                }
+            });
+
+            if (updateData.updatedBy) {
+                settings.updatedBy = updateData.updatedBy;
+            }
         }
 
         await settings.save();
         res.status(200).json({ message: "Settings updated successfully", settings });
     } catch (error) {
-        res.status(500).json({ message: "Error updating settings", error: error.message });
+        console.error("SYSTEM_SETTINGS_UPDATE_ERROR:", error);
+        res.status(500).json({ 
+            message: "Error updating settings", 
+            error: error.message,
+            details: error.name === 'ValidationError' ? error.errors : undefined
+        });
     }
 };
