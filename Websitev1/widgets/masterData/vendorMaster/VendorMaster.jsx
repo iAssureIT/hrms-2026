@@ -1255,6 +1255,7 @@ import {
 import S3FileUpload from "react-s3";
 import { Buffer } from "buffer";
 import { MdFileUpload, MdPictureAsPdf, MdImage, MdClose } from "react-icons/md";
+import { CiBank, CiViewList } from "react-icons/ci";
 // === Asset Management Style Helpers ===
 const SectionHeader = ({ title, subtitle }) => (
     <div className="mb-5 border-b border-gray-100 pb-2">
@@ -1271,7 +1272,7 @@ const IconWrapper = ({ icon: Icon }) => (
     </div>
 );
 
-export default function VendorFormPage() {
+const initialState = {
     vendorStatus: "Active",
     vendorInfo: {
         nameOfCompany: "",
@@ -1872,9 +1873,9 @@ export default function VendorFormPage() {
                     <form onSubmit={handleSubmit} className="space-y-10 mt-6">
                         {/* ================= VENDOR INFO ================= */}
                         <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2">
-                            <SectionHeader 
-                                title="Vendor Information" 
-                                subtitle="Core company details and categorization for the vendor." 
+                            <SectionHeader
+                                title="Vendor Information"
+                                subtitle="Core company details and categorization for the vendor."
                             />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
@@ -2004,17 +2005,14 @@ export default function VendorFormPage() {
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-            </div>
 
-                    <div className="border-b-2 mx-6"></div>
+                        <div className="border-b-2 mx-6"></div>
 
                         {/* ================= CONTACT PERSON DETAILS ================= */}
                         <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader 
-                                title="Contact Person Details" 
-                                subtitle="Information of the primary contact person for this vendor." 
+                            <SectionHeader
+                                title="Contact Person Details"
+                                subtitle="Information of the primary contact person for this vendor."
                             />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-6">
@@ -2092,9 +2090,9 @@ export default function VendorFormPage() {
 
                         {/* ================= BANK DETAILS ================= */}
                         <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader 
-                                title="Bank Details" 
-                                subtitle="Payment and banking information for vendor settlements." 
+                            <SectionHeader
+                                title="Bank Details"
+                                subtitle="Payment and banking information for vendor settlements."
                             />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
@@ -2209,9 +2207,9 @@ export default function VendorFormPage() {
 
                         {/* ================= ADDRESS DETAILS ================= */}
                         <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader 
-                                title="Address Details" 
-                                subtitle="Physical location and mailing address of the vendor." 
+                            <SectionHeader
+                                title="Address Details"
+                                subtitle="Physical location and mailing address of the vendor."
                             />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
@@ -2323,9 +2321,9 @@ export default function VendorFormPage() {
 
                         {/* file upload section */}
                         <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader 
-                                title="Document Upload" 
-                                subtitle="Upload supporting vendor documents (PDF, PNG, JPG)." 
+                            <SectionHeader
+                                title="Document Upload"
+                                subtitle="Upload supporting vendor documents (PDF, PNG, JPG)."
                             />
 
                             <div className="flex flex-col lg:flex-row gap-8">
@@ -2342,7 +2340,7 @@ export default function VendorFormPage() {
                                     </div>
                                     <p className="text-[14px] font-bold text-slate-700 text-center">Drag & drop files here</p>
                                     <p className="text-[12px] text-slate-400 mt-1 mb-6 text-center">or click to browse from computer</p>
-                                    
+
                                     <button
                                         type="button"
                                         className="px-6 py-2 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-600 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all font-sans"
@@ -2412,6 +2410,7 @@ export default function VendorFormPage() {
                         </div>
                     </form>
 
+                </div>
             </div>
 
             {/* Small utility styles */}
