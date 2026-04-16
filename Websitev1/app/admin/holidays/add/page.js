@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { MdEventAvailable, MdSave, MdRefresh } from "react-icons/md";
+import { HiMapPin, HiGlobeAlt, HiBuildingOffice2 } from "react-icons/hi2";
 
 const AddHolidayPage = () => {
   const router = useRouter();
@@ -16,14 +17,50 @@ const AddHolidayPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const availableLocations = ["Global", "New York", "London", "Bangalore", "Chicago", "Dubai"];
+  const [availableLocations, setAvailableLocations] = useState(["All", "Global"]);
+
+  useEffect(() => {
+    fetchLocations();
+  }, []);
+
+  const fetchLocations = async () => {
+    try {
+      const res = await axios.get("/api/centers/list");
+      if (res.data) {
+        setAvailableLocations(["All", "Global", ...res.data.map((c) => c.centerName)]);
+      }
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
 
   const handleLocationChange = (loc) => {
     let updatedLocations = [...formData.locations];
-    if (updatedLocations.includes(loc)) {
-      updatedLocations = updatedLocations.filter((l) => l !== loc);
+    
+    if (loc === "All") {
+      // If "All" is selected, it replaces all other specifically named centers/locations
+      // BUT "Global" is separate, so we'll decide if All includes Global. 
+      // Usually "All Locations" filter includes everything.
+      if (updatedLocations.includes("All")) {
+        updatedLocations = [];
+      } else {
+        updatedLocations = ["All"];
+      }
+    } else if (loc === "Global") {
+      if (updatedLocations.includes("Global")) {
+        updatedLocations = updatedLocations.filter(l => l !== "Global");
+      } else {
+        updatedLocations.push("Global");
+      }
     } else {
-      updatedLocations.push(loc);
+      // It's a specific center
+      if (updatedLocations.includes(loc)) {
+        updatedLocations = updatedLocations.filter((l) => l !== loc);
+      } else {
+        // If we add a specific city, clear "All" if it was there
+        updatedLocations = updatedLocations.filter(l => l !== "All");
+        updatedLocations.push(loc);
+      }
     }
     setFormData({ ...formData, locations: updatedLocations });
   };
@@ -136,31 +173,36 @@ const AddHolidayPage = () => {
               <div>
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Applicable Locations</label>
                 <div className="grid grid-cols-2 gap-3">
-                  {availableLocations.map((loc) => (
-                    <button
-                      key={loc}
-                      type="button"
-                      onClick={() => handleLocationChange(loc)}
-                      className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
-                        formData.locations.includes(loc) 
-                          ? "bg-green-600 border-green-600 text-white shadow-lg shadow-green-500/20" 
-                          : "bg-slate-50 border-transparent text-slate-600 hover:border-slate-200"
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded-lg flex items-center justify-center transition-all ${
-                        formData.locations.includes(loc) ? "bg-white text-green-600" : "bg-white border-2 border-slate-200"
-                      }`}>
-                        {formData.locations.includes(loc) && (
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="text-xs font-black uppercase tracking-wider">
-                        {loc === "Global" ? "Global (All)" : loc}
-                      </span>
-                    </button>
-                  ))}
+                  {availableLocations.map((loc) => {
+                    const icon = loc === "All" ? <HiMapPin size={14}/> : loc === "Global" ? <HiGlobeAlt size={14}/> : <HiBuildingOffice2 size={14}/>;
+                    return (
+                      <button
+                        key={loc}
+                        type="button"
+                        onClick={() => handleLocationChange(loc)}
+                        className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
+                          formData.locations.includes(loc) 
+                            ? "bg-green-600 border-green-600 text-white shadow-lg shadow-green-500/20" 
+                            : "bg-slate-50 border-transparent text-slate-600 hover:border-slate-200"
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded-lg flex items-center justify-center transition-all ${
+                          formData.locations.includes(loc) ? "bg-white text-green-600" : "bg-white border-2 border-slate-200"
+                        }`}>
+                          {formData.locations.includes(loc) ? (
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <span className="text-slate-300">{icon}</span>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-wider">
+                          {loc === "All" ? "All Locations" : loc}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
                 <p className="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select one or more regions affected by this holiday.</p>
               </div>

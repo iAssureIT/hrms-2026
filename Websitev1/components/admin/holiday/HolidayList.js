@@ -34,9 +34,9 @@ const HolidayList = ({ holidays, loading }) => {
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {h.locations?.map((loc, idx) => (
                       <span key={idx} className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-colors ${
-                        loc === "Global" ? "bg-green-50 text-green-600 border-green-100" : "bg-slate-100 text-slate-500 border-slate-200"
+                        loc === "Global" || loc === "All" ? "bg-green-50 text-green-600 border-green-100" : "bg-slate-100 text-slate-500 border-slate-200"
                       }`}>
-                        {loc}
+                        {loc === "All" ? "All Locations" : loc}
                       </span>
                     ))}
                     {h.type === "Optional" && (

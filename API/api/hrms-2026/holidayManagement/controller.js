@@ -33,7 +33,7 @@ exports.getHolidays = async (req, res) => {
       if (location === "Global") {
         query.locations = { $in: [/^Global$/i] };
       } else {
-        query.locations = { $in: [new RegExp(`^${location}$`, "i"), /^Global$/i] };
+        query.locations = { $in: [new RegExp(`^${location}$`, "i"), /^Global$/i, /^All$/i] };
       }
     }
 
@@ -79,6 +79,10 @@ exports.bulkUploadHolidays = async (req, res) => {
     const invalidData = [];
 
     for (let row of excelData) {
+      // Skip completely empty rows
+      const isEmpty = !row.holidayName && !row.date && !row.location;
+      if (isEmpty) continue;
+
       let remark = "";
 
       // Mandatory field checks
@@ -91,22 +95,34 @@ exports.bulkUploadHolidays = async (req, res) => {
         continue;
       }
 
-      // Parse date — support DD/MM/YYYY and YYYY-MM-DD
-      let parsedDate = moment(row.date, ["DD/MM/YYYY", "YYYY-MM-DD", "MM/DD/YYYY"], true);
+      // Parse date — support flexible formats like 17/4/2026 or 2026-04-17
+      let parsedDate = moment(row.date, ["DD/MM/YYYY", "D/M/YYYY", "YYYY-MM-DD", "MM/DD/YYYY"], false);
+      
+      // If still invalid, try standard moment parsing (handles Date objects and numeric serials)
       if (!parsedDate.isValid()) {
         parsedDate = moment(row.date);
       }
+
       if (!parsedDate.isValid()) {
-        invalidData.push({ ...row, failedRemark: `Invalid date format: '${row.date}'. Use DD/MM/YYYY or YYYY-MM-DD` });
+        invalidData.push({ 
+          ...row, 
+          failedRemark: `Invalid date format: '${row.date}'. Please use DD/MM/YYYY or YYYY-MM-DD` 
+        });
         continue;
       }
 
       // Parse locations — comma-separated string or array
       let locations = [];
       if (Array.isArray(row.location)) {
-        locations = row.location.map((l) => l.trim()).filter(Boolean);
+        locations = row.location.map((l) => {
+          let trimmed = l.trim();
+          return trimmed === "All Locations" ? "All" : trimmed;
+        }).filter(Boolean);
       } else {
-        locations = row.location.toString().split(",").map((l) => l.trim()).filter(Boolean);
+        locations = row.location.toString().split(",").map((l) => {
+          let trimmed = l.trim();
+          return trimmed === "All Locations" ? "All" : trimmed;
+        }).filter(Boolean);
       }
 
       // Validate type
@@ -196,7 +212,7 @@ const syncAttendanceForHoliday = async (holiday) => {
     const holidayDate = moment(holiday.date).startOf("day").toDate();
     let employeeQuery = {};
 
-    if (!holiday.locations.includes("Global")) {
+    if (!holiday.locations.includes("Global") && !holiday.locations.includes("All")) {
       employeeQuery.subLocationName = { $in: holiday.locations };
     }
 
