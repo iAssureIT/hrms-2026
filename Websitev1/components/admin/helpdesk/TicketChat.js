@@ -117,7 +117,7 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-white shadow-[-4px_0_12px_rgba(0,0,0,0.02)] z-10">
+    <div className="flex-1 flex flex-col h-full bg-white border-t-[3px] border-[#3c8dbc] shadow-sm z-10">
       {/* Ticket Header */}
       <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-20">
         <div className="flex items-center gap-4">
@@ -139,21 +139,20 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
               <h3 className="font-bold text-slate-800 text-lg leading-tight truncate max-w-[200px] md:max-w-md">
                 {ticket.subject}
               </h3>
-              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
-                ticket.status === "Open" ? "bg-green-50 text-green-700 border-green-200" :
-                ticket.status === "In Progress" ? "bg-amber-50 text-amber-700 border-amber-200" :
-                "bg-slate-50 text-slate-500 border-slate-300 shadow-none"
+              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
+                ticket.status === "Open" ? "bg-[#00a65a]" :
+                ticket.status === "In Progress" ? "bg-[#f39c12]" :
+                "bg-gray-400"
               }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${ticket.status === "Open" ? "bg-green-600" : "bg-current opacity-40"}`}></span>
                 {ticket.status}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-1 font-semibold truncate">
-              <span className="uppercase">{ticket.ticketID}</span>
-              <span className="opacity-20">•</span>
+            <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-1 font-normal truncate">
+              <span className="font-bold text-[#3c8dbc] uppercase tracking-tight">{ticket.ticketID}</span>
+              <span className="opacity-20">|</span>
               <span className="truncate">{ticket.employeeId?.employeeName}</span>
-              <span className="opacity-20">•</span>
-              <span className="text-slate-400 font-bold">{ticket.category}</span>
+              <span className="opacity-20">|</span>
+              <span className="text-gray-400 font-bold">{ticket.category}</span>
             </div>
           </div>
         </div>
@@ -162,9 +161,9 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
             {ticket.status !== "Resolved" && ticket.status !== "Closed" && (
             <button
                 onClick={markResolved}
-                className="flex items-center gap-2 text-[11px] font-bold text-slate-700 bg-white border border-slate-200 px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+                className="flex items-center gap-2 text-[11px] font-bold text-gray-700 bg-white border border-gray-300 px-4 py-1.5 rounded-sm hover:bg-gray-50 transition-all shadow-sm active:scale-95"
             >
-                <FaCheckCircle className="text-green-500" size={14} /> Mark Resolved
+                <FaCheckCircle className="text-[#00a65a]" size={12} /> Mark Resolved
             </button>
             )}
             <button className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 transition-colors">
@@ -184,8 +183,8 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
                     <span className="text-sm font-bold text-slate-800">{ticket.employeeId?.employeeName}</span>
                     <span className="text-[11px] font-medium text-slate-400">{moment(ticket.createdAt).format("h:mm A, Today")}</span>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-none p-5 shadow-sm inline-block max-w-2xl">
-                    <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                <div className="bg-white border border-gray-200 rounded-sm p-4 shadow-sm inline-block max-w-2xl">
+                    <p className="text-xs text-gray-700 leading-relaxed font-normal">
                         {ticket.description}
                     </p>
                 </div>
@@ -203,10 +202,10 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
               <div className="flex items-center gap-2 px-1">
                  <span className="text-[11px] font-medium text-slate-400">{moment(msg.createdAt).format("h:mm A")}</span>
               </div>
-              <div className={`max-w-md p-4 rounded-2xl shadow-sm text-sm font-medium ${
+              <div className={`max-w-md p-4 rounded-sm shadow-sm text-xs font-normal ${
                 msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id 
-                ? "bg-green-600 text-white rounded-tr-none" 
-                : "bg-white border border-slate-200 text-slate-700 rounded-tl-none"
+                ? "bg-[#3c8dbc] text-white" 
+                : "bg-gray-100 border border-gray-200 text-gray-700"
               }`}>
                 {msg.message}
               </div>
@@ -218,8 +217,8 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
 
       {/* Reply Box */}
       {ticket.status !== "Closed" && (
-        <div className="p-5 md:p-6 bg-white border-t border-slate-100">
-          <form onSubmit={handleSendMessage} className="bg-slate-50 border border-slate-200 rounded-2xl focus-within:ring-4 focus-within:ring-green-500/5 focus-within:border-green-500/30 transition-all overflow-hidden">
+        <div className="p-4 bg-white border-t border-gray-100">
+          <form onSubmit={handleSendMessage} className="bg-gray-50 border border-gray-200 rounded-sm overflow-hidden">
             <textarea
               className="w-full bg-transparent p-5 text-sm text-slate-700 placeholder:text-slate-400 outline-none resize-none min-h-[80px] font-medium"
               placeholder="Type your response here..."
@@ -266,9 +265,9 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
                 <button
                     type="submit"
                     disabled={loading || !newMessage.trim()}
-                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all disabled:opacity-50 active:scale-95 shadow-lg shadow-green-600/20"
+                    className="flex items-center gap-2 bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm text-xs font-normal transition-all disabled:opacity-50 active:scale-95 shadow-sm"
                 >
-                    <FaPaperPlane size={14} /> 
+                    <FaPaperPlane size={12} /> 
                     {loading ? "Sending..." : "Send"}
                 </button>
             </div>

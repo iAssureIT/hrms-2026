@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { MdEventAvailable, MdSave, MdRefresh } from "react-icons/md";
+import { FaHome, FaSave, FaArrowLeft } from "react-icons/fa";
 import { HiMapPin, HiGlobeAlt, HiBuildingOffice2 } from "react-icons/hi2";
 
 const AddHolidayPage = () => {
@@ -38,9 +38,6 @@ const AddHolidayPage = () => {
     let updatedLocations = [...formData.locations];
     
     if (loc === "All") {
-      // If "All" is selected, it replaces all other specifically named centers/locations
-      // BUT "Global" is separate, so we'll decide if All includes Global. 
-      // Usually "All Locations" filter includes everything.
       if (updatedLocations.includes("All")) {
         updatedLocations = [];
       } else {
@@ -53,11 +50,9 @@ const AddHolidayPage = () => {
         updatedLocations.push("Global");
       }
     } else {
-      // It's a specific center
       if (updatedLocations.includes(loc)) {
         updatedLocations = updatedLocations.filter((l) => l !== loc);
       } else {
-        // If we add a specific city, clear "All" if it was there
         updatedLocations = updatedLocations.filter(l => l !== "All");
         updatedLocations.push(loc);
       }
@@ -95,69 +90,69 @@ const AddHolidayPage = () => {
   };
 
   return (
-    <main className="section p-6 md:p-10 bg-white min-h-screen">
-      <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         
-        {/* Header Section */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 pb-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-              <span className="text-green-600">Holiday Management</span>
-            </div>
-            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-              Add New <span className="text-green-600 font-black">Holiday</span>
-            </h1>
+        {/* AdminLTE style Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Add Holiday</h1>
+            <span className="text-sm font-light text-gray-500">Control panel</span>
           </div>
+          <div className="flex items-center gap-2 text-xs font-normal text-gray-700 mt-4 md:mt-0">
+            <FaHome className="text-gray-400" />
+            <span>Home</span>
+            <span className="text-gray-400">&gt;</span>
+            <span>Holidays</span>
+            <span className="text-gray-400">&gt;</span>
+            <span className="text-gray-400">Add</span>
+          </div>
+        </div>
 
-          <div className="flex items-center gap-3 md:mb-1">
+        {/* Form Box */}
+        <div className="bg-white border-t-[3px] border-[#3c8dbc] shadow-sm mb-6 rounded-sm">
+          <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+            <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">New Holiday Definition</h3>
             <button 
               onClick={() => router.push("/admin/holidays")}
-              className="flex items-center gap-2 px-6 py-3 bg-white text-slate-500 border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-slate-300 hover:text-slate-700 transition-all active:scale-95 shadow-sm"
+              className="text-xs text-gray-500 hover:text-gray-700 font-bold flex items-center gap-1"
             >
-              <MdRefresh size={14} /> Back to Calendar
+              <FaArrowLeft size={10} /> Back
             </button>
           </div>
-        </header>
 
-        <p className="text-slate-500 font-medium max-w-xl text-[11px] leading-relaxed -mt-6 pl-1">
-          Create a new organizational holiday entry. Define the date, type, and specify which global regions are affected.
-        </p>
-
-        {/* Form Section */}
-        <div className="bg-white rounded-[2.5rem] border-2 border-slate-50 shadow-sm overflow-hidden p-8 lg:p-14 relative transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/20">
-          <form onSubmit={handleSubmit} className="space-y-10 relative z-10">
-            
-            <div className="grid md:grid-cols-2 gap-10">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <div className="grid md:grid-cols-2 gap-8">
               {/* Left Column */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div>
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 block">Holiday Name</label>
+                  <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">Holiday Name</label>
                   <input
                     type="text"
                     required
-                    className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent focus:border-green-500 rounded-[1.5rem] text-sm font-bold text-slate-800 transition-all outline-none"
+                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all"
                     placeholder="e.g. Thanksgiving, Diwali..."
                     value={formData.holidayName}
                     onChange={(e) => setFormData({ ...formData, holidayName: e.target.value })}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 block">Date</label>
+                    <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">Date</label>
                     <input
                       type="date"
                       required
-                      className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent focus:border-green-500 rounded-[1.5rem] text-sm font-bold text-slate-800 transition-all outline-none"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all"
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 block">Holiday Type</label>
+                    <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">Holiday Type</label>
                     <div className="relative">
                       <select
-                        className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent focus:border-green-500 rounded-[1.5rem] text-sm font-bold text-slate-800 transition-all outline-none appearance-none cursor-pointer"
+                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all appearance-none cursor-pointer"
                         value={formData.type}
                         onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                       >
@@ -171,64 +166,67 @@ const AddHolidayPage = () => {
 
               {/* Right Column - Locations */}
               <div>
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Applicable Locations</label>
-                <div className="grid grid-cols-2 gap-3">
+                <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">Applicable Locations</label>
+                <div className="grid grid-cols-2 gap-2">
                   {availableLocations.map((loc) => {
-                    const icon = loc === "All" ? <HiMapPin size={14}/> : loc === "Global" ? <HiGlobeAlt size={14}/> : <HiBuildingOffice2 size={14}/>;
+                    const icon = loc === "All" ? <HiMapPin size={12}/> : loc === "Global" ? <HiGlobeAlt size={12}/> : <HiBuildingOffice2 size={12}/>;
                     return (
                       <button
                         key={loc}
                         type="button"
                         onClick={() => handleLocationChange(loc)}
-                        className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
+                        className={`flex items-center gap-2 px-3 py-2 rounded-sm border transition-all duration-200 text-left ${
                           formData.locations.includes(loc) 
-                            ? "bg-green-600 border-green-600 text-white shadow-lg shadow-green-500/20" 
-                            : "bg-slate-50 border-transparent text-slate-600 hover:border-slate-200"
+                            ? "bg-[#00a65a] border-[#008d4c] text-white shadow-sm" 
+                            : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
                         }`}
                       >
-                        <div className={`w-5 h-5 rounded-lg flex items-center justify-center transition-all ${
-                          formData.locations.includes(loc) ? "bg-white text-green-600" : "bg-white border-2 border-slate-200"
+                        <div className={`w-4 h-4 rounded-none flex items-center justify-center transition-all ${
+                          formData.locations.includes(loc) ? "bg-white text-[#00a65a]" : "bg-white border border-gray-300"
                         }`}>
                           {formData.locations.includes(loc) ? (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
                             </svg>
                           ) : (
-                            <span className="text-slate-300">{icon}</span>
+                            <span className="text-gray-300 opacity-0">{icon}</span>
                           )}
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-wider">
+                        <span className="text-[10px] font-bold uppercase tracking-tight flex-1 truncate">
                           {loc === "All" ? "All Locations" : loc}
                         </span>
                       </button>
                     );
                   })}
                 </div>
-                <p className="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select one or more regions affected by this holiday.</p>
+                <p className="mt-2 text-[10px] text-gray-400 italic font-normal">Select one or more regions affected by this holiday.</p>
               </div>
             </div>
 
             {/* Action Footer */}
-            <div className="pt-10 flex gap-4 border-t border-slate-50">
+            <div className="pt-6 flex gap-2 border-t border-gray-100">
                <button
                   type="submit"
                   disabled={loading}
-                  className="w-full md:w-auto px-12 py-5 bg-green-600 text-white rounded-[2rem] text-xs font-black uppercase tracking-[0.2em] hover:bg-green-700 hover:shadow-2xl hover:shadow-green-500/30 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-green-500/10 flex items-center justify-center gap-3"
+                  className="bg-[#00a65a] border border-[#008d4c] text-white px-8 py-2 rounded-sm font-bold text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
                 >
-                  <MdSave size={20} />
-                  {loading ? "Processing..." : "Save Holiday Definition"}
+                  <FaSave size={14} />
+                  {loading ? "Processing..." : "Save Holiday"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/admin/holidays")}
+                  className="bg-white border border-gray-300 text-gray-700 px-8 py-2 rounded-sm font-bold text-xs hover:bg-gray-50 transition-all active:scale-95"
+                >
+                  Cancel
                 </button>
             </div>
           </form>
-
-          {/* Decorative Background */}
-          <div className="absolute top-0 right-0 p-20 opacity-[0.03] pointer-events-none select-none rotate-12">
-            <MdEventAvailable size={400} />
-          </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
 export default AddHolidayPage;
+

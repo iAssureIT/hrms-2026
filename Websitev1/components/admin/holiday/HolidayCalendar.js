@@ -28,10 +28,10 @@ const HolidayCalendar = ({ holidays }) => {
     const dateHolidays = holidays.filter(h => moment(h.date).isSame(fullDate, "day"));
 
     days.push(
-      <div key={d} className={`h-32 border border-green-50/50 p-2 transition-all relative group hover:bg-green-50/10 ${isToday ? "bg-green-50/20" : "bg-white"}`}>
+      <div key={d} className={`h-32 border border-gray-100 p-2 transition-all relative group ${isToday ? "bg-yellow-50/50" : "bg-white"}`}>
         <div className="flex justify-between items-start">
-          <span className={`text-sm font-black tabular-nums transition-colors ${
-            isToday ? "bg-green-600 text-white w-7 h-7 rounded-lg flex items-center justify-center -mt-1 -ml-1 shadow-md shadow-green-500/20" : "text-gray-400 group-hover:text-gray-800"
+          <span className={`text-sm font-bold tabular-nums ${
+            isToday ? "text-[#3c8dbc]" : "text-gray-400 group-hover:text-gray-800"
           }`}>
             {d}
           </span>
@@ -39,11 +39,11 @@ const HolidayCalendar = ({ holidays }) => {
 
         <div className="mt-2 space-y-1 overflow-hidden h-20">
           {dateHolidays.map((h, i) => (
-            <div key={i} className={`px-2 py-1 rounded-md text-[9px] font-black uppercase leading-tight tracking-tight shadow-sm border border-transparent ${
-              h.locations.some(loc => loc.toLowerCase() === "global") ? "bg-green-600 text-white" : 
-              h.locations.some(loc => loc.toLowerCase() === "us") ? "bg-red-500 text-white" :
-              h.locations.some(loc => loc.toLowerCase() === "india") ? "bg-orange-500 text-white" :
-              "bg-gray-100 text-gray-700"
+            <div key={i} className={`px-2 py-0.5 rounded-none text-[9px] font-bold uppercase leading-tight tracking-tight border shadow-sm ${
+              h.locations.some(loc => loc.toLowerCase() === "global") ? "bg-[#00a65a] text-white border-[#008d4c]" : 
+              h.locations.some(loc => loc.toLowerCase() === "us") ? "bg-[#dd4b39] text-white border-[#d73925]" :
+              h.locations.some(loc => loc.toLowerCase() === "india") ? "bg-[#f39c12] text-white border-[#e08e0b]" :
+              "bg-[#00c0ef] text-white border-[#00acd6]"
             }`}>
               {h.holidayName}
             </div>
@@ -54,41 +54,36 @@ const HolidayCalendar = ({ holidays }) => {
   }
 
   return (
-    <div className="bg-white rounded-3xl border-2 border-slate-50 shadow-sm overflow-hidden flex flex-col h-full transition-all hover:shadow-md">
-      <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/10">
-        <h2 className="text-xl font-black text-slate-800 tracking-tighter">{monthName}</h2>
+    <div className="bg-white rounded-sm border-t-[3px] border-[#3c8dbc] shadow-sm flex flex-col h-full">
+      <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="flex gap-1">
+          <button onClick={prevMonth} className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 rounded-sm">
+            <FaChevronLeft size={10} />
+          </button>
+          <button onClick={nextMonth} className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 rounded-sm">
+            <FaChevronRight size={10} />
+          </button>
+          <button onClick={resetToToday} className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 rounded-sm text-xs ml-2">
+            Today
+          </button>
+        </div>
         
-        <div className="flex items-center gap-4">
-          <div className="flex bg-slate-100/50 p-1 rounded-2xl border border-slate-100">
-            <button onClick={prevMonth} className="p-2.5 text-slate-400 hover:text-slate-800 hover:bg-white rounded-xl transition-all"><FaChevronLeft size={12} /></button>
-            <button onClick={resetToToday} className="px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-slate-800 transition-colors">Today</button>
-            <button onClick={nextMonth} className="p-2.5 text-slate-400 hover:text-slate-800 hover:bg-white rounded-xl transition-all"><FaChevronRight size={12} /></button>
-          </div>
+        <h2 className="text-lg font-bold text-gray-800">{currentDate.format("MMMM YYYY")}</h2>
 
-          <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
-             <div className="flex items-center gap-2">
-               <div className="w-2 h-2 rounded-full bg-green-600 shadow-[0_0_8px_rgba(22,163,74,0.4)]"></div>
-               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Global</span>
-             </div>
-             <div className="flex items-center gap-2">
-               <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]"></div>
-               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">US</span>
-             </div>
-             <div className="flex items-center gap-2">
-               <div className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]"></div>
-               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">India</span>
-             </div>
-          </div>
+        <div className="flex gap-1">
+          <button className="px-3 py-1 bg-[#3c8dbc] text-white border border-[#367fa9] rounded-sm text-xs">month</button>
+          <button className="px-3 py-1 bg-gray-100 text-gray-600 border border-gray-300 rounded-sm text-xs hover:bg-gray-200">week</button>
+          <button className="px-3 py-1 bg-gray-100 text-gray-600 border border-gray-300 rounded-sm text-xs hover:bg-gray-200">day</button>
         </div>
       </div>
 
-      <div className="p-6 flex-1">
-        <div className="grid grid-cols-7 mb-4">
+      <div className="p-4 flex-1">
+        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-            <div key={day} className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] text-center">{day}</div>
+            <div key={day} className="text-xs font-bold text-gray-600 py-2 text-center uppercase border-r border-gray-200 last:border-r-0">{day}</div>
           ))}
         </div>
-        <div className="grid grid-cols-7 border-t border-l border-slate-50 rounded-[2rem] overflow-hidden shadow-inner bg-slate-50/30">
+        <div className="grid grid-cols-7 border-l border-t border-gray-100">
           {days}
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
+import { FaHome } from "react-icons/fa";
 import { 
     MdSettings, 
     MdWatchLater, 
@@ -110,79 +110,83 @@ const SettingsPage = () => {
     }
 
     return (
-        <main className="min-h-screen bg-slate-50 p-6 lg:p-10 font-sans">
-            <div className="max-w-[1440px] mx-auto space-y-8">
+        <main className="min-h-screen bg-[#f4f7f6] p-4 lg:p-8 font-sans">
+            <div className="mx-auto">
                 
-                {/* Header */}
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200 pb-8">
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-green-600 mb-2">
-                            <span className="w-8 h-[1px] bg-green-600"></span>
-                            System Administration
-                        </div>
-                        <h1 className="text-4xl font-black text-slate-800 tracking-tighter">
-                            System <span className="text-green-600">Settings</span>
-                        </h1>
-                        <p className="text-sm text-slate-400 font-medium">Configure global rules, policies, and parameters for the portal.</p>
+                {/* AdminLTE style Header */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div className="flex items-baseline gap-3">
+                        <h1 className="text-2xl font-normal text-gray-800 tracking-tight">System Settings</h1>
+                        <span className="text-sm font-light text-gray-500">Control panel</span>
                     </div>
-
-                    <div className="flex items-center gap-3">
-                        <button 
-                            onClick={handleDiscard}
-                            className="flex items-center gap-2 px-6 py-3 bg-white text-slate-500 border-2 border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:border-slate-300 hover:text-slate-700 transition-all active:scale-95 shadow-sm"
-                        >
-                            <MdRefresh size={18} /> Discard
-                        </button>
-                        <button 
-                            onClick={handleSave}
-                            disabled={saving}
-                            className={`flex items-center gap-2 px-8 py-3 bg-green-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-green-700 hover:shadow-xl hover:shadow-green-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 shadow-lg shadow-green-500/10`}
-                        >
-                            <MdSave size={18} /> 
-                            {saving ? "Saving..." : "Save Changes"}
-                        </button>
+                    <div className="flex items-center gap-2 text-xs font-normal text-gray-700 mt-4 md:mt-0">
+                        <FaHome className="text-gray-400" />
+                        <span>Home</span>
+                        <span className="text-gray-400">&gt;</span>
+                        <span className="text-gray-400 font-bold">Settings</span>
                     </div>
-                </header>
+                </div>
 
-                <div className="flex flex-col lg:flex-row gap-10">
+                {/* Main Action Bar */}
+                <div className="flex justify-end gap-2 mb-6">
+                    <button 
+                        onClick={handleDiscard}
+                        className="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-sm font-bold text-xs hover:bg-gray-50 transition-all active:scale-95 flex items-center gap-2"
+                    >
+                        <MdRefresh size={16} /> Discard
+                    </button>
+                    <button 
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="bg-[#00a65a] border border-[#008d4c] text-white px-8 py-2 rounded-sm font-bold text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                    >
+                        <MdSave size={16} /> 
+                        {saving ? "Saving..." : "Save Changes"}
+                    </button>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-6">
                     
-                    {/* Sidebar Nav */}
-                    <aside className="lg:w-80 shrink-0">
-                        <nav className="flex flex-col gap-2 sticky top-10">
-                            {tabs.map((tab) => {
-                                const Icon = tab.icon;
-                                const isActive = activeTab === tab.id;
-                                return (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 group ${
-                                            isActive 
-                                            ? 'bg-green-600 text-white shadow-xl shadow-green-500/20 translate-x-2' 
-                                            : 'bg-white text-slate-500 hover:bg-slate-100 border border-transparent'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`p-2 rounded-xl transition-colors ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-green-50 group-hover:text-green-600'}`}>
-                                                <Icon size={20} />
-                                            </div>
-                                            <span className={`text-sm font-black transition-all ${isActive ? 'tracking-normal' : 'tracking-tight'}`}>
+                    {/* Sidebar Nav - AdminLTE Box Style */}
+                    <aside className="lg:w-72 shrink-0">
+                        <div className="bg-white border-t-[3px] border-[#3c8dbc] shadow-sm rounded-sm overflow-hidden">
+                            <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+                                <h3 className="text-xs font-bold text-gray-800 uppercase tracking-tight">Navigation</h3>
+                            </div>
+                            <nav className="flex flex-col">
+                                {tabs.map((tab) => {
+                                    const Icon = tab.icon;
+                                    const isActive = activeTab === tab.id;
+                                    return (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setActiveTab(tab.id)}
+                                            className={`flex items-center gap-3 p-4 text-left transition-all border-l-4 ${
+                                                isActive 
+                                                ? 'bg-[#f4f7f6] border-[#00a65a] text-[#00a65a]' 
+                                                : 'bg-white border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                                            }`}
+                                        >
+                                            <Icon size={18} className={isActive ? "text-[#00a65a]" : "text-gray-400"} />
+                                            <span className={`text-xs font-bold uppercase tracking-tight`}>
                                                 {tab.label}
                                             </span>
-                                        </div>
-                                        <MdChevronRight size={20} className={`transition-transform duration-500 ${isActive ? 'rotate-90 opacity-100' : 'opacity-0 -translate-x-2'}`} />
-                                    </button>
-                                );
-                            })}
-                            
-                        </nav>
+                                        </button>
+                                    );
+                                })}
+                            </nav>
+                        </div>
                     </aside>
 
-                    {/* Content Section */}
+                    {/* Content Section - AdminLTE Box Style */}
                     <section className="flex-1 min-w-0">
-                        <div className="bg-white rounded-[3rem] p-8 lg:p-12 border-2 border-slate-100 shadow-sm relative overflow-hidden transition-all duration-500">
-                            {/* Section Wrapper */}
-                            <div className="relative z-10">
+                        <div className="bg-white border-t-[3px] border-[#00a65a] shadow-sm rounded-sm">
+                            <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+                                <h3 className="text-xs font-bold text-gray-800 uppercase tracking-tight">
+                                    {tabs.find(t => t.id === activeTab)?.label} Definition
+                                </h3>
+                            </div>
+                            <div className="p-6 lg:p-8">
                                 {activeTab === "attendance" && <AttendanceRules data={settings.attendance} updateData={updateSection} />}
                                 {activeTab === "leave" && <LeavePolicySetup data={settings.leave} updateData={updateSection} />}
                                 {activeTab === "payroll" && <PayrollSettings data={settings.payroll} updateData={updateSection} />}
@@ -190,21 +194,16 @@ const SettingsPage = () => {
                                 {activeTab === "notifications" && <NotificationSettings data={settings.notifications} updateData={updateSection} />}
                                 {activeTab === "general" && <GeneralConfigurations data={settings.general} updateData={updateSection} />}
                             </div>
-
-                            {/* Decorative Background Elements */}
-                            <div className="absolute top-0 right-0 p-20 opacity-[0.02] pointer-events-none select-none">
-                                <MdSettings size={400} />
-                            </div>
                         </div>
 
                         {/* Footer Info */}
-                        <div className="mt-10 flex justify-between items-center px-6">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                © 2026 VeriTime Admin. All rights reserved.
+                        <div className="mt-8 flex justify-between items-center px-2">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                © 2026 Admin Portal. All rights reserved.
                             </p>
                             <div className="flex gap-6">
-                                <a href="#" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Privacy Policy</a>
-                                <a href="#" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Terms of Service</a>
+                                <a href="#" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#00a65a] transition-colors">Documentation</a>
+                                <a href="#" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#00a65a] transition-colors">Support</a>
                             </div>
                         </div>
                     </section>

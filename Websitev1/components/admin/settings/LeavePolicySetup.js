@@ -4,52 +4,56 @@ import React from "react";
 import { MdEventNote, MdRefresh, MdTimeline, MdAdd } from "react-icons/md";
 
 const LeaveTypeCard = ({ type, onUpdate, onDelete }) => (
-    <div className="bg-white border-2 border-slate-100 rounded-2xl p-4 hover:border-green-400 hover:shadow-xl hover:shadow-green-500/5 transition-all duration-300 group">
-        <div className="flex justify-between items-start mb-4">
-            <div>
+    <div className="bg-white border border-gray-200 rounded-sm p-4 hover:border-[#00a65a] shadow-sm transition-all group">
+        <div className="flex justify-between items-start mb-4 border-b border-gray-50 pb-2">
+            <div className="flex-1">
                 <input
                     type="text"
                     value={type.name}
                     onChange={(e) => onUpdate({ ...type, name: e.target.value })}
-                    className="text-sm font-black text-slate-800 outline-none border-b-2 border-transparent focus:border-green-500 bg-transparent transition-all px-1"
-                    placeholder="Leave Name (e.g. Sick Leave)"
+                    className="w-full text-xs font-bold text-gray-800 uppercase tracking-tight outline-none border-b border-transparent focus:border-[#00a65a] bg-transparent transition-all"
+                    placeholder="e.g. Sick Leave"
                 />
             </div>
             <button 
                 onClick={onDelete}
-                className="text-slate-300 hover:text-red-500 transition-colors p-1"
+                className="text-gray-300 hover:text-red-500 transition-colors p-1"
+                title="Remove Leave Type"
             >
-                <MdRefresh className="rotate-45" size={18} />
+                <MdRefresh className="rotate-45" size={16} />
             </button>
         </div>
         
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Annual Limit</span>
-                <input
-                    type="number"
-                    value={type.maxLeaves}
-                    onChange={(e) => onUpdate({ ...type, maxLeaves: parseInt(e.target.value) })}
-                    className="w-16 bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 text-xs font-bold text-slate-800 text-center outline-none focus:border-green-500"
-                />
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">Annual Limit</span>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="number"
+                        value={type.maxLeaves}
+                        onChange={(e) => onUpdate({ ...type, maxLeaves: parseInt(e.target.value) })}
+                        className="w-14 bg-gray-50 border border-gray-300 rounded-sm px-2 py-1 text-xs font-bold text-gray-800 text-center outline-none focus:border-[#3c8dbc]"
+                    />
+                    <span className="text-[9px] font-bold text-gray-400 uppercase">Days</span>
+                </div>
             </div>
-            <div className="flex items-center justify-between border-t border-slate-50 pt-3">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Carry Forward</span>
+            <div className="flex items-center justify-between border-t border-gray-50 pt-3">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">Carry Forward</span>
                 <button
                     onClick={() => onUpdate({ ...type, carryForward: !type.carryForward })}
-                    className={`h-5 w-10 rounded-full transition-colors relative ${type.carryForward ? 'bg-green-500' : 'bg-slate-200'}`}
+                    className={`relative inline-flex h-4 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none ${type.carryForward ? 'bg-[#00a65a]' : 'bg-gray-300'}`}
                 >
-                    <span className={`absolute top-1 left-1 bg-white h-3 w-3 rounded-full transition-transform ${type.carryForward ? 'translate-x-5' : 'translate-x-0'}`} />
+                    <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-200 ${type.carryForward ? 'translate-x-5' : 'translate-x-1'}`} />
                 </button>
             </div>
             {type.carryForward && (
-                <div className="flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Limit (Days)</span>
+                <div className="flex items-center justify-between bg-green-50/50 p-2 rounded-sm border border-green-100">
+                    <span className="text-[9px] font-bold text-green-700 uppercase tracking-tight">Max Carry Limit</span>
                     <input
                         type="number"
                         value={type.carryForwardLimit}
                         onChange={(e) => onUpdate({ ...type, carryForwardLimit: parseInt(e.target.value) })}
-                        className="w-16 bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 text-xs font-bold text-slate-800 text-center outline-none focus:border-green-500"
+                        className="w-12 bg-white border border-green-200 rounded-sm px-1.5 py-0.5 text-[10px] font-bold text-gray-800 text-center outline-none focus:border-[#3c8dbc]"
                     />
                 </div>
             )}
@@ -79,28 +83,25 @@ const LeavePolicySetup = ({ data, updateData }) => {
     };
 
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8">
             {/* Leave Types Section */}
-            <div className="space-y-6">
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                            <div className="p-2 bg-green-100 text-green-600 rounded-xl">
-                                <MdEventNote size={20} />
-                            </div>
-                            Leave Types & Entitlements
+            <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+                    <div className="flex items-center gap-2">
+                        <MdEventNote size={18} className="text-[#00a65a]" />
+                        <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
+                            Leave Entitlements
                         </h3>
-                        <p className="text-sm text-slate-500 mt-1">Configure different leave categories and their yearly limits.</p>
                     </div>
                     <button 
                         onClick={addLeaveType}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-green-700 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-green-500/20"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00a65a] border border-[#008d4c] text-white text-xs font-bold uppercase tracking-tight rounded-sm hover:bg-[#008d4c] shadow-sm transition-all active:scale-95"
                     >
-                        <MdAdd size={16} /> Add Type
+                        <MdAdd size={14} /> Add Type
                     </button>
                 </div>
 
-                <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6">
+                <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
                     {data.leaveTypes?.map((type, idx) => (
                         <LeaveTypeCard 
                             key={idx}
@@ -113,39 +114,38 @@ const LeavePolicySetup = ({ data, updateData }) => {
             </div>
 
             {/* Workflow Section */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <div className="p-2 bg-purple-100 text-purple-600 rounded-xl">
-                            <MdTimeline size={20} />
-                        </div>
+            <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <MdTimeline size={18} className="text-[#00a65a]" />
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
                         Approval Workflow
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">Define the sequence of approvals required for leave requests.</p>
                 </div>
 
-                <div className="bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center space-y-4">
-                    <div className="flex items-center gap-4">
-                        <div className="px-5 py-2.5 bg-white border-2 border-green-200 rounded-2xl shadow-sm text-xs font-black text-slate-700">Employee</div>
-                        <div className="h-0.5 w-8 bg-slate-200 relative">
-                            <div className="absolute -right-1 -top-1 border-4 border-transparent border-l-slate-200" />
+                <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 flex flex-col items-center justify-center space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="px-4 py-2 bg-white border border-gray-200 rounded-sm shadow-sm text-[10px] font-bold text-gray-600 uppercase">Employee</div>
+                        <div className="w-6 h-[1px] bg-gray-300 relative">
+                            <div className="absolute -right-1 -top-1 border-4 border-transparent border-l-gray-300" />
                         </div>
-                        <select
-                            value={data.approvalWorkflow}
-                            onChange={(e) => updateData('leave', { ...data, approvalWorkflow: e.target.value })}
-                            className="px-5 py-2.5 bg-green-600 text-white border-none rounded-2xl shadow-lg shadow-green-500/20 text-xs font-black outline-none appearance-none cursor-pointer hover:bg-green-700 transition-colors"
-                        >
-                            <option>Manager {"->"} HR</option>
-                            <option>Manager Only</option>
-                            <option>HR Only</option>
-                            <option>Manager {"->"} Dept Head {"->"} HR</option>
-                        </select>
-                        <div className="h-0.5 w-8 bg-slate-200 relative">
-                            <div className="absolute -right-1 -top-1 border-4 border-transparent border-l-slate-200" />
+                        <div className="relative">
+                            <select
+                                value={data.approvalWorkflow}
+                                onChange={(e) => updateData('leave', { ...data, approvalWorkflow: e.target.value })}
+                                className="px-4 py-2 bg-[#00a65a] text-white border-none rounded-sm shadow-sm text-[10px] font-bold uppercase outline-none appearance-none cursor-pointer hover:bg-[#008d4c] transition-colors"
+                            >
+                                <option value="Manager -> HR">Manager {"->"} HR</option>
+                                <option value="Manager Only">Manager Only</option>
+                                <option value="HR Only">HR Only</option>
+                                <option value="Manager -> Dept Head -> HR">Manager {"->"} Dept Head {"->"} HR</option>
+                            </select>
                         </div>
-                        <div className="px-5 py-2.5 bg-white border-2 border-green-200 rounded-2xl shadow-sm text-xs font-black text-slate-700">Approved</div>
+                        <div className="w-6 h-[1px] bg-gray-300 relative">
+                            <div className="absolute -right-1 -top-1 border-4 border-transparent border-l-gray-300" />
+                        </div>
+                        <div className="px-4 py-2 bg-white border border-[#00a65a] rounded-sm shadow-sm text-[10px] font-bold text-[#00a65a] uppercase">Approved</div>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Selected multi-level approval flow</p>
+                    <p className="text-[10px] text-gray-400 italic">Configure the sequence of authority for leave requests.</p>
                 </div>
             </div>
         </div>

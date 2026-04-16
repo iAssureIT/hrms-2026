@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MdPayments, MdCalculate, MdDescription, MdAccountBalance } from "react-icons/md";
+import { MdPayments, MdCalculate, MdDescription } from "react-icons/md";
 
 const PayrollSettings = ({ data, updateData }) => {
     const handleChange = (field, value) => {
@@ -15,106 +15,100 @@ const PayrollSettings = ({ data, updateData }) => {
         });
     };
 
+    const Toggle = ({ label, description, enabled, onChange }) => (
+        <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-sm hover:border-green-300 transition-all duration-200">
+            <div>
+                <h4 className="text-xs font-bold text-gray-700 uppercase tracking-tight">{label}</h4>
+                <p className="text-[10px] text-gray-500 mt-0.5">{description}</p>
+            </div>
+            <button
+                onClick={() => onChange(!enabled)}
+                className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors duration-200 focus:outline-none ${enabled ? 'bg-[#00a65a]' : 'bg-gray-300'}`}
+            >
+                <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200 ${enabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
+            </button>
+        </div>
+    );
+
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8">
             {/* Cycle and Overtime */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
-                            <MdPayments size={20} />
-                        </div>
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <MdPayments size={18} className="text-[#00a65a]" />
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
                         Payroll Cycle & Overtime
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">Configure when and how payroll is processed.</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 pl-1">Salary Cycle</label>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-tight">Salary Cycle</label>
                         <select
                             value={data.salaryCycle}
                             onChange={(e) => handleChange('salaryCycle', e.target.value)}
-                            className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300 outline-none"
+                            className="w-full bg-white border border-gray-300 rounded-sm px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all appearance-none cursor-pointer"
                         >
                             <option>Monthly</option>
                             <option>Bi-weekly</option>
                             <option>Weekly</option>
                         </select>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                        <div>
-                            <h4 className="text-sm font-bold text-slate-800">Enable Overtime</h4>
-                            <p className="text-xs text-slate-500 mt-0.5">Calculate pay for extra hours worked.</p>
-                        </div>
-                        <button
-                            onClick={() => handleChange('overtimeCalculation', !data.overtimeCalculation)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${data.overtimeCalculation ? 'bg-green-600' : 'bg-slate-300'}`}
-                        >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${data.overtimeCalculation ? 'translate-x-6' : 'translate-x-1'}`} />
-                        </button>
-                    </div>
+                    <Toggle
+                        label="Enable Overtime"
+                        description="Calculate pay for extra hours worked."
+                        enabled={data.overtimeCalculation}
+                        onChange={(val) => handleChange('overtimeCalculation', val)}
+                    />
                 </div>
             </div>
 
             {/* Tax Settings */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <div className="p-2 bg-rose-100 text-rose-600 rounded-xl">
-                            <MdCalculate size={20} />
-                        </div>
+            <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <MdCalculate size={18} className="text-[#00a65a]" />
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
                         Tax Deduction Settings
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">Configure statutory deductions and tax rules.</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 pl-1">Standard Deduction</label>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-tight">Standard Deduction</label>
                         <div className="relative">
                             <input
                                 type="number"
                                 value={data.taxDeductionSettings?.standardDeduction}
                                 onChange={(e) => handleTaxChange('standardDeduction', parseInt(e.target.value))}
-                                className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 focus:border-green-500 outline-none"
+                                className="w-full bg-white border border-gray-300 rounded-sm px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all"
                             />
-                            <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                                <span className="text-[10px] font-black text-slate-400 uppercase">Per Year</span>
+                            <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">Per Year</span>
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                        <div>
-                            <h4 className="text-sm font-bold text-slate-800">Professional Tax (PT)</h4>
-                            <p className="text-xs text-slate-500 mt-0.5">Automate state-specific PT deductions.</p>
-                        </div>
-                        <button
-                            onClick={() => handleTaxChange('ptaxEnabled', !data.taxDeductionSettings?.ptaxEnabled)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${data.taxDeductionSettings?.ptaxEnabled ? 'bg-green-600' : 'bg-slate-300'}`}
-                        >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${data.taxDeductionSettings?.ptaxEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
-                        </button>
-                    </div>
+                    <Toggle
+                        label="Professional Tax (PT)"
+                        description="Automate state-specific PT deductions."
+                        enabled={data.taxDeductionSettings?.ptaxEnabled}
+                        onChange={(val) => handleTaxChange('ptaxEnabled', val)}
+                    />
                 </div>
             </div>
 
             {/* Distribution */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl">
-                            <MdDescription size={20} />
-                        </div>
+            <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <MdDescription size={18} className="text-[#00a65a]" />
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
                         Payslip Generation
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">Automate payslip distribution to employees.</p>
                 </div>
 
-                <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 inline-block">
-                    <div className="flex items-center gap-6">
+                <div className="bg-gray-50 border border-gray-200 rounded-sm p-4 inline-block shadow-sm">
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
                         <div className="space-y-1">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Generation Date</h4>
+                            <h4 className="text-[10px] font-bold uppercase tracking-tight text-gray-400">Generation Date</h4>
                             <div className="flex items-center gap-2">
                                 <input
                                     type="number"
@@ -122,15 +116,15 @@ const PayrollSettings = ({ data, updateData }) => {
                                     max="31"
                                     value={data.payslipGenerationDate}
                                     onChange={(e) => handleChange('payslipGenerationDate', parseInt(e.target.value))}
-                                    className="w-16 bg-white border-2 border-slate-100 rounded-xl px-3 py-2 text-sm font-black text-slate-800 outline-none focus:border-green-500"
+                                    className="w-14 bg-white border border-gray-300 rounded-sm px-2 py-1 text-sm font-bold text-gray-800 outline-none focus:border-[#3c8dbc]"
                                 />
-                                <span className="text-sm font-bold text-slate-500">of every month</span>
+                                <span className="text-xs font-bold text-gray-500 uppercase">of every month</span>
                             </div>
                         </div>
-                        <div className="h-10 w-[1px] bg-slate-200" />
-                        <div className="space-y-1 text-center">
-                            <h4 className="text-[10px] font-black uppercase tracking-widest text-green-600 bg-green-50 px-3 py-1 rounded-full">Automated</h4>
-                            <p className="text-[10px] text-slate-400 mt-1">Next: May {data.payslipGenerationDate}, 2026</p>
+                        <div className="hidden sm:block h-10 w-[1px] bg-gray-200" />
+                        <div className="space-y-1 text-center sm:text-left">
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-[#00a65a] bg-green-50 px-2 py-0.5 rounded-sm border border-green-100 italic">Automated Distribution</span>
+                            <p className="text-[10px] text-gray-400 mt-1">Next schedule: May {data.payslipGenerationDate}, 2026</p>
                         </div>
                     </div>
                 </div>

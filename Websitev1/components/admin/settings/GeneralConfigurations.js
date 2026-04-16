@@ -1,29 +1,23 @@
 "use client";
 
 import React from "react";
-import { MdSettings, MdPublic, MdUpdate, MdTranslate } from "react-icons/md";
+import { MdSettings, MdPublic } from "react-icons/md";
 
-const SelectionField = ({ icon: Icon, label, value, options, onChange, color }) => (
-    <div className="space-y-4">
-        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 pl-1 flex items-center gap-2">
-            <div className={`p-1 rounded-md ${color}`}>
-                <Icon size={12} />
-            </div>
+const SelectionField = ({ label, value, options, onChange }) => (
+    <div className="space-y-1">
+        <label className="text-xs font-bold text-gray-700 uppercase tracking-tight pl-1">
             {label}
         </label>
-        <div className="relative group">
+        <div className="relative">
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-black text-slate-800 focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300 outline-none appearance-none cursor-pointer"
+                className="w-full bg-white border border-gray-300 rounded-sm px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all appearance-none cursor-pointer"
             >
                 {options.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
             </select>
-            <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-slate-400 group-hover:text-green-600 transition-colors">
-                <MdUpdate size={20} className="rotate-90" />
-            </div>
         </div>
     </div>
 );
@@ -49,30 +43,27 @@ const GeneralConfigurations = ({ data, updateData }) => {
     };
 
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8">
             {/* Working Days */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <div className="p-2 bg-slate-100 text-slate-600 rounded-xl">
-                            <MdSettings size={20} />
-                        </div>
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <MdSettings size={18} className="text-[#00a65a]" />
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
                         Business Hours
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">Specify which days are officially counted as working days for the organization.</p>
                 </div>
 
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-2">
                     {days.map((day) => {
                         const isWorking = data.companyWorkingDays?.includes(day.substring(0, 3));
                         return (
                             <button
                                 key={day}
                                 onClick={() => toggleWorkDay(day.substring(0, 3))}
-                                className={`px-6 py-3 rounded-2xl border-2 transition-all duration-300 font-black text-xs uppercase tracking-widest ${
+                                className={`px-4 py-2 rounded-sm border transition-all duration-200 font-bold text-[10px] uppercase tracking-wider ${
                                     isWorking
-                                    ? 'bg-green-600 border-green-600 text-white shadow-lg shadow-green-500/20 scale-105'
-                                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-300'
+                                    ? 'bg-[#00a65a] border-[#008d4c] text-white shadow-sm'
+                                    : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'
                                 }`}
                             >
                                 {day}
@@ -80,31 +71,26 @@ const GeneralConfigurations = ({ data, updateData }) => {
                         );
                     })}
                 </div>
+                <p className="text-[10px] text-gray-400 italic">Select days counted as organizational working days.</p>
             </div>
 
             {/* Region & Formats */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <div className="p-2 bg-slate-100 text-slate-600 rounded-xl">
-                            <MdPublic size={20} />
-                        </div>
+            <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <MdPublic size={18} className="text-[#00a65a]" />
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
                         Regional Settings
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">Configure timezones, date formats, and localization.</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-6">
                     <SelectionField
-                        icon={MdUpdate}
                         label="System Timezone"
                         value={data.timeZone}
                         options={timezones}
                         onChange={(val) => handleChange('timeZone', val)}
-                        color="bg-purple-50 text-purple-600"
                     />
                     <SelectionField
-                        icon={MdUpdate}
                         label="Date Format"
                         value={data.dateFormat}
                         options={[
@@ -113,10 +99,8 @@ const GeneralConfigurations = ({ data, updateData }) => {
                             { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' }
                         ]}
                         onChange={(val) => handleChange('dateFormat', val)}
-                        color="bg-blue-50 text-blue-600"
                     />
                     <SelectionField
-                        icon={MdTranslate}
                         label="Default Language"
                         value={data.defaultLanguage}
                         options={[
@@ -125,7 +109,6 @@ const GeneralConfigurations = ({ data, updateData }) => {
                             { label: 'Marathi', value: 'Marathi' }
                         ]}
                         onChange={(val) => handleChange('defaultLanguage', val)}
-                        color="bg-rose-50 text-rose-600"
                     />
                 </div>
             </div>

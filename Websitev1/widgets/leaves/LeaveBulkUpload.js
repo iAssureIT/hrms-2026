@@ -139,58 +139,57 @@ const LeaveBulkUpload = () => {
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md bg-white">
-        {/* Header */}
-        <div className="uppercase text-xl font-semibold border-b-2 border-gray-300 flex justify-between px-10">
-          <div className="flex items-center gap-3 py-5">
-            <h1 className="text-2xl text-gray-900 tracking-tight">
-              Leave Balance Bulk Upload
-            </h1>
+    <main className="p-4 bg-[#f4f6f9] min-h-screen">
+      <div className="mx-auto">
+        
+        {/* Page Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Bulk Upload</h1>
+            <span className="text-sm font-light text-gray-500">Leave Balance Import</span>
           </div>
-          <div className="flex gap-3 my-5 items-center">
-            <Tooltip
-              content="Leave Management"
-              placement="bottom"
-              className="bg-green"
-              arrow={false}
+          <div className="flex gap-2 mt-4 md:mt-0">
+            <button
+              onClick={() => router.push(`/${loggedInRole}/leaves`)}
+              className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
             >
-              <FaListUl
-                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                onClick={() => {
-                  router.push(`/${loggedInRole}/leaves`);
-                }}
-              />
-            </Tooltip>
+              <FaListUl size={12} /> Back to List
+            </button>
           </div>
         </div>
 
+        {/* Bulk Upload Box */}
+        <div className="bg-white border-t-[3px] border-[#00a65a] shadow-sm flex flex-col mb-10 overflow-hidden">
+          <div className="px-5 py-3 border-b border-gray-100 bg-white">
+            <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">Import Records</h3>
+          </div>
 
-        {/* Bulk Upload Component */}
-        <div className="p-5">
-          <BulkUpload
-            url={
-              process.env.NEXT_PUBLIC_BASE_URL + "/api/leave-balance/bulk-upload"
-            }
-            fileurl=""
-            downloadTemplate={downloadTemplate}
-            data={[]}
-            uploadedData={uploadedData}
-            getData={getData}
-            getFileDetails={getFileDetails}
-            fileDetails={fileDetails}
-            tableObjects={tableObjects}
-            goodRecordsHeading={goodRecordsHeading}
-            failedtableHeading={failedtableHeading}
-            failedRecordsTable={failedRecordsTable}
-            failedRecordsCount={failedRecordsCount}
-            goodRecordsTable={goodRecordsTable}
-            goodDataCount={goodDataCount}
-          />
+          <div className="p-6">
+            <BulkUpload
+              url={
+                process.env.NEXT_PUBLIC_BASE_URL + "/api/leave-balance/bulk-upload"
+              }
+              fileurl=""
+              downloadTemplate={downloadTemplate}
+              data={[]}
+              uploadedData={uploadedData}
+              getData={getData}
+              getFileDetails={getFileDetails}
+              fileDetails={fileDetails}
+              tableObjects={tableObjects}
+              goodRecordsHeading={goodRecordsHeading}
+              failedtableHeading={failedtableHeading}
+              failedRecordsTable={failedRecordsTable}
+              failedRecordsCount={failedRecordsCount}
+              goodRecordsTable={goodRecordsTable}
+              goodDataCount={goodDataCount}
+            />
+          </div>
         </div>
       </div>
-    </section>
+    </main>
   );
 };
+
 
 export default LeaveBulkUpload;
