@@ -165,34 +165,6 @@ const LeaveBulkUpload = () => {
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="px-10 pt-6 pb-2">
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-[11px] text-amber-800 font-medium space-y-1">
-            <p className="font-black uppercase tracking-widest text-[10px] text-amber-600 mb-2">
-              Template Column Reference
-            </p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                <strong>Employee ID</strong> — must match exactly as stored in
-                Employee Master (e.g. EMP001)
-              </li>
-              <li>
-                <strong>Leave Type Code</strong> — use the leave code from Leave
-                Types master (e.g. CL, SL, AL)
-              </li>
-              <li>
-                <strong>Year</strong> — 4-digit year (e.g. 2026)
-              </li>
-              <li>
-                <strong>Opening Balance</strong> — number of leave days to
-                credit
-              </li>
-              <li>
-                <strong>Earned Days</strong> — optional, defaults to 0
-              </li>
-            </ul>
-          </div>
-        </div>
 
         {/* Bulk Upload Component */}
         <div className="p-5">

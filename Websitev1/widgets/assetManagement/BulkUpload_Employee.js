@@ -67,7 +67,7 @@ const BulkUpload = (props) => {
       // console.log("wsname",wsname);
       const ws = wb.Sheets[wsname];
       // console.log("ws",ws);
-      const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
       // console.log("data",data);
       var documentObj = [];
       // Create an inversion of goodRecordsHeading to map Excel headers back to keys

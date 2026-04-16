@@ -29,8 +29,12 @@ exports.getHolidays = async (req, res) => {
       query.date = { $gte: startOfYear, $lte: endOfYear };
     }
 
-    if (location && location !== "All" && location !== "Global") {
-      query.locations = { $in: [location, "Global"] };
+    if (location && location !== "All") {
+      if (location === "Global") {
+        query.locations = { $in: [/^Global$/i] };
+      } else {
+        query.locations = { $in: [new RegExp(`^${location}$`, "i"), /^Global$/i] };
+      }
     }
 
     const data = await Holiday.find(query).sort({ date: 1 });

@@ -21,12 +21,26 @@ const Holidays = () => {
   const [selectedLocation, setSelectedLocation] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentYear, setCurrentYear] = useState(moment().year());
+  const [locations, setLocations] = useState(["All", "Global"]);
 
-  const locations = ["All", "Global", "New York", "London", "Bangalore"];
+  useEffect(() => {
+    fetchLocations();
+  }, []);
 
   useEffect(() => {
     fetchHolidays();
   }, [selectedLocation, currentYear]);
+
+  const fetchLocations = async () => {
+    try {
+      const res = await axios.get("/api/centers/list");
+      if (res.data) {
+        setLocations(["All", "Global", ...res.data.map((c) => c.centerName)]);
+      }
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
 
   const fetchHolidays = async () => {
     try {

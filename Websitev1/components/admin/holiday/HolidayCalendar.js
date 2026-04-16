@@ -40,9 +40,9 @@ const HolidayCalendar = ({ holidays }) => {
         <div className="mt-2 space-y-1 overflow-hidden h-20">
           {dateHolidays.map((h, i) => (
             <div key={i} className={`px-2 py-1 rounded-md text-[9px] font-black uppercase leading-tight tracking-tight shadow-sm border border-transparent ${
-              h.locations.includes("Global") ? "bg-green-600 text-white" : 
-              h.locations.includes("US") ? "bg-red-500 text-white" :
-              h.locations.includes("India") ? "bg-orange-500 text-white" :
+              h.locations.some(loc => loc.toLowerCase() === "global") ? "bg-green-600 text-white" : 
+              h.locations.some(loc => loc.toLowerCase() === "us") ? "bg-red-500 text-white" :
+              h.locations.some(loc => loc.toLowerCase() === "india") ? "bg-orange-500 text-white" :
               "bg-gray-100 text-gray-700"
             }`}>
               {h.holidayName}

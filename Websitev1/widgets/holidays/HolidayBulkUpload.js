@@ -134,28 +134,6 @@ const HolidayBulkUpload = () => {
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="px-10 pt-6 pb-2">
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-[11px] text-amber-800 font-medium space-y-1">
-            <p className="font-black uppercase tracking-widest text-[10px] text-amber-600 mb-2">
-              Template Column Reference
-            </p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                <strong>Holiday Name</strong> — Name of the holiday (e.g. New Year Day)
-              </li>
-              <li>
-                <strong>Date</strong> — Format: DD/MM/YYYY (e.g. 01/01/2026)
-              </li>
-              <li>
-                <strong>Location</strong> — Comma-separated locations (e.g. Global, Bangalore, New York)
-              </li>
-              <li>
-                <strong>Type</strong> — <em>Mandatory</em> or <em>Optional</em> (defaults to Mandatory)
-              </li>
-            </ul>
-          </div>
-        </div>
 
         {/* Bulk Upload Component */}
         <div className="p-5">
