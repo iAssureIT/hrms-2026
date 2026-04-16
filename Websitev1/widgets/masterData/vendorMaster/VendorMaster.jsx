@@ -1228,6 +1228,8 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { FaList } from "react-icons/fa";
 import { FiUploadCloud } from "react-icons/fi";
+import { CiViewList } from "react-icons/ci";
+import { CiBank } from "react-icons/ci";
 import BulkUpload from "./BulkUpload.js";
 // import GenericTable from "@/widgets/GenericTable/FilterTable";
 import { Tooltip } from "flowbite-react";
@@ -1271,7 +1273,7 @@ const IconWrapper = ({ icon: Icon }) => (
     </div>
 );
 
-export default function VendorFormPage() {
+const initialState = {
     vendorStatus: "Active",
         vendorInfo: {
         nameOfCompany: "",
@@ -2004,9 +2006,7 @@ export default function VendorFormPage() {
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-            </div>
+
 
             <div className="border-b-2 mx-6"></div>
 
@@ -2412,10 +2412,11 @@ export default function VendorFormPage() {
             </div>
         </form>
 
-            </div >
+            </div>
+        </div>
 
-        {/* Small utility styles */ }
-        < style jsx > {`
+        {/* Small utility styles */}
+        <style jsx>{`
                 .input {
                 width: 100%;
                 margin-top: 6px;
@@ -2430,8 +2431,8 @@ export default function VendorFormPage() {
                 font-size: 12px;
                 margin-top: 4px;
                 }
-            `}</style >
+            `}</style>
 
-        </section >
+        </section>
     );
 }
