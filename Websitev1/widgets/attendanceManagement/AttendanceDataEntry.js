@@ -55,9 +55,21 @@ const AttendanceDataEntry = () => {
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`),
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/department-master/get`)
             ]);
-            setCenters(cRes.data?.value || cRes.data || []);
-            setDepartments(dRes.data?.value || dRes.data || []);
-        } catch (err) { console.error(err); }
+
+            // Fix for Centers: Check for .value, .data, or direct array
+            const centersList = cRes.data?.value || cRes.data?.data || (Array.isArray(cRes.data) ? cRes.data : []);
+            setCenters(centersList);
+
+            // Fix for Departments: Check for .value, .data, or direct array
+            const deptsList = dRes.data?.value || dRes.data?.data || (Array.isArray(dRes.data) ? dRes.data : []);
+            setDepartments(deptsList);
+
+        } catch (err) {
+            console.error("Filter Fetch Error:", err);
+            // Fallback to empty arrays on error to prevent crash
+            setCenters([]);
+            setDepartments([]);
+        }
     };
 
     const fetchSavedMappings = async (userId) => {
@@ -325,118 +337,130 @@ const AttendanceDataEntry = () => {
                     </div>
                 ) : (
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-700">
-                        <div className="admin-box">
-                            <div className="admin-box-header">
-                                <h3 className="admin-box-title">Search & Filters</h3>
-                            </div>
-                            <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                                <div className="admin-form-group">
-                                    <label className="admin-label">Date</label>
-                                    <input
-                                        type="date"
-                                        className="admin-input"
-                                        value={selectedDate}
-                                        onChange={(e) => setSelectedDate(e.target.value)}
-                                    />
-                                </div>
-                                <div className="admin-form-group">
-                                    <label className="admin-label">Center</label>
-                                    <select className="admin-select" value={center_id} onChange={(e) => setCenter_id(e.target.value)}>
-                                        <option value="all">All Centers</option>
-                                        {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
-                                    </select>
-                                </div>
-                                <div className="admin-form-group">
-                                    <label className="admin-label">Department</label>
-                                    <select className="admin-select" value={department_id} onChange={(e) => setDepartment_id(e.target.value)}>
-                                        <option value="all">All Departments</option>
-                                        {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
-                                    </select>
-                                </div>
-                                <div className="mb-4">
-                                    <button onClick={fetchEmployees} className="admin-btn-primary w-full h-[34px]">
-                                        <FaFilter className="mr-2" /> Apply Filter
-                                    </button>
+                        <div className="admin-box mb-6">
+                            <div className="p-4 bg-gray-50/50 border-b border-gray-100">
+                                <div className="flex flex-wrap items-center gap-6">
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Date</label>
+                                        <input
+                                            type="date"
+                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-40 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                            value={selectedDate}
+                                            onChange={(e) => setSelectedDate(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Center</label>
+                                        <select
+                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                            value={center_id}
+                                            onChange={(e) => setCenter_id(e.target.value)}
+                                        >
+                                            <option value="all">All Centers</option>
+                                            {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Department</label>
+                                        <select
+                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                            value={department_id}
+                                            onChange={(e) => setDepartment_id(e.target.value)}
+                                        >
+                                            <option value="all">All Departments</option>
+                                            {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="">
+                                        <button
+                                            onClick={fetchEmployees}
+                                            className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1 h-8 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
+                                        >
+                                            <FaFilter className="text-[10px]" /> Apply Filter
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="admin-box">
-                            <div className="admin-box-header">
+                            <div className="admin-box-header bg-gray-50/50">
                                 <h3 className="admin-box-title">Manual Data Entry Grid</h3>
                             </div>
-                            <table className="admin-table">
-                                <thead className="admin-table-thead">
-                                    <tr>
-                                        <th className="admin-table-th">Employee</th>
-                                        <th className="admin-table-th">In Time</th>
-                                        <th className="admin-table-th">Out Time</th>
-                                        <th className="admin-table-th text-center">Status</th>
-                                        <th className="admin-table-th text-right">Remarks</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loading ? (
-                                        <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">Loading roster...</td></tr>
-                                    ) : employees.length === 0 ? (
-                                        <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">No employees found for selection</td></tr>
-                                    ) : employees.map(emp => (
-                                        <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="admin-table-td">
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-gray-800">{emp.employeeName}</span>
-                                                    <span className="text-[10px] text-gray-400">{emp.employeeID}</span>
-                                                </div>
-                                            </td>
-                                            <td className="admin-table-td">
-                                                <div className="flex items-center gap-2">
-                                                    <FaClock className="text-gray-300" />
-                                                    <input
-                                                        type="time"
-                                                        className="admin-input py-1 px-2 w-32"
-                                                        value={manualData[emp.employee_id]?.inTime || ""}
-                                                        onChange={(e) => handleManualChange(emp.employee_id, "inTime", e.target.value)}
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="admin-table-td">
-                                                <div className="flex items-center gap-2">
-                                                    <FaClock className="text-gray-300" />
-                                                    <input
-                                                        type="time"
-                                                        className="admin-input py-1 px-2 w-32"
-                                                        value={manualData[emp.employee_id]?.outTime || ""}
-                                                        onChange={(e) => handleManualChange(emp.employee_id, "outTime", e.target.value)}
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="admin-table-td text-center">
-                                                <select
-                                                    className="admin-select py-1 px-2 w-24 mx-auto"
-                                                    value={manualData[emp.employee_id]?.status || "X"}
-                                                    onChange={(e) => handleManualChange(emp.employee_id, "status", e.target.value)}
-                                                >
-                                                    <option value="X">-</option>
-                                                    <option value="P">Present</option>
-                                                    <option value="A">Absent</option>
-                                                    <option value="H">Holiday</option>
-                                                    <option value="W">Weekly Off</option>
-                                                </select>
-                                            </td>
-                                            <td className="admin-table-td text-right">
-                                                <input type="text" placeholder="Add remark..." className="bg-transparent border-b border-gray-200 text-[10px] text-gray-400 focus:border-blue-400 focus:bg-white px-2 py-1 w-32 outline-none" />
-                                            </td>
+                            <div className="admin-content-area overflow-x-auto border border-gray-200">
+                                <table className="admin-table border-collapse">
+                                    <thead className="admin-table-thead">
+                                        <tr className="border-b border-gray-200">
+                                            <th className="admin-table-th !text-[12px] uppercase">Employee</th>
+                                            <th className="admin-table-th !text-[12px] uppercase">In Time</th>
+                                            <th className="admin-table-th !text-[12px] uppercase">Out Time</th>
+                                            <th className="admin-table-th text-center !text-[12px] uppercase">Status</th>
+                                            <th className="admin-table-th text-right !text-[12px] uppercase">Remarks</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {loading ? (
+                                            <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">Loading roster...</td></tr>
+                                        ) : employees.length === 0 ? (
+                                            <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">No employees found for selection</td></tr>
+                                        ) : employees.map(emp => (
+                                            <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
+                                                <td className="admin-table-td">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[12px] font-bold text-gray-800">{emp.employeeName}</span>
+                                                        <span className="text-[10px] text-gray-400">{emp.employeeID}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="admin-table-td">
+                                                    <div className="flex items-center gap-2">
+                                                        <FaClock className="text-gray-300" />
+                                                        <input
+                                                            type="time"
+                                                            className="admin-input py-1 px-2 w-32"
+                                                            value={manualData[emp.employee_id]?.inTime || ""}
+                                                            onChange={(e) => handleManualChange(emp.employee_id, "inTime", e.target.value)}
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="admin-table-td">
+                                                    <div className="flex items-center gap-2">
+                                                        <FaClock className="text-gray-300" />
+                                                        <input
+                                                            type="time"
+                                                            className="admin-input py-1 px-2 w-32"
+                                                            value={manualData[emp.employee_id]?.outTime || ""}
+                                                            onChange={(e) => handleManualChange(emp.employee_id, "outTime", e.target.value)}
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="admin-table-td text-center">
+                                                    <select
+                                                        className="admin-select py-1 px-2 w-24 mx-auto"
+                                                        value={manualData[emp.employee_id]?.status || "X"}
+                                                        onChange={(e) => handleManualChange(emp.employee_id, "status", e.target.value)}
+                                                    >
+                                                        <option value="X">-</option>
+                                                        <option value="P">Present</option>
+                                                        <option value="A">Absent</option>
+                                                        <option value="H">Holiday</option>
+                                                        <option value="W">Weekly Off</option>
+                                                    </select>
+                                                </td>
+                                                <td className="admin-table-td text-right">
+                                                    <input type="text" placeholder="Add remark..." className="bg-transparent border-b border-gray-200 text-[10px] text-gray-400 focus:border-blue-400 focus:bg-white px-2 py-1 w-32 outline-none" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                             <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex justify-end">
                                 <button
                                     onClick={saveManualAttendance}
                                     disabled={loading || employees.length === 0}
-                                    className="admin-btn-success px-10"
+                                    className="bg-[#00a65a] border border-[#008d4c] text-white px-10 py-2 rounded-sm font-normal text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <FaSave className="mr-2" /> Save Changes
+                                    <FaSave className="text-[12px]" /> Save Changes
                                 </button>
                             </div>
                         </div>

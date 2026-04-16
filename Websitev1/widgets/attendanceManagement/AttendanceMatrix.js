@@ -110,15 +110,21 @@ const AttendanceMatrix = () => {
 
     return (
         <section className="p-4 bg-[#f4f6f9] min-h-screen">
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h1 className="admin-heading text-2xl">Attendance Matrix</h1>
-                    <p className="admin-subheading">Control panel</p>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <div className="flex items-baseline gap-3">
+                    <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Attendance Matrix</h1>
+                    <span className="text-sm font-light text-gray-500">Control panel</span>
                 </div>
-                <div className="flex items-center text-xs text-gray-500">
-                    <span className="hover:text-gray-700 cursor-pointer">Admin</span>
-                    <FaChevronRight className="mx-2 text-[10px]" />
-                    <span className="text-gray-800 font-bold">Attendance</span>
+                <div className="flex gap-2 mt-4 md:mt-0">
+                    <button
+                        onClick={() => router.push('/admin/attendance-management/data-entry')}
+                        className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
+                    >
+                        <FaPlus className="text-[10px]" /> Data Entry
+                    </button>
+                    <button className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2">
+                        <FaDownload className="text-[10px]" /> Export
+                    </button>
                 </div>
             </div>
 
@@ -130,32 +136,32 @@ const AttendanceMatrix = () => {
             </div>
 
             <div className="admin-box box-primary">
-                <div className="p-4 flex flex-wrap lg:flex-nowrap items-end gap-3 bg-gray-50/50 border-b border-gray-100">
-                    <div className="flex-grow grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <div className="admin-form-group mb-0">
-                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Month</label>
+                <div className="p-4 bg-gray-50/50 border-b border-gray-100">
+                    <div className="flex flex-wrap items-center gap-6">
+                        <div className="flex items-center gap-3">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Month</label>
                             <select
-                                className="admin-select !h-9 !py-1"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-32 p-1.5 h-8 outline-none transition-all shadow-sm"
                                 value={selectedMonth}
                                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                             >
                                 {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
                             </select>
                         </div>
-                        <div className="admin-form-group mb-0">
-                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Year</label>
+                        <div className="flex items-center gap-3">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Year</label>
                             <select
-                                className="admin-select !h-9 !py-1"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-24 p-1.5 h-8 outline-none transition-all shadow-sm"
                                 value={selectedYear}
                                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                             >
                                 {years.map(y => <option key={y} value={y}>{y}</option>)}
                             </select>
                         </div>
-                        <div className="admin-form-group mb-0">
-                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Center</label>
+                        <div className="flex items-center gap-3">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Center</label>
                             <select
-                                className="admin-select !h-9 !py-1"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
                                 value={center_id}
                                 onChange={(e) => setCenter_id(e.target.value)}
                             >
@@ -163,10 +169,10 @@ const AttendanceMatrix = () => {
                                 {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
                             </select>
                         </div>
-                        <div className="admin-form-group mb-0">
-                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Department</label>
+                        <div className="flex items-center gap-3">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Department</label>
                             <select
-                                className="admin-select !h-9 !py-1"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
                                 value={department_id}
                                 onChange={(e) => setDepartment_id(e.target.value)}
                             >
@@ -175,48 +181,37 @@ const AttendanceMatrix = () => {
                             </select>
                         </div>
                     </div>
-                    <div className="flex gap-2 mb-[1px]">
-                        <button
-                            onClick={() => router.push('/admin/attendance-management/data-entry')}
-                            className="admin-btn-success shadow-none h-9 px-4 flex items-center gap-2 whitespace-nowrap"
-                        >
-                            <FaPlus className="text-[10px]" /> Data Entry
-                        </button>
-                        <button className="admin-btn-default shadow-none h-9 px-4 flex items-center gap-2 whitespace-nowrap">
-                            <FaDownload className="text-[10px]" /> Export
-                        </button>
-                    </div>
                 </div>
 
                 <div className="admin-box-header bg-gray-50/50">
-                    <h3 className="admin-box-title">Monthly Attendance Roster</h3>
+                    {/* <h3 className="admin-box-title">Monthly Attendance Roster</h3> */}
                 </div>
-                <div className="admin-content-area overflow-x-auto">
-                    <table className="admin-table border border-[#f4f4f4]">
+                <div className="admin-content-area overflow-x-auto border border-gray-200">
+                    <table className="admin-table border-collapse">
                         <thead className="admin-table-thead">
                             <tr className="border-b border-gray-200">
-                                <th className="admin-table-th sticky left-0 z-20 bg-[#f9f9f9] min-w-[180px] border-r border-gray-200">
+                                <th className="admin-table-th sticky left-0 z-20 bg-[#f9f9f9] min-w-[180px] border-r border-gray-200 !text-[12px] uppercase">
                                     Employee
                                 </th>
                                 {daysArray.map(day => (
                                     <React.Fragment key={day}>
-                                        <th className="admin-table-th text-center min-w-[40px]">
+                                        <th className="admin-table-th text-center min-w-[40px] !text-[12px]">
                                             {day}
                                         </th>
                                         {day % 7 === 0 && (
-                                            <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc]">
+                                            <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc] !text-[12px]">
                                                 W{day / 7}
                                             </th>
                                         )}
                                         {day === daysInMonth && daysInMonth % 7 !== 0 && (
-                                            <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc]">
+                                            <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc] !text-[12px]">
                                                 W5
                                             </th>
                                         )}
                                     </React.Fragment>
                                 ))}
-                                <th className="admin-table-th text-center min-w-[70px]">P/A/L/E</th>
-                                <th className="admin-table-th text-center min-w-[70px]">Total Hrs</th>
+                                <th className="admin-table-th text-center min-w-[70px] !text-[12px] uppercase">P/A/L/E</th>
+                                <th className="admin-table-th text-center min-w-[70px] !text-[11px] uppercase">Total Hrs</th>
                             </tr>
                         </thead>
                         <tbody>
