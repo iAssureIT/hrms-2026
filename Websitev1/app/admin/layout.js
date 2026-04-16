@@ -1300,16 +1300,14 @@ export default function RootLayout({ children }) {
     <div>
       <div className={`block lg:flex sticky top-0 z-50`}>
         <div
-          className={`sticky top-0 z-10 
-            ${open ? "w-[100%] lg:w-[18%]" : " w-[100%] lg:w-[5%]"
-            } duration-300 `}
+          className={`sticky top-0 z-10 transition-all duration-300 
+            ${open ? "w-[100%] lg:w-[230px]" : " w-[100%] lg:w-[50px]"} 
+            `}
         >
           <Logo open={open} />
         </div>
         <div
-          className={`sticky top-0 left-0 z-50
-              ${open ? "w-[100%] lg:w-[82%]" : " w-[100%] lg:w-[95%]"
-            } duration-300`}
+          className={`sticky top-0 left-0 z-50 flex-grow transition-all duration-300`}
         >
           <Navbar
             navbarData={navbarData}
@@ -1330,12 +1328,10 @@ export default function RootLayout({ children }) {
           />
         )}
 
+        {/* Sidebar Container - Displaces content on desktop */}
         <div
-          className={`z-40 ${open ? "fixed lg:sticky w-[75%] shadow-2xl" : "w-0 lg:w-[5%]"} 
-            ${open
-              ? "lg:w-[18%] lg:shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)]"
-              : ""
-            } duration-300 bg-white h-full lg:h-auto`}
+          className={`z-40 transition-all duration-300 relative ${open ? "w-[75%] lg:w-[230px]" : "w-0 lg:w-[50px]"} 
+            bg-[#222d32] h-[calc(100vh-52px)] overflow-y-auto`}
         >
           <Sidebar
             sidebarData={sidebarData}
@@ -1345,10 +1341,9 @@ export default function RootLayout({ children }) {
           />
         </div>
 
+        {/* Main Content Area */}
         <div
-          className={`w-full 
-            ${open ? "lg:w-[82%] overflow-x-hidden" : "lg:w-[95%]"
-            } duration-300`}
+          className={`flex-grow h-[calc(100vh-52px)] overflow-y-auto admin-content-area p-4 bg-[#f4f6f9]`}
         >
           <idContext.Provider value={{ approvalId, setApprovalId }}>
             {children}

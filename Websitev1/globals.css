@@ -2,31 +2,35 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@font-face {
-  src: url("../fonts/MontSerrat/Montserrat-VariableFont_wght.ttf");
-  font-family: "MontSerrat";
-}
-
-body {
-  font-family: "Montserrat", sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&display=swap');
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 
-  /* Premium Palette V2 */
-  --primary: #8c5bf5;
-  --primary-dark: #3fb06a;
-  --primary-light: #d2f2d4;
-  --secondary: #283593;
-  --secondary-light: #3949ab;
-  --bg-main: #f8fafc;
+  /* AdminLTE 2.0 Palette */
+  --primary: #3c8dbc;
+  --primary-dark: #367fa9;
+  --sidebar-dark: #222d32;
+  --sidebar-dark-lighter: #2c3b41;
+  --bg-main: #f4f6f9;
   --bg-card: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
+  --text-main: #333333;
+  --text-muted: #777777;
+  --border-color: #d2d6de;
+  
+  /* Status Colors */
+  --aqua: #00c0ef;
+  --green: #00a65a;
+  --yellow: #f39c12;
+  --red: #dd4b39;
+}
+
+body {
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,8 +43,57 @@ body {
 
 @layer base {
   html {
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
+}
+
+/* Common AdminLTE Styles */
+.bg-aqua { background-color: #00c0ef !important; }
+.bg-green { background-color: #00a65a !important; }
+.bg-yellow { background-color: #f39c12 !important; }
+.bg-red { background-color: #dd4b39 !important; }
+
+/* Custom Sidebar Scrollbar - Thin and Non-overlapping */
+.admin-sidebar {
+  overflow-y: auto;
+  scrollbar-gutter: stable; /* Reservation of space for scrollbar to avoid overlap */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.admin-sidebar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Admin Content Area Scrollbar */
+.admin-content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-content-area::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.admin-content-area::-webkit-scrollbar-thumb {
+  background: #d2d6de;
+  border-radius: 0px;
+}
+
+.admin-content-area::-webkit-scrollbar-thumb:hover {
+  background: #b8c7ce;
 }
 
 /* ----------CKEDITOR--------- */
@@ -69,83 +122,85 @@ body {
   }
 }
 
-@layer components {
-  /* === HR PREMIUM STANDARD DESIGN SYSTEM === */
+  /* AdminLTE Standard Design System */
 
-  /* Layout & Cards */
-  .hr-section {
-    @apply p-6 bg-gray-50/30 min-h-screen font-sans;
+  .admin-heading {
+    @apply text-xl font-normal text-gray-800 tracking-tight;
   }
 
-  .hr-card {
-    @apply bg-white rounded-md shadow-md border-2 border-slate-100 p-6 transition-all duration-300;
+  .admin-subheading {
+    @apply text-sm font-light text-gray-500;
   }
 
-  .hr-metric-card {
-    @apply flex items-center bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-24;
+  .admin-box {
+    @apply bg-white border-t-[3px] border-gray-200 shadow-sm mb-6;
   }
 
-  .hr-metric-icon-wrapper {
-    @apply w-20 h-full flex items-center justify-center text-white shrink-0;
+  .admin-box-header {
+    @apply p-4 border-b border-gray-100 flex justify-between items-center;
   }
 
-  .hr-metric-content {
-    @apply flex flex-col justify-center px-5 py-3 flex-grow;
+  .admin-box-title {
+    @apply text-sm font-bold text-gray-800;
   }
 
-  .hr-metric-label {
-    @apply text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-1 leading-tight;
+  /* Forms Control */
+  .admin-form-group {
+    @apply mb-4;
   }
 
-  .hr-metric-value {
-    @apply text-slate-800 text-2xl font-extrabold;
+  .admin-label {
+    @apply block text-sm font-bold text-gray-700 mb-1;
   }
 
-  /* Typography */
-  .hr-heading {
-    @apply text-xl font-semibold text-slate-800 tracking-tight uppercase;
+  .admin-input {
+    @apply block w-full px-3 py-2 bg-white border border-[#d2d6de] rounded-none text-gray-700 text-sm transition-all duration-200 focus:border-[#3c8dbc] outline-none placeholder:text-gray-400 font-normal shadow-inner;
   }
 
-  .hr-subheading {
-    @apply text-[15px] font-bold text-black uppercase tracking-tight;
+  .admin-select {
+    @apply block w-full px-3 py-2 bg-white border border-[#d2d6de] rounded-none text-gray-700 text-sm transition-all duration-200 focus:border-[#3c8dbc] outline-none font-normal cursor-pointer;
   }
 
-  .hr-section-subtitle {
-    @apply text-[11px] font-normal text-gray-500;
+  /* Buttons Control */
+  .admin-btn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-xs font-normal rounded-sm transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
   }
 
-  /* Forms */
-  .hr-form-group {
-    @apply mb-5;
+  .admin-btn-primary {
+    @apply admin-btn bg-[#3c8dbc] text-white border border-[#367fa9] hover:bg-[#367fa9] shadow-sm;
   }
 
-  .hr-label {
-    @apply block text-sm font-medium text-slate-700 mb-1;
+  .admin-btn-default {
+    @apply admin-btn bg-white text-gray-700 border border-[#ddd] hover:bg-gray-50 shadow-sm;
   }
 
-  .hr-input {
-    @apply block w-full pl-12 pr-4 py-2 bg-white border-0 ring-1 ring-inset ring-slate-200 rounded-md text-slate-900 text-[13px] transition-all duration-200 focus:ring-2 focus:ring-inset focus:ring-green-500 outline-none placeholder:text-slate-400 font-normal;
+  .admin-btn-danger {
+    @apply admin-btn bg-[#dd4b39] text-white border border-[#d73925] hover:bg-[#d73925] shadow-sm;
   }
 
-  .hr-select {
-    @apply block w-full pl-12 pr-4 py-2 bg-white border-0 ring-1 ring-inset ring-slate-200 rounded-md text-slate-900 text-[13px] transition-all duration-200 focus:ring-2 focus:ring-inset focus:ring-green-500 outline-none font-normal cursor-pointer;
+  .admin-btn-success {
+    @apply admin-btn bg-[#00a65a] text-white border border-[#008d4c] hover:bg-[#008d4c] shadow-sm;
   }
 
-  .hr-textarea {
-    @apply block w-full px-4 py-2 bg-white border-0 ring-1 ring-inset ring-slate-200 rounded-md text-slate-900 text-[13px] transition-all duration-200 focus:ring-2 focus:ring-inset focus:ring-green-500 outline-none font-normal min-h-[100px];
+  .admin-btn-warning {
+    @apply admin-btn bg-[#f39c12] text-white border border-[#e08e0b] hover:bg-[#e08e0b] shadow-sm;
   }
 
-  /* Buttons */
-  .hr-btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-1.5 bg-[#4285F4] text-white font-bold rounded-md border border-transparent shadow-sm transition-all duration-200 hover:bg-blue-600 hover:border-white active:scale-95 disabled:opacity-50 disabled:pointer-events-none text-sm;
+  /* Table Style */
+  .admin-table {
+    @apply w-full text-left border-collapse;
   }
 
-  .hr-btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-2.5 bg-white text-slate-700 font-bold border border-slate-200 rounded-lg shadow-sm transition-all duration-200 hover:bg-slate-50 hover:border-slate-300 active:scale-95;
+  .admin-table-thead {
+    @apply bg-[#f9f9f9] border-b border-gray-200;
   }
 
-  .hr-btn-danger {
-    @apply inline-flex items-center justify-center px-8 py-2.5 bg-red-500 text-white font-bold rounded-lg shadow-sm transition-all duration-200 hover:bg-red-600 hover:shadow-red-200 hover:shadow-lg active:scale-95;
+  .admin-table-th {
+    @apply px-4 py-3 text-[11px] font-bold text-gray-600 uppercase;
+  }
+
+  .admin-table-td {
+    @apply px-4 py-3 text-xs text-gray-700 border-b border-gray-100;
   }
 
   /* Search & Utilities */

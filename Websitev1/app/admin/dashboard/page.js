@@ -6,6 +6,9 @@ import { FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCheckCircle, FaMoneyCheck
 import moment from "moment";
 import {
     Chart as ChartJS,
+    BarController,
+    LineController,
+    DoughnutController,
     CategoryScale,
     LinearScale,
     BarElement,
@@ -20,6 +23,9 @@ import {
 import { Bar, Doughnut } from "react-chartjs-2";
 
 ChartJS.register(
+    BarController,
+    LineController,
+    DoughnutController,
     CategoryScale,
     LinearScale,
     BarElement,
@@ -32,42 +38,36 @@ ChartJS.register(
     Filler
 );
 
-const MetricCard = ({ label, value, sub, icon: Icon, gradient, secondaryColor }) => (
-    <div className="relative overflow-hidden rounded-[32px] transition-all duration-500 cursor-pointer group h-[160px] p-[1.5px] bg-gradient-to-br from-slate-100 to-slate-200 hover:from-green-400 hover:to-green-600 hover:scale-[1.02] shadow-sm hover:shadow-2xl hover:shadow-green-100 active:scale-95">
-        <div className="w-full h-full rounded-[30.5px] p-6 relative overflow-hidden transition-colors duration-500 bg-white group-hover:bg-white/95 flex flex-col justify-between">
-            {/* Subtle Background Icon */}
-            <div className={`absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 transform group-hover:scale-110 group-hover:-rotate-12 ${secondaryColor}`}>
-                <Icon size={140} />
-            </div>
+const getStatusColor = (colorClass) => {
+    const colors = {
+        'bg-aqua': '#00c0ef',
+        'bg-green': '#00a65a',
+        'bg-red': '#dd4b39',
+        'bg-yellow': '#f39c12'
+    };
+    return colors[colorClass] || colors['bg-aqua'];
+};
 
-            {/* Top Row: Label & Icon */}
-            <div className="flex justify-between items-start relative z-10">
-                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.2em] block group-hover:text-green-600 transition-colors duration-300">
-                    {label}
-                </span>
-                <div className={`p-3.5 rounded-2xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${gradient} text-white`}>
-                    <Icon size={18} />
-                </div>
-            </div>
-
-            {/* Middle Row: Value (Horizontally aligned across all cards) */}
-            <div className="relative z-10 flex items-center h-10">
-                <h3 className={`${value?.toString().length > 5 ? 'text-lg' : 'text-3xl'} font-black text-slate-800 tracking-tighter transition-all duration-300`}>
-                    {value}
-                </h3>
-            </div>
-
-            {/* Bottom Row: Pinned Sub-text (Aligned across all cards) */}
-            <div className="relative z-10 border-t border-slate-50 pt-2">
-                <p className={`text-[10px] font-bold transition-colors duration-300 ${label === 'Absent' ? 'text-red-500' : label === 'Late pulse' ? 'text-amber-500' : label === 'Payroll Status' ? 'text-indigo-500' : 'text-green-500'} group-hover:text-green-600`}>
+const MetricCard = ({ label, value, sub, icon: Icon, colorClass }) => (
+    <div className="flex bg-white shadow-sm rounded-none overflow-hidden h-24 border border-gray-200">
+        <div 
+            style={{ backgroundColor: getStatusColor(colorClass) }}
+            className="w-24 flex items-center justify-center text-white shrink-0"
+        >
+            <Icon size={40} className="text-white opacity-90" />
+        </div>
+        <div className="flex flex-col justify-center px-4 py-2 flex-grow">
+            <span className="text-gray-600 text-[12px] font-bold uppercase tracking-tight mb-1 truncate">
+                {label}
+            </span>
+            <h3 className="text-xl font-bold text-gray-800 leading-tight">
+                {value}
+            </h3>
+            {sub && (
+                <p className="text-[10px] text-gray-500 mt-1 truncate">
                     {sub}
                 </p>
-            </div>
-
-            <div className="absolute top-4 right-16 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-25"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500/20"></span>
-            </div>
+            )}
         </div>
     </div>
 );
@@ -131,21 +131,24 @@ const HRMSDashboard = () => {
             {
                 type: 'line',
                 label: 'Present Trends',
-                borderColor: '#ef4444',
+                borderColor: '#3c8dbc',
+                backgroundColor: 'rgba(60, 141, 188, 0.4)',
                 borderWidth: 2,
-                fill: false,
+                fill: true,
                 data: trends.map(t => t.present),
                 tension: 0.4,
                 pointRadius: 4,
-                pointBackgroundColor: '#ef4444'
+                pointBackgroundColor: '#3c8dbc',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
             },
             {
                 type: 'bar',
-                label: 'Present Count',
-                backgroundColor: '#16a34a',
-                data: trends.map(t => t.present),
-                borderRadius: 8,
-                barThickness: 30
+                label: 'Attendance Count',
+                backgroundColor: '#f39c12',
+                data: trends.map(t => t.count || 0),
+                borderRadius: 0,
+                barThickness: 20
             }
         ]
     };
@@ -154,9 +157,9 @@ const HRMSDashboard = () => {
         labels: departmentDistribution.map(d => d._id),
         datasets: [{
             data: departmentDistribution.map(d => d.count),
-            backgroundColor: ['#16a34a', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#64748b'],
-            borderWidth: 0,
-            cutout: '75%'
+            backgroundColor: ['#00c0ef', '#00a65a', '#f39c12', '#dd4b39', '#3c8dbc', '#d2d6de'],
+            borderWidth: 1,
+            cutout: '70%'
         }]
     };
 
@@ -171,7 +174,7 @@ const HRMSDashboard = () => {
         const timestamp = moment().format("MMMM Do YYYY, h:mm:ss a");
 
         // Header
-        doc.setFillColor(22, 163, 74); // green-600
+        doc.setFillColor(60, 141, 188); // #3c8dbc (AdminLTE blue)
         doc.rect(0, 0, 210, 40, 'F');
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(22);
@@ -180,7 +183,7 @@ const HRMSDashboard = () => {
         doc.text(`Generated on: ${timestamp}`, 15, 32);
 
         // KPI Summary
-        doc.setTextColor(51, 65, 85); // slate-700
+        doc.setTextColor(51, 65, 85); 
         doc.setFontSize(16);
         doc.text("Summary KPIs", 15, 55);
 
@@ -195,7 +198,7 @@ const HRMSDashboard = () => {
                 ['Payroll Status', kpis.payrollStatus, 'Current cycle']
             ],
             theme: 'striped',
-            headStyles: { fillColor: [22, 163, 74] }
+            headStyles: { fillColor: [60, 141, 188] }
         });
 
         // Department Distribution
@@ -220,73 +223,61 @@ const HRMSDashboard = () => {
                 l.status
             ]),
             theme: 'striped',
-            headStyles: { fillColor: [22, 163, 74] }
+            headStyles: { fillColor: [60, 141, 188] }
         });
 
         doc.save(`HRMS_Dashboard_Report_${moment().format("YYYYMMDD")}.pdf`);
     };
 
     return (
-        <section className="p-6 md:p-10 bg-slate-50/30 min-h-screen">
-            <div className="max-w-[1600px] mx-auto">
+        <section className="p-4 bg-[#f4f6f9] min-h-screen">
+            <div className="mx-auto">
 
                 {/* Header Row */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
-                    <div>
-                        <h1 className="text-3xl font-black text-slate-800 tracking-tighter">Dashboard <span className="text-green-600">Overview</span></h1>
-                        <p className="text-slate-400 font-bold text-sm">Here's what's happening today, {moment().format("dddd, MMMM D")}.</p>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div className="flex items-baseline gap-3">
+                        <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Dashboard</h1>
+                        <span className="text-sm font-light text-gray-500">Control panel</span>
                     </div>
-                    <div className="flex gap-4 mt-4 md:mt-0">
-                        <button onClick={handleGenerateReport} className="bg-white border-2 border-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
+                    <div className="flex gap-2 mt-4 md:mt-0">
+                        <button onClick={handleGenerateReport} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2">
                             <FaFileAlt /> Generate Report
                         </button>
-                        <button onClick={() => window.location.href = '/admin/payroll-management'} className="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-200 transition-all flex items-center gap-2">
+                        <button onClick={() => window.location.href = '/admin/payroll-management'} className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2">
                             <FaMoneyCheckAlt /> Run Payroll
                         </button>
                     </div>
                 </div>
 
                 {/* KPI Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <MetricCard
                         label="Total Employees"
                         value={kpis.totalEmployees}
                         sub="+12 this month"
                         icon={FaUsers}
-                        gradient="bg-gradient-to-br from-teal-400 to-teal-600"
-                        secondaryColor="text-teal-600"
+                        colorClass="bg-aqua"
                     />
                     <MetricCard
                         label="Present Today"
                         value={kpis.presentToday}
                         sub={`${((kpis.presentToday / kpis.totalEmployees) * 100).toFixed(1)}% Attendance`}
                         icon={FaUserCheck}
-                        gradient="bg-gradient-to-br from-green-400 to-green-600"
-                        secondaryColor="text-green-600"
+                        colorClass="bg-green"
                     />
                     <MetricCard
                         label="Absent"
                         value={kpis.absentToday}
                         sub="Leaves + Unplanned"
                         icon={FaUserTimes}
-                        gradient="bg-gradient-to-br from-rose-400 to-rose-600"
-                        secondaryColor="text-rose-600"
+                        colorClass="bg-red"
                     />
                     <MetricCard
                         label="Late pulse"
                         value={kpis.lateToday}
                         sub="> 15 mins late"
                         icon={FaClock}
-                        gradient="bg-gradient-to-br from-amber-400 to-amber-600"
-                        secondaryColor="text-amber-600"
-                    />
-                    <MetricCard
-                        label="Payroll Status"
-                        value={kpis.payrollStatus}
-                        sub="Due in 3 days"
-                        icon={FaMoneyCheckAlt}
-                        gradient="bg-gradient-to-br from-indigo-400 to-indigo-600"
-                        secondaryColor="text-indigo-600"
+                        colorClass="bg-yellow"
                     />
                 </div>
 
@@ -294,75 +285,65 @@ const HRMSDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
 
                     {/* Attendance Trends (2/3 width) */}
-                    <div className="lg:col-span-2 bg-white rounded-[40px] border border-slate-100 shadow-2xl p-10 flex flex-col justify-between">
-                        <div>
-                            <div className="flex justify-between items-start mb-10">
-                                <div>
-                                    <h3 className="text-xl font-black text-slate-800">Attendance Trends</h3>
-                                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Daily present vs absent over the last 14 days</p>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-green-600"></div>
-                                        <span className="text-[10px] font-black text-slate-400 uppercase">Present</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                        <span className="text-[10px] font-black text-slate-400 uppercase">Absent</span>
-                                    </div>
+                    <div className="lg:col-span-2 bg-white border-t-[3px] border-[#3c8dbc] shadow-sm flex flex-col">
+                        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                            <h3 className="text-sm font-bold text-gray-800">Monthly Recap Report</h3>
+                            <div className="flex gap-2 text-gray-400">
+                                <span className="cursor-pointer hover:text-gray-600">−</span>
+                                <span className="cursor-pointer hover:text-gray-600">×</span>
+                            </div>
+                        </div>
+                        <div className="p-5">
+                            <div className="flex justify-between items-center mb-6">
+                                <div className="text-center w-full">
+                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Attendance: 1 Nov, 2026 - 16 Nov, 2026</p>
                                 </div>
                             </div>
-                            <div className="h-[350px]">
-                                <Bar data={trendData} options={{ maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true } } }} />
+                            <div className="h-[300px]">
+                                <Bar data={trendData} options={{ maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: "#f4f4f4" } } } }} />
                             </div>
                         </div>
                     </div>
 
                     {/* Action Needed Panel (1/3 width) */}
-                    <div className="bg-white rounded-[40px] border border-slate-100 shadow-2xl overflow-hidden flex flex-col">
-                        <div className="p-8 pb-4 border-b border-slate-50">
-                            <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-                                <FaBell className="text-amber-500" /> Action Needed
+                    <div className="bg-white border-t-[3px] border-[#f39c12] shadow-sm flex flex-col overflow-hidden">
+                        <div className="p-4 border-b border-gray-100">
+                            <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                <FaBell className="text-[#f39c12]" /> Alerts & Notices
                             </h3>
-                            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">{pendingLeaves.length + (kpis.lateToday > 0 ? 1 : 0)} pending alerts require attention</p>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3">
                             {/* Late Alert */}
                             {kpis.lateToday > 0 && (
-                                <div className="p-4 bg-amber-50 rounded-3xl border border-amber-100 flex gap-4 items-start">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-amber-500 shadow-sm shrink-0">
-                                        <FaClock size={16} />
-                                    </div>
+                                <div className="p-3 bg-yellow-50/50 border-l-4 border-[#f39c12] flex gap-3 items-start">
+                                    <div className="text-[#f39c12] mt-1"><FaClock size={14} /></div>
                                     <div>
-                                        <h5 className="text-xs font-black text-amber-900 uppercase tracking-tight">Late Pulse Detected</h5>
-                                        <p className="text-[11px] font-bold text-amber-700/80 leading-tight mt-0.5">{kpis.lateToday} employees arrived &gt; 15 mins late today.</p>
+                                        <h5 className="text-xs font-bold text-gray-800 uppercase tracking-tight">Late Pulse Detected</h5>
+                                        <p className="text-[10px] text-gray-600 mt-0.5">{kpis.lateToday} employees arrived late today.</p>
                                     </div>
                                 </div>
                             )}
 
                             {/* Pending Leaves */}
                             {pendingLeaves.map(leave => (
-                                <div key={leave._id} className="p-4 bg-slate-50/50 rounded-3xl border border-slate-100 flex gap-4 items-start hover:bg-green-50/30 transition-colors group">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-500 shadow-sm shrink-0 group-hover:bg-green-600 group-hover:text-white transition-all">
-                                        <FaFileAlt size={16} />
-                                    </div>
+                                <div key={leave._id} className="p-3 bg-gray-50 border-l-4 border-gray-200 flex gap-3 items-start hover:bg-gray-100 transition-colors">
+                                    <div className="text-gray-400 mt-1"><FaFileAlt size={14} /></div>
                                     <div className="flex-1">
-                                        <h5 className="text-xs font-black text-slate-800 uppercase tracking-tight">{leave.employeeName}</h5>
-                                        <p className="text-[11px] font-bold text-slate-400/80 leading-tight mt-0.5">Pending: {leave.leaveType} request for {moment(leave.startDate).format("MMM D")}.</p>
+                                        <h5 className="text-xs font-bold text-gray-800 uppercase tracking-tight">{leave.employeeName}</h5>
+                                        <p className="text-[10px] text-gray-500 truncate">Pending: {leave.leaveType} for {moment(leave.startDate).format("MMM D")}.</p>
                                     </div>
-                                    <FaChevronRight className="text-slate-200 mt-3 shrink-0" size={12} />
                                 </div>
                             ))}
 
                             {pendingLeaves.length === 0 && !kpis.lateToday && (
                                 <div className="h-full flex flex-col items-center justify-center text-center p-10 opacity-30">
-                                    <FaCheckCircle size={48} className="text-green-500 mb-4" />
-                                    <p className="font-black text-xs uppercase tracking-widest">All caught up!</p>
+                                    <FaCheckCircle size={32} className="text-green-500 mb-2" />
+                                    <p className="font-bold text-xs uppercase text-gray-400">No pending alerts</p>
                                 </div>
                             )}
                         </div>
-                        <div className="p-8 pt-4">
-                            <button className="w-full bg-slate-50 hover:bg-slate-100 text-slate-400 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[3px] transition-all border border-slate-100">Open Helpdesk Tickets</button>
+                        <div className="p-4 bg-gray-50">
+                            <button className="w-full text-center text-[10px] text-gray-400 font-bold uppercase hover:text-gray-600">View Details</button>
                         </div>
                     </div>
                 </div>
@@ -371,34 +352,31 @@ const HRMSDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Recent Leave Requests Table (2/3 width) */}
-                    <div className="lg:col-span-2 bg-white rounded-[40px] border border-slate-100 shadow-2xl overflow-hidden">
-                        <div className="p-8 pb-4 flex justify-between items-center">
-                            <div>
-                                <h3 className="text-lg font-black text-slate-800">Recent Leave Requests</h3>
-                                <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Latest applications needing attention</p>
-                            </div>
-                            <button className="text-green-600 font-black text-[10px] uppercase tracking-widest hover:underline">View All &rarr;</button>
+                    <div className="lg:col-span-2 bg-white border-t-[3px] border-[#00a65a] shadow-sm flex flex-col">
+                        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                            <h3 className="text-sm font-bold text-gray-800">Recent Leave Requests</h3>
+                            <button className="text-xs text-[#00a65a] font-bold border border-[#00a65a] px-3 py-1 rounded hover:bg-[#00a65a] hover:text-white transition-all">View All</button>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-slate-50/50 border-b border-slate-100">
+                                <thead className="bg-[#f9f9f9]">
                                     <tr>
-                                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Employee</th>
-                                        <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Leave Type</th>
-                                        <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Duration</th>
-                                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Status</th>
+                                        <th className="px-5 py-3 text-[11px] font-bold text-gray-600 uppercase border-b border-gray-200">Employee</th>
+                                        <th className="px-5 py-3 text-[11px] font-bold text-gray-600 uppercase border-b border-gray-200">Leave Type</th>
+                                        <th className="px-5 py-3 text-[11px] font-bold text-gray-600 uppercase border-b border-gray-200 text-center">Duration</th>
+                                        <th className="px-5 py-3 text-[11px] font-bold text-gray-600 uppercase border-b border-gray-200 text-right">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {recentLeaves.length === 0 ? (
-                                        <tr><td colSpan={4} className="py-16 text-center font-bold text-slate-300">No recent applications</td></tr>
+                                        <tr><td colSpan={4} className="py-10 text-center text-gray-400 italic">No recent applications</td></tr>
                                     ) : recentLeaves.map(leave => (
-                                        <tr key={leave._id} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                                            <td className="px-8 py-4 font-extrabold text-sm text-slate-700">{leave.employeeName}</td>
-                                            <td className="px-6 py-4 font-bold text-slate-500 text-xs">{leave.leaveType}</td>
-                                            <td className="px-6 py-4 font-bold text-slate-500 text-xs">{moment(leave.startDate).format("MMM D")} - {moment(leave.endDate).format("MMM D")}</td>
-                                            <td className="px-8 py-4 text-right">
-                                                <span className={`px-4 py-1.5 rounded-full font-black text-[9px] uppercase tracking-widest ${leave.status === 'APPROVED' ? 'bg-green-50 text-green-600' : leave.status === 'REJECTED' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
+                                        <tr key={leave._id} className="border-b border-gray-100 hover:bg-[#f5f5f5] transition-colors">
+                                            <td className="px-5 py-3 text-xs font-bold text-gray-700">{leave.employeeName}</td>
+                                            <td className="px-5 py-3 text-xs text-gray-500">{leave.leaveType}</td>
+                                            <td className="px-5 py-3 text-xs text-gray-500 text-center">{moment(leave.startDate).format("MMM D")} - {moment(leave.endDate).format("MMM D")}</td>
+                                            <td className="px-5 py-3 text-right">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${leave.status === 'APPROVED' ? 'bg-green' : leave.status === 'REJECTED' ? 'bg-red' : 'bg-yellow'}`}>
                                                     {leave.status}
                                                 </span>
                                             </td>

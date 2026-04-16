@@ -91,8 +91,8 @@ const AttendanceDataEntry = () => {
             } else {
                 Swal.fire("Error", res.data.message || "Failed to fetch roster", "error");
             }
-        } catch (err) { 
-            console.error(err); 
+        } catch (err) {
+            console.error(err);
             Swal.fire("Server Error", "Could not connect to attendance service", "error");
         }
         finally { setLoading(false); }
@@ -165,46 +165,27 @@ const AttendanceDataEntry = () => {
 
         try {
             setLoading(true);
-            // 1. Save mapping for future use
             await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/attendance/post/mapping`, {
                 mappingName: `Mapping_${file.name}`,
                 mappings: Object.entries(mappings).map(([k, v]) => ({ systemField: k, excelHeader: v })),
                 user_id: userDetails._id
             });
 
-            // 2. Prepare data for import
-            const headers = excelHeaders;
-            const dataToImport = [];
-
-            // Find column indices
-            const colIdx = {};
-            Object.entries(mappings).forEach(([sysField, excelHeader]) => {
-                colIdx[sysField] = headers.indexOf(excelHeader);
-            });
-
-            // Get raw data from XLSX (re-reading if necessary, but we already have it in excelData? Wait, I didn't set it in the new version)
-            // Let's re-read the file to be safe or ensure excelData is populated.
             const reader = new FileReader();
             reader.onload = async (evt) => {
                 const wb = XLSX.read(evt.target.result, { type: "binary" });
                 const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-                
+                const dataToImport = [];
+
                 rows.forEach(row => {
                     const logDateRaw = row[mappings.logDate];
-                    const inTimeRaw = row[mappings.inTime];
-                    const outTimeRaw = row[mappings.outTime];
-                    
                     if (logDateRaw && row[mappings.employeeID]) {
-                        // Date formatting help
                         const logDate = moment(logDateRaw).format("YYYY-MM-DD");
-                        const inTime = inTimeRaw ? moment(`${logDate} ${inTimeRaw}`).toDate() : null;
-                        const outTime = outTimeRaw ? moment(`${logDate} ${outTimeRaw}`).toDate() : null;
-
                         dataToImport.push({
                             employeeID: row[mappings.employeeID],
                             date: logDate,
-                            inTime,
-                            outTime,
+                            inTime: row[mappings.inTime] ? moment(`${logDate} ${row[mappings.inTime]}`).toDate() : null,
+                            outTime: row[mappings.outTime] ? moment(`${logDate} ${row[mappings.outTime]}`).toDate() : null,
                             source: 'Excel_Biometric'
                         });
                     }
@@ -224,156 +205,174 @@ const AttendanceDataEntry = () => {
             };
             reader.readAsBinaryString(file);
 
-        } catch (err) { 
-            console.error(err); 
+        } catch (err) {
+            console.error(err);
             Swal.fire("Error", "Import failed", "error");
             setLoading(false);
         }
     };
 
     return (
-        <section className="section p-6 md:p-10 bg-white min-h-screen">
-            <div className="max-w-[1400px] mx-auto">
-                <div className="mb-8 pl-1">
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest mb-1 text-green-600">
-                        Attendance System
-                    </div>
-                    <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-                        Attendance <span className="text-green-600 font-black">Data Entry</span>
-                    </h1>
+        <section className="p-4 bg-[#f4f6f9] min-h-screen">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-baseline gap-3">
+                    <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Attendance Data Entry</h1>
+                    <span className="text-sm font-light text-gray-500">Control panel</span>
                 </div>
+                <div className="flex items-center text-xs text-gray-400 font-bold uppercase tracking-wider">
+                    <span className="hover:text-gray-600 cursor-pointer">Admin</span>
+                    <FaChevronRight className="mx-2 text-[10px] opacity-30" />
+                    <span className="text-gray-800">Attendance</span>
+                </div>
+            </div>
 
-                {/* Tab Navigation */}
-                <div className="flex gap-1 bg-slate-100 p-1.5 rounded-[20px] w-fit mb-10 shadow-inner border border-slate-200/50">
-                    {[
-                        { id: "upload", label: "Bulk Upload Wizard", icon: FaCloudUploadAlt },
-                        { id: "manual", label: "Manual Grid Entry", icon: FaRegAddressCard }
-                    ].map(tab => (
-                        <button 
-                            key={tab.id}
-                            onClick={() => { setActiveTab(tab.id); setStep(1); }}
-                            className={`flex items-center gap-2 px-8 py-3 rounded-[14px] font-bold text-sm transition-all duration-300 ${activeTab === tab.id ? 'bg-white text-green-600 shadow-xl shadow-green-100 border border-green-50' : 'text-slate-500 hover:text-slate-700'}`}
+            <div className="admin-box border-t-0 bg-transparent shadow-none">
+                <div className="admin-box-header p-0 border-b-0">
+                    <div className="flex">
+                        <button
+                            onClick={() => { setActiveTab("upload"); setStep(1); }}
+                            className={`px-6 py-3 text-sm font-bold transition-all border-r border-gray-200 ${activeTab === 'upload' ? 'border-t-[3px] border-t-[#3c8dbc] bg-white text-gray-800' : 'text-gray-500 hover:text-gray-700 bg-[#f4f4f4]'}`}
                         >
-                            <tab.icon className={activeTab === tab.id ? "text-green-600" : "text-slate-400"} />
-                            {tab.label}
+                            <FaCloudUploadAlt className="inline mr-2" /> Bulk Upload Wizard
                         </button>
-                    ))}
+                        <button
+                            onClick={() => { setActiveTab("manual"); setStep(1); }}
+                            className={`px-6 py-3 text-sm font-bold transition-all border-r border-gray-200 ${activeTab === 'manual' ? 'border-t-[3px] border-t-[#3c8dbc] bg-white text-gray-800 focus:outline-none' : 'text-gray-500 hover:text-gray-700 bg-[#f4f4f4]'}`}
+                        >
+                            <FaRegAddressCard className="inline mr-2" /> Manual Grid Entry
+                        </button>
+                    </div>
                 </div>
+            </div>
 
+            <div className="admin-box bg-white mt-0 border-t-0 p-8 pt-10">
                 {activeTab === 'upload' ? (
-                    <div className="bg-white rounded-[40px] border border-slate-100 shadow-2xl shadow-slate-200/40 p-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                        {/* Stepper UI ... (Keeping previous logic but with cleaner design) */}
-                        <div className="flex items-center justify-center gap-4 mb-16">
-                            {[1, 2, 3].map(n => (
-                                <React.Fragment key={n}>
-                                    <div className={`flex flex-col items-center gap-2 ${step >= n ? 'opacity-100' : 'opacity-30'}`}>
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black ${step >= n ? 'bg-green-600 text-white shadow-lg shadow-green-200' : 'bg-slate-100 text-slate-400'}`}>
-                                            {n}
+                    <div className="max-w-4xl mx-auto">
+                        <div className="p-8">
+                            {/* Stepper UI */}
+                            <div className="flex items-center justify-center gap-4 mb-12">
+                                {[1, 2, 3].map(n => (
+                                    <React.Fragment key={n}>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 ${step >= n ? 'bg-[#00a65a] text-white border-[#00a65a]' : 'bg-white text-gray-400 border-gray-200'}`}>
+                                                {n}
+                                            </div>
+                                            <span className={`text-[10px] uppercase font-bold ${step >= n ? 'text-gray-800' : 'text-gray-400'}`}>
+                                                {n === 1 ? 'Upload' : n === 2 ? 'Mapping' : 'Done'}
+                                            </span>
                                         </div>
+                                        {n < 3 && <div className={`h-[2px] w-20 ${step > n ? 'bg-[#00a65a]' : 'bg-gray-200'}`}></div>}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+
+                            {step === 1 && (
+                                <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-gray-200 bg-gray-50/30">
+                                    <div className="w-20 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center text-[#3c8dbc] mb-6 border border-gray-100">
+                                        <FaCloudUploadAlt size={40} />
                                     </div>
-                                    {n < 3 && <div className={`h-[2px] w-20 rounded-full ${step > n ? 'bg-green-600' : 'bg-slate-100'}`}></div>}
-                                </React.Fragment>
-                            ))}
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2">Upload Biometric Source</h3>
+                                    <p className="text-gray-500 text-xs mb-8">Click below to browse for your Attendance Excel file</p>
+                                    <label className="admin-btn-primary px-10 cursor-pointer">
+                                        Browse Files
+                                        <input type="file" className="hidden" accept=".xlsx,.xls,.csv" onChange={handleFileUpload} />
+                                    </label>
+                                </div>
+                            )}
+
+                            {step === 2 && (
+                                <div className="space-y-6">
+                                    <div className="bg-[#00a65a] p-4 text-white flex items-center justify-between shadow-sm">
+                                        <div>
+                                            <h4 className="font-bold">Column Mapping Engine</h4>
+                                            <p className="text-xs opacity-90 mt-1">Source: {file?.name}</p>
+                                        </div>
+                                        <FaExchangeAlt size={24} className="opacity-40" />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {systemFields.map(field => (
+                                            <div key={field.key} className="admin-form-group">
+                                                <label className="admin-label">{field.label} {field.required && '*'}</label>
+                                                <select
+                                                    className="admin-select"
+                                                    value={mappings[field.key] || ""}
+                                                    onChange={(e) => setMappings(p => ({ ...p, [field.key]: e.target.value }))}
+                                                >
+                                                    <option value="">Select Excel Header</option>
+                                                    {excelHeaders.map((h, i) => <option key={i} value={h}>{h}</option>)}
+                                                </select>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-between pt-6 border-t border-gray-100">
+                                        <button onClick={() => setStep(1)} className="admin-btn-default px-6">Back</button>
+                                        <button onClick={saveAndImport} className="admin-btn-success px-10">Process & Import</button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 3 && (
+                                <div className="text-center py-12">
+                                    <div className="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <FaCheckCircle size={40} />
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Sync Completed!</h2>
+                                    <p className="text-gray-500 mb-8">Biometric data has been normalized and applied.</p>
+                                    <button onClick={() => window.location.href = '/admin/attendance-management/matrix'} className="admin-btn-primary px-8">View Monthly Matrix</button>
+                                </div>
+                            )}
                         </div>
-
-                        {step === 1 && (
-                            <div className="flex flex-col items-center justify-center p-16 border-4 border-dashed border-slate-100 rounded-[40px] bg-slate-50/30 group hover:border-green-100 transition-all">
-                                <div className="w-24 h-24 bg-white rounded-[28px] shadow-2xl flex items-center justify-center text-slate-200 group-hover:text-green-500 transition-all mb-8">
-                                    <FaCloudUploadAlt size={48} />
-                                </div>
-                                <h3 className="text-2xl font-black text-slate-800 mb-2">Upload Biometric Source</h3>
-                                <p className="text-slate-400 text-xs font-bold mb-10 tracking-widest uppercase">Support for Door Access & WFH CSV/XLSX</p>
-                                <label className="bg-green-600 hover:bg-green-700 text-white px-12 py-4.5 rounded-[18px] transition-all shadow-xl shadow-green-200 active:scale-95 font-bold text-sm cursor-pointer border-b-4 border-blue-800">
-                                    Browse Files
-                                    <input type="file" className="hidden" accept=".xlsx,.xls,.csv" onChange={handleFileUpload} />
-                                </label>
-                            </div>
-                        )}
-
-                        {step === 2 && (
-                            <div className="space-y-10">
-                                <div className="bg-green-600 rounded-[28px] p-8 text-white flex items-center justify-between shadow-xl shadow-green-100">
-                                    <div>
-                                        <h4 className="text-lg font-black tracking-tight">Column Mapping Engine</h4>
-                                        <p className="text-green-100 text-xs font-bold opacity-80 uppercase tracking-widest mt-1">Source: {file?.name}</p>
-                                    </div>
-                                    <FaExchangeAlt size={32} className="opacity-40" />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    {systemFields.map(field => (
-                                        <div key={field.key} className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{field.label} {field.required && '*'}</label>
-                                            <select 
-                                                className="w-full bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:ring-green-500/20"
-                                                value={mappings[field.key] || ""}
-                                                onChange={(e) => setMappings(p => ({...p, [field.key]: e.target.value}))}
-                                            >
-                                                <option value="">Select Excel Header</option>
-                                                {excelHeaders.map((h, i) => <option key={i} value={h}>{h}</option>)}
-                                            </select>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex justify-between pt-10 border-t border-slate-100">
-                                    <button onClick={() => setStep(1)} className="text-slate-400 font-bold hover:text-slate-600 transition-all font-black text-xs uppercase tracking-widest px-8">Back</button>
-                                    <button onClick={saveAndImport} className="bg-green-600 text-white px-12 py-4 rounded-2xl font-black text-sm shadow-xl shadow-green-100 hover:bg-green-700">Process Data</button>
-                                </div>
-                            </div>
-                        )}
-
-                        {step === 3 && (
-                            <div className="text-center py-20 animate-in zoom-in duration-500">
-                                <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 ring-8 ring-green-50/50">
-                                    <FaCheckCircle size={56} />
-                                </div>
-                                <h2 className="text-3xl font-black text-slate-800 mb-4 tracking-tight">Sync Completed!</h2>
-                                <p className="text-slate-500 font-bold max-w-sm mx-auto mb-12">Biometric data has been normalized and applied to the monthly matrix.</p>
-                                <button onClick={() => window.location.href='/admin/attendance-management/matrix'} className="bg-green-600 text-white px-12 py-4 rounded-2xl font-black text-sm shadow-xl shadow-green-100">View Matrix</button>
-                            </div>
-                        )}
                     </div>
                 ) : (
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-700">
-                        {/* Manual Filters */}
-                        <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/30 grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Select Date</label>
-                                <input 
-                                    type="date" 
-                                    className="w-full bg-slate-50 border-slate-200 rounded-2xl py-3 px-5 text-sm font-bold text-slate-700"
-                                    value={selectedDate}
-                                    onChange={(e) => setSelectedDate(e.target.value)}
-                                />
+                        <div className="admin-box">
+                            <div className="admin-box-header">
+                                <h3 className="admin-box-title">Search & Filters</h3>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Center</label>
-                                <select className="w-full bg-slate-50 border-slate-200 rounded-2xl py-3 px-5 text-sm font-bold text-slate-700" value={center_id} onChange={(e) => setCenter_id(e.target.value)}>
-                                    <option value="all">All Centers</option>
-                                    {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
-                                </select>
+                            <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                <div className="admin-form-group">
+                                    <label className="admin-label">Date</label>
+                                    <input
+                                        type="date"
+                                        className="admin-input"
+                                        value={selectedDate}
+                                        onChange={(e) => setSelectedDate(e.target.value)}
+                                    />
+                                </div>
+                                <div className="admin-form-group">
+                                    <label className="admin-label">Center</label>
+                                    <select className="admin-select" value={center_id} onChange={(e) => setCenter_id(e.target.value)}>
+                                        <option value="all">All Centers</option>
+                                        {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
+                                    </select>
+                                </div>
+                                <div className="admin-form-group">
+                                    <label className="admin-label">Department</label>
+                                    <select className="admin-select" value={department_id} onChange={(e) => setDepartment_id(e.target.value)}>
+                                        <option value="all">All Departments</option>
+                                        {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
+                                    </select>
+                                </div>
+                                <div className="mb-4">
+                                    <button onClick={fetchEmployees} className="admin-btn-primary w-full h-[34px]">
+                                        <FaFilter className="mr-2" /> Apply Filter
+                                    </button>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
-                                <select className="w-full bg-slate-50 border-slate-200 rounded-2xl py-3 px-5 text-sm font-bold text-slate-700" value={department_id} onChange={(e) => setDepartment_id(e.target.value)}>
-                                    <option value="all">All Departments</option>
-                                    {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
-                                </select>
-                            </div>
-                            <button onClick={fetchEmployees} className="bg-slate-800 text-white h-[50px] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
-                                <FaFilter /> Apply Filter
-                            </button>
                         </div>
 
-                        {/* Manual Grid */}
-                        <div className="bg-white rounded-[40px] border border-slate-100 shadow-2xl overflow-hidden">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="bg-slate-50/80 border-b border-slate-100">
-                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Employee</th>
-                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">In Time</th>
-                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Out Time</th>
-                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                        <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Remarks</th>
+                        <div className="admin-box">
+                            <div className="admin-box-header">
+                                <h3 className="admin-box-title">Manual Data Entry Grid</h3>
+                            </div>
+                            <table className="admin-table">
+                                <thead className="admin-table-thead">
+                                    <tr>
+                                        <th className="admin-table-th">Employee</th>
+                                        <th className="admin-table-th">In Time</th>
+                                        <th className="admin-table-th">Out Time</th>
+                                        <th className="admin-table-th text-center">Status</th>
+                                        <th className="admin-table-th text-right">Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -382,38 +381,38 @@ const AttendanceDataEntry = () => {
                                     ) : employees.length === 0 ? (
                                         <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">No employees found for selection</td></tr>
                                     ) : employees.map(emp => (
-                                        <tr key={emp.employee_id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                            <td className="px-8 py-5">
+                                        <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="admin-table-td">
                                                 <div className="flex flex-col">
-                                                    <span className="text-sm font-extrabold text-slate-800">{emp.employeeName}</span>
-                                                    <span className="text-[10px] font-bold text-slate-400">{emp.employeeID}</span>
+                                                    <span className="text-xs font-bold text-gray-800">{emp.employeeName}</span>
+                                                    <span className="text-[10px] text-gray-400">{emp.employeeID}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5">
-                                                <div className="relative group">
-                                                    <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-green-500 transition-colors" />
-                                                    <input 
-                                                        type="time" 
-                                                        className="bg-slate-50 border-slate-100 rounded-xl py-2 pl-12 pr-4 text-xs font-black text-slate-700 focus:ring-green-500/20 w-36"
+                                            <td className="admin-table-td">
+                                                <div className="flex items-center gap-2">
+                                                    <FaClock className="text-gray-300" />
+                                                    <input
+                                                        type="time"
+                                                        className="admin-input py-1 px-2 w-32"
                                                         value={manualData[emp.employee_id]?.inTime || ""}
                                                         onChange={(e) => handleManualChange(emp.employee_id, "inTime", e.target.value)}
                                                     />
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5">
-                                                <div className="relative group">
-                                                    <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-green-500 transition-colors" />
-                                                    <input 
-                                                        type="time" 
-                                                        className="bg-slate-50 border-slate-100 rounded-xl py-2 pl-12 pr-4 text-xs font-black text-slate-700 focus:ring-green-500/20 w-36"
+                                            <td className="admin-table-td">
+                                                <div className="flex items-center gap-2">
+                                                    <FaClock className="text-gray-300" />
+                                                    <input
+                                                        type="time"
+                                                        className="admin-input py-1 px-2 w-32"
                                                         value={manualData[emp.employee_id]?.outTime || ""}
                                                         onChange={(e) => handleManualChange(emp.employee_id, "outTime", e.target.value)}
                                                     />
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5 text-center">
-                                                <select 
-                                                    className="bg-slate-50 border-none rounded-xl py-2 text-[10px] font-black text-slate-600 focus:ring-0 w-24 mx-auto"
+                                            <td className="admin-table-td text-center">
+                                                <select
+                                                    className="admin-select py-1 px-2 w-24 mx-auto"
                                                     value={manualData[emp.employee_id]?.status || "X"}
                                                     onChange={(e) => handleManualChange(emp.employee_id, "status", e.target.value)}
                                                 >
@@ -424,20 +423,20 @@ const AttendanceDataEntry = () => {
                                                     <option value="W">Weekly Off</option>
                                                 </select>
                                             </td>
-                                            <td className="px-8 py-5 text-right">
-                                                <input type="text" placeholder="Add remark..." className="bg-transparent border-b border-slate-200 text-[10px] font-bold text-slate-400 focus:border-blue-400 focus:bg-white px-2 py-1 w-32 focus:outline-none" />
+                                            <td className="admin-table-td text-right">
+                                                <input type="text" placeholder="Add remark..." className="bg-transparent border-b border-gray-200 text-[10px] text-gray-400 focus:border-blue-400 focus:bg-white px-2 py-1 w-32 outline-none" />
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                            <div className="p-8 bg-slate-50/50 flex justify-end">
-                                <button 
+                            <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex justify-end">
+                                <button
                                     onClick={saveManualAttendance}
                                     disabled={loading || employees.length === 0}
-                                    className="bg-green-600 hover:bg-green-700 text-white px-12 py-4 rounded-2xl flex items-center gap-3 font-black text-sm shadow-xl shadow-green-200 transition-all active:scale-95 disabled:bg-slate-300"
+                                    className="admin-btn-success px-10"
                                 >
-                                    <FaSave /> Save Changes
+                                    <FaSave className="mr-2" /> Save Changes
                                 </button>
                             </div>
                         </div>

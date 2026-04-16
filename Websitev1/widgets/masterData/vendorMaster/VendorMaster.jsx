@@ -1255,7 +1255,6 @@ import {
 import S3FileUpload from "react-s3";
 import { Buffer } from "buffer";
 import { MdFileUpload, MdPictureAsPdf, MdImage, MdClose } from "react-icons/md";
-import { CiBank, CiViewList } from "react-icons/ci";
 // === Asset Management Style Helpers ===
 const SectionHeader = ({ title, subtitle }) => (
     <div className="mb-5 border-b border-gray-100 pb-2">
@@ -1272,38 +1271,38 @@ const IconWrapper = ({ icon: Icon }) => (
     </div>
 );
 
-const initialState = {
+export default function VendorFormPage() {
     vendorStatus: "Active",
-    vendorInfo: {
+        vendorInfo: {
         nameOfCompany: "",
-        vendorCategory: "",
-        vendorCategory_id: "",
-        vendorSubCategory: "",
-        vendorSubCategory_id: "",
-        panNumber: "",
-        gstin: "",
-        tdsApplicable: false,
-        lupinFoundationCenterName: "",
-        primaryContactPersonName: "",
-        designation: "",
-        mobileNumber: "",
-        officialEmailId: "",
+            vendorCategory: "",
+                vendorCategory_id: "",
+                    vendorSubCategory: "",
+                        vendorSubCategory_id: "",
+                            panNumber: "",
+                                gstin: "",
+                                    tdsApplicable: false,
+                                        lupinFoundationCenterName: "",
+                                            primaryContactPersonName: "",
+                                                designation: "",
+                                                    mobileNumber: "",
+                                                        officialEmailId: "",
     },
     bankDetails: {
         bankName: "",
-        branchName: "",
-        accountHolderName: "",
-        accountNumber: "",
-        ifscCode: "",
-        accountType: "",
+            branchName: "",
+                accountHolderName: "",
+                    accountNumber: "",
+                        ifscCode: "",
+                            accountType: "",
     },
     addressDetails: {
         addressLine1: "",
-        city: "",
-        district: "",
-        state: "",
-        country: "",
-        pinCode: "",
+            city: "",
+                district: "",
+                    state: "",
+                        country: "",
+                            pinCode: "",
     },
 };
 
@@ -2005,416 +2004,418 @@ export default function VendorFormPage() {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="border-b-2 mx-6"></div>
-
-                        {/* ================= CONTACT PERSON DETAILS ================= */}
-                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader
-                                title="Contact Person Details"
-                                subtitle="Information of the primary contact person for this vendor."
-                            />
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-6">
-                                {/* Primary Contact Person */}
-                                <div>
-                                    <label className="hr-label">
-                                        Primary Contact Person <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdPerson} />
-                                        <input
-                                            value={formData.vendorInfo.primaryContactPersonName}
-                                            onChange={(e) => handleChange("vendorInfo", "primaryContactPersonName", e.target.value)}
-                                            placeholder="Enter Person Name"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.primaryContactPersonName && <p className="error">{errors.primaryContactPersonName}</p>}
-                                </div>
-
-                                {/* Designation */}
-                                <div>
-                                    <label className="hr-label">
-                                        Designation <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdWork} />
-                                        <input
-                                            value={formData.vendorInfo.designation}
-                                            onChange={(e) => handleChange("vendorInfo", "designation", e.target.value)}
-                                            placeholder="Enter Designation"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.designation && <p className="error">{errors.designation}</p>}
-                                </div>
-
-                                {/* Mobile Number */}
-                                <div>
-                                    <label className="hr-label">
-                                        Mobile Number <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdPhone} />
-                                        <input
-                                            maxLength={10}
-                                            value={formData.vendorInfo.mobileNumber}
-                                            onChange={(e) => handleChange("vendorInfo", "mobileNumber", e.target.value)}
-                                            placeholder="Enter Mobile Number"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.mobileNumber && <p className="error">{errors.mobileNumber}</p>}
-                                </div>
-
-                                {/* Official Email */}
-                                <div>
-                                    <label className="hr-label">
-                                        Official Email <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdEmail} />
-                                        <input
-                                            type="email"
-                                            value={formData.vendorInfo.officialEmailId}
-                                            onChange={(e) => handleChange("vendorInfo", "officialEmailId", e.target.value)}
-                                            placeholder="Enter Official Email"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.officialEmailId && <p className="error">{errors.officialEmailId}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* ================= BANK DETAILS ================= */}
-                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader
-                                title="Bank Details"
-                                subtitle="Payment and banking information for vendor settlements."
-                            />
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
-                                {/* Bank Name */}
-                                <div>
-                                    <label className="hr-label">
-                                        Bank Name <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={CiBank} />
-                                        <input
-                                            value={formData.bankDetails.bankName}
-                                            onChange={(e) => handleChange("bankDetails", "bankName", e.target.value)}
-                                            placeholder="Enter Bank Name"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.bankName && <p className="error">{errors.bankName}</p>}
-                                </div>
-
-                                {/* Branch Name */}
-                                <div>
-                                    <label className="hr-label">
-                                        Branch Name <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={CiBank} />
-                                        <input
-                                            value={formData.bankDetails.branchName}
-                                            onChange={(e) => handleChange("bankDetails", "branchName", e.target.value)}
-                                            placeholder="Enter Branch Name"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.branchName && <p className="error">{errors.branchName}</p>}
-                                </div>
-
-                                {/* Account Holder Name */}
-                                <div>
-                                    <label className="hr-label">
-                                        Account Holder <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdPerson} />
-                                        <input
-                                            value={formData.bankDetails.accountHolderName}
-                                            onChange={(e) => handleChange("bankDetails", "accountHolderName", e.target.value)}
-                                            placeholder="Enter Holder Name"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.accountHolderName && <p className="error">{errors.accountHolderName}</p>}
-                                </div>
-
-                                {/* Account Number */}
-                                <div>
-                                    <label className="hr-label">
-                                        Account Number <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdNumbers} />
-                                        <input
-                                            type="number"
-                                            value={formData.bankDetails.accountNumber}
-                                            onChange={(e) => handleChange("bankDetails", "accountNumber", e.target.value)}
-                                            placeholder="Enter Account Number"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.accountNumber && <p className="error">{errors.accountNumber}</p>}
-                                </div>
-
-                                {/* IFSC Code */}
-                                <div>
-                                    <label className="hr-label">
-                                        IFSC Code <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdQrCode} />
-                                        <input
-                                            value={formData.bankDetails.ifscCode}
-                                            onChange={(e) => handleChange("bankDetails", "ifscCode", e.target.value)}
-                                            placeholder="Enter IFSC Code"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.ifscCode && <p className="error">{errors.ifscCode}</p>}
-                                </div>
-
-                                {/* Account Type */}
-                                <div>
-                                    <label className="hr-label">
-                                        Account Type <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdAccountBalance} />
-                                        <select
-                                            value={formData.bankDetails.accountType}
-                                            onChange={(e) => handleChange("bankDetails", "accountType", e.target.value)}
-                                            className="hr-select"
-                                        >
-                                            <option value="">Select Account Type</option>
-                                            {bankAccountTypes.map((type, i) => (
-                                                <option key={i} value={type.value}>{type.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    {errors.accountType && <p className="error">{errors.accountType}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* ================= ADDRESS DETAILS ================= */}
-                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader
-                                title="Address Details"
-                                subtitle="Physical location and mailing address of the vendor."
-                            />
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
-                                {/* Address Line 1 */}
-                                <div>
-                                    <label className="hr-label">
-                                        Address Line 1 <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdHome} />
-                                        <input
-                                            value={formData.addressDetails.addressLine1}
-                                            onChange={(e) => handleChange("addressDetails", "addressLine1", e.target.value)}
-                                            placeholder="Enter Address"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.addressLine1 && <p className="error">{errors.addressLine1}</p>}
-                                </div>
-
-                                {/* City */}
-                                <div>
-                                    <label className="hr-label">
-                                        City <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdLocationCity} />
-                                        <input
-                                            value={formData.addressDetails.city}
-                                            onChange={(e) => handleChange("addressDetails", "city", e.target.value)}
-                                            placeholder="Enter City"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.city && <p className="error">{errors.city}</p>}
-                                </div>
-
-                                {/* District */}
-                                <div>
-                                    <label className="hr-label">
-                                        District <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdLocationOn} />
-                                        <input
-                                            value={formData.addressDetails.district}
-                                            onChange={(e) => handleChange("addressDetails", "district", e.target.value)}
-                                            placeholder="Enter District"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.district && <p className="error">{errors.district}</p>}
-                                </div>
-
-                                {/* State */}
-                                <div>
-                                    <label className="hr-label">
-                                        State <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdLocationOn} />
-                                        <input
-                                            value={formData.addressDetails.state}
-                                            onChange={(e) => handleChange("addressDetails", "state", e.target.value)}
-                                            placeholder="Enter State"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.state && <p className="error">{errors.state}</p>}
-                                </div>
-
-                                {/* Country */}
-                                <div>
-                                    <label className="hr-label">
-                                        Country <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdPublic} />
-                                        <input
-                                            value={formData.addressDetails.country}
-                                            onChange={(e) => handleChange("addressDetails", "country", e.target.value)}
-                                            placeholder="Enter Country"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.country && <p className="error">{errors.country}</p>}
-                                </div>
-
-                                {/* PIN Code */}
-                                <div>
-                                    <label className="hr-label">
-                                        PIN Code <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative group">
-                                        <IconWrapper icon={MdLocalPostOffice} />
-                                        <input
-                                            type="number"
-                                            maxLength={6}
-                                            value={formData.addressDetails.pinCode}
-                                            onChange={(e) => handleChange("addressDetails", "pinCode", e.target.value)}
-                                            placeholder="Enter PIN"
-                                            className="hr-input"
-                                        />
-                                    </div>
-                                    {errors.pinCode && <p className="error">{errors.pinCode}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* file upload section */}
-                        <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
-                            <SectionHeader
-                                title="Document Upload"
-                                subtitle="Upload supporting vendor documents (PDF, PNG, JPG)."
-                            />
-
-                            <div className="flex flex-col lg:flex-row gap-8">
-                                <div
-                                    className={`flex-1 border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
-                                        ${isDragOver ? "border-[#4285F4] bg-[#4285F4]/5 shadow-inner" : "border-slate-200 bg-slate-50/50 hover:border-[#4285F4] hover:bg-white hover:shadow-md"}`}
-                                    onDrop={handleDrop}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onClick={() => fileInputRef.current?.click()}
-                                >
-                                    <div className="bg-white p-4 rounded-full shadow-sm mb-4 border border-slate-100 group-hover:scale-110 transition-transform">
-                                        <MdFileUpload className="text-3xl text-[#4285F4]" />
-                                    </div>
-                                    <p className="text-[14px] font-bold text-slate-700 text-center">Drag & drop files here</p>
-                                    <p className="text-[12px] text-slate-400 mt-1 mb-6 text-center">or click to browse from computer</p>
-
-                                    <button
-                                        type="button"
-                                        className="px-6 py-2 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-600 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all font-sans"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            fileInputRef.current?.click();
-                                        }}
-                                    >
-                                        Select Files
-                                    </button>
-
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        multiple
-                                        accept=".pdf,.png,.jpg,.jpeg"
-                                        className="hidden"
-                                        onChange={handleFileSelect}
-                                    />
-                                </div>
-
-                                {uploadedFiles.length > 0 && (
-                                    <div className="flex-1 space-y-3">
-                                        <h4 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Uploaded Files ({uploadedFiles.length})</h4>
-                                        {uploadedFiles.map((file, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center justify-between bg-white border border-slate-100 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow animate__animated animate__fadeInRight"
-                                            >
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`p-2 rounded-lg ${file.fileType === "application/pdf" ? "bg-red-50" : "bg-blue-50"}`}>
-                                                        {file.fileType === "application/pdf" ? (
-                                                            <MdPictureAsPdf className="text-red-500 text-xl" />
-                                                        ) : (
-                                                            <MdImage className="text-blue-500 text-xl" />
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[13px] font-bold text-slate-700 truncate max-w-[200px]">{file.fileName}</p>
-                                                        {file.fileSize > 0 && (
-                                                            <p className="text-[11px] text-slate-400 font-medium">{formatFileSize(file.fileSize)}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeFile(index)}
-                                                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
-                                                >
-                                                    <MdClose size={18} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="flex justify-end pt-10">
-                            <button
-                                type="submit"
-                                className="hr-btn-primary min-w-[200px]"
-                                disabled={loading}
-                            >
-                                {loading ? "Processing..." : pid ? "Update Vendor Profile" : "Register Vendor"}
-                            </button>
-                        </div>
                     </form>
-
                 </div>
             </div>
 
-            {/* Small utility styles */}
-            <style jsx>{`
+            <div className="border-b-2 mx-6"></div>
+
+            {/* ================= CONTACT PERSON DETAILS ================= */}
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                <SectionHeader
+                    title="Contact Person Details"
+                    subtitle="Information of the primary contact person for this vendor."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-6">
+                    {/* Primary Contact Person */}
+                    <div>
+                        <label className="hr-label">
+                            Primary Contact Person <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdPerson} />
+                            <input
+                                value={formData.vendorInfo.primaryContactPersonName}
+                                onChange={(e) => handleChange("vendorInfo", "primaryContactPersonName", e.target.value)}
+                                placeholder="Enter Person Name"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.primaryContactPersonName && <p className="error">{errors.primaryContactPersonName}</p>}
+                    </div>
+
+                    {/* Designation */}
+                    <div>
+                        <label className="hr-label">
+                            Designation <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdWork} />
+                            <input
+                                value={formData.vendorInfo.designation}
+                                onChange={(e) => handleChange("vendorInfo", "designation", e.target.value)}
+                                placeholder="Enter Designation"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.designation && <p className="error">{errors.designation}</p>}
+                    </div>
+
+                    {/* Mobile Number */}
+                    <div>
+                        <label className="hr-label">
+                            Mobile Number <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdPhone} />
+                            <input
+                                maxLength={10}
+                                value={formData.vendorInfo.mobileNumber}
+                                onChange={(e) => handleChange("vendorInfo", "mobileNumber", e.target.value)}
+                                placeholder="Enter Mobile Number"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.mobileNumber && <p className="error">{errors.mobileNumber}</p>}
+                    </div>
+
+                    {/* Official Email */}
+                    <div>
+                        <label className="hr-label">
+                            Official Email <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdEmail} />
+                            <input
+                                type="email"
+                                value={formData.vendorInfo.officialEmailId}
+                                onChange={(e) => handleChange("vendorInfo", "officialEmailId", e.target.value)}
+                                placeholder="Enter Official Email"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.officialEmailId && <p className="error">{errors.officialEmailId}</p>}
+                    </div>
+                </div>
+            </div>
+
+            {/* ================= BANK DETAILS ================= */}
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                <SectionHeader
+                    title="Bank Details"
+                    subtitle="Payment and banking information for vendor settlements."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                    {/* Bank Name */}
+                    <div>
+                        <label className="hr-label">
+                            Bank Name <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={CiBank} />
+                            <input
+                                value={formData.bankDetails.bankName}
+                                onChange={(e) => handleChange("bankDetails", "bankName", e.target.value)}
+                                placeholder="Enter Bank Name"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.bankName && <p className="error">{errors.bankName}</p>}
+                    </div>
+
+                    {/* Branch Name */}
+                    <div>
+                        <label className="hr-label">
+                            Branch Name <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={CiBank} />
+                            <input
+                                value={formData.bankDetails.branchName}
+                                onChange={(e) => handleChange("bankDetails", "branchName", e.target.value)}
+                                placeholder="Enter Branch Name"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.branchName && <p className="error">{errors.branchName}</p>}
+                    </div>
+
+                    {/* Account Holder Name */}
+                    <div>
+                        <label className="hr-label">
+                            Account Holder <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdPerson} />
+                            <input
+                                value={formData.bankDetails.accountHolderName}
+                                onChange={(e) => handleChange("bankDetails", "accountHolderName", e.target.value)}
+                                placeholder="Enter Holder Name"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.accountHolderName && <p className="error">{errors.accountHolderName}</p>}
+                    </div>
+
+                    {/* Account Number */}
+                    <div>
+                        <label className="hr-label">
+                            Account Number <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdNumbers} />
+                            <input
+                                type="number"
+                                value={formData.bankDetails.accountNumber}
+                                onChange={(e) => handleChange("bankDetails", "accountNumber", e.target.value)}
+                                placeholder="Enter Account Number"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.accountNumber && <p className="error">{errors.accountNumber}</p>}
+                    </div>
+
+                    {/* IFSC Code */}
+                    <div>
+                        <label className="hr-label">
+                            IFSC Code <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdQrCode} />
+                            <input
+                                value={formData.bankDetails.ifscCode}
+                                onChange={(e) => handleChange("bankDetails", "ifscCode", e.target.value)}
+                                placeholder="Enter IFSC Code"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.ifscCode && <p className="error">{errors.ifscCode}</p>}
+                    </div>
+
+                    {/* Account Type */}
+                    <div>
+                        <label className="hr-label">
+                            Account Type <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdAccountBalance} />
+                            <select
+                                value={formData.bankDetails.accountType}
+                                onChange={(e) => handleChange("bankDetails", "accountType", e.target.value)}
+                                className="hr-select"
+                            >
+                                <option value="">Select Account Type</option>
+                                {bankAccountTypes.map((type, i) => (
+                                    <option key={i} value={type.value}>{type.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        {errors.accountType && <p className="error">{errors.accountType}</p>}
+                    </div>
+                </div>
+            </div>
+
+            {/* ================= ADDRESS DETAILS ================= */}
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                <SectionHeader
+                    title="Address Details"
+                    subtitle="Physical location and mailing address of the vendor."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                    {/* Address Line 1 */}
+                    <div>
+                        <label className="hr-label">
+                            Address Line 1 <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdHome} />
+                            <input
+                                value={formData.addressDetails.addressLine1}
+                                onChange={(e) => handleChange("addressDetails", "addressLine1", e.target.value)}
+                                placeholder="Enter Address"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.addressLine1 && <p className="error">{errors.addressLine1}</p>}
+                    </div>
+
+                    {/* City */}
+                    <div>
+                        <label className="hr-label">
+                            City <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdLocationCity} />
+                            <input
+                                value={formData.addressDetails.city}
+                                onChange={(e) => handleChange("addressDetails", "city", e.target.value)}
+                                placeholder="Enter City"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.city && <p className="error">{errors.city}</p>}
+                    </div>
+
+                    {/* District */}
+                    <div>
+                        <label className="hr-label">
+                            District <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdLocationOn} />
+                            <input
+                                value={formData.addressDetails.district}
+                                onChange={(e) => handleChange("addressDetails", "district", e.target.value)}
+                                placeholder="Enter District"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.district && <p className="error">{errors.district}</p>}
+                    </div>
+
+                    {/* State */}
+                    <div>
+                        <label className="hr-label">
+                            State <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdLocationOn} />
+                            <input
+                                value={formData.addressDetails.state}
+                                onChange={(e) => handleChange("addressDetails", "state", e.target.value)}
+                                placeholder="Enter State"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.state && <p className="error">{errors.state}</p>}
+                    </div>
+
+                    {/* Country */}
+                    <div>
+                        <label className="hr-label">
+                            Country <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdPublic} />
+                            <input
+                                value={formData.addressDetails.country}
+                                onChange={(e) => handleChange("addressDetails", "country", e.target.value)}
+                                placeholder="Enter Country"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.country && <p className="error">{errors.country}</p>}
+                    </div>
+
+                    {/* PIN Code */}
+                    <div>
+                        <label className="hr-label">
+                            PIN Code <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative group">
+                            <IconWrapper icon={MdLocalPostOffice} />
+                            <input
+                                type="number"
+                                maxLength={6}
+                                value={formData.addressDetails.pinCode}
+                                onChange={(e) => handleChange("addressDetails", "pinCode", e.target.value)}
+                                placeholder="Enter PIN"
+                                className="hr-input"
+                            />
+                        </div>
+                        {errors.pinCode && <p className="error">{errors.pinCode}</p>}
+                    </div>
+                </div>
+            </div>
+
+            {/* file upload section */}
+            <div className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-10">
+                <SectionHeader
+                    title="Document Upload"
+                    subtitle="Upload supporting vendor documents (PDF, PNG, JPG)."
+                />
+
+                <div className="flex flex-col lg:flex-row gap-8">
+                    <div
+                        className={`flex-1 border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+                                        ${isDragOver ? "border-[#4285F4] bg-[#4285F4]/5 shadow-inner" : "border-slate-200 bg-slate-50/50 hover:border-[#4285F4] hover:bg-white hover:shadow-md"}`}
+                        onDrop={handleDrop}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <div className="bg-white p-4 rounded-full shadow-sm mb-4 border border-slate-100 group-hover:scale-110 transition-transform">
+                            <MdFileUpload className="text-3xl text-[#4285F4]" />
+                        </div>
+                        <p className="text-[14px] font-bold text-slate-700 text-center">Drag & drop files here</p>
+                        <p className="text-[12px] text-slate-400 mt-1 mb-6 text-center">or click to browse from computer</p>
+
+                        <button
+                            type="button"
+                            className="px-6 py-2 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-600 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all font-sans"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                fileInputRef.current?.click();
+                            }}
+                        >
+                            Select Files
+                        </button>
+
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            multiple
+                            accept=".pdf,.png,.jpg,.jpeg"
+                            className="hidden"
+                            onChange={handleFileSelect}
+                        />
+                    </div>
+
+                    {uploadedFiles.length > 0 && (
+                        <div className="flex-1 space-y-3">
+                            <h4 className="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Uploaded Files ({uploadedFiles.length})</h4>
+                            {uploadedFiles.map((file, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between bg-white border border-slate-100 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow animate__animated animate__fadeInRight"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className={`p-2 rounded-lg ${file.fileType === "application/pdf" ? "bg-red-50" : "bg-blue-50"}`}>
+                                            {file.fileType === "application/pdf" ? (
+                                                <MdPictureAsPdf className="text-red-500 text-xl" />
+                                            ) : (
+                                                <MdImage className="text-blue-500 text-xl" />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="text-[13px] font-bold text-slate-700 truncate max-w-[200px]">{file.fileName}</p>
+                                            {file.fileSize > 0 && (
+                                                <p className="text-[11px] text-slate-400 font-medium">{formatFileSize(file.fileSize)}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeFile(index)}
+                                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                                    >
+                                        <MdClose size={18} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex justify-end pt-10">
+                <button
+                    type="submit"
+                    className="hr-btn-primary min-w-[200px]"
+                    disabled={loading}
+                >
+                    {loading ? "Processing..." : pid ? "Update Vendor Profile" : "Register Vendor"}
+                </button>
+            </div>
+        </form>
+
+            </div >
+
+        {/* Small utility styles */ }
+        < style jsx > {`
                 .input {
                 width: 100%;
                 margin-top: 6px;
@@ -2429,8 +2430,8 @@ export default function VendorFormPage() {
                 font-size: 12px;
                 margin-top: 4px;
                 }
-            `}</style>
+            `}</style >
 
-        </section>
+        </section >
     );
 }

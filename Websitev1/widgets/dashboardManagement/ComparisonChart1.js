@@ -118,6 +118,7 @@
 import React from "react";
 import {
   Chart as ChartJS,
+  BarController,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -128,6 +129,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
+  BarController,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -146,7 +148,7 @@ const ComparisonChart = ({ utilizationLabels, labels }) => {
       {
         label: "Utilization",
         data: utilizationPercentages,
-        backgroundColor: "#b276b2",
+        backgroundColor: "#3c8dbc",
         // Using percentages instead of fixed thickness to create even gaps
         barPercentage: 0.8,      // Controls the width of the individual bars
         categoryPercentage: 0.9, // Controls the space between categories

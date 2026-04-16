@@ -606,19 +606,19 @@ const Navbar = ({ navbarData, profileMenus, onItemClick, setOpen }) => {
   // console.log("userData.mobile =>", userData.mobile);
 
   return (
-    <section className="bg-green text-white min-h-[52px] h-auto py-1 lg:py-0 z-50">
-      <div className="flex h-full justify-between items-center z-50 px-2">
+    <section className="bg-[#3c8dbc] text-white h-[52px] z-50">
+      <div className="flex h-full justify-between items-center z-50">
         <div
-          className="border-2 cursor-pointer m-1 md:m-3 border-white rounded hover:border-gray-50"
+          className="cursor-pointer h-full flex items-center px-4 hover:bg-[#367fa9] transition-colors"
           onClick={() => setOpen((prevOpen) => !prevOpen)}
         >
-          <FaBars className={`text-white my-1 mx-1 text-lg font-semibold  `} />
+          <FaBars className="text-white text-lg" />
         </div>
         {/* {console.log("availableRoles", availableRoles)}
         {console.log("availableRoles", availableRoles.length)} */}
         {availableRoles.length > 0 && (
-          <div className="flex items-center gap-1 md:gap-2 bg-green-600 p-1 md:p-2 m-1 rounded-md">
-            <span className="text-white font-semibold hidden md:inline">Switch Role:</span>
+          <div className="flex items-center gap-1 md:gap-2 bg-[#1a2226]/20 p-1 md:p-2 m-1 rounded">
+            <span className="text-white font-semibold hidden md:inline text-xs uppercase tracking-wider">Switch Role:</span>
 
             {[selectedRole, ...availableRoles].map((role) => {
               const isActive = selectedRole === role;
@@ -642,10 +642,10 @@ const Navbar = ({ navbarData, profileMenus, onItemClick, setOpen }) => {
                 <button
                   key={role}
                   onClick={() => handleRoleSwitch(role)}
-                  className={`capitalize px-2  md:px-4 py-1 rounded-full text-xs md:text-sm font-medium transition duration-200 ${
+                  className={`capitalize px-3 py-1 rounded text-xs font-medium transition duration-200 ${
                     isActive
-                      ? "bg-white text-green-700 shadow-md cursor-default"
-                      : "bg-green-500 text-white hover:bg-green-400"
+                      ? "bg-white text-[#3c8dbc] shadow-md cursor-default"
+                      : "bg-[#367fa9] text-white hover:bg-[#2c3b41]"
                   }`}
                   disabled={isActive}
                 >
@@ -656,156 +656,65 @@ const Navbar = ({ navbarData, profileMenus, onItemClick, setOpen }) => {
           </div>
         )}
 
-        <div className="relative h-full ">
-          <div className="flex h-full ">
-            <ul className="flex h-full">
-              {/* {navbarData.slice(0, 2).map((menu, index) => (
-                <li
-                  key={index}
-                  className={`px-2 lg:px-2.5 cursor-pointer flex-shrink-0 pt-5`}
-                >
-                  {menu.title}
-                </li>
-              ))} */}
-              <li
-                className="cursor-pointer flex-shrink-0 inline-flex h-full hover:bg-Green px-1 pt-3.5 lg:px-2"
+        <div className="flex h-full items-center">
+          <ul className="flex h-full items-center">
+             <li
+                className="cursor-pointer h-full flex items-center hover:bg-[#367fa9] px-4 transition-colors"
                 onClick={handleProfileClick}
               >
                 <Image
                   ref={imgRef}
                   src={navbarData[0].image}
                   alt="profile Image"
-                  className="bg-white h-8 w-8 -mt-1 rounded-full cursor-pointer inline-flex"
+                  className="h-6 w-6 rounded-full inline-flex mr-2 border border-white/20"
                 />
-                <div className="text-sm ps-1 ms-1 pe-2 hidden sm:block">
+                <span className="text-xs font-semibold hidden sm:inline">
   {userData?.firstName ? userData?.firstName : "Username"}&nbsp;
   {userData?.lastName ? userData?.lastName : ""}
-</div>
-
+</span>
               </li>
             </ul>
           </div>
           {profileOpen && (
             <div
               ref={menuRef}
-              className="text-black shadow-md absolute right-2 lg:right-2 top-13 mt-1.5 userprofile w-60 lg:w-72"
+              className="text-black shadow-lg absolute right-0 top-[52px] w-72 bg-white border border-gray-200 z-[100]"
             >
-              <ul>
-                <div className="flex bg-green py-6">
-                  <li className="flex cursor-pointer justify-center">
-                    <span className="rounded-full">
-                      <Image
-                        src={profileMenus[0].image}
-                        alt="Profile"
-                        className="rounded-full h-12 w-12 m-1"
-                      />
-                    </span>
-                  </li>
-                  <li className="px-4 pb-1 text-sm font-semibold text-white mx-auto justify-center content-center align-middle m-3">
-                    <div className="flex mx-auto justify-center content-center align-middle">
-                      {userData?.firstName ? userData?.firstName : "Username"}
-                      &nbsp;
-                      {userData?.lastName ? userData?.lastName : ""}
-                    </div>
-                    <div className="text-xs mx-auto justify-start content-start align-start">
-                      {userData?.email ? userData?.email : "email"}
-                    </div>
-                    <div className="text-xs mx-auto justify-start content-start align-start">
-                      {userDetails?.roles?.length > 0 && (
-                        <p>
-                          Role{userDetails.roles.length > 1 ? "s" : ""}:{" "}
-                          {userDetails.roles
-                            .map((role) =>
-                              role === "head-csr"
-                                ? "Head CSR"
-                                : role
-                                    .split("-")
-                                    .map(
-                                      (word) =>
-                                        word.charAt(0).toUpperCase() +
-                                        word.slice(1)
-                                    )
-                                    .join(" ")
-                            )
-                            .join(", ")}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="text-xs mx-auto justify-center content-center align-middle">
-                      {/* {userData?.mobile ? userData?.mobile : "Mo.No"} */}
-                    </div>
-                  </li>
-                </div>
-
-                <div className="flex bg-gray-200">
-                  {profileMenus.slice(1, 2).map((menu, index) => (
-                    <li
-                      onClick={() => setProfileOpen(false)}
-                      key={index}
-                      className="cursor-pointer hover:bg-Green bg-white text-gray-700 hover:text-white w-full my-2 mx-4 rounded-sm flex items-center justify-center"
-                    >
-                      <span
-                        className="text-xs font-semibold  py-2"
-                        onClick={handleProfile}
-                      >
-                        {menu.title}
-                      </span>
-                    </li>
-                  ))}
-
-                  {profileMenus.slice(2, 3).map((menu, index) => (
-                    <li
-                      onClick={handleLogout}
-                      key={index}
-                      className="cursor-pointer text-white bg-green hover:bg-Green w-full mx-4 my-2 rounded-sm flex items-center justify-center"
-                    >
-                      <span
-                        className="text-xs font-semibold  py-2"
-                        onClick={() => onItemClick(menu.link)}
-                      >
-                        {menu.title}
-                      </span>
-                    </li>
-                  ))}
-                </div>
-                <div className="flex bg-gray-300">
-                  {profileMenus.slice(3, 4).map((menu, index) => (
-                    <li
-                      onClick={() => setProfileOpen(false)}
-                      key={index}
-                      className="cursor-pointer hover:bg-gray-50 bg-white text-gray-700 hover:text-black w-full mx-4 my-2 rounded-sm flex items-center justify-center"
-                    >
-                      <span
-                        className="text-xs font-semibold  py-2"
-                        onClick={() => onItemClick(menu.link)}
-                      >
-                        {menu.title}
-                      </span>
-                    </li>
-                  ))}
-
-                  {profileMenus.slice(4, 5).map((menu, index) => (
-                    <li
-                      key={index}
-                      className="cursor-pointer text-white bg-green hover:bg-green w-full my-2 mx-4 rounded-sm flex items-center justify-center"
-                    >
-                      <span
-                        className="text-xs font-semibold py-2"
-                        onClick={() => onItemClick(menu.link)}
-                      >
-                        {menu.title}
-                      </span>
-                    </li>
-                  ))}
-                </div>
-              </ul>
+              <div className="bg-[#3c8dbc] p-6 text-center text-white">
+                <Image
+                  src={profileMenus[0].image}
+                  alt="Profile"
+                  className="rounded-full h-24 w-24 mx-auto border-4 border-white/20 mb-3"
+                />
+                <p className="font-bold text-lg">
+                   {userData?.firstName ? userData?.firstName : "Username"} {userData?.lastName ? userData?.lastName : ""}
+                </p>
+                <p className="text-xs opacity-80">Member since Nov. 2026</p>
+              </div>
+              <div className="p-4 grid grid-cols-3 text-center border-b border-gray-100">
+                  <div className="text-xs font-semibold text-gray-600 hover:bg-gray-50 py-2 cursor-pointer">Followers</div>
+                  <div className="text-xs font-semibold text-gray-600 hover:bg-gray-50 py-2 cursor-pointer">Sales</div>
+                  <div className="text-xs font-semibold text-gray-600 hover:bg-gray-50 py-2 cursor-pointer">Friends</div>
+              </div>
+              <div className="bg-gray-50 p-4 flex justify-between">
+                <button 
+                  onClick={handleProfile}
+                  className="bg-white border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded shadow-sm"
+                >
+                  Profile
+                </button>
+                <button 
+                  onClick={handleLogout}
+                  className="bg-white border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded shadow-sm"
+                >
+                  Sign out
+                </button>
+              </div>
             </div>
           )}
         </div>
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  };
 
 export default Navbar;

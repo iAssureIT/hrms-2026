@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Tooltip } from "flowbite-react";
-import { FaPlus, FaFilter, FaDownload, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaPlus, FaFilter, FaDownload, FaChevronLeft, FaChevronRight, FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCalendarTimes } from "react-icons/fa";
 import moment from "moment";
 import ls from "localstorage-slim";
 
@@ -67,220 +67,247 @@ const AttendanceMatrix = () => {
     const daysInMonth = moment([selectedYear, selectedMonth - 1]).daysInMonth();
     const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-    const getStatusColor = (status) => {
+    const getStatusColorTable = (status) => {
         switch (status) {
-            case 'P': return 'bg-green-100 text-green-700 border-green-200';
-            case 'A': return 'bg-red-100 text-red-700 border-red-200';
-            case 'L': return 'bg-amber-100 text-amber-700 border-amber-200';
-            case 'H': return 'bg-green-100 text-green-700 border-green-200';
-            case 'W': return 'bg-slate-100 text-slate-500 border-slate-200';
-            case 'F': return 'bg-orange-100 text-orange-700 border-orange-200';
-            default: return 'bg-white text-slate-300 border-slate-100';
+            case 'P': return 'bg-[#00a65a] text-white border-[#008d4c]';
+            case 'A': return 'bg-[#dd4b39] text-white border-[#d73925]';
+            case 'L': return 'bg-[#f39c12] text-white border-[#e08e0b]';
+            case 'H': return 'bg-[#00c0ef] text-white border-[#00add7]';
+            case 'W': return 'bg-gray-100 text-gray-500 border-gray-200';
+            case 'F': return 'bg-[#00a65a] text-white border-[#008d4c]';
+            default: return 'bg-white text-gray-300 border-gray-100';
         }
     };
 
+    const getStatusColor = (colorClass) => {
+        const colors = {
+            'bg-aqua': '#00c0ef',
+            'bg-green': '#00a65a',
+            'bg-red': '#dd4b39',
+            'bg-yellow': '#f39c12'
+        };
+        return colors[colorClass] || colors['bg-aqua'];
+    };
+
+    const StatusCard = ({ label, value, icon: Icon, colorClass }) => (
+        <div className="flex bg-white shadow-sm rounded-none overflow-hidden h-24 border border-gray-200 flex-grow min-w-[240px]">
+            <div
+                style={{ backgroundColor: getStatusColor(colorClass) }}
+                className="w-24 flex items-center justify-center text-white shrink-0"
+            >
+                <Icon size={40} className="text-white opacity-90" />
+            </div>
+            <div className="flex flex-col justify-center px-5 py-2 flex-grow">
+                <span className="text-gray-600 text-[12px] font-bold uppercase tracking-tight mb-1 truncate">
+                    {label}
+                </span>
+                <h3 className="text-xl font-bold text-gray-800 leading-tight">
+                    {value}
+                </h3>
+            </div>
+        </div>
+    );
+
     return (
-        <section className="section p-6 md:p-10 bg-white min-h-screen">
-            <div className="max-w-[100%] mx-auto">
-                <div className="mb-6">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-4 border-b border-slate-100">
-                        <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                                <span className="text-green-600">Attendance Management</span>
-                            </div>
-                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                                Monthly <span className="text-green-600 font-black">Matrix</span>
-                            </h1>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                            <div className="flex items-center bg-slate-50 rounded-2xl p-1 border border-slate-200 shadow-sm">
-                                <select 
-                                    className="bg-transparent border-none text-xs font-bold text-slate-600 focus:ring-0 cursor-pointer px-3 py-2"
-                                    value={selectedMonth}
-                                    onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                                >
-                                    {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-                                </select>
-                                <div className="w-[1px] h-4 bg-slate-300 mx-1"></div>
-                                <select 
-                                    className="bg-transparent border-none text-xs font-bold text-slate-600 focus:ring-0 cursor-pointer px-3 py-2"
-                                    value={selectedYear}
-                                    onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                                >
-                                    {years.map(y => <option key={y} value={y}>{y}</option>)}
-                                </select>
-                            </div>
-                            <button 
-                                onClick={() => router.push('/admin/attendance-management/data-entry')}
-                                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-2xl transition-all shadow-lg shadow-green-200 active:scale-95 font-bold text-sm"
+        <section className="p-4 bg-[#f4f6f9] min-h-screen">
+            <div className="flex justify-between items-center mb-6">
+                <div>
+                    <h1 className="admin-heading text-2xl">Attendance Matrix</h1>
+                    <p className="admin-subheading">Control panel</p>
+                </div>
+                <div className="flex items-center text-xs text-gray-500">
+                    <span className="hover:text-gray-700 cursor-pointer">Admin</span>
+                    <FaChevronRight className="mx-2 text-[10px]" />
+                    <span className="text-gray-800 font-bold">Attendance</span>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <StatusCard label="Total Staff" value={matrixData.length} icon={FaUsers} colorClass="bg-aqua" />
+                <StatusCard label="Current Month" value={months.find(m => m.value === selectedMonth)?.label} icon={FaUserCheck} colorClass="bg-green" />
+                <StatusCard label="Attendance Recorded" value={`${matrixData.filter(e => Object.keys(e.attendance).length > 0).length}`} icon={FaClock} colorClass="bg-yellow" />
+                <StatusCard label="Year" value={selectedYear} icon={FaCalendarTimes} colorClass="bg-red" />
+            </div>
+
+            <div className="admin-box box-primary">
+                <div className="p-4 flex flex-wrap lg:flex-nowrap items-end gap-3 bg-gray-50/50 border-b border-gray-100">
+                    <div className="flex-grow grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="admin-form-group mb-0">
+                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Month</label>
+                            <select
+                                className="admin-select !h-9 !py-1"
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                             >
-                                <FaPlus size={14} />
-                                <span>Data Entry</span>
-                            </button>
+                                {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+                            </select>
+                        </div>
+                        <div className="admin-form-group mb-0">
+                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Year</label>
+                            <select
+                                className="admin-select !h-9 !py-1"
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                            >
+                                {years.map(y => <option key={y} value={y}>{y}</option>)}
+                            </select>
+                        </div>
+                        <div className="admin-form-group mb-0">
+                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Center</label>
+                            <select
+                                className="admin-select !h-9 !py-1"
+                                value={center_id}
+                                onChange={(e) => setCenter_id(e.target.value)}
+                            >
+                                <option value="all">All Centers</option>
+                                {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
+                            </select>
+                        </div>
+                        <div className="admin-form-group mb-0">
+                            <label className="admin-label !text-[10px] !mb-0 !text-gray-500 uppercase">Department</label>
+                            <select
+                                className="admin-select !h-9 !py-1"
+                                value={department_id}
+                                onChange={(e) => setDepartment_id(e.target.value)}
+                            >
+                                <option value="all">All Departments</option>
+                                {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
+                            </select>
                         </div>
                     </div>
-                </div>
-
-                {/* Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Center</label>
-                        <select 
-                            className="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:ring-green-500/20"
-                            value={center_id}
-                            onChange={(e) => setCenter_id(e.target.value)}
+                    <div className="flex gap-2 mb-[1px]">
+                        <button
+                            onClick={() => router.push('/admin/attendance-management/data-entry')}
+                            className="admin-btn-success shadow-none h-9 px-4 flex items-center gap-2 whitespace-nowrap"
                         >
-                            <option value="all">All Centers</option>
-                            {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
-                        </select>
-                    </div>
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
-                        <select 
-                            className="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:ring-green-500/20"
-                            value={department_id}
-                            onChange={(e) => setDepartment_id(e.target.value)}
-                        >
-                            <option value="all">All Departments</option>
-                            {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
-                        </select>
+                            <FaPlus className="text-[10px]" /> Data Entry
+                        </button>
+                        <button className="admin-btn-default shadow-none h-9 px-4 flex items-center gap-2 whitespace-nowrap">
+                            <FaDownload className="text-[10px]" /> Export
+                        </button>
                     </div>
                 </div>
 
-                {/* Matrix Content */}
-                <div className="bg-white rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-                    <div className="overflow-x-auto custom-scrollbar">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50/50">
-                                    <th className="sticky left-0 z-20 bg-white/95 backdrop-blur-sm px-6 py-5 text-left border-b border-slate-100 min-w-[250px] shadow-[4px_0_8px_-4px_rgba(0,0,0,0.05)]">
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Employee Details</span>
-                                    </th>
+                <div className="admin-box-header bg-gray-50/50">
+                    <h3 className="admin-box-title">Monthly Attendance Roster</h3>
+                </div>
+                <div className="admin-content-area overflow-x-auto">
+                    <table className="admin-table border border-[#f4f4f4]">
+                        <thead className="admin-table-thead">
+                            <tr className="border-b border-gray-200">
+                                <th className="admin-table-th sticky left-0 z-20 bg-[#f9f9f9] min-w-[180px] border-r border-gray-200">
+                                    Employee
+                                </th>
+                                {daysArray.map(day => (
+                                    <React.Fragment key={day}>
+                                        <th className="admin-table-th text-center min-w-[40px]">
+                                            {day}
+                                        </th>
+                                        {day % 7 === 0 && (
+                                            <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc]">
+                                                W{day / 7}
+                                            </th>
+                                        )}
+                                        {day === daysInMonth && daysInMonth % 7 !== 0 && (
+                                            <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc]">
+                                                W5
+                                            </th>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                                <th className="admin-table-th text-center min-w-[70px]">P/A/L/E</th>
+                                <th className="admin-table-th text-center min-w-[70px]">Total Hrs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={daysInMonth + 10} className="py-20 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                                            <p className="text-slate-400 font-bold text-sm tracking-tight">Syncing attendance data...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : matrixData.length === 0 ? (
+                                <tr>
+                                    <td colSpan={daysInMonth + 10} className="py-20 text-center">
+                                        <p className="text-slate-400 font-bold text-sm tracking-tight text-center">No records found for this criteria</p>
+                                    </td>
+                                </tr>
+                            ) : matrixData.map(emp => (
+                                <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="admin-table-td sticky left-0 z-10 bg-white min-w-[200px] border-r border-gray-100">
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-bold text-gray-800">{emp.employeeName}</span>
+                                            <span className="text-[10px] text-gray-400">{emp.employeeID} • {emp.departmentName}</span>
+                                        </div>
+                                    </td>
                                     {daysArray.map(day => (
                                         <React.Fragment key={day}>
-                                            <th className="px-2 py-5 text-center border-b border-slate-100 min-w-[48px]">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{day}</span>
-                                            </th>
+                                            <td className="admin-table-td text-center p-1">
+                                                <Tooltip
+                                                    content={emp.timings[day] ? (
+                                                        <div className="p-2 space-y-1 text-xs">
+                                                            <p className="font-bold border-b border-gray-600 pb-1 mb-1">{moment([selectedYear, selectedMonth - 1, day]).format("DD MMM")}</p>
+                                                            <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[day].in}</b></p>
+                                                            <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[day].out}</b></p>
+                                                            <p className="flex justify-between gap-4 pt-1 border-t border-gray-600"><span>Total:</span><b>{(emp.timings[day].total / 60).toFixed(1)} hrs</b></p>
+                                                        </div>
+                                                    ) : moment([selectedYear, selectedMonth - 1, day]).format("DD MMM")}
+                                                    arrow={false}
+                                                >
+                                                    <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default mx-auto ${getStatusColorTable(emp.attendance[day])}`}>
+                                                        {emp.attendance[day]}
+                                                    </div>
+                                                </Tooltip>
+                                            </td>
                                             {day % 7 === 0 && (
-                                                <th className="px-2 py-5 text-center border-b border-slate-100 min-w-[60px] bg-green-50/30">
-                                                    <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">W{day / 7}</span>
-                                                </th>
+                                                <td className="admin-table-td text-center bg-blue-50/30 font-bold text-[10px] text-[#3c8dbc]">
+                                                    {(emp.weeklyHours[`W${day / 7}`] / 60).toFixed(1)}h
+                                                </td>
                                             )}
                                             {day === daysInMonth && daysInMonth % 7 !== 0 && (
-                                                <th className="px-2 py-5 text-center border-b border-slate-100 min-w-[60px] bg-green-50/30">
-                                                    <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">W5</span>
-                                                </th>
+                                                <td className="admin-table-td text-center bg-blue-50/30 font-bold text-[10px] text-[#3c8dbc]">
+                                                    {(emp.weeklyHours[`W5`] / 60).toFixed(1)}h
+                                                </td>
                                             )}
                                         </React.Fragment>
                                     ))}
-                                    <th className="px-4 py-5 text-center border-b border-slate-100 min-w-[80px] bg-slate-50/50 font-black text-[10px] uppercase tracking-widest text-slate-500">P/A/L/E</th>
-                                    <th className="px-4 py-5 text-center border-b border-slate-100 min-w-[80px] bg-slate-50/50 font-black text-[10px] uppercase tracking-widest text-slate-500">Total Hrs</th>
+                                    <td className="admin-table-td text-center font-bold text-[10px] text-gray-600 bg-gray-50/50">
+                                        {emp.monthlyStats.P}/{emp.monthlyStats.A}/{emp.monthlyStats.L}/{emp.monthlyStats.E}
+                                    </td>
+                                    <td className="admin-table-td text-center font-bold text-[10px] text-blue-700 bg-gray-50/50">
+                                        {(emp.monthlyStats.totalHours / 60).toFixed(1)}h
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan={daysInMonth + 2} className="py-20 text-center">
-                                            <div className="flex flex-col items-center gap-4">
-                                                <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-                                                <p className="text-slate-400 font-bold text-sm tracking-tight">Syncing attendance data...</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ) : matrixData.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={daysInMonth + 2} className="py-20 text-center">
-                                            <p className="text-slate-400 font-bold text-sm tracking-tight text-center">No records found for this criteria</p>
-                                        </td>
-                                    </tr>
-                                ) : matrixData.map(emp => (
-                                    <tr key={emp.employee_id} className="hover:bg-slate-50/30 transition-colors group">
-                                        <td className="sticky left-0 z-10 bg-white/95 backdrop-blur-sm px-6 py-4 border-b border-slate-50 shadow-[4px_0_8px_-4px_rgba(0,0,0,0.05)]">
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-extrabold text-slate-700 group-hover:text-green-600 transition-colors">{emp.employeeName}</span>
-                                                <span className="text-[10px] font-bold text-slate-400 tracking-tight">{emp.employeeID} • {emp.departmentName}</span>
-                                            </div>
-                                        </td>
-                                        {daysArray.map(day => (
-                                            <React.Fragment key={day}>
-                                                <td className="px-1 py-4 border-b border-slate-50 text-center">
-                                                    <Tooltip 
-                                                        content={emp.timings[day] ? (
-                                                            <div className="p-2 space-y-1">
-                                                                <p className="font-black text-[10px] uppercase border-b border-slate-600 pb-1 mb-1">{moment([selectedYear, selectedMonth - 1, day]).format("DD MMM")}</p>
-                                                                <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[day].in}</b></p>
-                                                                <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[day].out}</b></p>
-                                                                <p className="flex justify-between gap-4 pt-1 border-t border-slate-600"><span>Total:</span><b>{(emp.timings[day].total / 60).toFixed(1)} hrs</b></p>
-                                                            </div>
-                                                        ) : moment([selectedYear, selectedMonth - 1, day]).format("DD MMM")} 
-                                                        arrow={false} 
-                                                        className="bg-slate-800 text-[10px] font-bold"
-                                                    >
-                                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black border transition-all hover:scale-110 cursor-default mx-auto ${getStatusColor(emp.attendance[day])}`}>
-                                                            {emp.attendance[day]}
-                                                        </div>
-                                                    </Tooltip>
-                                                </td>
-                                                {day % 7 === 0 && (
-                                                    <td className="px-1 py-4 border-b border-slate-50 text-center bg-green-50/10 font-black text-[10px] text-green-600">
-                                                        {(emp.weeklyHours[`W${day / 7}`] / 60).toFixed(1)}h
-                                                    </td>
-                                                )}
-                                                {day === daysInMonth && daysInMonth % 7 !== 0 && (
-                                                    <td className="px-1 py-4 border-b border-slate-50 text-center bg-green-50/10 font-black text-[10px] text-green-600">
-                                                        {(emp.weeklyHours[`W5`] / 60).toFixed(1)}h
-                                                    </td>
-                                                )}
-                                            </React.Fragment>
-                                        ))}
-                                        <td className="px-4 py-4 border-b border-slate-50 bg-slate-50/20 text-center font-black text-[10px] text-slate-600">
-                                            {emp.monthlyStats.P}/{emp.monthlyStats.A}/{emp.monthlyStats.L}/{emp.monthlyStats.E}
-                                        </td>
-                                        <td className="px-4 py-4 border-b border-slate-50 bg-slate-50/20 text-center font-black text-[10px] text-green-700">
-                                            {(emp.monthlyStats.totalHours / 60).toFixed(1)}h
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                {/* Legend */}
-                <div className="mt-8 flex flex-wrap gap-4 px-6 py-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">Legend:</span>
+            <div className="admin-box mt-4">
+                <div className="admin-box-header">
+                    <h3 className="admin-box-title">Legend</h3>
+                </div>
+                <div className="p-4 flex flex-wrap gap-4 bg-gray-50/30">
                     {[
                         { s: 'P', l: 'Present', c: 'bg-green-100 text-green-700' },
                         { s: 'A', l: 'Absent', c: 'bg-red-100 text-red-700' },
                         { s: 'L', l: 'Late', c: 'bg-amber-100 text-amber-700' },
                         { s: 'E', l: 'Early Exit', c: 'bg-rose-100 text-rose-700' },
                         { s: 'H', l: 'Holiday', c: 'bg-green-100 text-green-700' },
-                        { s: 'W', l: 'Weekly Off', c: 'bg-slate-100 text-slate-500' },
+                        { s: 'W', l: 'Weekly Off', c: 'bg-gray-100 text-gray-500' },
                         { s: 'F', l: 'Half Day', c: 'bg-orange-100 text-orange-700' },
                     ].map(item => (
                         <div key={item.s} className="flex items-center gap-2">
-                             <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black ${item.c}`}>{item.s}</div>
-                             <span className="text-xs font-bold text-slate-500">{item.l}</span>
+                            <div className={`w-6 h-6 rounded-none flex items-center justify-center text-[9px] font-bold border ${item.c}`}>{item.s}</div>
+                            <span className="text-[11px] font-bold text-gray-600">{item.l}</span>
                         </div>
                     ))}
                 </div>
             </div>
-
-            <style jsx>{`
-                .custom-scrollbar::-webkit-scrollbar {
-                    height: 8px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: #f8fafc;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #e2e8f0;
-                    border-radius: 4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #cbd5e1;
-                }
-            `}</style>
         </section>
     );
 };
