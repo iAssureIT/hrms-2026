@@ -4,7 +4,7 @@
 
 @font-face {
   src: url("../fonts/MontSerrat/Montserrat-VariableFont_wght.ttf");
-  font-family: "MontSerrat";
+  font-family: "Montserrat";
 }
 
 body {
@@ -1185,7 +1185,7 @@ textarea::placeholder {
   }
 
   * {
-    font-family: "MontSerrat";
+    font-family: "Montserrat";
   }
 
   /* .modal-header button {

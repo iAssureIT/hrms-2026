@@ -319,7 +319,7 @@ body {
   .select {
     @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
   }
-}
+
 
 .insideIcon {
   @apply absolute inset-y-0 text-sm left-0 flex items-center pl-5 pointer-events-none;
@@ -1464,7 +1464,7 @@ textarea::placeholder {
   }
 
   * {
-    font-family: "MontSerrat";
+    font-family: "Montserrat";
   }
 
   /* .modal-header button {

@@ -104,8 +104,8 @@ module.exports = {
       },
 
       fontFamily: {
-        // Stolzl: ["Stolzl", "sans-serif"],
-        MontSerrat: ["MontSerrat", "sans-serif"],
+        sans: ["Montserrat", "sans-serif"],
+        Montserrat: ["Montserrat", "sans-serif"],
       },
       screens: {
         // "xxl": "2660px",

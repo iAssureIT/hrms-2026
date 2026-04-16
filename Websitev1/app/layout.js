@@ -292,7 +292,7 @@ export default function RootLayout({ children }) {
       </head>
       <body
         className={
-          " bg-white font-MontSerrat overflow-x-hidden min-h-screen flex flex-col"
+          " bg-white font-sans overflow-x-hidden min-h-screen flex flex-col"
         }
       >
         <div className="bg-white flex-1 flex flex-col">
