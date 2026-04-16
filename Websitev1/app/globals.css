@@ -61,6 +61,26 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  /* Sidebar Scrollbar - Only show on hover */
+  .custom-sidebar-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-sidebar-scrollbar::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 10px;
+  }
+  .custom-sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: #3c8dbc;
+  }
+  .custom-sidebar-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .custom-sidebar-scrollbar:hover {
+    scrollbar-width: thin;
+    scrollbar-color: #3c8dbc transparent;
+  }
 }
 
 @layer components {

@@ -438,7 +438,7 @@ export default function RootLayout({ children }) {
                 ${open
               ? "shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)] w-[60%] lg:w-[18%]"
               : "shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)] w-[0%] lg:w-[5%]"
-            } duration-300`}
+            } duration-300 h-[calc(100vh-52px)] overflow-y-auto custom-sidebar-scrollbar`}
         >
           <Sidebar
             sidebarData={sidebarData}

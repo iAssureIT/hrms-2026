@@ -1300,7 +1300,7 @@ export default function RootLayout({ children }) {
     <div>
       <div className={`block lg:flex sticky top-0 z-50`}>
         <div
-          className={`sticky top-0 z-10 transition-all duration-300 
+          className={`sticky top-0 z-10 transition-all duration-300 shrink-0 
             ${open ? "w-[100%] lg:w-[230px]" : " w-[100%] lg:w-[50px]"} 
             `}
         >
@@ -1330,8 +1330,8 @@ export default function RootLayout({ children }) {
 
         {/* Sidebar Container - Displaces content on desktop */}
         <div
-          className={`z-40 transition-all duration-300 relative ${open ? "w-[75%] lg:w-[230px]" : "w-0 lg:w-[50px]"} 
-            bg-[#222d32] h-[calc(100vh-52px)] overflow-y-auto`}
+          className={`z-40 transition-all duration-300 relative shrink-0 ${open ? "w-[75%] lg:w-[230px]" : "w-0 lg:w-[50px]"} 
+            bg-[#222d32] h-[calc(100vh-52px)] overflow-y-auto custom-sidebar-scrollbar`}
         >
           <Sidebar
             sidebarData={sidebarData}
@@ -1343,7 +1343,7 @@ export default function RootLayout({ children }) {
 
         {/* Main Content Area */}
         <div
-          className={`flex-grow h-[calc(100vh-52px)] overflow-y-auto admin-content-area p-4 bg-[#f4f6f9]`}
+          className={`flex-grow h-[calc(100vh-52px)] overflow-y-auto admin-content-area p-4 bg-[#f4f6f9] min-w-0`}
         >
           <idContext.Provider value={{ approvalId, setApprovalId }}>
             {children}

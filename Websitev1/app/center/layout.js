@@ -277,7 +277,7 @@ export default function RootLayout({ children }) {
         <div
           className={`z-40 ${open ? "fixed lg:sticky w-[75%] shadow-2xl" : "w-0 lg:w-[5%]"} 
             ${open ? "lg:w-[18%] lg:shadow-[5px_5px_4px_0px_rgba(245,245,245,0.7)]" : ""
-            } duration-300 bg-white h-full lg:h-auto`}
+            } duration-300 bg-white h-[calc(100vh-52px)] overflow-y-auto custom-sidebar-scrollbar`}
         >
           <Sidebar
             sidebarData={sidebarData}
