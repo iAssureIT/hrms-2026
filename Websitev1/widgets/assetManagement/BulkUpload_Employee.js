@@ -86,8 +86,9 @@ const BulkUpload = (props) => {
           let rowObj = {};
           for (let k in header) {
             let rawHeader = header[k]?.toString().trim();
-            let cleanHeader = (headerMapping[rawHeader.toLowerCase()] || rawHeader);
-            
+            let cleanHeader =
+              headerMapping[rawHeader.toLowerCase()] || rawHeader;
+
             if (record[k] === undefined) {
               rowObj[cleanHeader] = "-";
             } else {
@@ -376,19 +377,21 @@ const BulkUpload = (props) => {
         <div>
           <div className="flex mb-4 capitalise">
             <button
-              className={`px-6 py-2 hover:bg-gray-200 ${activeTab === "active"
+              className={`px-6 py-2 hover:bg-gray-200 ${
+                activeTab === "active"
                   ? "text-green bg-white border-green border-b-2"
                   : "text-gray-700"
-                }`}
+              }`}
               onClick={() => setActiveTab("active")}
             >
               Success
             </button>
             <button
-              className={`px-6 py-2 flex gap-2 justify-center items-center hover:bg-gray-200 ${activeTab === "failure"
+              className={`px-6 py-2 flex gap-2 justify-center items-center hover:bg-gray-200 ${
+                activeTab === "failure"
                   ? "text-green bg-white border-green border-b-2"
                   : "text-gray-700"
-                }`}
+              }`}
               onClick={() => setActiveTab("failure")}
             >
               Failure

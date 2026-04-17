@@ -71,7 +71,7 @@ const LeaveBulkUpload = () => {
   const getFileDetails = (fileName) => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/leave-balance/filedetails/${fileName}`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/leave-balance/filedetails/${fileName}`,
       )
       .then((response) => {
         if (response.data) {
@@ -139,57 +139,64 @@ const LeaveBulkUpload = () => {
   };
 
   return (
-    <main className="p-4 bg-[#f4f6f9] min-h-screen">
-      <div className="mx-auto">
-        
-        {/* Page Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Bulk Upload</h1>
-            <span className="text-sm font-light text-gray-500">Leave Balance Import</span>
-          </div>
-          <div className="flex gap-2 mt-4 md:mt-0">
-            <button
-              onClick={() => router.push(`/${loggedInRole}/leaves`)}
-              className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
-            >
-              <FaListUl size={12} /> Back to List
-            </button>
-          </div>
-        </div>
-
-        {/* Bulk Upload Box */}
-        <div className="bg-white border-t-[3px] border-[#00a65a] shadow-sm flex flex-col mb-10 overflow-hidden">
-          <div className="px-5 py-3 border-b border-gray-100 bg-white">
-            <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">Import Records</h3>
+    <section className="section">
+      <main className=" min-h-screen">
+        <div className="mx-auto">
+          {/* Page Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div className="flex items-baseline gap-3">
+              <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
+                Bulk Upload
+              </h1>
+              <span className="text-sm font-light text-gray-500">
+                Leave Balance Import
+              </span>
+            </div>
+            <div className="flex gap-2 mt-4 md:mt-0">
+              <button
+                onClick={() => router.push(`/${loggedInRole}/leaves`)}
+                className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
+              >
+                <FaListUl size={12} /> Back to List
+              </button>
+            </div>
           </div>
 
-          <div className="p-6">
-            <BulkUpload
-              url={
-                process.env.NEXT_PUBLIC_BASE_URL + "/api/leave-balance/bulk-upload"
-              }
-              fileurl=""
-              downloadTemplate={downloadTemplate}
-              data={[]}
-              uploadedData={uploadedData}
-              getData={getData}
-              getFileDetails={getFileDetails}
-              fileDetails={fileDetails}
-              tableObjects={tableObjects}
-              goodRecordsHeading={goodRecordsHeading}
-              failedtableHeading={failedtableHeading}
-              failedRecordsTable={failedRecordsTable}
-              failedRecordsCount={failedRecordsCount}
-              goodRecordsTable={goodRecordsTable}
-              goodDataCount={goodDataCount}
-            />
+          {/* Bulk Upload Box */}
+          <div className="bg-white border-t-[3px] border-[#00a65a] shadow-sm flex flex-col mb-10 overflow-hidden">
+            <div className="px-5 py-3 border-b border-gray-100 bg-white">
+              <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
+                Import Records
+              </h3>
+            </div>
+
+            <div className="p-6">
+              <BulkUpload
+                url={
+                  process.env.NEXT_PUBLIC_BASE_URL +
+                  "/api/leave-balance/bulk-upload"
+                }
+                fileurl=""
+                downloadTemplate={downloadTemplate}
+                data={[]}
+                uploadedData={uploadedData}
+                getData={getData}
+                getFileDetails={getFileDetails}
+                fileDetails={fileDetails}
+                tableObjects={tableObjects}
+                goodRecordsHeading={goodRecordsHeading}
+                failedtableHeading={failedtableHeading}
+                failedRecordsTable={failedRecordsTable}
+                failedRecordsCount={failedRecordsCount}
+                goodRecordsTable={goodRecordsTable}
+                goodDataCount={goodDataCount}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </section>
   );
 };
-
 
 export default LeaveBulkUpload;
