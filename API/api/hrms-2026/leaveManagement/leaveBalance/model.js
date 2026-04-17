@@ -58,6 +58,9 @@ const leaveBalanceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
     },
+    fileName: {
+      type: String,
+    },
   },
   { timestamps: true },
 );

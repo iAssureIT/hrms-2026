@@ -29,22 +29,23 @@ const LeaveBulkUpload = () => {
   const [failedRecordsTable, setFailedRecordsTable] = useState([]);
 
   const [goodRecordsHeading] = useState({
-    employeeName: "Employee Name",
     employeeID: "Employee ID",
+    employeeName: "Employee Name",
+    leaveTypeCode: "Leave Type Code",
     leaveTypeName: "Leave Type",
-    leaveTypeCode: "Leave Code",
     year: "Year",
     openingBalance: "Opening Balance",
     earnedDays: "Earned Days",
   });
 
   const [failedtableHeading] = useState({
-    employeeName: "Employee Name",
     employeeID: "Employee ID",
+    employeeName: "Employee Name",
+    leaveTypeCode: "Leave Type Code",
     leaveTypeName: "Leave Type",
-    leaveTypeCode: "Leave Code",
     year: "Year",
     openingBalance: "Opening Balance",
+    earnedDays: "Earned Days",
     failedRemark: "Failed Data Remark",
   });
 
@@ -90,12 +91,13 @@ const LeaveBulkUpload = () => {
           }));
 
           const fRecords = response.data.failedRecords.map((a) => ({
-            employeeName: a.employeeName || "-NA-",
             employeeID: a.employeeID || "-NA-",
-            leaveTypeName: a.leaveTypeName || "-NA-",
+            employeeName: a.employeeName || "-NA-",
             leaveTypeCode: a.leaveTypeCode || "-NA-",
+            leaveTypeName: a.leaveTypeName || "-NA-",
             year: a.year || "-NA-",
-            openingBalance: a.openingBalance ?? "-NA-",
+            openingBalance: (a.openingBalance && a.openingBalance !== "-") ? a.openingBalance : 0,
+            earnedDays: (a.earnedDays && a.earnedDays !== "-") ? a.earnedDays : 0,
             failedRemark: a.failedRemark || "-NA-",
           }));
 
@@ -118,9 +120,9 @@ const LeaveBulkUpload = () => {
         "Opening Balance",
         "Earned Days",
       ],
-      ["EMP001", "CL", "2026", "12", "0"],
-      ["EMP002", "SL", "2026", "6", "0"],
-      ["EMP003", "AL", "2026", "18", "0"],
+      ["EMP-001", "CL", "2026", "12", "0"],
+      ["EMP-002", "SL", "2026", "6", "0"],
+      ["EMP-100", "EL", "2026", "18", "0"],
     ];
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(templateData);

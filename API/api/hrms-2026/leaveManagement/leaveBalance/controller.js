@@ -103,7 +103,9 @@ exports.syncAllBalances = async (req, res) => {
             remainingBalance: type.maxDaysPerYear || 0,
             earnedDays: 0,
             usedDays: 0,
-            createdBy: createdBy,
+            fileName: req.body.fileName,
+            createdBy: req.body.createdBy,
+            createdAt: new Date(),
           });
 
           await LeaveLedger.create({
@@ -158,27 +160,42 @@ exports.bulkUpload = async (req, res) => {
     for (let row of excelData) {
       let remark = "";
 
-      // Mandatory field checks
-      if (!row.employeeID || row.employeeID === "-") remark += "Employee ID missing, ";
-      if (!row.leaveTypeCode || row.leaveTypeCode === "-") remark += "Leave Type Code missing, ";
+      // Resolve Employee
+      let employee;
+      if (row.employeeID && row.employeeID !== "-") {
+        const lookupValue = row.employeeID.toString().trim();
+        employee = await Employee.findOne({ 
+          $or: [
+            { employeeID: { $regex: new RegExp("^" + lookupValue + "$", "i") } },
+            { employee_id: { $regex: new RegExp("^" + lookupValue + "$", "i") } }
+          ]
+        });
+        if (employee) {
+          row.employeeName = employee.employeeName;
+        } else {
+          remark += `Employee ID '${row.employeeID}' not found in system, `;
+        }
+      } else {
+        remark += "Employee ID missing, ";
+      }
+
+      // Resolve Leave Type
+      let leaveType;
+      if (row.leaveTypeCode && row.leaveTypeCode !== "-") {
+        leaveType = await LeaveType.findOne({ leaveCode: row.leaveTypeCode.toString().trim().toUpperCase() });
+        if (leaveType) {
+          row.leaveTypeName = leaveType.leaveTypeName;
+        } else {
+          remark += `Leave Type Code '${row.leaveTypeCode}' not found in system, `;
+        }
+      } else {
+        remark += "Leave Type Code missing, ";
+      }
+
       if (!row.openingBalance && row.openingBalance !== 0) remark += "Opening Balance missing, ";
 
       if (remark) {
         invalidData.push({ ...row, failedRemark: remark.trim().replace(/,$/, "") });
-        continue;
-      }
-
-      // Resolve Employee
-      const employee = await Employee.findOne({ employeeID: row.employeeID.toString().trim() });
-      if (!employee) {
-        invalidData.push({ ...row, failedRemark: `Employee ID '${row.employeeID}' not found in system` });
-        continue;
-      }
-
-      // Resolve Leave Type
-      const leaveType = await LeaveType.findOne({ leaveCode: row.leaveTypeCode.toString().trim().toUpperCase() });
-      if (!leaveType) {
-        invalidData.push({ ...row, failedRemark: `Leave Type Code '${row.leaveTypeCode}' not found in system` });
         continue;
       }
 
