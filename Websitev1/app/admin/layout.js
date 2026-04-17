@@ -1244,7 +1244,16 @@ export default function RootLayout({ children }) {
           title: "Department Master",
           link: "/admin/master-data/department-subdepartment",
         },
-
+        {
+          icon: <FaRegCircle />,
+          title: "Leave Type Master",
+          link: "/admin/master-data/leave-types",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Leave Policy Master",
+          link: "/admin/master-data/leave-policy",
+        },
       ],
     },
     {
