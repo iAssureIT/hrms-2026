@@ -55,8 +55,6 @@ const AttendanceDataEntry = () => {
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/centers/list`),
                 axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/department-master/get`)
             ]);
-<<<<<<< Updated upstream
-
             // Fix for Centers: Check for .value, .data, or direct array
             const centersList = cRes.data?.value || cRes.data?.data || (Array.isArray(cRes.data) ? cRes.data : []);
             setCenters(centersList);
@@ -71,11 +69,6 @@ const AttendanceDataEntry = () => {
             setCenters([]);
             setDepartments([]);
         }
-=======
-            setCenters(cRes.data?.value || cRes.data || []);
-            setDepartments(dRes.data?.value || dRes.data || []);
-        } catch (err) { console.error(err); }
->>>>>>> Stashed changes
     };
 
     const fetchSavedMappings = async (userId) => {
