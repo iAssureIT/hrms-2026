@@ -15,6 +15,8 @@ const attendanceSchema = new mongoose.Schema({
     totalHours: { type: Number, default: 0 },
     lateBy: { type: Number, default: 0 }, // in minutes
     earlyExitBy: { type: Number, default: 0 }, // in minutes
+    overtime: { type: Number, default: 0 }, // in minutes
+    earlyHours: { type: Number, default: 0 }, // in minutes
     source: { type: String, enum: ['Manual', 'Excel_Biometric', 'Excel_WFH'], default: 'Manual' },
     records: [
         {

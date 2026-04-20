@@ -224,7 +224,7 @@ const AttendanceDataEntry = () => {
     };
 
     return (
-        <section className="p-4 bg-[#f4f6f9] min-h-screen">
+        <section className="section">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-baseline gap-3">
                     <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Attendance Data Entry</h1>
@@ -336,22 +336,22 @@ const AttendanceDataEntry = () => {
                     </div>
                 ) : (
                     <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-700">
-                        <div className="admin-box mb-6">
-                            <div className="p-4 bg-gray-50/50 border-b border-gray-100">
-                                <div className="flex flex-wrap items-center gap-6">
-                                    <div className="flex items-center gap-3">
-                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Date</label>
+                        <div className="admin-box mb-6 border-b border-gray-200">
+                            <div className="p-6 bg-gray-50/30">
+                                <div className="flex flex-wrap items-center gap-8">
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Select Date</label>
                                         <input
                                             type="date"
-                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-40 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-44 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                             value={selectedDate}
                                             onChange={(e) => setSelectedDate(e.target.value)}
                                         />
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Center</label>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Center</label>
                                         <select
-                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-52 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                             value={center_id}
                                             onChange={(e) => setCenter_id(e.target.value)}
                                         >
@@ -359,10 +359,10 @@ const AttendanceDataEntry = () => {
                                             {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
                                         </select>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Department</label>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Department</label>
                                         <select
-                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                            className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-52 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                             value={department_id}
                                             onChange={(e) => setDepartment_id(e.target.value)}
                                         >
@@ -370,10 +370,10 @@ const AttendanceDataEntry = () => {
                                             {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
                                         </select>
                                     </div>
-                                    <div className="">
+                                    <div className="pt-6">
                                         <button
                                             onClick={fetchEmployees}
-                                            className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1 h-8 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
+                                            className="bg-[#3c8dbc] border border-[#367fa9] text-white px-8 py-1.5 h-9 rounded-sm font-bold text-xs hover:bg-[#367fa9] shadow-md flex items-center gap-2 transform active:scale-95 transition-all"
                                         >
                                             <FaFilter className="text-[10px]" /> Apply Filter
                                         </button>
@@ -389,64 +389,74 @@ const AttendanceDataEntry = () => {
                             <div className="admin-content-area overflow-x-auto border border-gray-200">
                                 <table className="admin-table border-collapse">
                                     <thead className="admin-table-thead">
-                                        <tr className="border-b border-gray-200">
-                                            <th className="admin-table-th !text-[12px] uppercase">Employee</th>
-                                            <th className="admin-table-th !text-[12px] uppercase">In Time</th>
-                                            <th className="admin-table-th !text-[12px] uppercase">Out Time</th>
-                                            <th className="admin-table-th text-center !text-[12px] uppercase">Status</th>
-                                            <th className="admin-table-th text-right !text-[12px] uppercase">Remarks</th>
+                                     <thead className="admin-table-thead bg-gray-50/50">
+                                        <tr>
+                                            <th className="p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">Employee Profile</th>
+                                            <th className="p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">In Time</th>
+                                            <th className="p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">Out Time</th>
+                                            <th className="p-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider">Attendance Status</th>
+                                            <th className="p-4 text-right text-[11px] font-bold text-gray-500 uppercase tracking-wider">Remarks / Notes</th>
                                         </tr>
+                                    </thead>
                                     </thead>
                                     <tbody>
                                         {loading ? (
                                             <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">Loading roster...</td></tr>
                                         ) : employees.length === 0 ? (
                                             <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">No employees found for selection</td></tr>
-                                        ) : employees.map(emp => (
-                                            <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
-                                                <td className="admin-table-td">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[12px] font-bold text-gray-800">{emp.employeeName}</span>
-                                                        <span className="text-[10px] text-gray-400">{emp.employeeID}</span>
+                                         ) : employees.map(emp => (
+                                            <tr key={emp.employee_id} className="hover:bg-blue-50/50 transition-colors border-b border-gray-100 last:border-0 group">
+                                                <td className="p-4 align-middle">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[#3c8dbc] font-bold text-xs border border-gray-200 uppercase">
+                                                            {emp.employeeName?.charAt(0)}
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[13px] font-bold text-gray-800 leading-tight group-hover:text-[#3c8dbc] transition-colors">{emp.employeeName}</span>
+                                                            <span className="text-[10px] text-gray-400 font-medium">{emp.employeeID}</span>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                                <td className="admin-table-td">
-                                                    <div className="flex items-center gap-2">
-                                                        <FaClock className="text-gray-300" />
+                                                <td className="p-4 align-middle">
+                                                    <div className="flex items-center gap-2 w-fit bg-white border border-gray-200 rounded px-2 py-1 shadow-sm focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-100 transition-all">
+                                                        <FaClock className="text-gray-300 text-[10px]" />
                                                         <input
                                                             type="time"
-                                                            className="admin-input py-1 px-2 w-32"
+                                                            className="bg-transparent border-0 text-[12px] p-0 w-24 outline-none text-gray-700"
                                                             value={manualData[emp.employee_id]?.inTime || ""}
                                                             onChange={(e) => handleManualChange(emp.employee_id, "inTime", e.target.value)}
                                                         />
                                                     </div>
                                                 </td>
-                                                <td className="admin-table-td">
-                                                    <div className="flex items-center gap-2">
-                                                        <FaClock className="text-gray-300" />
+                                                <td className="p-4 align-middle">
+                                                    <div className="flex items-center gap-2 w-fit bg-white border border-gray-200 rounded px-2 py-1 shadow-sm focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-100 transition-all">
+                                                        <FaClock className="text-gray-300 text-[10px]" />
                                                         <input
                                                             type="time"
-                                                            className="admin-input py-1 px-2 w-32"
+                                                            className="bg-transparent border-0 text-[12px] p-0 w-24 outline-none text-gray-700"
                                                             value={manualData[emp.employee_id]?.outTime || ""}
                                                             onChange={(e) => handleManualChange(emp.employee_id, "outTime", e.target.value)}
                                                         />
                                                     </div>
                                                 </td>
-                                                <td className="admin-table-td text-center">
+                                                <td className="p-4 align-middle text-center">
                                                     <select
-                                                        className="admin-select py-1 px-2 w-24 mx-auto"
+                                                        className="bg-white border border-gray-200 text-gray-700 text-[11px] font-bold rounded px-2 py-1.5 w-32 shadow-sm focus:border-blue-400 outline-none transition-all cursor-pointer"
                                                         value={manualData[emp.employee_id]?.status || "X"}
                                                         onChange={(e) => handleManualChange(emp.employee_id, "status", e.target.value)}
                                                     >
-                                                        <option value="X">-</option>
-                                                        <option value="P">Present</option>
+                                                        <option value="X">Select Status</option>
+                                                        <option value="P">Present (Full Day)</option>
                                                         <option value="A">Absent</option>
+                                                        <option value="L">Late Entry</option>
+                                                        <option value="E">Early Exit</option>
+                                                        <option value="F">Half Day</option>
                                                         <option value="H">Holiday</option>
                                                         <option value="W">Weekly Off</option>
                                                     </select>
                                                 </td>
-                                                <td className="admin-table-td text-right">
-                                                    <input type="text" placeholder="Add remark..." className="bg-transparent border-b border-gray-200 text-[10px] text-gray-400 focus:border-blue-400 focus:bg-white px-2 py-1 w-32 outline-none" />
+                                                <td className="p-4 align-middle text-right">
+                                                    <input type="text" placeholder="Add remark..." className="bg-transparent border-b border-gray-200 text-[11px] text-gray-600 focus:border-[#3c8dbc] px-2 py-1 w-full max-w-[150px] outline-none transition-colors" />
                                                 </td>
                                             </tr>
                                         ))}

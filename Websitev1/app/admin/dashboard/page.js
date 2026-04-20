@@ -50,7 +50,7 @@ const getStatusColor = (colorClass) => {
 
 const MetricCard = ({ label, value, sub, icon: Icon, colorClass }) => (
     <div className="flex bg-white shadow-sm rounded-none overflow-hidden h-24 border border-gray-200">
-        <div 
+        <div
             style={{ backgroundColor: getStatusColor(colorClass) }}
             className="w-24 flex items-center justify-center text-white shrink-0"
         >
@@ -165,11 +165,11 @@ const HRMSDashboard = () => {
 
     const handleGenerateReport = async () => {
         if (!data) return;
-        
+
         // Dynamically import jsPDF and autoTable exactly when needed to prevent Next.js SSR crashes
         const { default: jsPDF } = await import("jspdf");
         const { default: autoTable } = await import("jspdf-autotable");
-        
+
         const doc = new jsPDF();
         const timestamp = moment().format("MMMM Do YYYY, h:mm:ss a");
 
@@ -183,7 +183,7 @@ const HRMSDashboard = () => {
         doc.text(`Generated on: ${timestamp}`, 15, 32);
 
         // KPI Summary
-        doc.setTextColor(51, 65, 85); 
+        doc.setTextColor(51, 65, 85);
         doc.setFontSize(16);
         doc.text("Summary KPIs", 15, 55);
 
@@ -230,7 +230,7 @@ const HRMSDashboard = () => {
     };
 
     return (
-        <section className="p-4 bg-[#f4f6f9] min-h-screen">
+        <section className="section">
             <div className="mx-auto">
 
                 {/* Header Row */}

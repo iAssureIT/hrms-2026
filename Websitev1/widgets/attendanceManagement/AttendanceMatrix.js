@@ -109,7 +109,8 @@ const AttendanceMatrix = () => {
     );
 
     return (
-        <section className="p-4 bg-[#f4f6f9] min-h-screen">
+        <section className="section">
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                 <div className="flex items-baseline gap-3">
                     <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Attendance Matrix</h1>
@@ -137,31 +138,31 @@ const AttendanceMatrix = () => {
 
             <div className="admin-box box-primary">
                 <div className="p-4 bg-gray-50/50 border-b border-gray-100">
-                    <div className="flex flex-wrap items-center gap-6">
-                        <div className="flex items-center gap-3">
-                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Month</label>
+                    <div className="flex flex-wrap items-center gap-8">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Month</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-32 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-36 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={selectedMonth}
                                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                             >
                                 {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
                             </select>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Year</label>
+                        <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Year</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-24 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-28 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={selectedYear}
                                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                             >
                                 {years.map(y => <option key={y} value={y}>{y}</option>)}
                             </select>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Center</label>
+                        <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Center</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-56 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={center_id}
                                 onChange={(e) => setCenter_id(e.target.value)}
                             >
@@ -169,10 +170,10 @@ const AttendanceMatrix = () => {
                                 {centers.map(c => <option key={c._id} value={c._id}>{c.centerName}</option>)}
                             </select>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Department</label>
+                        <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Department</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-48 p-1.5 h-8 outline-none transition-all shadow-sm"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-56 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={department_id}
                                 onChange={(e) => setDepartment_id(e.target.value)}
                             >
@@ -248,12 +249,26 @@ const AttendanceMatrix = () => {
                                                             <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[day].in}</b></p>
                                                             <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[day].out}</b></p>
                                                             <p className="flex justify-between gap-4 pt-1 border-t border-gray-600"><span>Total:</span><b>{(emp.timings[day].total / 60).toFixed(1)} hrs</b></p>
+                                                            {emp.timings[day].overtime > 0 && <p className="flex justify-between gap-4 text-blue-400"><span>Overtime:</span><b>{(emp.timings[day].overtime / 60).toFixed(1)} hrs</b></p>}
+                                                            {emp.timings[day].earlyHours > 0 && <p className="flex justify-between gap-4 text-indigo-400"><span>Early Hours:</span><b>{(emp.timings[day].earlyHours / 60).toFixed(1)} hrs</b></p>}
                                                         </div>
                                                     ) : moment([selectedYear, selectedMonth - 1, day]).format("DD MMM")}
                                                     arrow={false}
                                                 >
-                                                    <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default mx-auto ${getStatusColorTable(emp.attendance[day])}`}>
-                                                        {emp.attendance[day]}
+                                                    <div className="relative mx-auto w-7 h-7">
+                                                        <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default ${getStatusColorTable(emp.attendance[day])}`}>
+                                                            {emp.attendance[day]}
+                                                        </div>
+                                                        {emp.timings[day]?.overtime > 0 && (
+                                                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 border border-white flex items-center justify-center rounded-full" title="Overtime">
+                                                                <span className="text-[6px] text-white">O</span>
+                                                            </div>
+                                                        )}
+                                                        {emp.timings[day]?.earlyHours > 0 && (
+                                                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-indigo-600 border border-white flex items-center justify-center rounded-full" title="Early Hours">
+                                                                <span className="text-[6px] text-white">E</span>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </Tooltip>
                                             </td>
@@ -295,6 +310,8 @@ const AttendanceMatrix = () => {
                         { s: 'H', l: 'Holiday', c: 'bg-green-100 text-green-700' },
                         { s: 'W', l: 'Weekly Off', c: 'bg-gray-100 text-gray-500' },
                         { s: 'F', l: 'Half Day', c: 'bg-orange-100 text-orange-700' },
+                        { s: 'OT', l: 'Overtime (>1hr)', c: 'bg-blue-600 text-white !text-[8px]' },
+                        { s: 'EH', l: 'Early Hours (>1hr)', c: 'bg-indigo-600 text-white !text-[8px]' },
                     ].map(item => (
                         <div key={item.s} className="flex items-center gap-2">
                             <div className={`w-6 h-6 rounded-none flex items-center justify-center text-[9px] font-bold border ${item.c}`}>{item.s}</div>
