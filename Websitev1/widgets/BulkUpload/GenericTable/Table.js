@@ -128,7 +128,7 @@ const GenericTable = (props) => {
       //   showCancelButton: true,
       //   cancelButtonText: "No, Don't Delete!",
       //   confirmButtonColor: "#3085d6",
-      //   cancelButtonColor: "#50c878",
+      //   cancelButtonColor: "#3c8dbc",
       //   confirmButtonText: "Yes, delete it!",
       // }).then((result) => {
       //   if (result.isConfirmed) {

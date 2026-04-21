@@ -196,9 +196,9 @@ class ConfirmOTP extends Component {
     return (
       <section className="bg-white rounded shadow-md w-full max-w-sm max-h-[80dvh] overflow-y-auto px-4 sm:px-0 sm:mx-10 sm:my-10">
         <div className="w-full">
-          <div className="w-full bg-lightgreen border border-2 border-t-green py-3">
-            <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
-              Verify OTP
+          <div className="w-full bg-[#f8fafc] border-t-4 border-[#3c8dbc] py-6 shadow-sm">
+            <h1 className=" text-xl md:text-2xl text-[#3c8dbc] font-black leading-tight text-center tracking-tight">
+               Verify OTP
             </h1>
           </div>
           <div className="p-4 sm:p-8">
@@ -222,7 +222,7 @@ class ConfirmOTP extends Component {
                   renderInput={(props) => <input {...props} />}
                   focusStyle={{
                     outline: "none",
-                    border: "1px solid #00B25B",
+                    border: "1px solid #3c8dbc",
                   }}
                 />
               </div>
@@ -236,7 +236,7 @@ class ConfirmOTP extends Component {
                   ) : (
                     <a
                       href=""
-                      className="flex items-center text-green-500 hover:text-green-700 text-sm font-semibold underline underline-offset-2"
+                      className="flex items-center text-[#3c8dbc] hover:text-[#367fa9] text-sm font-bold underline underline-offset-2 transition-colors"
                       onClick={this.resendOTP.bind(this)}
                     >
                       <span>Resend OTP</span>
@@ -257,7 +257,7 @@ class ConfirmOTP extends Component {
               <div className="text-left mt-4">
                 <a
                   href="/auth/login"
-                  className="underline underline-offset-2 text-sm font-semibold inputLabel text-green-500 hover:text-green-700"
+                  className="underline underline-offset-2 text-sm font-bold text-[#3c8dbc] hover:text-[#367fa9] transition-colors"
                 >
                   Back to Login
                 </a>

@@ -242,10 +242,10 @@ function Login(props) {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-[#50c878] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-[#3c8dbc] flex items-center justify-center">
             <i className="fa fa-user text-white text-sm"></i>
           </div>
-          <span className="text-xs font-bold uppercase tracking-widest text-[#50c878]">HRMS 2026</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-[#3c8dbc]">HRMS 2026</span>
         </div>
         <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight mb-1">
           Welcome Back
@@ -313,7 +313,7 @@ function Login(props) {
         <div className="text-right mb-6">
           <a
             href="/auth/forgot-password"
-            className="text-xs font-bold text-[#50c878] hover:text-[#3fb06a] transition-colors"
+            className="text-xs font-bold text-[#3c8dbc] hover:text-[#367fa9] transition-colors"
             onClick={() => setLoading(true)}
           >
             {loading ? (

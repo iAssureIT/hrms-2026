@@ -124,7 +124,7 @@ const Page = () => {
           <div className="flex gap-3 me-10">
             <Tooltip content="Add Center Details" placement="bottom" arrow={false}>
               <FaWpforms
-                className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                className="cursor-pointer text-[#3c8dbc] border border-[#3c8dbc] p-0.5 rounded text-[30px]"
                 onClick={() => {
                   router.push("/admin/master-data/center-details/center-details-submission");
                 }}
@@ -132,7 +132,7 @@ const Page = () => {
             </Tooltip>
             <Tooltip content="Center Details List" placement="bottom" arrow={false}>
               <CiViewList
-                className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                className="cursor-pointer text-[#3c8dbc] border border-[#3c8dbc] p-0.5 rounded text-[30px]"
                 onClick={() => {
                   router.push("/admin/master-data/center-details/center-details-list");
                 }}

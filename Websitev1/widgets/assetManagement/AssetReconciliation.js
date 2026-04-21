@@ -191,7 +191,7 @@ const ReconciliationContent = () => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8F9FB]">
-                <FaSpinner className="animate-spin text-green-600 mb-4" size={48} />
+                <FaSpinner className="animate-spin text-[#3c8dbc] mb-4" size={48} />
                 <p className="text-sm font-black text-gray-400 uppercase tracking-widest text-center">Waking Verification Engine...</p>
             </div>
         );
@@ -222,10 +222,10 @@ const ReconciliationContent = () => {
                     <div className="py-5">
                         <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
                             <span>Audit No</span>
-                            <span className="text-green-600">{activeAudit.auditNo}</span>
+                            <span className="text-[#3c8dbc]">{activeAudit.auditNo}</span>
                         </div>
                         <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">
-                            Asset <span className="text-green-600">Reconciliation</span>
+                            Asset <span className="text-[#3c8dbc]">Reconciliation</span>
                         </h1>
                         <p className="text-[12px] font-bold text-slate-400 mt-1 uppercase tracking-tight italic">
                             {activeAudit.auditTitle}
@@ -241,7 +241,7 @@ const ReconciliationContent = () => {
                                     {activeAudit.summary.verifiedAssets}<span className="text-slate-300 mx-1">/</span>{activeAudit.summary.totalAssets}
                                 </p>
                             </div>
-                            <div className="w-12 h-12 rounded-full border-[4px] border-slate-200 border-t-green-600 flex items-center justify-center font-black text-[10px] text-green-600">
+                            <div className="w-12 h-12 rounded-full border-[4px] border-slate-200 border-t-[#3c8dbc] flex items-center justify-center font-black text-[10px] text-[#3c8dbc]">
                                 {activeAudit.summary.totalAssets > 0 ? Math.round((activeAudit.summary.verifiedAssets / activeAudit.summary.totalAssets) * 100) : 0}%
                             </div>
                         </div>
@@ -249,9 +249,9 @@ const ReconciliationContent = () => {
                         {/* Standard Icon Buttons */}
                         <div className="flex gap-3">
                             {activeAudit.status !== 'Completed' && !(userDetails?.roles?.includes("fa-accounts")) && (
-                                <Tooltip content="Finalize Audit" placement="bottom" className="bg-green" arrow={false}>
+                                <Tooltip content="Finalize Audit" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
                                     <MdAssignmentTurnedIn
-                                        className="cursor-pointer text-green hover:text-white hover:bg-green border border-green p-1.5 rounded-lg text-[36px] shadow-sm transition-all"
+                                        className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded-lg text-[36px] shadow-sm transition-all"
                                         onClick={finalizeAudit}
                                     />
                                 </Tooltip>
@@ -292,7 +292,7 @@ const ReconciliationContent = () => {
 
                 {/* ── Footer Info ── */}
                 <div className="px-10 py-6 border-t border-slate-50 bg-white flex items-center gap-6">
-                    <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="w-12 h-12 bg-blue-50 text-[#3c8dbc] rounded-xl flex items-center justify-center shrink-0 shadow-inner">
                         <MdInfo size={24} />
                     </div>
                     <div>
@@ -311,7 +311,7 @@ const AssetReconciliation = () => {
     return (
         <Suspense fallback={
             <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8F9FB]">
-                <FaSpinner className="animate-spin text-green-600 mb-4" size={48} />
+                <FaSpinner className="animate-spin text-[#3c8dbc] mb-4" size={48} />
                 <p className="text-sm font-black text-gray-400 uppercase tracking-widest">Waking Verification Engine...</p>
             </div>
         }>

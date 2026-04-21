@@ -217,7 +217,7 @@ const OneFieldComponents = ({ fieldLabel, setCheckRelode }) => {
 
       showCancelButton: true,
       cancelButtonText: "No, don't delete!",
-      cancelButtonColor: "#50c878",
+      cancelButtonColor: "#3c8dbc",
       confirmButtonText: "Yes, delete it!",
       reverseButtons: true,
       focusCancel: true,

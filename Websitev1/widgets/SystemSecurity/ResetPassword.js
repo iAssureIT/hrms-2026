@@ -161,9 +161,9 @@ class ResetPassword extends Component {
     return (
       <section className="bg-white rounded shadow-md w-full max-w-sm max-h-[80dvh] overflow-y-auto">
         <div className="w-full">
-          <div className="w-full bg-lightgreen border border-2 border-t-green py-3">
-            <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
-              Reset Password
+          <div className="w-full bg-[#f8fafc] border-t-4 border-[#3c8dbc] py-6 shadow-sm">
+            <h1 className=" text-xl md:text-2xl text-[#3c8dbc] font-black leading-tight text-center tracking-tight">
+               Reset Password
             </h1>
           </div>
           <form className="mt-2 p-4" action="#" method="POST">
@@ -177,7 +177,7 @@ class ResetPassword extends Component {
                   name="email"
                   id="email"
                   placeholder="Email ID"
-                  className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
+                  className="w-full p-2.5 bg-white border border-slate-200 rounded-lg pl-10 ring-1 ring-inset ring-slate-100 focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc] border-none outline-none transition-all"
                   value={this.state.email}
                   onChange={this.handleChange.bind(this)}
                   autoFocus
@@ -199,7 +199,7 @@ class ResetPassword extends Component {
                   name="newPassword"
                   id="newPassword"
                   placeholder="Password"
-                  className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
+                  className="w-full p-2.5 bg-white border border-slate-200 rounded-lg pl-10 ring-1 ring-inset ring-slate-100 focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc] border-none outline-none transition-all"
                   value={this.state.newPassword}
                   onChange={this.handleChange.bind(this)}
                   autoComplete="on"
@@ -242,7 +242,7 @@ class ResetPassword extends Component {
                   name="confirmPassword"
                   id="confirmPassword"
                   placeholder="Password"
-                  className="w-full p-2 bg-white border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
+                  className="w-full p-2.5 bg-white border border-slate-200 rounded-lg pl-10 ring-1 ring-inset ring-slate-100 focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc] border-none outline-none transition-all"
                   value={this.state.confirmPassword}
                   onChange={this.handleChange.bind(this)}
                   autoComplete="on"

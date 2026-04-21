@@ -159,7 +159,7 @@
 //         showCancelButton: true,
 //         cancelButtonText: "No, Don't Delete!",
 //         // confirmButtonColor: "#3085d6",
-//         cancelButtonColor: "#50c878",
+//         cancelButtonColor: "#3c8dbc",
 //         confirmButtonText: "Yes, delete it!",
 //         reverseButtons: true,
 //         focusCancel: true,
@@ -988,7 +988,7 @@ const GenericReport = ({
         showCancelButton: true,
         cancelButtonText: "No, Don't Delete!",
         // confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#50c878",
+        cancelButtonColor: "#3c8dbc",
         confirmButtonText: "Yes, delete it!",
         reverseButtons: true,
         focusCancel: true,
@@ -1395,13 +1395,13 @@ const GenericReport = ({
                 <Tooltip
                   content="Download as Excel"
                   placement="top"
-                  className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                  className="z-50 bg-[#3c8dbc] text-white text-sm px-2 py-1 rounded"
                   arrow={false}
                 >
                   <FaFileDownload
                     onClick={exportToExcel}
                     size={"2rem"}
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-0.5 hover:border-[#367fa9] rounded text-[30px]"
                   />
                 </Tooltip>
               </div>
@@ -1515,7 +1515,7 @@ const GenericReport = ({
                           }
                           if (value1 === "approved" || value1 === "Approved") {
                             var statusColor =
-                              "border bg-green rounded-lg text-xs text text-center py-0.5 px-1 text-white";
+                              "border bg-successGreen rounded-lg text-xs text text-center py-0.5 px-1 text-white";
                           }
                           if (value1 === "rejected" || value1 === "Rejected") {
                             var statusColor =
@@ -1576,7 +1576,7 @@ const GenericReport = ({
                   })
                 ) : loading ? (
                   <tr>
-                    <td colSpan={10} className="text-center text-green text-lg">
+                    <td colSpan={10} className="text-center text-[#3c8dbc] text-lg">
                       <FaSpinner className="animate-spin inline-flex mx-2" />
                     </td>
                   </tr>
@@ -1629,7 +1629,7 @@ const GenericReport = ({
                             className={
                               "page-item hover border border-gray-400 cursor-pointer text-center font-semibold flex items-center justify-center min-w-[32px] md:min-w-[40px] h-8 md:h-10 px-1 md:px-2 " +
                               (pageNumber === item
-                                ? " active bg-green-500 text-white border-green-500"
+                                ? " active bg-[#3c8dbc] text-white border-[#3c8dbc]"
                                 : "bg-white text-gray-700")
                             }
                             onClick={() => {

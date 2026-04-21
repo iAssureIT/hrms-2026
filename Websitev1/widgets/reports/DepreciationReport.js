@@ -132,7 +132,7 @@ const DepreciationReport = () => {
                     // Using HTML string because GenericTable uses dangerouslySetInnerHTML
                     return {
                         ...item,
-                        assetIDLink: `<span class="asset-id-link text-green-600 font-bold cursor-pointer hover:underline" data-id="${item._id}">${item.assetID}</span>`
+                        assetIDLink: `<span class="asset-id-link text-[#3c8dbc] font-bold cursor-pointer hover:underline" data-id="${item._id}">${item.assetID}</span>`
                     };
                 });
                 setTableData(transformed);
@@ -244,10 +244,10 @@ const DepreciationReport = () => {
                     <div className="pb-1 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                         <div className="space-y-1">
                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                                <span className="text-green-600">Governance & Finance</span>
+                                <span className="text-[#3c8dbc]">Governance & Finance</span>
                             </div>
                             <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                                Asset Depreciation <span className="text-green-600 font-black">Report</span>
+                                Asset Depreciation <span className="text-[#3c8dbc] font-black">Report</span>
                             </h1>
                         </div>
                     </div>
@@ -315,12 +315,12 @@ const DepreciationReport = () => {
                         onClick={() => setShowFilters(!showFilters)}
                     >
                         {/* Collapsible Filters Header */}
-                        <div className="flex items-center gap-2 text-slate-800 hover:text-green-600 transition-colors">
-                            <MdFilterList className={`text-xl ${showFilters ? 'text-green-600' : 'text-slate-600'}`} />
+                        <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
+                            <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
                             <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
                         </div>
-                        <div className={`flex-1 h-[1px] ${showFilters ? 'bg-green-600/20' : 'bg-slate-100'} group-hover:bg-green-600/30 transition-colors`}></div>
-                        <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-green-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                        <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
+                        <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
                     </div>
 
                     <div
@@ -401,7 +401,7 @@ const DepreciationReport = () => {
                 {/* --- CALCULATION LOGIC FOOTER --- */}
                 <div className="mt-8 bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
                     <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 text-green-600">
+                        <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 text-[#3c8dbc]">
                             <MdInfo size={24} />
                         </div>
                         <div>
@@ -502,8 +502,8 @@ const DepreciationReport = () => {
                     transition: all 0.2s;
                 }
                 .stdSelectField:focus {
-                    border-color: #10b981;
-                    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.05);
+                    border-color: #3c8dbc;
+                    box-shadow: 0 0 0 4px rgba(60, 141, 188, 0.05);
                 }
                 .inputLabel {
                     font-size: 10px;

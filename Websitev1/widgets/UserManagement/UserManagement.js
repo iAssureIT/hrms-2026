@@ -107,7 +107,7 @@ function UserManagement() {
               : "-- NA --",
             status:
               usersData[index].status === "active"
-                ? '<span class="bg-green font-normal flex justify-center text-white rounded-lg">' +
+                ? '<span class="bg-successGreen font-normal flex justify-center text-white rounded-lg">' +
                 usersData[index].status +
                 "</span>"
                 : '<span class="bg-red-400 text-white font-normal flex justify-center rounded-lg">' +

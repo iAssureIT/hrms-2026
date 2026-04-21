@@ -260,7 +260,7 @@ function AddEmployee(props) {
                     setFirstName(e.target.value);
                     clearErrors("first_name");
                   }}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3c8dbc] focus:border-[#3c8dbc] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3c8dbc] dark:focus:border-[#3c8dbc]"
                   placeholder="Enter Firstname..."
                 />
                 {errors?.first_name && (
@@ -285,7 +285,7 @@ function AddEmployee(props) {
                     setLastName(e.target.value);
                     clearErrors("last_name");
                   }}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3c8dbc] focus:border-[#3c8dbc] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3c8dbc] dark:focus:border-[#3c8dbc]"
                   placeholder="Enter Lastname..."
                 />
                 {errors?.last_name && (
@@ -310,7 +310,7 @@ function AddEmployee(props) {
                     clearErrors("phone");
                   }}
                   value={phone}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3c8dbc] focus:border-[#3c8dbc] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3c8dbc] dark:focus:border-[#3c8dbc]"
                   placeholder="Enter Mobile number..."
                   pattern="/^+91(7\d|8\d|9\d)\d{9}$/"
                 />
@@ -337,7 +337,7 @@ function AddEmployee(props) {
                     clearErrors("email");
                   }}
                   value={email}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3c8dbc] focus:border-[#3c8dbc] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3c8dbc] dark:focus:border-[#3c8dbc]"
                   placeholder="Enter Email..."
                 />
                 {errors?.email && (
@@ -361,7 +361,7 @@ function AddEmployee(props) {
                     setRole(e.target.value);
                     clearErrors("role");
                   }}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3c8dbc] focus:border-[#3c8dbc] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3c8dbc] dark:focus:border-[#3c8dbc]"
                 >
                   <option value="" selected>
                     Select Role
@@ -428,7 +428,7 @@ function AddEmployee(props) {
 
             <button
               type="submit"
-              className="text-white bg-site hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800"
+              className="text-white bg-site hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-[#3c8dbc] dark:hover:bg-[#367fa9] dark:focus:ring-blue-800"
             >
               {props.edit ? "Update" : "Submit"}
             </button>

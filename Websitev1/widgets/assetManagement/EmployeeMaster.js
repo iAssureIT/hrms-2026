@@ -171,4 +171,4 @@ const EmployeeMaster = () => {
   );
 };
 
-export default EmployeeMaster;
+export default EmployeeMaster;

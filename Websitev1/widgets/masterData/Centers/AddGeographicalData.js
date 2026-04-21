@@ -118,14 +118,14 @@ const Page = () => {
               <Tooltip
                 content="Centers List"
                 placement="bottom"
-                className="bg-green"
+                className="bg-[#3c8dbc]"
                 arrow={false}
               >
                 {loading2 ? (
-                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                  <FaSpinner className="animate-spin text-center text-[#3c8dbc] inline-flex mx-2" />
                 ) : (
                   <CiViewList
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] hover:border-[#367fa9] rounded text-[30px]"
                     onClick={() => {
                       // setLoading2(true);
                       window.open(

@@ -256,14 +256,14 @@ const CenterManagement = (props) => {
               <Tooltip
                 content="Center Details List"
                 placement="bottom"
-                className="bg-green"
+                className="bg-[#3c8dbc]"
                 arrow={false}
               >
                 {loading2 ? (
-                  <FaSpinner className="animate-spin inline-flex mx-2 text-Green" />
+                  <FaSpinner className="animate-spin inline-flex mx-2 text-[#367fa9]" />
                 ) : (
                   <CiViewList
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-0.5 hover:border-[#367fa9] rounded text-[30px]"
                     onClick={() => {
                       window.open(
                         "/admin/master-data/center-details/center-details-list",
@@ -284,12 +284,12 @@ const CenterManagement = (props) => {
               <h2>
                 Please provide Center Incharge & Sr. Manager Details for{" "}
                 <big>
-                  <span className="text-green-600 underline">
+                  <span className="text-[#3c8dbc] underline">
                     {" "}
                     {centerName ? (
                       centerName
                     ) : (
-                      <FaSpinner className="animate-spin inline-flex mx-2" />
+                      <FaSpinner className="animate-spin inline-flex mx-2 text-[#3c8dbc]" />
                     )}{" "}
                     Center.
                   </span>
@@ -314,11 +314,10 @@ const CenterManagement = (props) => {
                   <select
                     name="centerInchargeName"
                     id="centerInchargeName"
-                    className={`stdSelectField ${
-                      centerInchargeName
+                    className={`stdSelectField ${centerInchargeName
                         ? "text-black "
                         : "text-gray-400 font-normal"
-                    }`}
+                      }`}
                     value={centerInchargeName}
                     onChange={handleCenterInchargeChange}
                   >
@@ -405,11 +404,10 @@ const CenterManagement = (props) => {
                   <select
                     name="seniorManagerName"
                     id="seniorManagerName"
-                    className={`stdSelectField ${
-                      seniorManagerName
+                    className={`stdSelectField ${seniorManagerName
                         ? "text-black "
                         : "text-gray-400 font-normal"
-                    }`}
+                      }`}
                     value={seniorManagerName}
                     onChange={handleSeniorManagerChange}
                   >
@@ -496,11 +494,10 @@ const CenterManagement = (props) => {
                   <select
                     name="accountPersonName"
                     id="accountPersonName"
-                    className={`stdSelectField ${
-                      accountPersonName
+                    className={`stdSelectField ${accountPersonName
                         ? "text-black "
                         : "text-gray-400 font-normal"
-                    }`}
+                      }`}
                     value={accountPersonName}
                     onChange={handleAccountPersonChange}
                   >

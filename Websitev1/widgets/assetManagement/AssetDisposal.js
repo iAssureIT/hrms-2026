@@ -516,7 +516,7 @@ const AssetDisposal = () => {
                     transition: all 0.2s;
                 }
                 .stdInputField:focus {
-                    border-color: #50c878;
+                    border-color: #3c8dbc;
                     box-shadow: 0 0 0 4px rgba(80, 200, 120, 0.05);
                 }
                 .stdSelectField {

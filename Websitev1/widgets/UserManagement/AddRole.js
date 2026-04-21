@@ -19,7 +19,7 @@ import { MdClose } from "react-icons/md";
 
 const TABLE_HEAD = ["Role", "Action"];
 const oneFieldButton =
-  "text-white bg-gradient-to-r bg-[#4285F4] placeholder-font-normal hover:bg-[#4879be] focus:outline-none focus:ring-green dark:focus:ring-green shadow-lg inline-flex items-center font-normal rounded-sm text-sm px-5 h-8 text-center mb-2";
+  "text-white bg-gradient-to-r bg-[#4285F4] placeholder-font-normal hover:bg-[#4879be] focus:outline-none focus:ring-[#3c8dbc] dark:focus:ring-[#3c8dbc] shadow-lg inline-flex items-center font-normal rounded-sm text-sm px-5 h-8 text-center mb-2";
 const oneFieldInput =
   "text-black rounded-e-md focus:shadow-md block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 outline-none";
 
@@ -128,7 +128,7 @@ function AddRole() {
         text: `Are you sure you want to delete this Role?`,
         showCancelButton: true,
         cancelButtonText: "No, Don't Delete!",
-        cancelButtonColor: "#50c878",
+        cancelButtonColor: "#3c8dbc",
         confirmButtonText: "Yes, delete it!",
         reverseButtons: true,
         focusCancel: true,
@@ -202,7 +202,7 @@ function AddRole() {
                     value={role}
                     className="block rounded-md border-0 py-1.5 w-full pl-12 font-normal
                   text-gray-900 ring-1 ring-inset ring-grayTwo text-[16px] placeholder:text-[16px]
-                  placeholder:text-grayThree placeholder-font-normal focus:ring-2 focus:ring-inset focus:ring-green"
+                  placeholder:text-grayThree placeholder-font-normal focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc]"
                     // className="stdInputField"
                     placeholder="Add Role..."
                     required
@@ -294,7 +294,7 @@ function AddRole() {
                 ) : loading ? (
                   <tr>
                     <td colSpan={2} className="text-center text-lg">
-                      <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                      <FaSpinner className="animate-spin text-center text-[#3c8dbc] inline-flex mx-2" />
                     </td>
                   </tr>
                 ) : (

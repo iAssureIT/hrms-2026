@@ -16,8 +16,8 @@
 // var currentYear = new Date().getFullYear();
 
 // const metadata = {
-//   title: "MIS for Lupin Foundation CSR",
-//   description: "",
+//   title: "HRMS CSR",
+//   description: "Human Resource Management System",
 // };
 
 // const content_Menubar = {
@@ -49,7 +49,7 @@
 //   copyrightText:
 //     '<span class="w-full text-black font-normal">Copyright © ' +
 //     currentYear +
-//     ', <span class="text-black font-bold hover:text-ftLink "><a href="/"  target="_blank" >Lupin Foundation</a></span> All Rights Reserved</span>',
+//     ', <span class="text-black font-bold hover:text-ftLink "><a href="/"  target="_blank" >HRMS</a></span> All Rights Reserved</span>',
 //   PrivacyPageURL: "/privacy-policy",
 //   footerText:
 //     '<span class="text-black mr-1 mb-3">Designed & Developed By</span> <span class="text-black font-bold left hover:text-ftLink "> <a href="https://iassureit.com/" target="_blank"> iAssure International Technologies Pvt. Ltd.</a></span>',
@@ -110,7 +110,7 @@
 //         {/* <link rel="icon" href="/favicon.ico" sizes="any"></link> */}
 //         <link
 //           rel="icon"
-//           href="/images/specific/Lupin_Fevicon.webp"
+//           href="/favicon.ico"
 //           sizes="any"
 //         ></link>
 

@@ -1,6 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic');
 
 @font-face {
   src: url("../fonts/MontSerrat/Montserrat-VariableFont_wght.ttf");
@@ -164,9 +165,88 @@ body {
 			 text-white hover:border-white hover:text-white hover:bg-blue-600 focus:outline-none  transition-all text-sm  sm:p-4;
   }
   .select {
-    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3c8dbc] focus:border-[#3c8dbc] block w-full p-2.5;
   }
 }
+
+/* === ADMINLTE STANDARD DESIGN SYSTEM === */
+
+.admin-heading {
+  @apply text-xl font-bold text-slate-800 tracking-tight;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-subheading {
+  @apply text-xs font-bold text-slate-400 uppercase tracking-widest mb-1;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-box {
+  @apply bg-white border-t-[3px] border-[#d2d6de] shadow-md mb-6 rounded-sm;
+}
+
+.box-primary {
+  @apply border-t-[#3c8dbc];
+}
+
+.admin-box-header {
+  @apply p-4 border-b border-slate-100 flex justify-between items-center bg-transparent;
+}
+
+.admin-box-title {
+  @apply text-[18px] font-normal text-[#444];
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-form-group {
+  @apply mb-4;
+}
+
+.admin-label {
+  @apply block text-sm font-bold text-[#333] mb-1;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-input {
+  @apply block w-full px-3 py-1.5 bg-white border border-[#d2d6de] rounded-sm text-[#555] text-sm
+         transition-all duration-200 outline-none
+         focus:border-[#3c8dbc] placeholder:text-slate-400 font-normal;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-select {
+  @apply block w-full px-3 py-1.5 bg-white border border-[#d2d6de] rounded-sm text-[#555] text-sm
+         transition-all duration-200 outline-none
+         focus:border-[#3c8dbc] font-normal cursor-pointer;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-btn-primary {
+  @apply bg-[#3c8dbc] text-white px-4 py-2 rounded-sm font-normal text-sm
+         hover:bg-[#367fa9] border border-[#367fa9]
+         transition-all duration-200 shadow-sm active:scale-95;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-table {
+  @apply w-full text-left border-collapse border border-[#f4f4f4];
+}
+
+.admin-table-thead {
+  @apply bg-transparent border-b-2 border-[#f4f4f4];
+}
+
+.admin-table-th {
+  @apply px-4 py-3 text-sm font-bold text-[#333] border-r border-[#f4f4f4] last:border-r-0;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.admin-table-td {
+  @apply px-4 py-2 text-sm text-[#333] border-b border-t border-[#f4f4f4] border-r last:border-r-0;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+/* ========================================= */
 
 .insideIcon {
   @apply absolute inset-y-0  text-sm left-0 flex items-center pl-5 pointer-events-none;
@@ -176,7 +256,7 @@ body {
   height: 40px;*/
 }
 .swal2-confirm {
-  background-color: #50c878 !important;
+  background-color: #3c8dbc !important;
   height: 40px;
 }
 
@@ -953,7 +1033,7 @@ textarea::placeholder {
   z-index: 10000;
 }
 .swal2-container .swal2-popup {
-  border-top: 30px solid #4ca75a;
+  border-top: 30px solid #3c8dbc;
 }
 .verticlTxt {
   /* writing-mode: vertical-rl; */
@@ -968,7 +1048,7 @@ textarea::placeholder {
 }
 
 .swal-success-title {
-  color: #4caf50;
+  color: #3c8dbc;
 }
 
 .swal-success-content {
@@ -1132,9 +1212,9 @@ textarea::placeholder {
   @apply border-gray-300
    } */
 .stdBtn {
-  @apply w-full text-white bg-blue-600
+  @apply w-full text-white bg-[#3c8dbc]
     hover:focus:outline-none focus:ring-0 
-    hover:bg-blue-700
+    hover:bg-[#367fa9]
     hover:shadow hover:border  font-bold
     rounded-lg text-lg px-5 py-2.5 text-center mb-3;
 }
@@ -1189,11 +1269,11 @@ textarea::placeholder {
 }
 
 .formButtons {
-  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-white  bg-green hover:bg-Green hover:shadow font-medium active:scale-90 rounded text-base  text-center;
+  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-white  bg-[#3c8dbc] hover:bg-[#367fa9] hover:shadow font-medium active:scale-90 rounded text-base  text-center;
 }
 
 .navButtons {
-  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-green  bg-white hover:bg-white hover:shadow font-medium active:scale-90 rounded text-base  text-center;
+  @apply w-full lg:w-auto my-1 lg:my-3 px-5 h-[32px] text-[#3c8dbc]  bg-white hover:bg-white hover:shadow font-medium active:scale-90 rounded text-base  text-center;
 }
 /* 
 .formButtons {
@@ -1235,19 +1315,19 @@ textarea::placeholder {
 .stdInputField {
   @apply block rounded-md border-0 py-0.5 w-full pl-12 font-normal
    text-gray-900 ring-1 ring-inset ring-grayThree text-[13px] placeholder:text-[14px]
-   placeholder:text-grayThree placeholder-font-normal focus:ring-2 focus:ring-inset focus:ring-green;
+   placeholder:text-grayThree placeholder-font-normal focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc];
 }
 
 .stdSelectField {
   @apply block bg-white text-gray-900 font-normal rounded-md border-0 py-1 pl-12 w-full text-[13px]
    ring-1 ring-inset ring-grayThree placeholder-grayThree focus:ring-2 focus:ring-inset
-    focus:ring-green;
+    focus:ring-[#3c8dbc];
 }
 
 /* Aniket added Pop up classes */
 
 .modalHeader {
-  @apply bg-green modal-header h-12 w-full flex justify-end dark:text-white;
+  @apply bg-[#3c8dbc] modal-header h-12 w-full flex justify-end dark:text-white;
 }
 
 /* .modalCloseButton {
@@ -1263,11 +1343,11 @@ textarea::placeholder {
 }
 
 .modalSuccessBtn {
-  @apply bg-green px-8 py-1 rounded hover:bg-Green text-white font-medium  dark:text-white;
+  @apply bg-[#3c8dbc] px-8 py-1 rounded hover:opacity-90 text-white font-medium  dark:text-white;
 }
 
 .modalFailBtn {
-  @apply border-2 border-[#50C878] hover:bg-Green hover:text-white px-8 py-1 rounded text-black font-medium  dark:text-white;
+  @apply border-2 border-[#3c8dbc] hover:bg-Green hover:text-white px-8 py-1 rounded text-black font-medium  dark:text-white;
 }
 
 @layer components {
@@ -1305,7 +1385,7 @@ textarea::placeholder {
 
   .swal2-button {
     padding: 10px 40px 10px 40px;
-    background-color: #4ca75a !important;
+    background-color: #3c8dbc !important;
     font-size: 12px;
   }
 }
@@ -1320,7 +1400,7 @@ textarea::placeholder {
   content: "";
   border-top: 0px solid transparent;
   border-right: 9px solid transparent;
-  border-bottom: 7px solid #50c878;
+  border-bottom: 7px solid #3c8dbc;
   border-left: 9px solid transparent;
   position: absolute;
   left: 250px;

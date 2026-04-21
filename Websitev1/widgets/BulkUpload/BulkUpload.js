@@ -227,7 +227,7 @@ const BulkUpload = (props) => {
                 <Tooltip
                   content="Upload file"
                   placement="bottom"
-                  className="bg-green"
+                  className="bg-[#3c8dbc]"
                   arrow={false}
                 >
                   <label
@@ -238,7 +238,7 @@ const BulkUpload = (props) => {
                       htmlFor="photo-dropbox"
                       class="flex items-center space-x-2"
                     >
-                      <div className="p-3 bg-green rounded-md hover:bg-Green">
+                      <div className="p-3 bg-[#3c8dbc] rounded-md hover:bg-[#367fa9]">
                         <svg
                           class="h-8 w-8 stroke-white text-white"
                           viewBox="0 0 256 256"
@@ -347,7 +347,7 @@ const BulkUpload = (props) => {
             <button
               className={`px-6 py-2 hover:bg-gray-200 ${
                 activeTab === "active"
-                  ? "text-green bg-white border-green border-b-2"
+                  ? "text-[#3c8dbc] bg-white border-[#3c8dbc] border-b-2 font-bold"
                   : "text-gray-700"
               }`}
               onClick={() => setActiveTab("active")}
@@ -357,7 +357,7 @@ const BulkUpload = (props) => {
             <button
               className={`px-6 py-2 hover:bg-gray-200 ${
                 activeTab === "failure"
-                  ? "text-green bg-white border-green border-b-2"
+                  ? "text-[#3c8dbc] bg-white border-[#3c8dbc] border-b-2 font-bold"
                   : "text-gray-700"
               }`}
               onClick={() => setActiveTab("failure")}

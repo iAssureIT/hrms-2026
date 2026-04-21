@@ -87,7 +87,7 @@ const VendorBulkUploadPage = () => {
     nameOfCompany: "Company Name",
     vendorCategory: "Vendor Category",
     vendorType: "Vendor SubCategory",
-    lupinFoundationCenterName: "Center Name",
+    centerName: "Center Name",
     panNumber: "PAN Number",
     gstin: "GSTIN",
     primaryContactPersonName: "Contact Person",
@@ -228,7 +228,7 @@ const VendorBulkUploadPage = () => {
   //         nameOfCompany: a.vendorInfo?.nameOfCompany,
   //         vendorCategory: a.vendorInfo?.vendorCategory,
   //         vendorType: a.vendorInfo?.vendorType,
-  //         lupinFoundationCenterName: a.vendorInfo?.lupinFoundationCenterName,
+  //         centerName: a.vendorInfo?.centerName,
   //         panNumber: a.vendorInfo?.panNumber,
   //         gstin: a.vendorInfo?.gstin,
   //         primaryContactPersonName:
@@ -319,8 +319,8 @@ const VendorBulkUploadPage = () => {
           nameOfCompany: a.vendorInfo?.nameOfCompany,
           vendorCategory: a.vendorInfo?.vendorCategory,
           vendorType: a.vendorInfo?.vendorSubCategory,
-          lupinFoundationCenterName:
-            a.vendorInfo?.lupinFoundationCenterName,
+          centerName:
+            a.vendorInfo?.centerName,
           panNumber: a.vendorInfo?.panNumber,
           gstin: a.vendorInfo?.gstin,
           primaryContactPersonName:
@@ -430,11 +430,10 @@ const VendorBulkUploadPage = () => {
                 content="Add New Vendor"
                 placement="bottom"
                 arrow={false}
-                className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                className="z-50 bg-[#3c8dbc] text-white text-sm px-2 py-1 rounded"
               >
                 <div>
-
-                  <BsPlusSquare className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]"
+                  <BsPlusSquare className="cursor-pointer text-[#3c8dbc] border border-[#3c8dbc] p-0.5 rounded text-[30px]"
                     onClick={() => {
                       const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
                       router.push(`${basePath}/master-data/vendor-master/add-vendor`);
@@ -446,10 +445,10 @@ const VendorBulkUploadPage = () => {
               <Tooltip
                 content="Vendor List"
                 placement="bottom"
-                className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                className="z-50 bg-[#3c8dbc] text-white text-sm px-2 py-1 rounded"
                 arrow={false}
               >
-                <CiViewList className="cursor-pointer text-green border border-green p-0.5 rounded text-[30px]" onClick={() => {
+                <CiViewList className="cursor-pointer text-[#3c8dbc] border border-[#3c8dbc] p-0.5 rounded text-[30px]" onClick={() => {
                   const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
                   router.push(`${basePath}/master-data/vendor-master/vendor-list`)
                 }} />
@@ -511,7 +510,7 @@ const VendorBulkUploadPage = () => {
                   <Tooltip
                     content="Upload file"
                     placement="bottom"
-                    className="bg-green"
+                    className="bg-[#3c8dbc]"
                     arrow={false}
                   >
                     <label
@@ -522,7 +521,7 @@ const VendorBulkUploadPage = () => {
                         htmlFor="photo-dropbox"
                         class="flex items-center space-x-2"
                       >
-                        <div className="p-3 bg-green rounded-md hover:bg-Green">
+                        <div className="p-3 bg-[#3c8dbc] rounded-md hover:bg-[#367fa9]">
                           <svg
                             class="h-8 w-8 stroke-white text-white"
                             viewBox="0 0 256 256"

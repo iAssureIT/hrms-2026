@@ -97,7 +97,7 @@ const GenericTable = ({
     "Total Login Hrs",
   ];
   const stdSelectField =
-    "block bg-white text-black font-normal placeholder-grayThree placeholder-font-normal  rounded-md border-0 py-2.5 pl-3 w-full ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-green text-sm lg:text-sm mt-1";
+    "block bg-white text-black font-normal placeholder-grayThree placeholder-font-normal  rounded-md border-0 py-2.5 pl-3 w-full ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc] text-sm lg:text-sm mt-1";
 
   const [checkDelete, setCheckDelete] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -503,7 +503,7 @@ const GenericTable = ({
         text: `Are you sure you want to delete this ${tableObjects?.titleMsg} ?`,
         showCancelButton: true,
         cancelButtonText: "No, Don't Delete!",
-        cancelButtonColor: "#50c878",
+        cancelButtonColor: "#3c8dbc",
         confirmButtonText: "Yes, delete it!",
         reverseButtons: true,
         focusCancel: true,
@@ -718,7 +718,7 @@ const GenericTable = ({
             </button> */}
             {/* <Button className="bg-green" onClick={() => {setOpenUserModal(true);setEdit(false)}}>Add User</Button> */}
             <button
-              className="bg-green formButtons"
+              className="bg-[#3c8dbc] formButtons"
               onClick={() => {
                 // setOpenUserModal(true);
                 // setLoading2(true);
@@ -922,13 +922,13 @@ const GenericTable = ({
                 <Tooltip
                   content="Download as Excel"
                   placement="top"
-                  className="z-50 bg-green text-white text-sm px-2 py-1 rounded"
+                  className="z-50 bg-[#3c8dbc] text-white text-sm px-2 py-1 rounded"
                   arrow={false}
                 >
                   <FaFileDownload
                     onClick={exportToExcel}
                     size={"2rem"}
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-0.5 hover:border-[#367fa9] rounded text-[30px]"
                   />
                 </Tooltip>
               </div>
@@ -1013,7 +1013,7 @@ const GenericTable = ({
                               <Tooltip
                                 content="Edit"
                                 placement="bottom"
-                                className="bg-green"
+                                className="bg-[#3c8dbc]"
                                 arrow={false}
                               >
                                 <MdOutlineEdit
@@ -1045,7 +1045,7 @@ const GenericTable = ({
                               <Tooltip
                                 content="Reset Password"
                                 placement="bottom"
-                                className="bg-green"
+                                className="bg-[#3c8dbc]"
                                 arrow={false}
                               >
                                 <FaKey
@@ -1150,7 +1150,7 @@ const GenericTable = ({
                   <tr>
                     <td
                       colSpan={10}
-                      className="text-center text-Green text-3xl"
+                      className="text-center text-[#367fa9] text-3xl"
                     >
                       <FaSpinner className="animate-spin inline-flex mx-2" />
                     </td>
@@ -1738,7 +1738,7 @@ const GenericTable = ({
                     {LOG_TABLE_HEAD.map((head) => (
                       <th
                         key={head}
-                        className="border-b border-blue-gray-100 bg-green"
+                        className="border-b border-blue-gray-100 bg-[#3c8dbc]"
                       >
                         <div
                           variant="small"

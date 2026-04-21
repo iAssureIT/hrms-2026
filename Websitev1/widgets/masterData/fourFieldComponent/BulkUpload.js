@@ -110,15 +110,15 @@ const Page = () => {
             <div className="flex gap-3 my-5 me-10">
               <Tooltip
                 content="Add Subactivity"
-                className="bg-green"
+                className="bg-[#3c8dbc]"
                 placement="bottom"
                 arrow={false}
               >
                 {loading ? (
-                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                  <FaSpinner className="animate-spin text-center text-[#3c8dbc] inline-flex mx-2" />
                 ) : (
                   <BsPlusSquare
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] hover:border-[#367fa9] rounded text-[30px]"
                     onClick={() => {
                       window.open(
                         "/admin/master-data/program-project-activity-subactivity",

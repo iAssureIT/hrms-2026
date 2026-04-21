@@ -60,18 +60,21 @@ const TwoFieldComponent = ({
       setUser_id(parseUser_id);
     }
   }, []);
+
   useEffect(() => {
     fetchItems();
   }, [checkRelode]);
 
   const ddvalue = updateDropdownValue.ddvalue;
   useEffect(() => {
-    axios
-      .patch(twoField.editDdListAPI + "/" + updateDropdownValue.ddid, [ddvalue])
-      .then((responce) => { })
-      .catch((err) => { });
+    if (updateDropdownValue.ddid) {
+      axios
+        .patch(twoField.editDdListAPI + "/" + updateDropdownValue.ddid, [ddvalue])
+        .then((responce) => { })
+        .catch((err) => { });
 
-    fetchItems();
+      fetchItems();
+    }
   }, [updateDropdownValue]);
 
   useEffect(() => {
@@ -162,7 +165,6 @@ const TwoFieldComponent = ({
   };
 
   const handleEdit = (item) => {
-    // console.log("item ==>", item);
     setEditingItem(item);
     setDropdownValue(item.dropdownvalue + "|" + item.dropdown_id);
     setInputValue(item.inputValue);
@@ -170,14 +172,13 @@ const TwoFieldComponent = ({
 
   const handleDelete = (id) => {
     setCheckRelode((count) => count + 1);
-    // setRunCount((count) => count + 1);
     Swal.fire({
       title: ` `,
       text: `Are you sure you want to delete this ${twoField?.fieldlabel}?`,
 
       showCancelButton: true,
       cancelButtonText: "No, don't delete!",
-      cancelButtonColor: "#50c878",
+      cancelButtonColor: "#3c8dbc",
       confirmButtonText: "Yes, delete it!",
       reverseButtons: true,
       focusCancel: true,
@@ -189,13 +190,10 @@ const TwoFieldComponent = ({
         axios
           .delete(`${twoField.deleteAPI}/${id}`)
           .then((deletedUser) => {
-            console.log("deletedUser", deletedUser);
-
             Swal.fire({
               title: "Success",
               text: `${twoField?.fieldlabel} have been deleted.`,
             });
-            // setRunCount((count) => count + 1);
             setCheckRelode((count) => count + 1);
           })
           .catch((error) => {
@@ -203,358 +201,226 @@ const TwoFieldComponent = ({
             Swal.fire(" ", "Something Went Wrong <br/>" + errorMessage);
           });
       }
-      // else {
-      //   Swal.fire({
-      //     title: " ",
-      //     text: `Subactivity is Safe.`,
-
-      //   });
-      // }
     });
-
-    // axios.delete(`${oneField.deleteAPI}/${id}`)
-    //   .then((responce) => {
-    //     setRunCount((count) => count + 1)
-    //   }).catch((err) => {
-
-    //     console.log(err)
-
-    //   })
-    //         });;
-    //   Swal.fire({
-    //     title: `Are you sure you want to delete ${oneField.fieldlabel}?
-    //     Once deleted, you won't be able to retrieve the data.
-    //      ?`,
-    //     showCancelButton: true,
-    //     confirmButtonText: "Yes",
-    //     denyButtonText: `No`,
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       axios
-    //         .delete(`${oneField.deleteAPI}/${id}`)
-    //         .then((responce) => {
-    //           setCheckRelode((count) => count + 1);
-    //           Swal.fire({
-    //             position: "center",
-    //             icon: "success",
-    //             title: `Deleted! Your ${oneField.fieldlabel} has been Deleted`,
-    //             showConfirmButton: false,
-    //             timer: 1000,
-    //           });
-    //         })
-    //         .catch((err) => {
-    //           // Swal.fire("Somthing went wrong", "", "error");
-    //           setOneFieldErrorModal(true)
-    //         });
-    //     } else if (result.isDenied) {
-    //       Swal.fire("Alright! Your Field is secure", "", "info");
-    //     }
-    //   });
-
-    // try {
-    //   Swal.fire({
-    //     title: "Do you want to delete?",
-    //     showCancelButton: true,
-    //     confirmButtonText: "Yes",
-    //     denyButtonText: `No`,
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       axios.delete(twoField.deleteAPI + "/" + id);
-    //       setCheckRelode((count) => count + 1);
-    //       Swal.fire({
-    //         position: "center",
-    //         icon: "success",
-    //         title: `Sucessfully deleted ${twoField.fieldlabel}`,
-    //         showConfirmButton: false,
-    //         timer: 1000,
-    //       });
-    //       fetchItems();
-    //     } else if (result.isDenied) {
-    //       Swal.fire("No changes", "", "info");
-    //     }
-    //   });
-    // } catch (err) {
-    //   setError("Error deleting item");
-    // }
   };
 
   return (
-    <section className="hr-section">
-      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
-        <div className="border-b border-slate-100 py-4 px-8 mb-6 flex items-center justify-between">
-            <h1 className="hr-heading">{oneField.fieldlabel} & {twoField.fieldlabel} Management</h1>
-        </div>
+    <div className="p-4">
+      <h3 className="admin-heading mb-4 px-2">
+        {oneField.fieldlabel} & {twoField.fieldlabel} Management
+      </h3>
 
-        <div className="px-8 pb-8">
-          <div className="flex flex-col">
-            <div className="space-y-8 pb-10">
-              <form
-                onSubmit={handleSubmit}
-                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
-              >
-                <SectionHeader 
-                  title="Basic Information" 
-                  subtitle={`Primary identification details for ${oneField.fieldlabel} and ${twoField.fieldlabel}.`} 
-                />
+      <div className="admin-box box-primary">
+          <div className="admin-box-header border-b border-gray-100">
+              <h3 className="admin-box-title">Add New {twoField.fieldlabel}</h3>
+          </div>
 
-                <div className="grid lg:grid-cols-2 gap-8 w-full mt-6">
-                  {/* First Field */}
-                  <div className="w-full">
-                    <label className="hr-label flex items-center">
-                      {oneField.fieldlabel}
-                      <span className="text-red-500 ms-1">*</span>
-                      {
-                        showAddButton && (
-                          <button 
-                            type="button"
-                            className="ms-3 p-1 bg-[#4285F4] text-white rounded-full hover:bg-blue-600 transition-colors shadow-sm"
-                            onClick={() => setOpenModal(true)}
-                            title={`Add New ${oneField.fieldlabel}`}
-                          >
-                            <IoMdAdd size={14} />
-                          </button>
-                        )
-                      }
-                    </label>
+          <div className="p-6">
+            <form onSubmit={handleSubmit}>
+              <div className="grid lg:grid-cols-2 gap-6 w-full">
+                {/* First Field */}
+                <div className="admin-form-group">
+                  <label className="admin-label">
+                    {oneField.fieldlabel}
+                    <span className="text-red-500 ms-1">*</span>
+                    {
+                      showAddButton && (
+                        <button 
+                          type="button"
+                          className="ms-2 text-[#4285F4] hover:text-blue-700 transition-colors"
+                          onClick={() => setOpenModal(true)}
+                          title={`Add New ${oneField.fieldlabel}`}
+                        >
+                          <IoMdAdd size={16} />
+                        </button>
+                      )
+                    }
+                  </label>
 
-                    <div className="relative group">
-                      <IconWrapper icon={MdWidgets} />
-                      <select
-                        value={dropdownValue}
-                        onChange={(e) => {
-                          setDropdownValue(e.target.value);
-                          if (errorMessage) setErrorMessage("");
-                        }}
-                        className="hr-select"
-                      >
-                        <option value="" disabled>
-                          -- Select {oneField.fieldlabel} --
-                        </option>
-
-                        {Array.isArray(dropdownData) &&
-                          dropdownData.map((option) => (
-                            <option
-                              key={option._id}
-                              value={(option.fieldValue || option.centerName) + "|" + option._id}
-                              className="text-slate-800"
-                            >
-                              {option.fieldValue || option.centerName}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-
-                    {errorMessage && (
-                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage}</p>
-                    )}
-                  </div>
-
-
-                  {/* Second Field */}
-                  <div className="w-full">
-                    <label className="hr-label">
-                      {twoField.fieldlabel}
-                      <span className="text-red-500 ms-1">*</span>
-                    </label>
-
-                    <div className="relative group">
-                      <IconWrapper icon={MdWidgets} />
-                      <input
-                        type="text"
-                        className="hr-input"
-                        placeholder={`Enter ${twoField.fieldlabel}`}
-                        value={inputValue}
-                        onChange={(e) => {
-                          setInputValue(e.target.value);
-                          if (errorMessage) setErrorMessage("");
-                        }}
-                      />
-                    </div>
-
-                    {errorMessage && (
-                      <p className="text-red-500 text-xs mt-1.5 font-medium">{errorMessage}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-end mt-10">
-                  <button
-                    type="submit"
-                    className="hr-btn-primary min-w-[140px]"
+                  <select
+                    value={dropdownValue}
+                    onChange={(event) => {
+                      setDropdownValue(event.target.value);
+                      if (errorMessage) setErrorMessage("");
+                    }}
+                    className="admin-select"
                   >
-                    {editingItem ? "Update Changes" : "Save Record"}
-                  </button>
+                    <option value="" disabled>
+                      -- Select {oneField.fieldlabel} --
+                    </option>
+
+                    {Array.isArray(dropdownData) &&
+                      dropdownData.map((option) => (
+                        <option
+                          key={option._id}
+                          value={(option.fieldValue || option.centerName) + "|" + option._id}
+                        >
+                          {option.fieldValue || option.centerName}
+                        </option>
+                      ))}
+                  </select>
+
+                  {errorMessage && (
+                    <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+                  )}
                 </div>
-              </form>
-              
-              <div className="border-t border-slate-100 pt-8 mt-10">
-                <h2 className="hr-subheading text-center mb-6 uppercase tracking-wider">
-                  Existing {twoField.fieldlabel} List
-                </h2>
+
+                {/* Second Field */}
+                <div className="admin-form-group">
+                  <label className="admin-label">
+                    {twoField.fieldlabel}
+                    <span className="text-red-500 ms-1">*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    className="admin-input"
+                    placeholder={`Enter ${twoField.fieldlabel}`}
+                    value={inputValue}
+                    onChange={(event) => {
+                      setInputValue(event.target.value);
+                      if (errorMessage) setErrorMessage("");
+                    }}
+                  />
+
+                  {errorMessage && (
+                    <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+                  )}
+                </div>
               </div>
-                {items && items.length > 0 ? (
-                  <table className="w-full border-separate border-spacing-y-2 gap-2 text-sm text-left rtl:text-right">
-                    <thead className="text-xs space-y-6 border-spacing-5 font-normal uppercase  mb-2 border border-gray-200 rounded-sm p-2">
-                      <tr className="mb-3  border-spacing-5 font-bold">
-                        <th
-                          scope="col"
-                          className="px-6 py-4 border border-grayTwo border-r-0"
-                        >
-                          SR. No.
-                        </th>
-                        <td
-                          scope="col"
-                          className="px-6 py-4 border border-grayTwo border-r-0 border-l-0"
-                        >
-                          {oneField.fieldlabel}
+
+              <div className="flex justify-start mt-4">
+                <button
+                  type="submit"
+                  className="admin-btn-primary"
+                >
+                  {editingItem ? "Update Changes" : "Save Record"}
+                </button>
+              </div>
+            </form>
+          </div>
+      </div>
+
+      <div className="admin-box box-primary mt-6">
+        <div className="admin-box-header border-b border-gray-100">
+          <h3 className="admin-box-title">Existing {twoField.fieldlabel} List</h3>
+        </div>
+        
+        <div className="p-6 overflow-x-auto">
+          {items && items.length > 0 ? (
+            <table className="admin-table">
+              <thead className="admin-table-thead">
+                <tr>
+                  <th className="admin-table-th w-20">SR. No.</th>
+                  <th className="admin-table-th">{oneField.fieldlabel}</th>
+                  {oneField.showImg === true && <th className="admin-table-th">Icon</th>}
+                  <th className="admin-table-th">{twoField.fieldlabel}</th>
+                  {twoField.showImg === true && <th className="admin-table-th">Icon</th>}
+                  <th className="admin-table-th w-32 text-center">ACTION</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {Array.isArray(items) &&
+                  items.map((data, index) => {
+                    const Img = dropdownData.find(
+                      (img) => img.fieldValue === data.dropdownValue
+                    );
+
+                    return (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="admin-table-td font-bold text-center">
+                          {index + 1}
                         </td>
+                        <td className="admin-table-td">
+                          {data.dropdownvalue}
+                        </td>
+
                         {oneField.showImg === true && (
-                          <td
-                            scope="col"
-                            className="px-6 py-4 border border-grayTwo border-r-0 border-l-0"
-                          >
-                            Icon
+                          <td className="admin-table-td text-center">
+                            <img
+                              src={Img}
+                              alt="icon img"
+                              className="h-8 inline-block"
+                            />
                           </td>
                         )}
-                        <td
-                          scope="col"
-                          className="px-6 py-4 border border-grayTwo border-r-0 border-l-0"
-                        >
-                          {twoField.fieldlabel}
+                        <td className="admin-table-td">
+                          {data.inputValue}
                         </td>
                         {twoField.showImg === true && (
-                          <td
-                            scope="col"
-                            className="px-6 py-4 border border-grayTwo border-l-0"
-                          >
-                            Icon
+                          <td className="admin-table-td text-center">
+                            $$
                           </td>
                         )}
-                        <td
-                          scope="col"
-                          className="px-6 py-4 border border-grayTwo border-l-0"
-                        >
-                          ACTION
+                        <td className="admin-table-td">
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              title="Edit"
+                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                              onClick={() => handleEdit(data)}
+                            >
+                              <MdOutlineEdit size={18} />
+                            </button>
+                            <button
+                              title="Delete"
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                              onClick={() => handleDelete(data._id)}
+                            >
+                              <RiDeleteBin6Line size={18} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
-                    </thead>
-
-                    <tbody className="border-spacing-5 mt-2 border py-5 p-5 border-gray-200 bg-gray-50 rounded-sm">
-                      {Array.isArray(items) &&
-                        items.map((data, index) => {
-                          const Img = dropdownData.find(
-                            (img) => img.fieldValue === data.dropdownValue
-                          );
-
-                          return (
-                            <tr
-                              key={index}
-                              className="p-3 row space-x-3 border-spacing-5 font-normal odd:bg-grayOne odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-                            >
-                              <th
-                                scope="row"
-                                className="px-6 py-4 border border-grayTwo border-r-0 font-normal text-black whitespace-nowrap"
-                              >
-                                {++index}
-                              </th>
-                              <td className="px-6 py-4 border border-grayTwo border-r-0 border-l-0">
-                                {data.dropdownvalue}
-                              </td>
-
-                              {oneField.showImg === true && (
-                                <td className="px-6 py-4">
-                                  <img
-                                    src={Img}
-                                    alt="icon img"
-                                    className="h-10  hover:scale-150 cursor-pointer"
-                                  />
-                                </td>
-                              )}
-                              <td className="px-6 py-4 border border-grayTwo border-r-0 border-l-0">
-                                {data.inputValue}
-                              </td>
-                              {twoField.showImg === true && (
-                                <td className="px-6 py-4 border border-grayTwo border-r-0 border-l-0">
-                                  $$
-                                </td>
-                              )}
-                              <td className="px-6 py-4  border border-grayTwo border-l-0">
-                                <div className="flex gap-3">
-                                  <div>
-                                    <MdOutlineEdit
-                                      className="border border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                                      size={"1.3rem"}
-                                      onClick={(e) => {
-                                        handleEdit(data);
-                                      }}
-                                    />
-                                  </div>
-                                  <div>
-                                    <RiDeleteBin6Line
-                                      className="  border border-red-500 text-red-500 p-1 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
-                                      size={"1.3rem"}
-                                      onClick={(e) => {
-                                        handleDelete(data._id);
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="w-full text-center py-4 bg-gray-100 border border-gray-200">
-                    Data not found
-                  </div>
-                )}
-              </div>
+                    );
+                  })}
+              </tbody>
+            </table>
+          ) : (
+            <div className="w-full text-center py-8 text-gray-400 font-bold italic bg-gray-50 border border-dashed border-gray-200">
+              Data not found
             </div>
-
-            <Modal
-              show={openModal}
-              size="6xl"
-              onClose={() => {
-                setOpenModal(false)
-                setCheckRelode((count) => count + 1)
-              }}
-              className="lg:px-44 px-1 bg-[#1111114f] pt-10 "
-            >
-              <Modal.Body>
-                <div className="mx-auto">
-                  <div className="flex justify-end relative mb-4">
-                    <button
-                      className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
-                      onClick={() => {
-                        setOpenModal(false)
-                        setCheckRelode((count) => count + 1)
-                      }}
-                    >
-                      <IoMdClose
-                        className=" "
-                      // size={"1.5rem"}
-                      />
-                    </button>
-                  </div>
-                  <OneFieldComponent
-                    openModal={openModal}
-                    setOpenModal={setOpenModal}
-                    fieldLabel={oneFieldLable}
-                    apiPath={oneField.apiPath} // Pass apiPath to OneFieldComponent
-                    updateDropdownValue={updateDropdownValue}
-                    setUpdateDropdownValue={setUpdateDropdownValue}
-                    checkRelode={checkRelode}
-                    setCheckRelode={setCheckRelode}
-                    className="-pt-20"
-                  />
-                </div>
-              </Modal.Body>
-            </Modal>
-          </div>
+          )}
         </div>
-    </section>
+      </div>
+
+      <Modal
+        show={openModal}
+        size="6xl"
+        onClose={() => {
+          setOpenModal(false)
+          setCheckRelode((count) => count + 1)
+        }}
+        className="lg:px-44 px-1 bg-[#1111114f] pt-10 "
+      >
+        <Modal.Body>
+          <div className="mx-auto">
+            <div className="flex justify-end relative mb-4">
+              <button
+                className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
+                onClick={() => {
+                  setOpenModal(false)
+                  setCheckRelode((count) => count + 1)
+                }}
+              >
+                <IoMdClose />
+              </button>
+            </div>
+            <OneFieldComponent
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              fieldLabel={oneFieldLable}
+              apiPath={oneField.apiPath}
+              updateDropdownValue={updateDropdownValue}
+              setUpdateDropdownValue={setUpdateDropdownValue}
+              checkRelode={checkRelode}
+              setCheckRelode={setCheckRelode}
+              className="-pt-20"
+            />
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div>
   );
 };
 

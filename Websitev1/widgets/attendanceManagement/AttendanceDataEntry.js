@@ -265,14 +265,14 @@ const AttendanceDataEntry = () => {
                                 {[1, 2, 3].map(n => (
                                     <React.Fragment key={n}>
                                         <div className="flex flex-col items-center gap-2">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 ${step >= n ? 'bg-[#00a65a] text-white border-[#00a65a]' : 'bg-white text-gray-400 border-gray-200'}`}>
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 ${step >= n ? 'bg-[#3c8dbc] text-white border-[#3c8dbc]' : 'bg-white text-gray-400 border-gray-200'}`}>
                                                 {n}
                                             </div>
                                             <span className={`text-[10px] uppercase font-bold ${step >= n ? 'text-gray-800' : 'text-gray-400'}`}>
                                                 {n === 1 ? 'Upload' : n === 2 ? 'Mapping' : 'Done'}
                                             </span>
                                         </div>
-                                        {n < 3 && <div className={`h-[2px] w-20 ${step > n ? 'bg-[#00a65a]' : 'bg-gray-200'}`}></div>}
+                                        {n < 3 && <div className={`h-[2px] w-20 ${step > n ? 'bg-[#3c8dbc]' : 'bg-gray-200'}`}></div>}
                                     </React.Fragment>
                                 ))}
                             </div>
@@ -293,7 +293,7 @@ const AttendanceDataEntry = () => {
 
                             {step === 2 && (
                                 <div className="space-y-6">
-                                    <div className="bg-[#00a65a] p-4 text-white flex items-center justify-between shadow-sm">
+                                    <div className="bg-[#3c8dbc] p-4 text-white flex items-center justify-between shadow-sm">
                                         <div>
                                             <h4 className="font-bold">Column Mapping Engine</h4>
                                             <p className="text-xs opacity-90 mt-1">Source: {file?.name}</p>
@@ -467,7 +467,7 @@ const AttendanceDataEntry = () => {
                                 <button
                                     onClick={saveManualAttendance}
                                     disabled={loading || employees.length === 0}
-                                    className="bg-[#00a65a] border border-[#008d4c] text-white px-10 py-2 rounded-sm font-normal text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="bg-[#3c8dbc] border border-[#367fa9] text-white px-10 py-2 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <FaSave className="text-[12px]" /> Save Changes
                                 </button>

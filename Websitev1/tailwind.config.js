@@ -49,10 +49,11 @@ module.exports = {
       },
       colors: {
         // darkBlue: "#133A75",
-        site: "#50c878",
-        green: "#50c878",
-        lightgreen: "#d2f2d4",
-        Green: "#469646",
+        site: "#3c8dbc",
+        green: "#3c8dbc",
+        lightgreen: "#f1f6f9",
+        Green: "#367fa9",
+        successGreen: "#50c878",
         // lightBlue: "#d2f2d4",
 
         lightBlue: "#d2f2d4",

@@ -86,7 +86,7 @@ function VendorList() {
 
     const tableHeading = {
         actions: "Actions",
-        lupinFoundationCenterName: "Center Name",
+        centerName: "Center Name",
 
         vendorID: "Vendor ID",
 
@@ -227,7 +227,7 @@ function VendorList() {
                 //         <p><strong>Vendor Category:</strong> ${vendor.vendorInfo?.vendorCategory || ""}</p>
                 //         <p><strong>GSTIN:</strong> ${vendor.vendorInfo?.gstin || ""}</p>
                 //         <p><strong>PAN:</strong> ${vendor.vendorInfo?.panNumber || ""}</p>
-                //         <p><strong>Lupin Center:</strong> ${vendor.vendorInfo?.lupinFoundationCenterName || ""}</p>
+                //         <p><strong>Center:</strong> ${vendor.vendorInfo?.centerName || ""}</p>
                 //         <p><strong>TDS Applicable:</strong> ${vendor.vendorInfo?.tdsApplicable ? "Yes" : "No"}</p>
                 //       </div>
                 //     `,
@@ -268,7 +268,7 @@ function VendorList() {
                     _id: vendor._id,
 
                     srNo: (pageNumber - 1) * recsPerPage + index + 1,
-                    lupinFoundationCenterName: vendor.vendorInfo?.lupinFoundationCenterName || "",
+                    centerName: vendor.vendorInfo?.centerName || "",
                     vendorID: vendor.vendorID || "",
 
                     vendorStatus: `
@@ -374,9 +374,9 @@ function VendorList() {
                     <div className="border-b-2 border-gray-300 flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <h1 className="heading">Vendor List</h1>
                         <div className="my-2 px-10 lg:px-0 lg:me-10 flex items-center">
-                            <Tooltip content="Add New Vendor" placement="bottom" arrow={false} className="z-50 bg-green text-white text-sm px-2 py-1 rounded">
+                            <Tooltip content="Add New Vendor" placement="bottom" arrow={false} className="z-50 bg-[#3c8dbc] text-white text-sm px-2 py-1 rounded">
                                 <BsPlusSquare
-                                    className="cursor-pointer text-green border border-green p-1 rounded text-[30px]"
+                                    className="cursor-pointer text-[#3c8dbc] border border-[#3c8dbc] p-1 rounded text-[30px]"
                                     onClick={() => {
                                         const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
                                         router.push(

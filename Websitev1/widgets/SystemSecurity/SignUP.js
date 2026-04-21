@@ -318,8 +318,8 @@ class SignUp extends Component {
         <div className={"formWrapper " + this.props.style}>
           <div className="w-full bg-white rounded-lg  dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="px-1 pb-8 pt-0 space-y-4 sm:p-1 md:space-y-6">
-              <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Sign Up
+              <h1 className="text-2xl text-center font-black leading-tight tracking-tight text-slate-800 md:text-3xl">
+                Create Account
               </h1>
               <form className="space-y-4 md:space-y-6">
                 <div className="flex flex-row">
@@ -339,7 +339,7 @@ class SignUp extends Component {
                         type="text"
                         id="firstname"
                         name="firstname"
-                        className="stdInput2"
+                        className="w-full p-2.5 border border-slate-200 rounded-lg pl-10 focus:ring-2 focus:ring-[#3c8dbc] transition-all outline-none"
                         value={this.state.firstname}
                         placeholder="First Name"
                         onKeyDown={this.onlyAlphabets}
@@ -369,7 +369,7 @@ class SignUp extends Component {
                         type="text"
                         id="lastname"
                         name="lastname"
-                        className="stdInput2"
+                        className="w-full p-2.5 border border-slate-200 rounded-lg pl-10 focus:ring-2 focus:ring-[#3c8dbc] transition-all outline-none"
                         value={this.state.lastname}
                         placeholder="Last Name"
                         onKeyDown={this.onlyAlphabets}
@@ -519,15 +519,13 @@ class SignUp extends Component {
                 </div>
 
                 {this.state.btnLoading ? (
-                  <button type="submit" className="stdBtn bg-green-500">
-                    <span>
-                      <i className="fa fa-spin fa-spinner"></i>
-                    </span>
+                  <button type="submit" className="w-full py-3 bg-[#3c8dbc] hover:bg-[#367fa9] text-white font-bold rounded-lg transition-all shadow-md flex items-center justify-center">
+                    <FaSpinner className="animate-spin text-lg" />
                   </button>
                 ) : (
                   <button
                     type="submit"
-                    className="stdBtn bg-green-600"
+                    className="w-full py-3 bg-[#3c8dbc] hover:bg-[#367fa9] text-white font-bold rounded-lg transition-all shadow-md"
                     onClick={this.userSignupWithOtp}
                   >
                     Sign Up

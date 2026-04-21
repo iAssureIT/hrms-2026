@@ -108,12 +108,12 @@ const ProcessingFlow = () => {
                         ].map((s, idx) => (
                             <React.Fragment key={s.n}>
                                 <div className={`flex flex-col items-center gap-4 transition-all duration-500 ${step >= s.n ? 'opacity-100 scale-110' : 'opacity-30 scale-100'}`}>
-                                    <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-500 ${step >= s.n ? 'bg-green-600 text-white shadow-xl shadow-green-200 ring-4 ring-green-50' : 'bg-slate-100 text-slate-400'}`}>
+                                    <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-500 ${step >= s.n ? 'bg-[#3c8dbc] text-white shadow-xl shadow-blue-200 ring-4 ring-blue-50' : 'bg-slate-100 text-slate-400'}`}>
                                         <s.i size={24} />
                                     </div>
-                                    <span className={`text-[10px] font-black uppercase tracking-widest ${step >= s.n ? 'text-green-600' : 'text-slate-400'}`}>{s.n}. {s.l}</span>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${step >= s.n ? 'text-[#3c8dbc]' : 'text-slate-400'}`}>{s.n}. {s.l}</span>
                                 </div>
-                                {idx < 2 && <div className={`h-[2px] w-24 md:w-40 rounded-full transition-colors duration-700 ${step > s.n ? 'bg-green-600' : 'bg-slate-100'}`}></div>}
+                                {idx < 2 && <div className={`h-[2px] w-24 md:w-40 rounded-full transition-colors duration-700 ${step > s.n ? 'bg-[#3c8dbc]' : 'bg-slate-100'}`}></div>}
                             </React.Fragment>
                         ))}
                     </div>
@@ -144,7 +144,7 @@ const ProcessingFlow = () => {
                                 </div>
                             </div>
                             <div className="flex gap-4">
-                                <button onClick={initiateRun} disabled={loading} className="bg-green-600 text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-2xl shadow-green-200 hover:bg-green-700 transition-all active:scale-95 disabled:bg-slate-300">
+                                <button onClick={initiateRun} disabled={loading} className="bg-[#3c8dbc] text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-2xl shadow-blue-200 hover:bg-[#367fa9] transition-all active:scale-95 disabled:bg-slate-300">
                                     {loading ? 'Processing...' : 'Generate New Batch'}
                                 </button>
                                 <button onClick={() => fetchBatchData(selectedMonth, selectedYear)} className="bg-slate-800 text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-xl hover:bg-slate-900 transition-all active:scale-95">
@@ -187,7 +187,7 @@ const ProcessingFlow = () => {
                                             <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Paid/LOP</th>
                                             <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right">Gross Salary</th>
                                             <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right text-red-400">Deductions</th>
-                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right text-green-600 font-extrabold">Net Salary</th>
+                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right text-[#3c8dbc] font-extrabold">Net Salary</th>
                                             <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -208,11 +208,11 @@ const ProcessingFlow = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-right font-bold text-slate-600 text-sm">{formatter.format(p.grossSalary)}</td>
                                                 <td className="px-6 py-4 text-right font-bold text-red-400 text-sm">-{formatter.format(p.totalDeductions)}</td>
-                                                <td className="px-6 py-4 text-right font-black text-green-600 text-sm">{formatter.format(p.netSalary)}</td>
+                                                <td className="px-6 py-4 text-right font-black text-[#3c8dbc] text-sm">{formatter.format(p.netSalary)}</td>
                                                 <td className="px-6 py-4 text-center">
                                                     <button 
                                                         onClick={() => setPreviewData(p)}
-                                                        className="text-green-600 font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 mx-auto hover:underline"
+                                                        className="text-[#3c8dbc] font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 mx-auto hover:underline"
                                                     >
                                                         <FaFilePdf size={12}/> Preview
                                                     </button>
@@ -230,7 +230,7 @@ const ProcessingFlow = () => {
                                 </div>
                                 <div className="flex gap-4">
                                     <button onClick={() => setStep(1)} className="px-8 font-black text-slate-400 hover:text-slate-600 text-[10px] uppercase tracking-widest">Back</button>
-                                    <button onClick={approveBatch} className="bg-green-600 text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-2xl shadow-green-200 hover:bg-green-700 active:scale-95 transition-all flex items-center gap-3">
+                                    <button onClick={approveBatch} className="bg-[#3c8dbc] text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-2xl shadow-blue-200 hover:bg-[#367fa9] active:scale-95 transition-all flex items-center gap-3">
                                         Approve & Finalize <FaChevronRight />
                                     </button>
                                 </div>
@@ -248,7 +248,7 @@ const ProcessingFlow = () => {
                             <p className="text-slate-400 font-bold max-w-sm mx-auto mb-12">Total payout of <span className="text-slate-800">{formatter.format(batchInfo?.totalNetPayout)}</span> has been approved for {moment([batchInfo?.year, batchInfo?.month - 1]).format("MMMM YYYY")}.</p>
                             <div className="flex flex-wrap gap-4 justify-center">
                                 <button className="bg-slate-800 text-white px-10 py-4.5 rounded-2xl font-black text-sm shadow-xl hover:bg-slate-900 transition-all">Download All Payslips</button>
-                                <button className="bg-green-600 text-white px-10 py-4.5 rounded-2xl font-black text-sm shadow-2xl shadow-green-200 hover:bg-green-700 transition-all">Export Bank Sheet</button>
+                                <button className="bg-[#3c8dbc] text-white px-10 py-4.5 rounded-2xl font-black text-sm shadow-2xl shadow-blue-200 hover:bg-[#367fa9] transition-all">Export Bank Sheet</button>
                             </div>
                         </div>
                     )}

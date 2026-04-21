@@ -79,10 +79,10 @@ const SalaryStructure = () => {
                         <div 
                             key={emp._id} 
                             onClick={() => handleEmpSelect(emp)}
-                            className={`p-4 rounded-2xl cursor-pointer transition-all ${selectedEmp?._id === emp._id ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'hover:bg-white text-slate-600'}`}
+                            className={`p-4 rounded-2xl cursor-pointer transition-all ${selectedEmp?._id === emp._id ? 'bg-[#3c8dbc] text-white shadow-lg shadow-blue-100' : 'hover:bg-white text-slate-600'}`}
                         >
                             <p className="font-extrabold text-sm">{emp.employeeName}</p>
-                            <p className={`text-[10px] font-bold ${selectedEmp?._id === emp._id ? 'text-green-100' : 'text-slate-400'}`}>{emp.employeeID}</p>
+                            <p className={`text-[10px] font-bold ${selectedEmp?._id === emp._id ? 'text-blue-100' : 'text-slate-400'}`}>{emp.employeeID}</p>
                         </div>
                     ))}
                 </div>
@@ -103,7 +103,7 @@ const SalaryStructure = () => {
                                 <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">{selectedEmp.departmentName} • {selectedEmp.employeeDesignation}</p>
                             </div>
                             <div className="flex gap-4">
-                                <button onClick={handleSave} disabled={loading} className="bg-green-600 text-white px-10 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-green-200 hover:bg-green-700 active:scale-95 transition-all">
+                                <button onClick={handleSave} disabled={loading} className="bg-[#3c8dbc] text-white px-10 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-[#367fa9] active:scale-95 transition-all">
                                     {loading ? 'Saving...' : 'Save Structure'}
                                 </button>
                             </div>
@@ -113,13 +113,13 @@ const SalaryStructure = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                             {/* Salary Info */}
                             <div className="space-y-6">
-                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaMoneyBillWave className="text-green-500" /> Fixed Salary Components</h5>
+                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaMoneyBillWave className="text-[#3c8dbc]" /> Fixed Salary Components</h5>
                                 <div className="space-y-4">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-slate-400 uppercase ml-1">CTC / Monthly Gross Salary (INR)</label>
                                         <input 
                                             type="number" 
-                                            className="w-full bg-slate-50 border-slate-100 rounded-2xl p-4 text-lg font-black text-slate-700 focus:ring-green-500/20"
+                                            className="w-full bg-slate-50 border-slate-100 rounded-2xl p-4 text-lg font-black text-slate-700 focus:ring-blue-500/20"
                                             value={salaryInfo.grossSalary}
                                             onChange={(e) => setSalaryInfo({...salaryInfo, grossSalary: e.target.value})}
                                         />
@@ -130,7 +130,7 @@ const SalaryStructure = () => {
 
                             {/* Statutory IDs */}
                             <div className="space-y-6">
-                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaBuilding className="text-green-500" /> Statutory Details</h5>
+                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaBuilding className="text-[#3c8dbc]" /> Statutory Details</h5>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-slate-400 uppercase ml-1">PAN Number</label>
@@ -153,7 +153,7 @@ const SalaryStructure = () => {
 
                             {/* Bank Details */}
                             <div className="col-span-full space-y-6 pt-6 border-t border-slate-100">
-                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaUniversity className="text-green-500" /> Bank Disbursement Details</h5>
+                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaUniversity className="text-[#3c8dbc]" /> Bank Disbursement Details</h5>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Bank Name</label>

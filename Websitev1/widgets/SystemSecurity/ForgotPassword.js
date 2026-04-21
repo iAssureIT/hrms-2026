@@ -105,9 +105,9 @@ class ForgotPassword extends Component {
     return (
       <section className="bg-white rounded shadow-md w-full max-w-sm my-10 mx-auto sm:m-10">
         <div className="w-full">
-          <div className="w-full bg-lightgreen border border-2 border-t-green py-6 h-20">
-            <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
-              Forgot Password
+          <div className="w-full bg-[#f8fafc] border-t-4 border-[#3c8dbc] py-6 h-20 shadow-sm">
+            <h1 className=" text-xl md:text-2xl text-[#3c8dbc] font-black leading-tight text-center tracking-tight">
+               Forgot Password
             </h1>
           </div>
           <p className="text-sm text-center px-5 mt-5">
@@ -134,7 +134,7 @@ class ForgotPassword extends Component {
                   value={this.state.userName}
                   placeholder="Enter your email address"
                   // className="stdInput2"
-                  className="w-full p-2 border border-gray-300 rounded pl-10 ring-1 ring-inset ring-grayThree focus:ring-2 focus:ring-inset focus:ring-green border-none outline-none"
+                  className="w-full p-2 border border-gray-300 rounded pl-10 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-inset focus:ring-[#3c8dbc] border-none outline-none transition-all"
                   autoFocus
                   autoComplete
                   required
@@ -148,21 +148,18 @@ class ForgotPassword extends Component {
             <div className="flex flex-col sm:flex-row sm:justify-between items-center sm:items-baseline gap-4 sm:gap-0">
               <a
                 href="/auth/login"
-                className="underline underline-offset-2 sm:pt-5 text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
+                className="underline underline-offset-2 sm:pt-5 text-sm font-bold text-[#3c8dbc] hover:text-[#367fa9] transition-colors"
                 onClick={() => {
                   this.setState({ loading: true });
                 }}
-                // className="text-green-700 hover:text-blue-900 cursor-pointer font-sm"
               >
                 {this.state.loading ? (
-                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
+                  <span className="flex items-center">
                     Back to Login
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
+                    <FaSpinner className="animate-spin ml-2 text-lg" />
                   </span>
                 ) : (
-                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
-                    Back to Login
-                  </span>
+                  <span>Back to Login</span>
                 )}
               </a>
               {this.state.btnLoading ? (

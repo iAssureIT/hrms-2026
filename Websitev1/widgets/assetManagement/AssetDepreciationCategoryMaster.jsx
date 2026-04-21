@@ -5,22 +5,6 @@ import Swal from "sweetalert2";
 import { MdOutlineEdit, MdWidgets } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-// === Asset Management Style Helpers ===
-const SectionHeader = ({ title, subtitle }) => (
-    <div className="mb-5 border-b border-gray-100 pb-2">
-        <h3 className="hr-subheading">{title}</h3>
-        <p className="hr-section-subtitle">{subtitle}</p>
-    </div>
-);
-
-const IconWrapper = ({ icon: Icon }) => (
-    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-        <span className="text-gray-500 sm:text-sm pr-2 border-r-2">
-            <Icon className="icon" />
-        </span>
-    </div>
-);
-
 const AssetDepreciationCategoryMaster = () => {
   const [items, setItems] = useState([]);
   const [categoryName, setCategoryName] = useState("");
@@ -57,11 +41,9 @@ const AssetDepreciationCategoryMaster = () => {
     }
 
     try {
-      // 1. Create or Update Asset Category
       let categoryId = editingItem?.dropdown_id;
 
       if (!editingItem) {
-        // Create Category
         try {
           const catRes = await axios.post("/api/asset-category/post", {
             fieldValue: categoryName,
@@ -86,7 +68,6 @@ const AssetDepreciationCategoryMaster = () => {
           }
         }
       } else {
-        // Update Category
         await axios.put(`/api/asset-category/put/${categoryId}`, {
           fieldValue: categoryName,
           shortName: categoryShortName,
@@ -94,7 +75,6 @@ const AssetDepreciationCategoryMaster = () => {
         });
       }
 
-      // 2. Create or Update Depreciation Master
       const depData = {
         dropdownvalue: categoryName,
         categoryShortName: categoryShortName,
@@ -135,7 +115,6 @@ const AssetDepreciationCategoryMaster = () => {
     setCategoryName(item.dropdownvalue);
     setDepreciationRate(item.inputValue);
 
-    // Fetch Category Short Name
     try {
       const catRes = await axios.get("/api/asset-category/get");
       const category = catRes.data.find(c => c._id === item.dropdown_id);
@@ -152,14 +131,11 @@ const AssetDepreciationCategoryMaster = () => {
       title: " ",
       text: "Are you sure you want to delete this details?",
       showCancelButton: true,
-      cancelButtonText: "No, don't delete!",
-      cancelButtonColor: "#50c878",
+      cancelButtonText: "No",
       confirmButtonText: "Yes, delete it!",
       reverseButtons: true,
       focusCancel: true,
-      customClass: {
-        confirmButton: "delete-btn",
-      },
+      customClass: { confirmButton: "delete-btn" },
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -167,163 +143,145 @@ const AssetDepreciationCategoryMaster = () => {
           if (categoryId) {
             await axios.delete(`/api/asset-category/delete/${categoryId}`);
           }
-          Swal.fire({
-            title: " ",
-            text: `Details have been deleted.`,
-          });
+          Swal.fire("Success", "Details have been deleted.");
           fetchItems();
         } catch (err) {
-          Swal.fire(" ", "Something Went Wrong");
+          Swal.fire("Error", "Something Went Wrong");
         }
       }
     });
   };
 
-
   return (
-    <section className="hr-section">
-      <div className="hr-card hr-fade-in border-0 rounded-md !p-0">
-        <div className="border-b border-slate-100 py-4 px-8 mb-4 flex items-center justify-between">
-            <h1 className="hr-heading">Depreciation Management</h1>
+    <div className="p-4">
+      <div className="admin-box box-primary">
+        <div className="admin-box-header border-b border-gray-100 mb-6">
+          <h3 className="admin-box-title">Asset Depreciation Management</h3>
         </div>
 
-        <div className="px-8 pb-8">
-          <div className="flex flex-col">
-            <div className="space-y-8 pb-10">
-              <form
-                onSubmit={handleSubmit}
-                className="hr-card !p-8 bg-white border border-gray-200 rounded-lg shadow-md mt-2"
-              >
-                <SectionHeader 
-                  title="Asset Depreciation Parameters" 
-                  subtitle="Configure depreciation rates for specific asset categories." 
+        <div className="p-6">
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="admin-form-group">
+                <label className="admin-label">
+                  Asset Category <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  placeholder="Enter Asset Category"
+                  value={categoryName}
+                  required
+                  onChange={(e) => {
+                    setCategoryName(e.target.value);
+                    if (errorMessage) setErrorMessage("");
+                  }}
                 />
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
-                  {/* Category Name */}
-                  <div>
-                    <label className="hr-label">
-                      Asset Category <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <IconWrapper icon={MdWidgets} />
-                      <input
-                        type="text"
-                        className="hr-input"
-                        placeholder="Enter Asset Category"
-                        value={categoryName}
-                        onChange={(e) => {
-                          setCategoryName(e.target.value);
-                          if (errorMessage) setErrorMessage("");
-                        }}
-                      />
-                    </div>
-                  </div>
+              <div className="admin-form-group">
+                <label className="admin-label">
+                  Category Short Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  placeholder="Enter Short Name"
+                  value={categoryShortName}
+                  required
+                  onChange={(e) => {
+                    setCategoryShortName(e.target.value);
+                    if (errorMessage) setErrorMessage("");
+                  }}
+                />
+              </div>
 
-                  {/* Category Short Name */}
-                  <div>
-                    <label className="hr-label">
-                      Category Short Name <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <IconWrapper icon={MdWidgets} />
-                      <input
-                        type="text"
-                        className="hr-input"
-                        placeholder="Enter Short Name"
-                        value={categoryShortName}
-                        onChange={(e) => {
-                          setCategoryShortName(e.target.value);
-                          if (errorMessage) setErrorMessage("");
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Depreciation Rate */}
-                  <div>
-                    <label className="hr-label">
-                      Depreciation Rate (%) <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <IconWrapper icon={MdWidgets} />
-                      <input
-                        type="number"
-                        className="hr-input"
-                        placeholder="Enter Rate (%)"
-                        value={depreciationRate}
-                        onChange={(e) => {
-                          setDepreciationRate(e.target.value);
-                          if (errorMessage) setErrorMessage("");
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {errorMessage && (
-                  <p className="text-red-500 text-xs mt-3 font-medium">{errorMessage}</p>
-                )}
-
-                <div className="mt-10 flex justify-end">
-                  <button
-                    type="submit"
-                    className="hr-btn-primary min-w-[140px]"
-                  >
-                    {editingItem ? "Update Changes" : "Save Record"}
-                  </button>
-                </div>
-              </form>
-
-                            <div className="mt-12">
-                                <SectionHeader title="Category List" subtitle="Overview of categories and their depreciation settings." />
-
-                                <div className="overflow-x-auto border border-slate-100 rounded-lg shadow-sm">
-                                    <table className="w-full border-collapse text-sm text-left">
-                                        <thead className="text-xs uppercase bg-slate-50 text-slate-600 border-b border-slate-100">
-                                            <tr>
-                                                <th className="px-6 py-4 font-bold">SR. No.</th>
-                                                <th className="px-6 py-4 font-bold">Asset Category</th>
-                                                <th className="px-6 py-4 font-bold">Short Name</th>
-                                                <th className="px-6 py-4 font-bold">Depreciation Rate</th>
-                                                <th className="px-6 py-4 font-bold text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-100 bg-white">
-                                            {items.length > 0 ? (
-                                                items.map((data, index) => (
-                                                    <tr key={data._id} className="hover:bg-slate-50 transition-colors">
-                                                        <td className="px-6 py-4 text-slate-500">{index + 1}</td>
-                                                        <td className="px-6 py-4 font-medium text-slate-900">{data.dropdownvalue}</td>
-                                                        <td className="px-6 py-4 text-slate-600">{data.categoryShortName || "-"}</td>
-                                                        <td className="px-6 py-4 text-slate-600">{data.inputValue}%</td>
-                                                        <td className="px-6 py-4">
-                                                            <div className="flex items-center justify-center gap-3">
-                                                                <button onClick={() => handleEdit(data)} className="p-1.5 text-slate-400 hover:text-[#4285F4] transition-colors">
-                                                                    <MdOutlineEdit size={18} />
-                                                                </button>
-                                                                <button onClick={() => handleDelete(data._id, data.dropdown_id)} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors">
-                                                                    <RiDeleteBin6Line size={18} />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan={5} className="px-6 py-10 text-center text-slate-400 italic">No depreciation records found.</td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div className="admin-form-group">
+                <label className="admin-label">
+                  Depreciation Rate (%) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="admin-input"
+                  placeholder="Enter Rate (%)"
+                  value={depreciationRate}
+                  required
+                  onChange={(e) => {
+                    setDepreciationRate(e.target.value);
+                    if (errorMessage) setErrorMessage("");
+                  }}
+                />
+              </div>
             </div>
-        </section>
-    );
+
+            {errorMessage && (
+              <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+            )}
+
+            <div className="mt-6 flex justify-start">
+              <button type="submit" className="admin-btn-primary min-w-[140px]">
+                {editingItem ? "Update Changes" : "Save Record"}
+              </button>
+            </div>
+          </form>
+
+          <div className="border-t border-gray-100 pt-8 mt-8">
+            <h3 className="admin-box-title uppercase mb-6">Category List</h3>
+
+            <div className="overflow-x-auto">
+              <table className="admin-table">
+                <thead className="admin-table-thead">
+                  <tr>
+                    <th className="admin-table-th w-20 text-center">SR. No.</th>
+                    <th className="admin-table-th text-center w-32">Action</th>
+                    <th className="admin-table-th">Asset Category</th>
+                    <th className="admin-table-th">Short Name</th>
+                    <th className="admin-table-th">Depreciation Rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.length > 0 ? (
+                    items.map((data, index) => (
+                      <tr key={data._id} className="hover:bg-gray-50 transition-colors">
+                        <td className="admin-table-td text-center font-bold">{index + 1}</td>
+                        <td className="admin-table-td">
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              title="Edit"
+                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                              onClick={() => handleEdit(data)}
+                            >
+                              <MdOutlineEdit size={18} />
+                            </button>
+                            <button
+                              title="Delete"
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                              onClick={() => handleDelete(data._id, data.dropdown_id)}
+                            >
+                              <RiDeleteBin6Line size={18} />
+                            </button>
+                          </div>
+                        </td>
+                        <td className="admin-table-td">{data.dropdownvalue}</td>
+                        <td className="admin-table-td">{data.categoryShortName || "-"}</td>
+                        <td className="admin-table-td">{data.inputValue}%</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="admin-table-td text-center py-10 text-gray-400 font-bold italic">
+                        No depreciation records found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AssetDepreciationCategoryMaster;

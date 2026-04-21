@@ -143,7 +143,7 @@ const ReportContent = () => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-                <FaSpinner className="animate-spin text-green-600 mb-4" size={48} />
+                <FaSpinner className="animate-spin text-[#3c8dbc] mb-4" size={48} />
                 <p className="text-sm font-black text-gray-400 uppercase tracking-widest text-center">Generating Audit Report...</p>
             </div>
         );
@@ -174,10 +174,10 @@ const ReportContent = () => {
                     <div className="py-6">
                         <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
                             <span>Verification Report</span>
-                            <span className="text-green-600 font-black">• {activeAudit.auditNo}</span>
+                            <span className="text-[#3c8dbc] font-black">• {activeAudit.auditNo}</span>
                         </div>
                         <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-                            Audit <span className="text-green-600 font-black">Findings</span>
+                            Audit <span className="text-[#3c8dbc] font-black">Findings</span>
                         </h1>
                         <p className="text-[12px] font-bold text-slate-400 mt-1 uppercase tracking-tight italic">
                             {activeAudit.auditTitle}
@@ -265,7 +265,7 @@ const ReportContent = () => {
 
                 {/* ── Professional Footer ── */}
                 <div className="px-10 py-6 border-t border-slate-50 bg-white flex items-center gap-6 no-print">
-                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="w-12 h-12 bg-blue-50 text-[#3c8dbc] rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
                         <MdInfo size={24} />
                     </div>
                     <div>
@@ -302,7 +302,7 @@ const AssetAuditReport = () => {
     return (
         <Suspense fallback={
             <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-                <FaSpinner className="animate-spin text-green-600 mb-4" size={48} />
+                <FaSpinner className="animate-spin text-[#3c8dbc] mb-4" size={48} />
                 <p className="text-sm font-black text-gray-400 uppercase tracking-widest">Waking Report Engine...</p>
             </div>
         }>

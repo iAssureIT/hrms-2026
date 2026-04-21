@@ -415,10 +415,10 @@ function AssetList() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                <span className="text-green-600">Asset Management</span>
+                <span className="text-[#3c8dbc]">Asset Management</span>
               </div>
               <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Asset <span className="text-green-600 font-black">Inventory</span>
+                Asset <span className="text-[#3c8dbc] font-black">Inventory</span>
               </h1>
             </div>
             <div className="flex flex-wrap gap-4 me-10 pt-4 md:pt-0 mb-1">
@@ -426,11 +426,11 @@ function AssetList() {
                 <Tooltip
                   content="Allocate Asset"
                   placement="bottom"
-                  className="bg-green"
+                  className="bg-[#3c8dbc]"
                   arrow={false}
                 >
                   <FaUserPlus
-                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
                     onClick={() =>
                       router.push(`/${loggedInRole}/management/asset-allocation`)
                     }
@@ -441,11 +441,11 @@ function AssetList() {
               <Tooltip
                 content="Allocation Approval List"
                 placement="bottom"
-                className="bg-green"
+                className="bg-[#3c8dbc]"
                 arrow={false}
               >
                 <FaListUl
-                  className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
                   onClick={() =>
                     router.push(
                       `/${loggedInRole}/management/allocation-approval-list`,
@@ -458,11 +458,11 @@ function AssetList() {
                   <Tooltip
                     content="Bulk Upload"
                     placement="bottom"
-                    className="bg-green"
+                    className="bg-[#3c8dbc]"
                     arrow={false}
                   >
                     <FaFileUpload
-                      className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
                       onClick={() =>
                         router.push(`/${loggedInRole}/management/bulk-upload`)
                       }
@@ -471,11 +471,11 @@ function AssetList() {
                   <Tooltip
                     content="Add Asset"
                     placement="bottom"
-                    className="bg-green"
+                    className="bg-[#3c8dbc]"
                     arrow={false}
                   >
                     <BsPlusSquare
-                      className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
                       onClick={() =>
                         router.push(`/${loggedInRole}/management/asset-submission`)
                       }
@@ -565,12 +565,12 @@ function AssetList() {
             className="flex items-center gap-4 mb-2 cursor-pointer group select-none"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <div className="flex items-center gap-2 text-slate-800 hover:text-green-600 transition-colors">
-              <MdFilterList className={`text-xl ${showFilters ? 'text-green-600' : 'text-slate-600'}`} />
+            <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
+              <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
               <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
             </div>
-            <div className={`flex-1 h-[1px] ${showFilters ? 'bg-green-600/20' : 'bg-slate-100'} group-hover:bg-green-600/30 transition-colors`}></div>
-            <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-green-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+            <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
+            <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
           </div>
 
           <div

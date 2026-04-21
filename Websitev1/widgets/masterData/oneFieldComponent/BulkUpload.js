@@ -25,8 +25,6 @@ const Page = (props) => {
   const getFileDetails = (fileName) => {
     axios
       .get(props?.fileDetailUrl + fileName)
-    axios
-      .get(props?.fileDetailUrl + fileName)
       .then((response) => {
         if (response && response.data) {
           console.log("response", response);
@@ -64,37 +62,29 @@ const Page = (props) => {
   console.log("fileDetails", fileDetails)
 
   return (
-    <section className="">
-      <div className="box border-2 rounded-md shadow-md">
-        {/* <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 flex justify-between">
-            <h1 className="heading">{props.fieldLabel} Bulk Upload</h1>
-          </div>
-        </div> */}
-
-        <div className="">
-          <BulkUpload
-            url={
-              process.env.NEXT_PUBLIC_BASE_URL +
-              "/api/" +
-              lowercaseLabel +
-              "/bulkUpload"
-            }
-            fileurl={`https://prod-lupinmis.s3.amazonaws.com/${lowercaseLabel}-bulk-upload.xlsx`}
-            data={[]}
-            getFileDetails={getFileDetails}
-            fileDetails={fileDetails}
-            goodRecordsHeading={props.goodRecordsHeading}
-            failedtableHeading={props.failedtableHeading}
-            failedRecordsTable={failedRecordsTable}
-            failedRecordsCount={failedRecordsCount}
-            goodRecordsTable={goodRecordsTable}
-            goodDataCount={goodDataCount}
-            tableObjects={tableObjects}
-          />
-        </div>
+    <div className="admin-box box-primary">
+      <div className="p-6">
+        <BulkUpload
+          url={
+            process.env.NEXT_PUBLIC_BASE_URL +
+            "/api/" +
+            lowercaseLabel +
+            "/bulkUpload"
+          }
+          fileurl={`https://prod-lupinmis.s3.amazonaws.com/${lowercaseLabel}-bulk-upload.xlsx`}
+          data={[]}
+          getFileDetails={getFileDetails}
+          fileDetails={fileDetails}
+          goodRecordsHeading={props.goodRecordsHeading}
+          failedtableHeading={props.failedtableHeading}
+          failedRecordsTable={failedRecordsTable}
+          failedRecordsCount={failedRecordsCount}
+          goodRecordsTable={goodRecordsTable}
+          goodDataCount={goodDataCount}
+          tableObjects={tableObjects}
+        />
       </div>
-    </section>
+    </div>
   );
 };
 

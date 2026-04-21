@@ -84,7 +84,7 @@ const ViewAssetDepreciation = ({ assetId }) => {
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <FaSpinner className="animate-spin text-green-600" size={40} />
+            <FaSpinner className="animate-spin text-[#3c8dbc]" size={40} />
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">Generating Valuation Report...</p>
         </div>
     );
@@ -120,12 +120,12 @@ const ViewAssetDepreciation = ({ assetId }) => {
                 {/* Header Section */}
                 <div className="flex justify-between items-start mb-8 pb-8 border-b border-slate-100">
                     <div className="flex items-center gap-4">
-                        <div className="flex-shrink-0 w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <div className="flex-shrink-0 w-12 h-12 bg-[#3c8dbc] rounded-xl flex items-center justify-center shadow-lg">
                              <span className="text-white font-black text-2xl italic tracking-tighter">H</span>
                         </div>
                         <div className="border-l-2 border-slate-100 pl-4">
                             <h1 className="text-lg font-black text-slate-800 tracking-tight leading-none uppercase">HRMS 2026</h1>
-                            <p className="text-[10px] font-black text-green-600 uppercase tracking-[0.2em] mt-1.5">Asset Depreciation Detail</p>
+                            <p className="text-[10px] font-black text-[#3c8dbc] uppercase tracking-[0.2em] mt-1.5">Asset Depreciation Detail</p>
                             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Written Down Value (WDV) Analysis</p>
                         </div>
                     </div>
@@ -138,7 +138,7 @@ const ViewAssetDepreciation = ({ assetId }) => {
                 </div>
 
                 {/* Asset Identity Banner */}
-                <div className="bg-green rounded-2xl p-6 text-white relative overflow-hidden shadow-xl mb-10">
+                <div className="bg-[#3c8dbc] rounded-2xl p-6 text-white relative overflow-hidden shadow-xl mb-10">
                     <div className="absolute -right-6 -bottom-6 text-white/10 rotate-12">
                          <MdAccountBalance size={140} />
                     </div>
@@ -229,8 +229,8 @@ const ViewAssetDepreciation = ({ assetId }) => {
                 {/* Footer Notes */}
                 <div className="flex justify-between items-end gap-10 footer-notes">
                     <div className="flex-1">
-                        <div className="flex items-start gap-4 p-5 bg-green-50/50 rounded-2xl border border-green-100">
-                            <MdInfo className="text-green-500 shrink-0 mt-0.5" size={18} />
+                        <div className="flex items-start gap-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
+                            <MdInfo className="text-[#3c8dbc] shrink-0 mt-0.5" size={18} />
                             <div>
                                 <h4 className="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-1">Valuation Principles</h4>
                                 <p className="text-[10px] font-medium text-slate-600 leading-relaxed italic">
@@ -245,7 +245,7 @@ const ViewAssetDepreciation = ({ assetId }) => {
                     </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 w-full h-1.5 bg-green"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1.5 bg-[#3c8dbc]"></div>
             </div>
 
             <style jsx>{`

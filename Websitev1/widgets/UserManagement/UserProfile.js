@@ -640,13 +640,13 @@ const UserProfile = (props) => {
       <div className="box border-2 rounded-md shadow-md w-11/12 md:w-3/5">
         <div className="uppercase text-xl font-semibold">
           <div className="uppercase text-xl font-semibold">
-            <div className="border-b-2 border-gray-300 flex bg-green justify-between rounded-tl rounded-tr items-center">
+            <div className="border-b-2 border-gray-300 flex bg-[#3c8dbc] justify-between rounded-tl rounded-tr items-center">
               <h1 className="heading text-white px-4 py-2">User Profile</h1>
               <div className="gap-3 my-2 md:my-5 me-4 md:me-10">
                 <Tooltip
                   content="Edit User"
                   placement="bottom"
-                  className="bg-green mt-5"
+                  className="bg-[#3c8dbc] mt-5"
                   arrow={false}
                 >
                   {loading2 ? (
@@ -690,7 +690,7 @@ const UserProfile = (props) => {
                 </label>
                 <div className="break-all px-2">
                   {loading ? (
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-Green" />
+                    <FaSpinner className="animate-spin inline-flex mx-2 text-[#367fa9]" />
                   ) : email ? (
                     email
                   ) : (
@@ -704,7 +704,7 @@ const UserProfile = (props) => {
                 </label>
                 <div>
                   {loading ? (
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-Green" />
+                    <FaSpinner className="animate-spin inline-flex mx-2 text-[#367fa9]" />
                   ) : mobile ? (
                     mobile
                   ) : (
@@ -720,7 +720,7 @@ const UserProfile = (props) => {
                 </label>
                 <div>
                   {loading ? (
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-Green" />
+                    <FaSpinner className="animate-spin inline-flex mx-2 text-[#367fa9]" />
                   ) : location ? (
                     location
                   ) : (
@@ -734,7 +734,7 @@ const UserProfile = (props) => {
                 </label>
                 <div className="capitalize">
                   {loading ? (
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-Green" />
+                    <FaSpinner className="animate-spin inline-flex mx-2 text-[#367fa9]" />
                   ) : selectedRoles ? (
                     selectedRoles.join(", ")
                   ) : (

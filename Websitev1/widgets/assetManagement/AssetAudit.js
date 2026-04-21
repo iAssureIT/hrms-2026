@@ -74,7 +74,7 @@ const AssetAudit = () => {
             progress: `
                 <div class="flex flex-col items-center gap-1.5 py-1">
                     <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-emerald-500 transition-all duration-1000" style="width: ${audit.summary.totalAssets > 0 ? Math.min(100, (audit.summary.verifiedAssets / audit.summary.totalAssets) * 100) : 0}%"></div>
+                        <div class="h-full bg-[#3c8dbc] transition-all duration-1000" style="width: ${audit.summary.totalAssets > 0 ? Math.min(100, (audit.summary.verifiedAssets / audit.summary.totalAssets) * 100) : 0}%"></div>
                     </div>
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
                         ${audit.summary.verifiedAssets} / ${audit.summary.totalAssets} VERIFIED
@@ -91,7 +91,7 @@ const AssetAudit = () => {
                 <div class="flex gap-2">
                     <button 
                         onclick="window.location.href='/${rolePath}/${middlePath}/${audit.status === 'Completed' ? 'asset-audit/report' : 'asset-reconciliation'}?auditId=${audit._id}'"
-                        class="px-5 py-2 bg-white border border-slate-200 hover:bg-green-600 hover:text-white hover:border-green-600 rounded-xl text-[10px] font-black uppercase transition-all shadow-sm active:scale-95 whitespace-nowrap"
+                        class="px-5 py-2 bg-white border border-slate-200 hover:bg-[#3c8dbc] hover:text-white hover:border-[#3c8dbc] rounded-xl text-[10px] font-black uppercase transition-all shadow-sm active:scale-95 whitespace-nowrap"
                     >
                         ${audit.status === 'Completed' ? 'Full Report' : (userDetails?.roles?.includes("fa-accounts") ? 'View Details' : 'Resume Verify')}
                     </button>
@@ -141,18 +141,17 @@ const AssetAudit = () => {
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
                         <div className="space-y-1">
                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-
-                                <span className="text-green-600">Asset Audits</span>
+                                <span className="text-[#3c8dbc]">Asset Audits</span>
                             </div>
                             <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                                Asset <span className="text-green-600 font-black">Audits</span>
+                                Asset <span className="text-[#3c8dbc] font-black">Audits</span>
                             </h1>
                         </div>
                         <div className="flex gap-4 pt-4 md:pt-0 mb-1">
                             {rolePath === "asset" && !(userDetails?.roles?.includes("fa-accounts")) && (
-                                <Tooltip content="Initialize New Audit" placement="bottom" className="bg-green" arrow={false}>
+                                <Tooltip content="Initialize New Audit" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
                                     <MdOutlineLibraryAdd
-                                        className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                                        className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
                                         onClick={() => router.push(`/${rolePath}/management/asset-audit/initialize`)}
                                     />
                                 </Tooltip>
@@ -190,7 +189,7 @@ const AssetAudit = () => {
                     {/* Footer Info Cards */}
                     <div className="grid lg:grid-cols-2 gap-8 pt-6 border-t border-slate-100">
                         <div className="bg-white rounded-3xl p-8 border border-slate-100 flex gap-6 items-start hover:shadow-sm transition-all">
-                            <div className="p-3 bg-green-50 text-green-600 rounded-2xl shrink-0">
+                            <div className="p-3 bg-blue-50 text-[#3c8dbc] rounded-2xl shrink-0">
                                 <MdInfo size={24} />
                             </div>
                             <div>
@@ -202,7 +201,7 @@ const AssetAudit = () => {
                                         "Damaged assets must be flagged for technical review."
                                     ].map((text, i) => (
                                         <div key={i} className="flex gap-3">
-                                            <div className="w-1 h-1 rounded-full bg-green-500 mt-1.5 shrink-0" />
+                                            <div className="w-1 h-1 rounded-full bg-[#3c8dbc] mt-1.5 shrink-0" />
                                             <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">{text}</p>
                                         </div>
                                     ))}
@@ -210,7 +209,7 @@ const AssetAudit = () => {
                             </div>
                         </div>
 
-                        <div className="bg-green-600 rounded-3xl p-8 text-white relative overflow-hidden group shadow-lg shadow-green-100">
+                        <div className="bg-[#3c8dbc] rounded-3xl p-8 text-white relative overflow-hidden group shadow-lg shadow-blue-100">
                             <div className="absolute -top-6 -right-6 p-10 opacity-5 group-hover:scale-110 transition-transform duration-1000 text-white">
                                 <MdGavel size={160} />
                             </div>

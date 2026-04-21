@@ -130,9 +130,9 @@ export default class ForgotPasswordConfirmOtp extends Component {
     return (
       <section className="bg-white rounded shadow-md w-full max-w-sm m-10">
         <div className="w-full">
-          <div className="w-full bg-lightgreen border border-2 border-t-green py-6 h-20">
-            <h1 className=" text-xl md:text-2xl text-green font-bold leading-tight text-center">
-              Verify OTP
+          <div className="w-full bg-[#f8fafc] border-t-4 border-[#3c8dbc] py-6 h-20 shadow-sm">
+            <h1 className=" text-xl md:text-2xl text-[#3c8dbc] font-black leading-tight text-center tracking-tight">
+               Verify OTP
             </h1>
           </div>
           {/* <p className='text-sm text-center px-5'>Please enter your registered email address below to receive an OTP.</p> */}
@@ -170,15 +170,10 @@ export default class ForgotPasswordConfirmOtp extends Component {
                 ) : (
                   <a
                     href=""
-                    className="underline underline-offset-2 text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
-                    // className={
-                    //   "flex items-center text-green-700 hover:text-blue-900 cursor-pointer"
-                    // }
+                    className="underline underline-offset-2 text-sm font-bold text-[#3c8dbc] hover:text-[#367fa9] transition-colors"
                     onClick={this.resendOTP.bind(this)}
                   >
-                    <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
-                      Resend OTP
-                    </span>
+                    <span>Resend OTP</span>
                     <i className="bx bx-caret-right ml-1"></i>
                   </a>
                 )}
@@ -209,21 +204,18 @@ export default class ForgotPasswordConfirmOtp extends Component {
             <div className="flex justify-center">
               <a
                 href="/auth/login"
-                // className="text-sm  justify-left text-green-700 hover:text-blue-900 cursor-pointer"
-                className="underline underline-offset-2 text-sm font-semibold inputLabel text-green-500 hover:text-green-700 focus:text-blue-800"
+                className="underline underline-offset-2 text-sm font-bold text-[#3c8dbc] hover:text-[#367fa9] transition-colors"
                 onClick={() => {
                   this.setState({ loading: true });
                 }}
               >
                 {this.state.loading ? (
-                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
+                  <span className="flex items-center">
                     Back to Login
-                    <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-green text-center" />
+                    <FaSpinner className="animate-spin ml-2 text-lg" />
                   </span>
                 ) : (
-                  <span className="text-green-500 hover:text-green-700 focus:text-blue-800">
-                    Back to Login
-                  </span>
+                  <span>Back to Login</span>
                 )}
               </a>
             </div>
