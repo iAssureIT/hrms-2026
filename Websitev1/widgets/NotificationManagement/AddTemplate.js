@@ -132,13 +132,15 @@ const AddTemplate = ({ template_id }) => {
   }
 
   return (
-    <section className="w-full p-6">
+    <section className=" section w-full p-6">
       <Card className="shadow-lg border border-gray-200">
         <CardBody>
           <div className="flex items-center gap-3 mb-6 border-b pb-4">
             <FaBell className="text-2xl text-green" />
             <Typography variant="h5" color="blue-gray">
-              {template_id ? "Edit Notification Template" : "Create New Notification Template"}
+              {template_id
+                ? "Edit Notification Template"
+                : "Create New Notification Template"}
             </Typography>
           </div>
 
@@ -146,7 +148,11 @@ const AddTemplate = ({ template_id }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Template Type */}
               <div className="space-y-2">
-                <Typography variant="small" color="blue-gray" className="font-semibold">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-semibold"
+                >
                   Template Type <span className="text-red-500">*</span>
                 </Typography>
                 <Controller
@@ -154,7 +160,11 @@ const AddTemplate = ({ template_id }) => {
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <Select {...field} label="Select Type" error={!!errors.templateType}>
+                    <Select
+                      {...field}
+                      label="Select Type"
+                      error={!!errors.templateType}
+                    >
                       <Option value="EMAIL">Email</Option>
                       <Option value="SMS">SMS</Option>
                       <Option value="IN-APP">In-App</Option>
@@ -166,7 +176,11 @@ const AddTemplate = ({ template_id }) => {
 
               {/* Event Name */}
               <div className="space-y-2">
-                <Typography variant="small" color="blue-gray" className="font-semibold">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-semibold"
+                >
                   Event <span className="text-red-500">*</span>
                 </Typography>
                 <Input
@@ -179,7 +193,11 @@ const AddTemplate = ({ template_id }) => {
 
               {/* Template Name */}
               <div className="space-y-2">
-                <Typography variant="small" color="blue-gray" className="font-semibold">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-semibold"
+                >
                   Template Name <span className="text-red-500">*</span>
                 </Typography>
                 <Input
@@ -192,7 +210,11 @@ const AddTemplate = ({ template_id }) => {
 
               {/* Role */}
               <div className="space-y-2">
-                <Typography variant="small" color="blue-gray" className="font-semibold">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-semibold"
+                >
                   Role <span className="text-red-500">*</span>
                 </Typography>
                 <Controller
@@ -200,7 +222,11 @@ const AddTemplate = ({ template_id }) => {
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <Select {...field} label="Select Role" error={!!errors.role}>
+                    <Select
+                      {...field}
+                      label="Select Role"
+                      error={!!errors.role}
+                    >
                       <Option value="all">All Roles</Option>
                       {roleList.map((role) => (
                         <Option key={role._id} value={role.role}>
@@ -214,7 +240,11 @@ const AddTemplate = ({ template_id }) => {
 
               {/* Status */}
               <div className="space-y-2">
-                <Typography variant="small" color="blue-gray" className="font-semibold">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-semibold"
+                >
                   Status <span className="text-red-500">*</span>
                 </Typography>
                 <Controller
@@ -222,7 +252,11 @@ const AddTemplate = ({ template_id }) => {
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <Select {...field} label="Select Status" error={!!errors.status}>
+                    <Select
+                      {...field}
+                      label="Select Status"
+                      error={!!errors.status}
+                    >
                       <Option value="active">Active</Option>
                       <Option value="inactive">Inactive</Option>
                     </Select>
@@ -233,11 +267,20 @@ const AddTemplate = ({ template_id }) => {
 
             {/* Subject - Only for Email */}
             <div className="space-y-2">
-              <Typography variant="small" color="blue-gray" className="font-semibold">
-                Subject {watch("templateType") === "EMAIL" && <span className="text-red-500">*</span>}
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-semibold"
+              >
+                Subject{" "}
+                {watch("templateType") === "EMAIL" && (
+                  <span className="text-red-500">*</span>
+                )}
               </Typography>
               <Input
-                {...register("subject", { required: watch("templateType") === "EMAIL" })}
+                {...register("subject", {
+                  required: watch("templateType") === "EMAIL",
+                })}
                 placeholder="Message Subject"
                 label="Subject"
                 error={!!errors.subject}
@@ -246,7 +289,11 @@ const AddTemplate = ({ template_id }) => {
 
             {/* Content - CKEditor */}
             <div className="space-y-2">
-              <Typography variant="small" color="blue-gray" className="font-semibold">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-semibold"
+              >
                 Message Content <span className="text-red-500">*</span>
               </Typography>
               <div className="prose max-w-none">
