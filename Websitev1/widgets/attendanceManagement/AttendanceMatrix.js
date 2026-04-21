@@ -90,18 +90,18 @@ const AttendanceMatrix = () => {
     };
 
     const StatusCard = ({ label, value, icon: Icon, colorClass }) => (
-        <div className="flex bg-white shadow-sm rounded-none overflow-hidden h-24 border border-gray-200 flex-grow min-w-[240px]">
+        <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
             <div
                 style={{ backgroundColor: getStatusColor(colorClass) }}
-                className="w-24 flex items-center justify-center text-white shrink-0"
+                className="w-20 md:w-24 flex items-center justify-center text-white shrink-0"
             >
-                <Icon size={40} className="text-white opacity-90" />
+                <Icon size={36} className="text-white opacity-90" />
             </div>
-            <div className="flex flex-col justify-center px-5 py-2 flex-grow">
-                <span className="text-gray-600 text-[12px] font-bold uppercase tracking-tight mb-1 truncate">
+            <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">
                     {label}
                 </span>
-                <h3 className="text-xl font-bold text-gray-800 leading-tight">
+                <h3 className="text-2xl font-extrabold text-gray-800 leading-none">
                     {value}
                 </h3>
             </div>
@@ -129,7 +129,7 @@ const AttendanceMatrix = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatusCard label="Total Staff" value={matrixData.length} icon={FaUsers} colorClass="bg-aqua" />
                 <StatusCard label="Current Month" value={months.find(m => m.value === selectedMonth)?.label} icon={FaUserCheck} colorClass="bg-green" />
                 <StatusCard label="Attendance Recorded" value={`${matrixData.filter(e => Object.keys(e.attendance).length > 0).length}`} icon={FaClock} colorClass="bg-yellow" />

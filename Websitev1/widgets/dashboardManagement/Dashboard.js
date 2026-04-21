@@ -485,17 +485,17 @@ const Dashboard = (props) => {
           </div>
           <div className="px-4">
             <div className="bg-white">
-              <div className="grid grid-cols-1 w-full lg:grid-cols-5 gap-4 lg:gap-6">
+              <div className="grid grid-cols-1 w-full lg:grid-cols-5 gap-6 lg:gap-8">
                 {/* Centers Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#4090FF]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#4090FF]">
                     <HiOutlineBuildingOffice2 size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">
                       {loggedInRole === "admin" || loggedInRole === "executive" ? "Centers" : "Center Name"}
                     </span>
-                    <div className="hr-metric-value">
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {loggedInRole === "admin" || loggedInRole === "executive" ? (
                         dashboardData?.totalCenters ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)
                       ) : (
@@ -506,66 +506,66 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Districts Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#2ECFAD]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#2ECFAD]">
                     <GrMapLocation size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">Districts</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Districts</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalDistricts ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Blocks Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#FF5370]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#FF5370]">
                     <LiaCubesSolid size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">Blocks</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Blocks</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalBlocks ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Villages Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#FF9D4F]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#FF9D4F]">
                     <MdOutlineHouse size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">Villages</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Villages</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalVillages ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Employees Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#5da5da]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#5da5da]">
                     <PiUsersFourBold size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label leading-tight">Total Employees</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Total Employees</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalEmpSum ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full mt-10 gap-4 lg:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full mt-10 gap-6 lg:gap-8">
                 {/* Duration Selector Card */}
-                <div className="hr-metric-card">
-                   <div className="hr-metric-icon-wrapper bg-slate-100 !text-slate-500">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-slate-100 !text-slate-500">
                     <BsClipboard2Data size={28} />
                    </div>
-                   <div className="hr-metric-content">
-                    <span className="hr-metric-label">Select Duration</span>
+                   <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Select Duration</span>
                     <select
                       name="dataType"
                       className="hr-select !py-1 !px-2 !bg-transparent !border-slate-200 mt-1"
@@ -580,39 +580,39 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Beneficiaries Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#f15854]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#f15854]">
                     <PiUsersThreeBold size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">Reach (Beneficiaries)</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Reach (Beneficiaries)</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalBeneficiaries ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Families Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#60bd68]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#60bd68]">
                     <MdPeopleOutline size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">Impacted Households</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Impacted Households</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalFamilies ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>
                 </div>
 
                 {/* Financial Utilization Card */}
-                <div className="hr-metric-card">
-                  <div className="hr-metric-icon-wrapper bg-[#b276b2]">
+                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#b276b2]">
                     <MdCurrencyRupee size={32} />
                   </div>
-                  <div className="hr-metric-content">
-                    <span className="hr-metric-label">Financial Utilization</span>
-                    <div className="hr-metric-value">
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Financial Utilization</span>
+                    <div className="text-2xl font-extrabold text-gray-800 leading-none">
                       {dashboardData?.totalCost ?? (loading ? <FaSpinner className="animate-spin text-green" /> : 0)}
                     </div>
                   </div>

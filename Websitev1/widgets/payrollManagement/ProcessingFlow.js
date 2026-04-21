@@ -97,45 +97,45 @@ const ProcessingFlow = () => {
     const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
 
     return (
-        <section className="bg-white rounded-[40px] border border-slate-100 shadow-xl shadow-slate-200/50 p-10 mb-10 overflow-hidden relative">
-            <div className="max-w-[1400px] mx-auto">
+        <div className="admin-box box-primary mb-10 overflow-hidden relative">
+            <div className="p-6">
                 {/* Stepper Wizard */}
-                <div className="flex items-center justify-center gap-6 mb-16 px-10">
+                <div className="flex items-center justify-center gap-6 mb-10">
                         {[
                             { n: 1, l: "Select Month", i: FaCalendarAlt },
                             { n: 2, l: "Review & Calculate", i: FaCalculator },
                             { n: 3, l: "Finalize & Payout", i: FaCheckCircle },
                         ].map((s, idx) => (
                             <React.Fragment key={s.n}>
-                                <div className={`flex flex-col items-center gap-4 transition-all duration-500 ${step >= s.n ? 'opacity-100 scale-110' : 'opacity-30 scale-100'}`}>
-                                    <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-500 ${step >= s.n ? 'bg-[#3c8dbc] text-white shadow-xl shadow-blue-200 ring-4 ring-blue-50' : 'bg-slate-100 text-slate-400'}`}>
-                                        <s.i size={24} />
+                                <div className={`flex flex-col items-center gap-2 ${step >= s.n ? 'opacity-100' : 'opacity-40'}`}>
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= s.n ? 'bg-[#3c8dbc] border-[#3c8dbc] text-white' : 'bg-gray-100 border-gray-200 text-gray-400'}`}>
+                                        <s.i size={16} />
                                     </div>
-                                    <span className={`text-[10px] font-black uppercase tracking-widest ${step >= s.n ? 'text-[#3c8dbc]' : 'text-slate-400'}`}>{s.n}. {s.l}</span>
+                                    <span className={`text-[12px] font-bold uppercase tracking-wide ${step >= s.n ? 'text-[#3c8dbc]' : 'text-gray-400'}`}>{s.n}. {s.l}</span>
                                 </div>
-                                {idx < 2 && <div className={`h-[2px] w-24 md:w-40 rounded-full transition-colors duration-700 ${step > s.n ? 'bg-[#3c8dbc]' : 'bg-slate-100'}`}></div>}
+                                {idx < 2 && <div className={`h-[2px] w-16 md:w-32 ${step > s.n ? 'bg-[#3c8dbc]' : 'bg-gray-200'}`}></div>}
                             </React.Fragment>
                         ))}
                     </div>
 
                     {/* Step 1: Selection */}
                     {step === 1 && (
-                        <div className="flex flex-col items-center py-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                            <div className="flex flex-col md:flex-row gap-6 mb-12">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Payroll Month</label>
+                        <div className="flex flex-col items-center py-6">
+                            <div className="flex flex-col md:flex-row gap-6 mb-8 w-full max-w-2xl justify-center">
+                                <div className="admin-form-group w-full md:w-1/2">
+                                    <label className="admin-label">Payroll Month</label>
                                     <select 
-                                        className="w-full md:w-64 bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:ring-green-500/20"
+                                        className="admin-select"
                                         value={selectedMonth}
                                         onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                                     >
                                         {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Payroll Year</label>
+                                <div className="admin-form-group w-full md:w-1/2">
+                                    <label className="admin-label">Payroll Year</label>
                                     <select 
-                                        className="w-full md:w-64 bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:ring-green-500/20"
+                                        className="admin-select"
                                         value={selectedYear}
                                         onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                                     >
@@ -144,10 +144,10 @@ const ProcessingFlow = () => {
                                 </div>
                             </div>
                             <div className="flex gap-4">
-                                <button onClick={initiateRun} disabled={loading} className="bg-[#3c8dbc] text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-2xl shadow-blue-200 hover:bg-[#367fa9] transition-all active:scale-95 disabled:bg-slate-300">
+                                <button onClick={initiateRun} disabled={loading} className="admin-btn-primary px-8 py-2 font-bold disabled:opacity-50">
                                     {loading ? 'Processing...' : 'Generate New Batch'}
                                 </button>
-                                <button onClick={() => fetchBatchData(selectedMonth, selectedYear)} className="bg-slate-800 text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-xl hover:bg-slate-900 transition-all active:scale-95">
+                                <button onClick={() => fetchBatchData(selectedMonth, selectedYear)} className="border border-[#d2d6de] bg-white text-[#444] hover:bg-gray-50 px-8 py-2 rounded-sm font-bold shadow-sm transition-all active:scale-95 text-sm">
                                     Load Existing Batch
                                 </button>
                             </div>
@@ -156,63 +156,63 @@ const ProcessingFlow = () => {
 
                     {/* Step 2: Review Table */}
                     {step === 2 && (
-                        <div className="animate-in fade-in slide-in-from-right-10 duration-700">
-                            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                        <div>
+                            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-t border-slate-100 pt-6">
                                 <div className="text-center md:text-left">
-                                    <h2 className="text-xl font-black text-slate-800">{moment([selectedYear, selectedMonth - 1]).format("MMMM YYYY")} Payroll Batch</h2>
-                                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Reviewing {payrollData.length} records</p>
+                                    <h2 className="admin-heading mb-1">{moment([selectedYear, selectedMonth - 1]).format("MMMM YYYY")} Payroll Batch</h2>
+                                    <p className="admin-subheading">Reviewing {payrollData.length} records</p>
                                 </div>
                                 <div className="flex gap-3">
                                     <div className="relative">
-                                        <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
+                                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
                                         <input 
                                             type="text" 
                                             placeholder="Search employee..." 
-                                            className="bg-slate-50 border-slate-200 pl-12 pr-6 py-3 rounded-2xl text-sm font-bold w-64 focus:ring-green-500/20"
+                                            className="admin-input pl-8"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                         />
                                     </div>
-                                    <button onClick={initiateRun} className="bg-white border border-slate-200 text-slate-600 px-5 py-3 rounded-2xl font-bold text-sm flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm">
-                                        <FaUndo /> Recalculate All
+                                    <button onClick={initiateRun} className="border border-[#d2d6de] bg-white text-[#444] hover:bg-gray-50 px-4 py-1.5 rounded-sm font-bold shadow-sm flex items-center gap-2 text-sm transition-all active:scale-95">
+                                        <FaUndo size={12}/> Recalculate All
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto border border-slate-100 rounded-[32px]">
-                                <table className="w-full text-left bg-white border-collapse">
-                                    <thead className="bg-slate-50/50">
+                            <div className="overflow-x-auto border border-[#d2d6de]">
+                                <table className="admin-table">
+                                    <thead className="admin-table-thead bg-gray-50">
                                         <tr>
-                                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Employee</th>
-                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Paid/LOP</th>
-                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right">Gross Salary</th>
-                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right text-red-400">Deductions</th>
-                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right text-[#3c8dbc] font-extrabold">Net Salary</th>
-                                            <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Actions</th>
+                                            <th className="admin-table-th">Employee</th>
+                                            <th className="admin-table-th text-center">Paid/LOP</th>
+                                            <th className="admin-table-th text-right">Gross Salary</th>
+                                            <th className="admin-table-th text-right text-red-500">Deductions</th>
+                                            <th className="admin-table-th text-right text-[#3c8dbc]">Net Salary</th>
+                                            <th className="admin-table-th text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {filteredData.map(p => (
-                                            <tr key={p._id} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                                                <td className="px-8 py-4">
+                                            <tr key={p._id} className="hover:bg-gray-50 border-b border-[#f4f4f4]">
+                                                <td className="admin-table-td">
                                                     <div className="flex flex-col">
-                                                        <span className="text-sm font-extrabold text-slate-700">{p.employeeName}</span>
-                                                        <span className="text-[10px] font-bold text-slate-400">{p.employeeID} • {p.departmentName}</span>
+                                                        <span className="font-bold text-gray-800">{p.employeeName}</span>
+                                                        <span className="text-[11px] text-gray-500">{p.employeeID} • {p.departmentName}</span>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 text-center">
+                                                <td className="admin-table-td text-center">
                                                     <div className="flex items-center justify-center gap-2">
-                                                        <span className="bg-green-50 text-green-600 px-3 py-1 rounded-lg font-black text-[10px]">{p.paidDays}</span>
-                                                        <span className="bg-red-50 text-red-600 px-3 py-1 rounded-lg font-black text-[10px]">{p.lopDays}</span>
+                                                        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[11px] font-bold" title="Paid Days">{p.paidDays}</span>
+                                                        <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[11px] font-bold" title="LOP Days">{p.lopDays}</span>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 text-right font-bold text-slate-600 text-sm">{formatter.format(p.grossSalary)}</td>
-                                                <td className="px-6 py-4 text-right font-bold text-red-400 text-sm">-{formatter.format(p.totalDeductions)}</td>
-                                                <td className="px-6 py-4 text-right font-black text-[#3c8dbc] text-sm">{formatter.format(p.netSalary)}</td>
-                                                <td className="px-6 py-4 text-center">
+                                                <td className="admin-table-td text-right font-bold text-gray-700">{formatter.format(p.grossSalary)}</td>
+                                                <td className="admin-table-td text-right font-bold text-red-500">-{formatter.format(p.totalDeductions)}</td>
+                                                <td className="admin-table-td text-right font-bold text-[#3c8dbc]">{formatter.format(p.netSalary)}</td>
+                                                <td className="admin-table-td text-center">
                                                     <button 
                                                         onClick={() => setPreviewData(p)}
-                                                        className="text-[#3c8dbc] font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 mx-auto hover:underline"
+                                                        className="text-[#3c8dbc] font-bold text-[11px] flex items-center gap-1 mx-auto hover:underline"
                                                     >
                                                         <FaFilePdf size={12}/> Preview
                                                     </button>
@@ -223,15 +223,15 @@ const ProcessingFlow = () => {
                                 </table>
                             </div>
 
-                            <div className="mt-12 flex flex-col md:flex-row justify-between items-center bg-slate-50/50 p-8 rounded-[32px] border border-dashed border-slate-200">
+                            <div className="mt-8 flex flex-col md:flex-row justify-between items-center bg-gray-50 p-6 border border-[#d2d6de]">
                                 <div>
-                                    <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mb-1">Total Net Payout</p>
-                                    <h3 className="text-4xl font-black text-slate-800 tracking-tighter">{formatter.format(batchInfo?.totalNetPayout)}</h3>
+                                    <p className="admin-subheading">Total Net Payout</p>
+                                    <h3 className="text-2xl font-bold text-gray-800">{formatter.format(batchInfo?.totalNetPayout)}</h3>
                                 </div>
-                                <div className="flex gap-4">
-                                    <button onClick={() => setStep(1)} className="px-8 font-black text-slate-400 hover:text-slate-600 text-[10px] uppercase tracking-widest">Back</button>
-                                    <button onClick={approveBatch} className="bg-[#3c8dbc] text-white px-12 py-4.5 rounded-[20px] font-black text-sm shadow-2xl shadow-blue-200 hover:bg-[#367fa9] active:scale-95 transition-all flex items-center gap-3">
-                                        Approve & Finalize <FaChevronRight />
+                                <div className="flex gap-4 items-center">
+                                    <button onClick={() => setStep(1)} className="font-bold text-[#3c8dbc] hover:underline text-sm">Back to Selection</button>
+                                    <button onClick={approveBatch} disabled={loading} className="admin-btn-primary px-8 py-2 disabled:opacity-50 flex items-center gap-2">
+                                        Approve & Finalize <FaChevronRight size={12}/>
                                     </button>
                                 </div>
                             </div>
@@ -240,22 +240,22 @@ const ProcessingFlow = () => {
 
                     {/* Step 3: Payout */}
                     {step === 3 && (
-                        <div className="text-center py-20 animate-in zoom-in duration-700 flex flex-col items-center">
-                            <div className="w-24 h-24 bg-green-50 text-green-500 rounded-[28px] flex items-center justify-center mb-10 ring-8 ring-green-50/50">
-                                <FaCheckCircle size={56} />
+                        <div className="text-center py-16 flex flex-col items-center">
+                            <div className="w-20 h-20 bg-[#00a65a] text-white rounded-full flex items-center justify-center mb-6">
+                                <FaCheckCircle size={40} />
                             </div>
-                            <h2 className="text-4xl font-black text-slate-800 mb-4 tracking-tighter">Payroll Finalized!</h2>
-                            <p className="text-slate-400 font-bold max-w-sm mx-auto mb-12">Total payout of <span className="text-slate-800">{formatter.format(batchInfo?.totalNetPayout)}</span> has been approved for {moment([batchInfo?.year, batchInfo?.month - 1]).format("MMMM YYYY")}.</p>
-                            <div className="flex flex-wrap gap-4 justify-center">
-                                <button className="bg-slate-800 text-white px-10 py-4.5 rounded-2xl font-black text-sm shadow-xl hover:bg-slate-900 transition-all">Download All Payslips</button>
-                                <button className="bg-[#3c8dbc] text-white px-10 py-4.5 rounded-2xl font-black text-sm shadow-2xl shadow-blue-200 hover:bg-[#367fa9] transition-all">Export Bank Sheet</button>
+                            <h2 className="admin-heading text-2xl mb-2">Payroll Finalized!</h2>
+                            <p className="text-gray-500 mb-8 max-w-sm mx-auto">Total payout of <span className="font-bold text-gray-800">{formatter.format(batchInfo?.totalNetPayout)}</span> has been approved for {moment([batchInfo?.year, batchInfo?.month - 1]).format("MMMM YYYY")}.</p>
+                            <div className="flex gap-4 justify-center">
+                                <button className="border border-[#d2d6de] bg-white text-[#444] hover:bg-gray-50 px-6 py-2 rounded-sm font-bold shadow-sm text-sm active:scale-95 transition-all">Download All Payslips</button>
+                                <button className="admin-btn-primary px-6 py-2">Export Bank Sheet</button>
                             </div>
                         </div>
                     )}
                 </div>
 
                 {previewData && <PayslipPreview data={previewData} onClose={() => setPreviewData(null)} />}
-        </section>
+        </div>
     );
 };
 

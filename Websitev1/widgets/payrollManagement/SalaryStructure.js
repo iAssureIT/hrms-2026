@@ -68,104 +68,104 @@ const SalaryStructure = () => {
     };
 
     return (
-        <section className="bg-white rounded-[40px] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden min-h-[600px] flex flex-col md:flex-row">
+        <div className="admin-box box-primary flex flex-col md:flex-row min-h-[600px] mb-10 overflow-hidden">
             {/* Left Column: Emp List */}
-            <div className="w-full md:w-80 border-r border-slate-100 bg-slate-50/30">
-                <div className="p-8 border-b border-slate-100 bg-white">
-                    <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Select Employee</h3>
+            <div className="w-full md:w-80 border-r border-[#d2d6de] bg-[#f4f6f9]">
+                <div className="admin-box-header rounded-none border-b border-[#d2d6de]">
+                    <h3 className="admin-box-title">Select Employee</h3>
                 </div>
-                <div className="max-h-[600px] overflow-y-auto p-4 space-y-2">
+                <div className="max-h-[600px] overflow-y-auto p-0">
+                    <ul className="divide-y divide-[#d2d6de]">
                     {employees.map(emp => (
-                        <div 
+                        <li 
                             key={emp._id} 
                             onClick={() => handleEmpSelect(emp)}
-                            className={`p-4 rounded-2xl cursor-pointer transition-all ${selectedEmp?._id === emp._id ? 'bg-[#3c8dbc] text-white shadow-lg shadow-blue-100' : 'hover:bg-white text-slate-600'}`}
+                            className={`p-3 cursor-pointer transition-colors ${selectedEmp?._id === emp._id ? 'bg-[#3c8dbc] text-white border-l-4 border-[#367fa9]' : 'hover:bg-white text-[#444] border-l-4 border-transparent'}`}
                         >
-                            <p className="font-extrabold text-sm">{emp.employeeName}</p>
-                            <p className={`text-[10px] font-bold ${selectedEmp?._id === emp._id ? 'text-blue-100' : 'text-slate-400'}`}>{emp.employeeID}</p>
-                        </div>
+                            <p className="font-bold text-[13px]">{emp.employeeName}</p>
+                            <p className={`text-[11px] ${selectedEmp?._id === emp._id ? 'text-blue-100' : 'text-gray-500'}`}>{emp.employeeID}</p>
+                        </li>
                     ))}
+                    </ul>
                 </div>
             </div>
 
             {/* Right Column: Editor */}
-            <div className="flex-1 p-10">
+            <div className="flex-1 p-6">
                 {!selectedEmp ? (
-                    <div className="h-full flex flex-col items-center justify-center text-slate-300">
-                        <FaUserEdit size={64} className="mb-6 opacity-20" />
-                        <p className="font-black text-xs uppercase tracking-widest text-slate-400">Select an employee to configure salary</p>
+                    <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                        <FaUserEdit size={48} className="mb-4 opacity-30" />
+                        <p className="admin-subheading">Select an employee to configure salary</p>
                     </div>
                 ) : (
-                    <div className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
-                        <div className="flex justify-between items-end border-b border-slate-100 pb-8">
+                    <div className="space-y-8">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-[#d2d6de] pb-4">
                             <div>
-                                <h4 className="text-2xl font-black text-slate-800">{selectedEmp.employeeName}</h4>
-                                <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">{selectedEmp.departmentName} • {selectedEmp.employeeDesignation}</p>
+                                <h4 className="text-xl font-bold text-gray-800">{selectedEmp.employeeName}</h4>
+                                <p className="text-[#3c8dbc] text-xs font-bold uppercase mt-1">{selectedEmp.departmentName} • {selectedEmp.employeeDesignation}</p>
                             </div>
-                            <div className="flex gap-4">
-                                <button onClick={handleSave} disabled={loading} className="bg-[#3c8dbc] text-white px-10 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-[#367fa9] active:scale-95 transition-all">
+                            <div className="mt-4 md:mt-0">
+                                <button onClick={handleSave} disabled={loading} className="admin-btn-primary px-8 py-2 disabled:opacity-50 text-[13px]">
                                     {loading ? 'Saving...' : 'Save Structure'}
                                 </button>
                             </div>
                         </div>
 
                         {/* Form Sections */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Salary Info */}
-                            <div className="space-y-6">
-                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaMoneyBillWave className="text-[#3c8dbc]" /> Fixed Salary Components</h5>
-                                <div className="space-y-4">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">CTC / Monthly Gross Salary (INR)</label>
-                                        <input 
-                                            type="number" 
-                                            className="w-full bg-slate-50 border-slate-100 rounded-2xl p-4 text-lg font-black text-slate-700 focus:ring-blue-500/20"
-                                            value={salaryInfo.grossSalary}
-                                            onChange={(e) => setSalaryInfo({...salaryInfo, grossSalary: e.target.value})}
-                                        />
-                                    </div>
-                                    <p className="text-[10px] text-slate-400 font-bold italic">* Deductions (PF, ESIC, PT) will be auto-calculated during payroll run based on this Gross value.</p>
+                            <div className="space-y-4">
+                                <h5 className="flex items-center gap-2 font-bold text-gray-700 text-sm border-b border-[#d2d6de] pb-2"><FaMoneyBillWave className="text-[#3c8dbc]" /> Fixed Salary Components</h5>
+                                <div className="admin-form-group">
+                                    <label className="admin-label">CTC / Monthly Gross Salary (INR)</label>
+                                    <input 
+                                        type="number" 
+                                        className="admin-input font-bold text-lg"
+                                        value={salaryInfo.grossSalary}
+                                        onChange={(e) => setSalaryInfo({...salaryInfo, grossSalary: e.target.value})}
+                                    />
+                                    <p className="help-block text-[11px] text-gray-500 mt-1 italic">* Deductions (PF, ESIC, PT) will be auto-calculated during payroll run based on this Gross value.</p>
                                 </div>
                             </div>
 
                             {/* Statutory IDs */}
-                            <div className="space-y-6">
-                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaBuilding className="text-[#3c8dbc]" /> Statutory Details</h5>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">PAN Number</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-xl p-3 text-xs font-bold" value={salaryInfo.panNumber} onChange={(e) => setSalaryInfo({...salaryInfo, panNumber: e.target.value})} />
+                            <div className="space-y-4">
+                                <h5 className="flex items-center gap-2 font-bold text-gray-700 text-sm border-b border-[#d2d6de] pb-2"><FaBuilding className="text-[#3c8dbc]" /> Statutory Details</h5>
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">PAN Number</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.panNumber} onChange={(e) => setSalaryInfo({...salaryInfo, panNumber: e.target.value})} />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">PF Number</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-xl p-3 text-xs font-bold" value={salaryInfo.pfNumber} onChange={(e) => setSalaryInfo({...salaryInfo, pfNumber: e.target.value})} />
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">PF Number</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.pfNumber} onChange={(e) => setSalaryInfo({...salaryInfo, pfNumber: e.target.value})} />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">UAN Number</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-xl p-3 text-xs font-bold" value={salaryInfo.uanNumber} onChange={(e) => setSalaryInfo({...salaryInfo, uanNumber: e.target.value})} />
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">UAN Number</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.uanNumber} onChange={(e) => setSalaryInfo({...salaryInfo, uanNumber: e.target.value})} />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">ESIC Number</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-xl p-3 text-xs font-bold" value={salaryInfo.esicNumber} onChange={(e) => setSalaryInfo({...salaryInfo, esicNumber: e.target.value})} />
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">ESIC Number</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.esicNumber} onChange={(e) => setSalaryInfo({...salaryInfo, esicNumber: e.target.value})} />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Bank Details */}
-                            <div className="col-span-full space-y-6 pt-6 border-t border-slate-100">
-                                <h5 className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest"><FaUniversity className="text-[#3c8dbc]" /> Bank Disbursement Details</h5>
+                            <div className="col-span-full space-y-4 pt-2">
+                                <h5 className="flex items-center gap-2 font-bold text-gray-700 text-sm border-b border-[#d2d6de] pb-2"><FaUniversity className="text-[#3c8dbc]" /> Bank Disbursement Details</h5>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Bank Name</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-2xl p-4 text-sm font-bold" value={salaryInfo.bankName} onChange={(e) => setSalaryInfo({...salaryInfo, bankName: e.target.value})} />
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">Bank Name</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.bankName} onChange={(e) => setSalaryInfo({...salaryInfo, bankName: e.target.value})} />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Account Number</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-2xl p-4 text-sm font-bold" value={salaryInfo.accountNumber} onChange={(e) => setSalaryInfo({...salaryInfo, accountNumber: e.target.value})} />
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">Account Number</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.accountNumber} onChange={(e) => setSalaryInfo({...salaryInfo, accountNumber: e.target.value})} />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">IFSC Code</label>
-                                        <input type="text" className="w-full bg-slate-50 border-slate-100 rounded-2xl p-4 text-sm font-bold" value={salaryInfo.ifscCode} onChange={(e) => setSalaryInfo({...salaryInfo, ifscCode: e.target.value})} />
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">IFSC Code</label>
+                                        <input type="text" className="admin-input" value={salaryInfo.ifscCode} onChange={(e) => setSalaryInfo({...salaryInfo, ifscCode: e.target.value})} />
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +173,7 @@ const SalaryStructure = () => {
                     </div>
                 )}
             </div>
-        </section>
+        </div>
     );
 };
 
