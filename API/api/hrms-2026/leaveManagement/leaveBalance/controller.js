@@ -58,6 +58,58 @@ exports.getSpecificBalance = async (req, res) => {
   }
 };
 
+// GET LEAVE SUMMARY BY EMPLOYEE (Aggregated)
+exports.getSummaryByEmployee = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const year = req.query.year || moment().year();
+
+    const balances = await LeaveBalance.find({
+      employeeId,
+      year: Number(year),
+    }).populate("leaveTypeId");
+
+    const summary = {
+      earnedLeave: { earned: 0, used: 0, balance: 0 },
+      compOff: { earned: 0, used: 0, balance: 0 },
+      others: [],
+      totalBalance: 0,
+    };
+
+    balances.forEach((b) => {
+      const code = b.leaveTypeId?.leaveCode?.toUpperCase();
+      const name = b.leaveTypeId?.leaveTypeName;
+
+      if (code === "EL" || name?.toLowerCase().includes("earned")) {
+        summary.earnedLeave = {
+          earned: b.earnedDays + b.openingBalance,
+          used: b.usedDays,
+          balance: b.remainingBalance,
+        };
+      } else if (code === "CO" || name?.toLowerCase().includes("comp off")) {
+        summary.compOff = {
+          earned: b.earnedDays + b.openingBalance,
+          used: b.usedDays,
+          balance: b.remainingBalance,
+        };
+      } else {
+        summary.others.push({
+          name: name,
+          code: code,
+          earned: b.earnedDays + b.openingBalance,
+          used: b.usedDays,
+          balance: b.remainingBalance,
+        });
+      }
+      summary.totalBalance += b.remainingBalance;
+    });
+
+    res.status(200).json({ success: true, data: summary });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // UPDATE BALANCE (deduct / credit)
 exports.updateLeaveBalance = async (req, res) => {
   try {

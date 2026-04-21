@@ -18,6 +18,9 @@ const sendEmail = require("./api/admin2.0/common/email-service.js");
 mongoose.connect("mongodb://127.0.0.1/" + globalVariable.dbname);
 mongoose.promise = global.Promise;
 
+// Initialize Leave Accrual Worker (Monthly Cron)
+require("./api/hrms-2026/leaveManagement/accrualWorker.js");
+
 //=====  Create NodeJs App =====
 
 const app = express();

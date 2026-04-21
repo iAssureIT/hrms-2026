@@ -48,9 +48,11 @@ const ApplyLeave = () => {
     try {
       const res = await axios.get("/api/leave-types");
       if (res.data.success && Array.isArray(res.data.data)) {
-        setLeaveTypes(res.data.data);
+        const activeTypes = res.data.data.filter(type => type.status === "ACTIVE");
+        setLeaveTypes(activeTypes);
       } else if (Array.isArray(res.data)) {
-        setLeaveTypes(res.data);
+        const activeTypes = res.data.filter(type => type.status === "ACTIVE" || !type.status);
+        setLeaveTypes(activeTypes);
       }
     } catch (err) {
       console.error("Error fetching leave types:", err);
