@@ -54,7 +54,7 @@ const HolidayCalendar = ({ holidays }) => {
   }
 
   return (
-    <div className="bg-white rounded-sm border-t-[3px] border-[#3c8dbc] shadow-sm flex flex-col h-full">
+    <div className="bg-white rounded-sm flex flex-col h-full overflow-hidden">
       <div className="p-4 border-b border-gray-100 flex items-center justify-between">
         <div className="flex gap-1">
           <button onClick={prevMonth} className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 rounded-sm">

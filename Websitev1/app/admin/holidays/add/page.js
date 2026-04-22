@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { FaHome, FaSave, FaArrowLeft } from "react-icons/fa";
+import { Tooltip } from "flowbite-react";
+import { FaHome, FaSave, FaArrowLeft, FaListUl } from "react-icons/fa";
 import { HiMapPin, HiGlobeAlt, HiBuildingOffice2 } from "react-icons/hi2";
 
 const AddHolidayPage = () => {
@@ -19,7 +20,6 @@ const AddHolidayPage = () => {
 
   const [availableLocations, setAvailableLocations] = useState([
     "All",
-    "Global",
   ]);
 
   useEffect(() => {
@@ -32,7 +32,6 @@ const AddHolidayPage = () => {
       if (res.data) {
         setAvailableLocations([
           "All",
-          "Global",
           ...res.data.map((c) => c.centerName),
         ]);
       }
@@ -50,12 +49,7 @@ const AddHolidayPage = () => {
       } else {
         updatedLocations = ["All"];
       }
-    } else if (loc === "Global") {
-      if (updatedLocations.includes("Global")) {
-        updatedLocations = updatedLocations.filter((l) => l !== "Global");
-      } else {
-        updatedLocations.push("Global");
-      }
+
     } else {
       if (updatedLocations.includes(loc)) {
         updatedLocations = updatedLocations.filter((l) => l !== loc);
@@ -104,25 +98,34 @@ const AddHolidayPage = () => {
     <section className="section">
       <div className="min-h-screen">
         <div className="mx-auto">
-          {/* AdminLTE style Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
-                Add Holiday
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Holiday Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Add <span className="text-[#3c8dbc] font-black">Holiday</span>
               </h1>
-              <span className="text-sm font-light text-gray-500">
-                Control panel
-              </span>
             </div>
-            <div className="flex items-center gap-2 text-xs font-normal text-gray-700 mt-4 md:mt-0">
-              <FaHome className="text-gray-400" />
-              <span>Home</span>
-              <span className="text-gray-400">&gt;</span>
-              <span>Holidays</span>
-              <span className="text-gray-400">&gt;</span>
-              <span className="text-gray-400">Add</span>
+            <div className="flex gap-3 my-5 items-center pr-10">
+              <Tooltip
+                content="Holiday List"
+                placement="bottom"
+                className="bg-[#3c8dbc]"
+                arrow={false}
+              >
+                <FaListUl
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all"
+                  onClick={() => router.push("/admin/holidays")}
+                />
+              </Tooltip>
             </div>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Define new holidays by specifying the name, date, type, and regional applicability.
+          </p>
+        </div>
 
           {/* Form Box */}
           <div className="bg-white border-t-[3px] border-[#3c8dbc] shadow-sm mb-6 rounded-sm">

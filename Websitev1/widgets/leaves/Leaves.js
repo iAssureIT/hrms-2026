@@ -25,7 +25,11 @@ const Leaves = () => {
   const [leaves, setLeaves] = useState([]);
   const [ledger, setLedger] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [leaveTypes, setLeaveTypes] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(moment().format("MM"));
+  const [selectedYear, setSelectedYear] = useState(moment().format("YYYY"));
+  const [selectedLeaveType, setSelectedLeaveType] = useState("all");
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCompOffModal, setShowCompOffModal] = useState(false);
@@ -42,8 +46,8 @@ const Leaves = () => {
     else if (pathname?.includes("center")) setLoggedInRole("center");
     
     fetchEmployees();
+    fetchLeaveTypes();
     fetchLeaves();
-    fetchLedger();
   }, [pathname]);
 
   useEffect(() => {
@@ -52,7 +56,11 @@ const Leaves = () => {
     } else {
       setSummary(null);
     }
-  }, [selectedEmployee]);
+  }, [selectedEmployee, selectedMonth, selectedYear]);
+
+  useEffect(() => {
+    fetchLedger();
+  }, [selectedEmployee, selectedMonth, selectedYear, selectedLeaveType]);
 
   const fetchEmployees = async () => {
     try {
@@ -61,6 +69,15 @@ const Leaves = () => {
       else if (res.data?.data) setEmployees(res.data.data);
     } catch (err) {
       console.error("Error fetching employees:", err);
+    }
+  };
+
+  const fetchLeaveTypes = async () => {
+    try {
+      const res = await axios.get("/api/leave-types");
+      if (res.data.success) setLeaveTypes(res.data.data);
+    } catch (err) {
+      console.error("Error fetching leave types:", err);
     }
   };
 
@@ -80,10 +97,17 @@ const Leaves = () => {
 
   const fetchLedger = async () => {
     try {
-      const url = selectedEmployee 
+      let url = selectedEmployee 
         ? `/api/leave-ledger/employee/${selectedEmployee}`
         : "/api/leave-ledger";
-      const res = await axios.get(url);
+      
+      const params = {
+        month: selectedMonth,
+        year: selectedYear,
+        leaveTypeId: selectedLeaveType
+      };
+
+      const res = await axios.get(url, { params });
       if (res.data.success) {
         setLedger(res.data.data);
       }
@@ -94,7 +118,11 @@ const Leaves = () => {
 
   const fetchSummary = async (empId) => {
     try {
-      const res = await axios.get(`/api/leave-balance/summary/${empId}`);
+      const params = {
+        month: selectedMonth,
+        year: selectedYear
+      };
+      const res = await axios.get(`/api/leave-balance/summary/${empId}`, { params });
       if (res.data.success) {
         setSummary(res.data.data);
       }
@@ -212,9 +240,15 @@ const Leaves = () => {
                 <div className="text-2xl font-bold text-gray-800">{summary?.earnedLeave?.balance || 0}</div>
                 <div className="text-[10px] text-gray-400">Available</div>
               </div>
-              <div className="mt-2 text-[10px] flex gap-3">
-                <span className="text-gray-500">Earned: <b className="text-gray-700">{summary?.earnedLeave?.earned || 0}</b></span>
-                <span className="text-gray-500">Used: <b className="text-gray-700">{summary?.earnedLeave?.used || 0}</b></span>
+              <div className="mt-2 text-[10px] flex flex-col gap-1">
+                <div className="flex justify-between border-t border-gray-50 pt-1">
+                  <span className="text-gray-400 uppercase font-medium">Earned (Month)</span>
+                  <b className="text-[#00a65a]">+{summary?.earnedLeave?.monthlyEarned || 0}</b>
+                </div>
+                <div className="flex justify-between border-t border-gray-50 pt-1">
+                  <span className="text-gray-400 uppercase font-medium">Used (Month)</span>
+                  <b className="text-red-500">-{summary?.earnedLeave?.monthlyUsed || 0}</b>
+                </div>
               </div>
             </div>
 
@@ -227,13 +261,19 @@ const Leaves = () => {
                 <div className="text-2xl font-bold text-gray-800">{summary?.compOff?.balance || 0}</div>
                 <div className="text-[10px] text-gray-400">Available</div>
               </div>
-              <div className="mt-2 text-[10px] flex gap-3">
-                <span className="text-gray-500">Earned: <b className="text-gray-700">{summary?.compOff?.earned || 0}</b></span>
-                <span className="text-gray-500">Used: <b className="text-gray-700">{summary?.compOff?.used || 0}</b></span>
+              <div className="mt-2 text-[10px] flex flex-col gap-1">
+                <div className="flex justify-between border-t border-gray-50 pt-1">
+                  <span className="text-gray-400 uppercase font-medium">Earned (Month)</span>
+                  <b className="text-[#3c8dbc]">+{summary?.compOff?.monthlyEarned || 0}</b>
+                </div>
+                <div className="flex justify-between border-t border-gray-50 pt-1">
+                  <span className="text-gray-400 uppercase font-medium">Used (Month)</span>
+                  <b className="text-red-500">-{summary?.compOff?.monthlyUsed || 0}</b>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white p-4 border-l-4 border-[#f39c12] shadow-sm rounded-sm">
+            <div className="bg-white p-4 border-l-4 border-[#f39c12] shadow-sm rounded-sm flex flex-col justify-center">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total balance</span>
                 <FaClock className="text-[#f39c12] opacity-30" />
@@ -242,15 +282,14 @@ const Leaves = () => {
                 <div className="text-2xl font-bold text-gray-800">{summary?.totalBalance || 0}</div>
                 <div className="text-[10px] text-gray-400">Days</div>
               </div>
-              <div className="mt-2 text-[10px] text-gray-400 italic">Across all categories</div>
+              <div className="mt-2 text-[10px] text-gray-400 italic">Combined EL + CO</div>
             </div>
 
-            <div className="bg-white p-4 border-t-2 border-gray-100 shadow-sm rounded-sm flex flex-col justify-center">
-              <label className="text-[10px] font-bold text-gray-400 uppercase mb-2">Filter by Employee</label>
-              <div className="relative">
-                <FaUser className="absolute left-2 top-2.5 text-gray-300 text-[10px]" />
+            <div className="bg-white p-4 border-t-2 border-gray-100 shadow-sm rounded-sm flex flex-col gap-3">
+              <div className="flex flex-col">
+                <label className="text-[9px] font-bold text-gray-400 uppercase mb-1">Filter Employee</label>
                 <select 
-                  className="w-full pl-7 pr-2 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50"
+                  className="w-full px-2 py-1 border border-gray-200 rounded text-[10px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50"
                   value={selectedEmployee}
                   onChange={(e) => setSelectedEmployee(e.target.value)}
                 >
@@ -259,6 +298,34 @@ const Leaves = () => {
                     <option key={emp._id} value={emp._id}>{emp.employeeName}</option>
                   ))}
                 </select>
+              </div>
+              <div className="flex gap-2">
+                 <div className="flex-1 flex flex-col">
+                    <label className="text-[9px] font-bold text-gray-400 uppercase mb-1">Month</label>
+                    <input 
+                      type="month"
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-[10px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50"
+                      value={`${selectedYear}-${selectedMonth}`}
+                      onChange={(e) => {
+                        const [y, m] = e.target.value.split("-");
+                        setSelectedYear(y);
+                        setSelectedMonth(m);
+                      }}
+                    />
+                 </div>
+                 <div className="flex-1 flex flex-col">
+                    <label className="text-[9px] font-bold text-gray-400 uppercase mb-1">Type</label>
+                    <select 
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-[10px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 uppercase"
+                      value={selectedLeaveType}
+                      onChange={(e) => setSelectedLeaveType(e.target.value)}
+                    >
+                      <option value="all">All Types</option>
+                      {leaveTypes.filter(t => ["EL", "CO"].includes(t.leaveCode)).map(t => (
+                        <option key={t._id} value={t._id}>{t.leaveCode}</option>
+                      ))}
+                    </select>
+                 </div>
               </div>
             </div>
           </div>
@@ -329,26 +396,16 @@ const Leaves = () => {
               <table className="w-full text-left border-collapse border-b border-gray-200">
                 <thead className="bg-[#f9f9f9]">
                   <tr>
-                    <th className="px-5 py-3 text-[12px] font-bold text-gray-700 border-b border-gray-200 border-r border-gray-100 last:border-r-0">
-                      Employee
-                    </th>
-                    <th className="px-5 py-3 text-[12px] font-bold text-gray-700 border-b border-gray-200 border-r border-gray-100 last:border-r-0">
-                      Leave Details
-                    </th>
-                    <th className="px-5 py-3 text-[12px] font-bold text-gray-700 border-b border-gray-200 border-r border-gray-100 last:border-r-0">
-                      {activeTab === "Leave Ledger"
-                        ? "Transaction"
-                        : "Reason"}
-                    </th>
-                    <th className="px-5 py-3 text-[12px] font-bold text-gray-700 border-b border-gray-200 border-r border-gray-100 last:border-r-0">
-                      {activeTab === "Leave Ledger"
-                        ? "Balance Info"
-                        : "Submission"}
-                    </th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Employee</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Type</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Date</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Transaction</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Days</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Balance</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Source</th>
+                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Remarks</th>
                     {activeTab !== "Leave Ledger" && (
-                      <th className="px-5 py-3 text-[12px] font-bold text-gray-700 border-b border-gray-200">
-                        Actions
-                      </th>
+                      <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Actions</th>
                     )}
                   </tr>
                 </thead>
@@ -376,50 +433,52 @@ const Leaves = () => {
                     ledger.map((item) => (
                       <tr
                         key={item._id}
-                        className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-100"
+                        className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
                       >
-                        <td className="px-5 py-3 border-r border-gray-100">
-                          <div>
-                            <div className="text-xs font-bold text-gray-700">
-                              {item.employeeId?.employeeName || "Unknown"}
-                            </div>
-                            <div className="text-[10px] text-gray-400">
-                              {item.employeeId?.employeeID || "N/A"}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-5 py-3 border-r border-gray-100">
+                        <td className="px-4 py-3">
                           <div className="text-[11px] font-bold text-gray-700">
-                            {item.leaveTypeId?.leaveTypeName || "Leave"}
+                            {item.employeeId?.employeeName || "Unknown"}
                           </div>
-                          <div className="text-[10px] text-gray-400">
-                            {moment(item.transactionDate).format("DD MMM YYYY")}
-                          </div>
-                        </td>
-                        <td className="px-5 py-3 border-r border-gray-100 text-xs">
-                          <div className="flex flex-col gap-1">
-                            <span
-                              className={`font-bold inline-block px-1.5 py-0.5 rounded-sm text-[10px] w-fit ${
-                                item.days > 0
-                                  ? "bg-green-50 text-[#00a65a] border border-green-100"
-                                  : "bg-red-50 text-[#dd4b39] border border-red-100"
-                              }`}
-                            >
-                              {item.days > 0 ? "+" : ""}
-                              {item.days} ({item.transactionType})
-                            </span>
-                            <div className="text-[10px] text-gray-500 italic truncate max-w-[200px]">
-                              {item.remarks}
-                            </div>
+                          <div className="text-[9px] text-gray-400">
+                            {item.employeeId?.employeeID || "N/A"}
                           </div>
                         </td>
-                        <td className="px-5 py-3 border-r border-gray-100">
-                          <div className="text-xs font-bold text-[#3c8dbc]">
-                            {item.balanceAfter} <span className="text-[9px] text-gray-400 font-normal">Available</span>
+                        <td className="px-4 py-3">
+                          <span className="text-[10px] font-bold text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                            {item.leaveTypeId?.leaveCode || "Leave"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-[10px] text-gray-600">
+                          {moment(item.transactionDate).format("DD MMM YYYY")}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                              item.days > 0
+                                ? "bg-green-100 text-[#00a65a]"
+                                : "bg-red-100 text-[#dd4b39]"
+                            }`}
+                          >
+                            {item.days > 0 ? "Earned" : "Used"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center text-[11px] font-bold">
+                          <span className={item.days > 0 ? "text-[#00a65a]" : "text-[#dd4b39]"}>
+                            {item.days > 0 ? "+" : ""}{item.days}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <div className="text-[11px] font-bold text-gray-800 bg-gray-50 rounded px-2 py-1 inline-block border border-gray-100">
+                            {item.balanceAfter}
                           </div>
-                          <div className="text-[9px] text-gray-300 uppercase font-bold mt-1">
-                            Ref: {item.referenceType}
-                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-100 px-1.5 py-0.5 rounded">
+                            {item.referenceType || "System"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-[10px] text-gray-500 italic truncate max-w-[150px]" title={item.remarks}>
+                          {item.remarks}
                         </td>
                       </tr>
                     ))
@@ -427,38 +486,27 @@ const Leaves = () => {
                     filteredLeaves.map((leave) => (
                       <tr
                         key={leave._id}
-                        className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-100"
+                        className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
                       >
-                        <td className="px-5 py-3 border-r border-gray-100">
-                          <div className="text-xs font-bold text-gray-700">
+                        <td className="px-4 py-3">
+                          <div className="text-[11px] font-bold text-gray-700">
                             {leave.employeeId?.employeeName || "Unknown"}
                           </div>
-                          <div className="text-[10px] text-gray-400">
+                          <div className="text-[9px] text-gray-400">
                             {leave.employeeId?.employeeID || "N/A"}
                           </div>
                         </td>
-                        <td className="px-5 py-3 border-r border-gray-100">
-                          <div className="text-xs font-bold text-gray-600 mb-1">
-                            {leave.leaveTypeId?.leaveTypeName || "Leave"}
-                          </div>
-                          <div className="text-[11px] text-gray-800 font-bold bg-gray-50 px-2 py-0.5 rounded border border-gray-100 w-fit">
-                            {moment(leave.fromDate).format("DD MMM")} - {moment(leave.toDate).format("DD MMM YYYY")}
-                          </div>
-                          <div className="text-[10px] text-gray-400 mt-1 uppercase font-bold">
-                            {leave.totalDays} Days
-                          </div>
+                        <td className="px-4 py-3">
+                          <span className="text-[10px] font-bold text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">
+                            {leave.leaveTypeId?.leaveCode || "Leave"}
+                          </span>
                         </td>
-                        <td className="px-5 py-3 border-r border-gray-100">
-                          <div className="text-xs text-gray-500 italic line-clamp-2 max-w-[250px]">
-                            "{leave.reason}"
-                          </div>
+                        <td className="px-4 py-3 text-[10px] text-gray-600">
+                          {moment(leave.fromDate).format("DD MMM")} - {moment(leave.toDate).format("DD MMM YYYY")}
                         </td>
-                        <td className="px-5 py-3 border-r border-gray-100">
-                          <div className="text-[11px] text-gray-400 mb-2">
-                            {moment(leave.createdAt).format("DD MMM YYYY")}
-                          </div>
+                        <td className="px-4 py-3">
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
+                             className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
                               leave.status === "APPROVED"
                                 ? "bg-[#00a65a]"
                                 : leave.status === "REJECTED"
@@ -469,7 +517,21 @@ const Leaves = () => {
                             {leave.status}
                           </span>
                         </td>
-                        <td className="px-5 py-3">
+                        <td className="px-4 py-3 text-center text-[11px] font-bold text-gray-700">
+                          {leave.totalDays}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className="text-[10px] text-gray-300 italic">N/A</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-1.5 py-0.5 rounded">
+                            Application
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-[10px] text-gray-500 italic truncate max-w-[150px]" title={leave.reason}>
+                          {leave.reason}
+                        </td>
+                        <td className="px-4 py-3">
                           {leave.status === "PENDING" ? (
                             <div className="flex gap-1">
                               <button
@@ -492,7 +554,7 @@ const Leaves = () => {
                               </button>
                             </div>
                           ) : (
-                            <span className="text-[10px] font-bold text-gray-300 uppercase italic">
+                            <span className="text-[9px] font-bold text-gray-300 uppercase italic">
                               Finalized
                             </span>
                           )}

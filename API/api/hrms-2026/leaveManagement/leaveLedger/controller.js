@@ -2,7 +2,6 @@ const LeaveLedger = require("./model");
 const Employee = require("../../employeeManagement/model");
 const LeaveType = require("../leaveTypes/model");
 const LeaveBalance = require("../leaveBalance/model");
-const LeaveApplication = require("../leaveApplications/model");
 const moment = require("moment");
 
 // ADD LEDGER ENTRY (credit/debit)
@@ -15,16 +14,33 @@ exports.addLedgerEntry = async (req, res) => {
   }
 };
 
-// GET FULL LEDGER BY EMPLOYEE (all leave types, current year)
+// GET FULL LEDGER BY EMPLOYEE (all leave types, filtered by year/month/type)
 exports.getLedgerByEmployee = async (req, res) => {
   try {
-    const year = req.query.year || new Date().getFullYear();
-    const data = await LeaveLedger.find({
+    const year = Number(req.query.year || moment().year());
+    const month = req.query.month ? Number(req.query.month) : null;
+    const leaveTypeId = req.query.leaveTypeId;
+
+    let query = {
       employeeId: req.params.employeeId,
-      year: Number(year),
-    })
+      year: year,
+    };
+
+    if (month) {
+      const startOfMonth = moment([year, month - 1]).startOf("month").toDate();
+      const endOfMonth = moment([year, month - 1]).endOf("month").toDate();
+      query.transactionDate = { $gte: startOfMonth, $lte: endOfMonth };
+    }
+
+    if (leaveTypeId && leaveTypeId !== "all") {
+      query.leaveTypeId = leaveTypeId;
+    }
+
+    const data = await LeaveLedger.find(query)
       .populate("leaveTypeId")
+      .populate("employeeId")
       .sort({ transactionDate: -1 });
+
     res.status(200).json({ success: true, data });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -165,34 +181,6 @@ exports.deleteLedgerEntry = async (req, res) => {
   try {
     await LeaveLedger.findByIdAndDelete(req.params.id);
     res.status(200).json({ success: true, message: "Ledger entry deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// MANUAL CLEANUP (Simplification of leave types)
-exports.manualCleanup = async (req, res) => {
-  try {
-    // 1. Deactivate UNUSED leave types
-    const deact = await LeaveType.updateMany(
-      { leaveCode: { $in: ["SL", "CL"] } },
-      { $set: { status: "INACTIVE" } }
-    );
-
-    // 2. Cleanup Priyanka Bhanavase's accidental sick leave records
-    const priyankaId = "69e7214579d9a3a8196e7418";
-    const slType = await LeaveType.findOne({ leaveCode: "SL" });
-
-    if (slType) {
-      await LeaveBalance.deleteMany({ employeeId: priyankaId, leaveTypeId: slType._id });
-      await LeaveApplication.deleteMany({ employeeId: priyankaId, leaveTypeId: slType._id });
-      await LeaveLedger.deleteMany({ employeeId: priyankaId, leaveTypeId: slType._id });
-    }
-
-    res.status(200).json({ 
-      success: true, 
-      message: `System cleaned up. ${deact.modifiedCount} types deactivated. Priyanka's erroneous SL records removed.` 
-    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

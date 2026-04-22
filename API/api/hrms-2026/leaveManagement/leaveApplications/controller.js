@@ -47,12 +47,6 @@ exports.applyLeave = async (req, res) => {
         .json({ success: false, message: "Leave type not found" });
     }
 
-    if (leaveType.status === "INACTIVE") {
-      return res
-        .status(400)
-        .json({ success: false, message: "This leave category is currently disabled by the company policy." });
-    }
-
     const year = moment(fromDate).year();
     let balance = await LeaveBalance.findOne({ employeeId, leaveTypeId, year });
 

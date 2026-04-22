@@ -88,10 +88,10 @@ const HolidayBulkUpload = () => {
     e.preventDefault();
     const templateData = [
       ["Holiday Name", "Date", "Location", "Type"],
-      ["New Year Day", "01/01/2026", "Global", "Mandatory"],
+      ["New Year Day", "01/01/2026", "Pune", "Mandatory"],
       ["Holi", "14/03/2026", "Bangalore", "Mandatory"],
-      ["Good Friday", "03/04/2026", "Global", "Optional"],
-      ["Independence Day", "15/08/2026", "Global", "Mandatory"],
+      ["Good Friday", "03/04/2026", "Mumbai", "Optional"],
+      ["Independence Day", "15/08/2026", "Pune", "Mandatory"],
     ];
 
     const workbook = XLSX.utils.book_new();
@@ -105,30 +105,36 @@ const HolidayBulkUpload = () => {
   };
 
   return (
-    <section className="section !p-0">
-      <div className="border-b-2 border-gray-300">
-        {/* Header content with padding */}
-        <div className="uppercase text-xl font-semibold flex justify-between px-10">
-          <div className="flex items-center gap-3 py-5">
-            <h1 className="text-2xl text-gray-900 tracking-tight">
-              Holiday Bulk Upload
-            </h1>
+    <section className="section p-6 md:p-10 bg-white min-h-screen">
+      <div className="max-w-[1440px] mx-auto">
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Holiday Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Holiday <span className="text-[#3c8dbc] font-black">Bulk Upload</span>
+              </h1>
+            </div>
+            <div className="flex gap-3 my-5 items-center pr-10">
+              <Tooltip
+                content="Holiday List"
+                placement="bottom"
+                className="bg-[#3c8dbc]"
+                arrow={false}
+              >
+                <FaListUl
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all"
+                  onClick={() => router.push("/admin/holidays")}
+                />
+              </Tooltip>
+            </div>
           </div>
-          <div className=" flex gap-3 my-5 items-center">
-            <Tooltip
-              content="Holiday Management"
-              placement="bottom"
-              className="bg-green"
-              arrow={false}
-            >
-              <FaListUl
-                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                onClick={() => router.push("/admin/holidays")}
-              />
-            </Tooltip>
-          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Import multiple holiday records at once using a standardized Excel template. Ensure dates follow the DD/MM/YYYY format.
+          </p>
         </div>
-      </div>
 
       {/* Bulk Upload Component with body padding */}
       <div className="p-10">
@@ -149,6 +155,7 @@ const HolidayBulkUpload = () => {
           goodRecordsTable={goodRecordsTable}
           goodDataCount={goodDataCount}
         />
+        </div>
       </div>
     </section>
   );

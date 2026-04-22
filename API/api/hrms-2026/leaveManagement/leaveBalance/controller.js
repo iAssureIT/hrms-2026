@@ -58,39 +58,71 @@ exports.getSpecificBalance = async (req, res) => {
   }
 };
 
-// GET LEAVE SUMMARY BY EMPLOYEE (Aggregated)
+// GET LEAVE SUMMARY BY EMPLOYEE (Aggregated + Monthly)
 exports.getSummaryByEmployee = async (req, res) => {
   try {
     const { employeeId } = req.params;
-    const year = req.query.year || moment().year();
+    const year = Number(req.query.year || moment().year());
+    const month = req.query.month ? Number(req.query.month) : null; // month is 1-12 from frontend potentially, or 0-11. Let's assume 1-12 for easier readability.
 
     const balances = await LeaveBalance.find({
       employeeId,
-      year: Number(year),
+      year: year,
     }).populate("leaveTypeId");
 
+    // Get Ledger entries for the month if specified
+    let monthlyTransactions = [];
+    if (month !== null) {
+      const startOfMonth = moment([year, month - 1]).startOf("month").toDate();
+      const endOfMonth = moment([year, month - 1]).endOf("month").toDate();
+      
+      monthlyTransactions = await LeaveLedger.find({
+        employeeId,
+        transactionDate: { $gte: startOfMonth, $lte: endOfMonth }
+      });
+    }
+
     const summary = {
-      earnedLeave: { earned: 0, used: 0, balance: 0 },
-      compOff: { earned: 0, used: 0, balance: 0 },
+      earnedLeave: { earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
+      compOff: { earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
       others: [],
       totalBalance: 0,
     };
 
+    // Calculate monthly totals
+    monthlyTransactions.forEach(tx => {
+      const days = tx.days || 0;
+      // We need to know which leave type this is. But we'll do this in the loop below.
+    });
+
     balances.forEach((b) => {
       const code = b.leaveTypeId?.leaveCode?.toUpperCase();
       const name = b.leaveTypeId?.leaveTypeName;
+
+      // Filter monthly transactions for this specific leave type
+      const relevantTx = monthlyTransactions.filter(tx => tx.leaveTypeId.toString() === b.leaveTypeId?._id.toString());
+      let mEarned = 0;
+      let mUsed = 0;
+      relevantTx.forEach(tx => {
+        if (tx.days > 0) mEarned += tx.days;
+        else if (tx.days < 0) mUsed += Math.abs(tx.days);
+      });
 
       if (code === "EL" || name?.toLowerCase().includes("earned")) {
         summary.earnedLeave = {
           earned: b.earnedDays + b.openingBalance,
           used: b.usedDays,
           balance: b.remainingBalance,
+          monthlyEarned: mEarned,
+          monthlyUsed: mUsed
         };
       } else if (code === "CO" || name?.toLowerCase().includes("comp off")) {
         summary.compOff = {
           earned: b.earnedDays + b.openingBalance,
           used: b.usedDays,
           balance: b.remainingBalance,
+          monthlyEarned: mEarned,
+          monthlyUsed: mUsed
         };
       } else {
         summary.others.push({
@@ -99,6 +131,8 @@ exports.getSummaryByEmployee = async (req, res) => {
           earned: b.earnedDays + b.openingBalance,
           used: b.usedDays,
           balance: b.remainingBalance,
+          monthlyEarned: mEarned,
+          monthlyUsed: mUsed
         });
       }
       summary.totalBalance += b.remainingBalance;
