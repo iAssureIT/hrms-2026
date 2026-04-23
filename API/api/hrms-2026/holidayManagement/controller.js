@@ -8,10 +8,38 @@ const FailedRecords = require("../failedRecords/model.js");
 // CREATE
 exports.createHoliday = async (req, res) => {
   try {
-    const data = await Holiday.create(req.body);
+    const { holidayName, date, locations } = req.body;
+    const normalizedDate = moment(date).startOf("day").toDate();
+
+    // Check for existing holiday with same name and date (case-insensitive)
+    const existing = await Holiday.findOne({
+      holidayName: { $regex: new RegExp(`^${holidayName.trim()}$`, "i") },
+      date: normalizedDate,
+    });
+
+    if (existing) {
+      // If it exists, merge locations
+      existing.locations = [...new Set([...(existing.locations || []), ...(locations || [])])];
+      await existing.save();
+      await syncAttendanceForHoliday(existing);
+      return res.status(200).json({
+        success: true,
+        data: existing,
+        message: "Holiday updated (locations merged) and attendance synced",
+      });
+    }
+
+    const data = await Holiday.create({
+      ...req.body,
+      date: normalizedDate,
+    });
     // Sync Attendance
     await syncAttendanceForHoliday(data);
-    res.status(200).json({ success: true, data, message: "Holiday created successfully and attendance synced" });
+    res.status(200).json({
+      success: true,
+      data,
+      message: "Holiday created successfully and attendance synced",
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -128,12 +156,14 @@ exports.bulkUploadHolidays = async (req, res) => {
       // Validate type
       const type = row.type && ["Mandatory", "Optional"].includes(row.type) ? row.type : "Mandatory";
 
-      // Check duplicate in DB
+      // Check duplicate in DB (case-insensitive)
       const exists = await Holiday.findOne({
-        holidayName: row.holidayName.toString().trim(),
-        date: parsedDate.toDate(),
+        holidayName: { $regex: new RegExp(`^${row.holidayName.toString().trim()}$`, "i") },
+        date: parsedDate.startOf("day").toDate(),
       });
       if (exists) {
+        // Option: Merge locations instead of skipping? 
+        // For bulk upload, it's safer to skip or report as existing to avoid accidental massive updates.
         invalidData.push({
           ...row,
           failedRemark: `Holiday '${row.holidayName}' on '${row.date}' already exists`,

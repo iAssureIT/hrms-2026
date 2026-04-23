@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { Tooltip } from "flowbite-react";
 import { FaPlus, FaFileUpload, FaHome } from "react-icons/fa";
 import { BsPlusSquare } from "react-icons/bs";
@@ -45,13 +46,59 @@ const Holidays = () => {
         params: { location: selectedLocation, year: currentYear },
       });
       if (res.data.success) {
-        setHolidays(res.data.data);
+        const processed = [];
+        const map = new Map();
+        res.data.data.forEach((h) => {
+          const key = `${moment(h.date).format("YYYY-MM-DD")}-${h.holidayName.toLowerCase().trim()}`;
+          if (map.has(key)) {
+            const existing = map.get(key);
+            existing.locations = [
+              ...new Set([...(existing.locations || []), ...(h.locations || [])]),
+            ];
+          } else {
+            const copy = { ...h, locations: [...(h.locations || [])] };
+            map.set(key, copy);
+            processed.push(copy);
+          }
+        });
+        setHolidays(processed);
       }
     } catch (err) {
       console.error("Error fetching holidays:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteHoliday = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This holiday will be permanently removed.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3c8dbc",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.delete(`/api/holidays/delete/${id}`);
+          if (res.data.success) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Holiday has been removed.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+            fetchHolidays();
+          }
+        } catch (err) {
+          console.error("Error deleting holiday:", err);
+          Swal.fire("Error", "Failed to delete holiday", "error");
+        }
+      }
+    });
   };
 
   const filteredHolidays = holidays;
@@ -142,7 +189,11 @@ const Holidays = () => {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
               {/* Left Sidebar - Upcoming Holidays */}
               <div className="xl:col-span-4 h-[700px]">
-                <HolidayList holidays={upcomingHolidays} loading={loading} />
+                <HolidayList 
+                  holidays={upcomingHolidays} 
+                  loading={loading} 
+                  onDelete={handleDeleteHoliday}
+                />
               </div>
 
               {/* Center/Right - Calendar View */}

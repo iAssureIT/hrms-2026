@@ -1,7 +1,9 @@
 import React from "react";
 import moment from "moment";
 
-const HolidayList = ({ holidays, loading }) => {
+import { FaTrash } from "react-icons/fa";
+
+const HolidayList = ({ holidays, loading, onDelete }) => {
   return (
     <div className="bg-white rounded-sm flex flex-col h-full overflow-hidden">
       <div className="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -23,7 +25,7 @@ const HolidayList = ({ holidays, loading }) => {
           holidays.map((h, i) => (
             <div
               key={i}
-              className={`p-2 rounded-none border border-transparent shadow-sm text-xs font-bold text-white cursor-move transition-all ${
+              className={`p-2 rounded-none border border-transparent shadow-sm text-xs font-bold text-white cursor-move transition-all group/item ${
                 h.locations.some((loc) => loc.toLowerCase() === "global")
                   ? "bg-[#00a65a] hover:bg-[#008d4c]"
                   : h.locations.some((loc) => loc.toLowerCase() === "us")
@@ -34,10 +36,19 @@ const HolidayList = ({ holidays, loading }) => {
               }`}
             >
               <div className="flex justify-between items-center">
-                <span>{h.holidayName}</span>
-                <span className="text-[10px] opacity-80">
-                  {moment(h.date).format("MMM DD")}
-                </span>
+                <div className="flex flex-col">
+                  <span>{h.holidayName}</span>
+                  <span className="text-[10px] opacity-80">
+                    {moment(h.date).format("MMM DD")}
+                  </span>
+                </div>
+                <button
+                  onClick={() => onDelete && onDelete(h._id)}
+                  className="opacity-0 group-hover/item:opacity-100 p-2 hover:bg-black/10 rounded-sm transition-all"
+                  title="Delete Holiday"
+                >
+                  <FaTrash size={10} />
+                </button>
               </div>
             </div>
           ))
