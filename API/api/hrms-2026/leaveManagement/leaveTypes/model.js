@@ -16,7 +16,7 @@ const leaveTypeSchema = new mongoose.Schema(
 
     maxDaysPerYear: {
       type: Number,
-      required: true,
+      required: false,
     },
 
     isPaid: {

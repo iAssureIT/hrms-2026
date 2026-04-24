@@ -63,7 +63,7 @@ exports.getSummaryByEmployee = async (req, res) => {
   try {
     const { employeeId } = req.params;
     const year = Number(req.query.year || moment().year());
-    const month = req.query.month ? Number(req.query.month) : null; // month is 1-12 from frontend potentially, or 0-11. Let's assume 1-12 for easier readability.
+    const month = req.query.month ? Number(req.query.month) : null;
 
     const balances = await LeaveBalance.find({
       employeeId,
@@ -72,35 +72,39 @@ exports.getSummaryByEmployee = async (req, res) => {
 
     // Get Ledger entries for the month if specified
     let monthlyTransactions = [];
+    let openingTransactions = [];
+
     if (month !== null) {
       const startOfMonth = moment([year, month - 1]).startOf("month").toDate();
       const endOfMonth = moment([year, month - 1]).endOf("month").toDate();
-      
+
       monthlyTransactions = await LeaveLedger.find({
         employeeId,
         transactionDate: { $gte: startOfMonth, $lte: endOfMonth }
+      }).populate("leaveTypeId");
+
+      // Opening balance = all transactions before start of month
+      openingTransactions = await LeaveLedger.find({
+        employeeId,
+        year: year,
+        transactionDate: { $lt: startOfMonth }
       });
     }
 
     const summary = {
-      earnedLeave: { earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
-      compOff: { earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
+      earnedLeave: { opening: 0, earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
+      compOff: { opening: 0, earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
       others: [],
       totalBalance: 0,
+      lop: 0
     };
-
-    // Calculate monthly totals
-    monthlyTransactions.forEach(tx => {
-      const days = tx.days || 0;
-      // We need to know which leave type this is. But we'll do this in the loop below.
-    });
 
     balances.forEach((b) => {
       const code = b.leaveTypeId?.leaveCode?.toUpperCase();
       const name = b.leaveTypeId?.leaveTypeName;
 
-      // Filter monthly transactions for this specific leave type
-      const relevantTx = monthlyTransactions.filter(tx => tx.leaveTypeId.toString() === b.leaveTypeId?._id.toString());
+      // Monthly Earned/Used
+      const relevantTx = monthlyTransactions.filter(tx => tx.leaveTypeId?._id.toString() === b.leaveTypeId?._id.toString());
       let mEarned = 0;
       let mUsed = 0;
       relevantTx.forEach(tx => {
@@ -108,37 +112,90 @@ exports.getSummaryByEmployee = async (req, res) => {
         else if (tx.days < 0) mUsed += Math.abs(tx.days);
       });
 
+      // Opening Balance for the month
+      // We look for the last transaction before the month started
+      const typeOpeningTx = openingTransactions
+        .filter(tx => tx.leaveTypeId.toString() === b.leaveTypeId?._id.toString())
+        .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
+      
+      const openingBal = typeOpeningTx.length > 0 ? typeOpeningTx[0].balanceAfter : 0;
+
+      const stats = {
+        opening: openingBal,
+        earned: b.earnedDays + b.openingBalance,
+        used: b.usedDays,
+        balance: b.remainingBalance,
+        monthlyEarned: mEarned,
+        monthlyUsed: mUsed
+      };
+
       if (code === "EL" || name?.toLowerCase().includes("earned")) {
-        summary.earnedLeave = {
-          earned: b.earnedDays + b.openingBalance,
-          used: b.usedDays,
-          balance: b.remainingBalance,
-          monthlyEarned: mEarned,
-          monthlyUsed: mUsed
-        };
+        summary.earnedLeave = stats;
       } else if (code === "CO" || name?.toLowerCase().includes("comp off")) {
-        summary.compOff = {
-          earned: b.earnedDays + b.openingBalance,
-          used: b.usedDays,
-          balance: b.remainingBalance,
-          monthlyEarned: mEarned,
-          monthlyUsed: mUsed
-        };
-      } else {
-        summary.others.push({
-          name: name,
-          code: code,
-          earned: b.earnedDays + b.openingBalance,
-          used: b.usedDays,
-          balance: b.remainingBalance,
-          monthlyEarned: mEarned,
-          monthlyUsed: mUsed
-        });
+        summary.compOff = stats;
       }
-      summary.totalBalance += b.remainingBalance;
+      
+      // We only count EL and CO towards the paid balance
+      if (code === "EL" || code === "CO") {
+        summary.totalBalance += b.remainingBalance;
+      }
     });
 
+    if (summary.totalBalance < 0) {
+      summary.lop = Math.abs(summary.totalBalance);
+    }
+
     res.status(200).json({ success: true, data: summary });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET MONTHLY REPORT FOR ALL EMPLOYEES
+exports.getMonthlyReport = async (req, res) => {
+  try {
+    const year = Number(req.query.year || moment().year());
+    const month = Number(req.query.month || moment().month() + 1);
+
+    const startOfMonth = moment([year, month - 1]).startOf("month").toDate();
+    const endOfMonth = moment([year, month - 1]).endOf("month").toDate();
+
+    const employees = await Employee.find();
+    const balances = await LeaveBalance.find({ year: year }).populate("leaveTypeId");
+    
+    const monthlyTransactions = await LeaveLedger.find({
+      transactionDate: { $gte: startOfMonth, $lte: endOfMonth }
+    });
+
+    const report = employees.map(emp => {
+      const empBalances = balances.filter(b => b.employeeId.toString() === emp._id.toString());
+      
+      let elBalance = 0;
+      let coBalance = 0;
+      let totalUsedInMonth = 0;
+
+      empBalances.forEach(b => {
+        const code = b.leaveTypeId?.leaveCode?.toUpperCase();
+        if (code === "EL") elBalance = b.remainingBalance;
+        if (code === "CO") coBalance = b.remainingBalance;
+      });
+
+      const totalBalance = elBalance + coBalance;
+      const lop = totalBalance < 0 ? Math.abs(totalBalance) : 0;
+
+      return {
+        _id: emp._id,
+        employeeName: emp.employeeName,
+        employeeID: emp.employeeID,
+        elBalance,
+        coBalance,
+        totalBalance,
+        usedInMonth: totalUsedInMonth,
+        lop
+      };
+    });
+
+    res.status(200).json({ success: true, data: report });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -185,8 +242,8 @@ exports.syncAllBalances = async (req, res) => {
             employeeId: emp._id,
             leaveTypeId: type._id,
             year: year,
-            openingBalance: type.maxDaysPerYear || 0,
-            remainingBalance: type.maxDaysPerYear || 0,
+            openingBalance: 0,
+            remainingBalance: 0,
             earnedDays: 0,
             usedDays: 0,
             fileName: req.body.fileName,
@@ -199,9 +256,9 @@ exports.syncAllBalances = async (req, res) => {
             leaveTypeId: type._id,
             year: year,
             transactionType: "OPENING",
-            days: type.maxDaysPerYear || 0,
-            balanceAfter: type.maxDaysPerYear || 0,
-            remarks: `Yearly balance initialization for ${year}`,
+            days: 0,
+            balanceAfter: 0,
+            remarks: `Yearly balance initialization for ${year} (Starting with 0)`,
             createdBy: createdBy,
           });
 

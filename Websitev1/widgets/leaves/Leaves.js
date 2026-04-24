@@ -24,6 +24,7 @@ const Leaves = () => {
   const [activeTab, setActiveTab] = useState("Pending Requests");
   const [leaves, setLeaves] = useState([]);
   const [ledger, setLedger] = useState([]);
+  const [monthlyReport, setMonthlyReport] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -60,6 +61,7 @@ const Leaves = () => {
 
   useEffect(() => {
     fetchLedger();
+    fetchMonthlyReport();
   }, [selectedEmployee, selectedMonth, selectedYear, selectedLeaveType]);
 
   const fetchEmployees = async () => {
@@ -92,6 +94,21 @@ const Leaves = () => {
       console.error("Error fetching leaves:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMonthlyReport = async () => {
+    try {
+      const params = {
+        month: selectedMonth,
+        year: selectedYear,
+      };
+      const res = await axios.get("/api/leave-balance/monthly-report", { params });
+      if (res.data.success) {
+        setMonthlyReport(res.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching monthly report:", err);
     }
   };
 
@@ -229,104 +246,62 @@ const Leaves = () => {
             </div>
           </div>
 
-          {/* Leave Summary Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white p-4 border-l-4 border-[#00a65a] shadow-sm rounded-sm">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Earned Leaves (EL)</span>
-                <FaHistory className="text-[#00a65a] opacity-30" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl font-bold text-gray-800">{summary?.earnedLeave?.balance || 0}</div>
-                <div className="text-[10px] text-gray-400">Available</div>
-              </div>
-              <div className="mt-2 text-[10px] flex flex-col gap-1">
-                <div className="flex justify-between border-t border-gray-50 pt-1">
-                  <span className="text-gray-400 uppercase font-medium">Earned (Month)</span>
-                  <b className="text-[#00a65a]">+{summary?.earnedLeave?.monthlyEarned || 0}</b>
-                </div>
-                <div className="flex justify-between border-t border-gray-50 pt-1">
-                  <span className="text-gray-400 uppercase font-medium">Used (Month)</span>
-                  <b className="text-red-500">-{summary?.earnedLeave?.monthlyUsed || 0}</b>
-                </div>
-              </div>
+          {/* Filters Bar */}
+          <div className="bg-white p-3 border border-gray-100 shadow-sm rounded-sm mb-6 flex flex-wrap items-end gap-4">
+            <div className="flex-1 min-w-[200px]">
+              <label className="text-[9px] font-bold text-gray-400 uppercase mb-1 block">Filter Employee</label>
+              <select 
+                className="w-full px-3 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 shadow-sm"
+                value={selectedEmployee}
+                onChange={(e) => setSelectedEmployee(e.target.value)}
+              >
+                <option value="">All Employees</option>
+                {employees.map(emp => (
+                  <option key={emp._id} value={emp._id}>{emp.employeeName} ({emp.employeeID})</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="w-40">
+              <label className="text-[9px] font-bold text-gray-400 uppercase mb-1 block">Month / Year</label>
+              <input 
+                type="month"
+                className="w-full px-3 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 shadow-sm"
+                value={`${selectedYear}-${selectedMonth}`}
+                onChange={(e) => {
+                  const [y, m] = e.target.value.split("-");
+                  setSelectedYear(y);
+                  setSelectedMonth(m);
+                }}
+              />
             </div>
 
-            <div className="bg-white p-4 border-l-4 border-[#3c8dbc] shadow-sm rounded-sm">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Comp Offs (CO)</span>
-                <FaCalendarCheck className="text-[#3c8dbc] opacity-30" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl font-bold text-gray-800">{summary?.compOff?.balance || 0}</div>
-                <div className="text-[10px] text-gray-400">Available</div>
-              </div>
-              <div className="mt-2 text-[10px] flex flex-col gap-1">
-                <div className="flex justify-between border-t border-gray-50 pt-1">
-                  <span className="text-gray-400 uppercase font-medium">Earned (Month)</span>
-                  <b className="text-[#3c8dbc]">+{summary?.compOff?.monthlyEarned || 0}</b>
-                </div>
-                <div className="flex justify-between border-t border-gray-50 pt-1">
-                  <span className="text-gray-400 uppercase font-medium">Used (Month)</span>
-                  <b className="text-red-500">-{summary?.compOff?.monthlyUsed || 0}</b>
-                </div>
-              </div>
+            <div className="w-32">
+              <label className="text-[9px] font-bold text-gray-400 uppercase mb-1 block">Leave Type</label>
+              <select 
+                className="w-full px-3 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 uppercase shadow-sm"
+                value={selectedLeaveType}
+                onChange={(e) => setSelectedLeaveType(e.target.value)}
+              >
+                <option value="all">All</option>
+                {leaveTypes.filter(t => ["EL", "CO"].includes(t.leaveCode)).map(t => (
+                  <option key={t._id} value={t._id}>{t.leaveCode}</option>
+                ))}
+              </select>
             </div>
 
-            <div className="bg-white p-4 border-l-4 border-[#f39c12] shadow-sm rounded-sm flex flex-col justify-center">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total balance</span>
-                <FaClock className="text-[#f39c12] opacity-30" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl font-bold text-gray-800">{summary?.totalBalance || 0}</div>
-                <div className="text-[10px] text-gray-400">Days</div>
-              </div>
-              <div className="mt-2 text-[10px] text-gray-400 italic">Combined EL + CO</div>
-            </div>
-
-            <div className="bg-white p-4 border-t-2 border-gray-100 shadow-sm rounded-sm flex flex-col gap-3">
-              <div className="flex flex-col">
-                <label className="text-[9px] font-bold text-gray-400 uppercase mb-1">Filter Employee</label>
-                <select 
-                  className="w-full px-2 py-1 border border-gray-200 rounded text-[10px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50"
-                  value={selectedEmployee}
-                  onChange={(e) => setSelectedEmployee(e.target.value)}
-                >
-                  <option value="">All Employees</option>
-                  {employees.map(emp => (
-                    <option key={emp._id} value={emp._id}>{emp.employeeName}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex gap-2">
-                 <div className="flex-1 flex flex-col">
-                    <label className="text-[9px] font-bold text-gray-400 uppercase mb-1">Month</label>
-                    <input 
-                      type="month"
-                      className="w-full px-2 py-1 border border-gray-200 rounded text-[10px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50"
-                      value={`${selectedYear}-${selectedMonth}`}
-                      onChange={(e) => {
-                        const [y, m] = e.target.value.split("-");
-                        setSelectedYear(y);
-                        setSelectedMonth(m);
-                      }}
-                    />
-                 </div>
-                 <div className="flex-1 flex flex-col">
-                    <label className="text-[9px] font-bold text-gray-400 uppercase mb-1">Type</label>
-                    <select 
-                      className="w-full px-2 py-1 border border-gray-200 rounded text-[10px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 uppercase"
-                      value={selectedLeaveType}
-                      onChange={(e) => setSelectedLeaveType(e.target.value)}
-                    >
-                      <option value="all">All Types</option>
-                      {leaveTypes.filter(t => ["EL", "CO"].includes(t.leaveCode)).map(t => (
-                        <option key={t._id} value={t._id}>{t.leaveCode}</option>
-                      ))}
-                    </select>
-                 </div>
-              </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => {
+                  setSelectedEmployee("");
+                  setSelectedMonth(moment().format("MM"));
+                  setSelectedYear(moment().format("YYYY"));
+                  setSelectedLeaveType("all");
+                }}
+                className="px-3 py-1.5 text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-tight"
+              >
+                Clear
+              </button>
             </div>
           </div>
 
@@ -339,6 +314,7 @@ const Leaves = () => {
                   "Pending Requests",
                   "Approved",
                   "Rejected",
+                  "Employee Balances",
                   "Leave Ledger",
                   "All Records",
                 ].map((tab) => (
@@ -397,15 +373,28 @@ const Leaves = () => {
                 <thead className="bg-[#f9f9f9]">
                   <tr>
                     <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Employee</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Type</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Date</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Transaction</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Days</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Balance</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Source</th>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Remarks</th>
-                    {activeTab !== "Leave Ledger" && (
-                      <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Actions</th>
+                    {activeTab === "Employee Balances" ? (
+                      <>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">EL Balance</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">CO Balance</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Total Balance</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center text-red-600">LOP</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Used (Month)</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Action</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Type</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Date</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Transaction</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Days</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">Balance</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Source</th>
+                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Remarks</th>
+                        {activeTab !== "Leave Ledger" && (
+                          <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">Actions</th>
+                        )}
+                      </>
                     )}
                   </tr>
                 </thead>
@@ -429,6 +418,40 @@ const Leaves = () => {
                         No records found {selectedEmployee ? "for this employee" : ""}
                       </td>
                     </tr>
+                  ) : activeTab === "Employee Balances" ? (
+                    monthlyReport.filter(r => !selectedEmployee || r._id === selectedEmployee).map((row) => (
+                      <tr key={row._id} className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50">
+                        <td className="px-4 py-3">
+                          <div className="text-[11px] font-bold text-gray-700">{row.employeeName}</div>
+                          <div className="text-[9px] text-gray-400">{row.employeeID}</div>
+                        </td>
+                        <td className="px-4 py-3 text-[11px] font-bold text-center">{row.elBalance}</td>
+                        <td className="px-4 py-3 text-[11px] font-bold text-center">{row.coBalance}</td>
+                        <td className="px-4 py-3 text-center">
+                           <span className={`text-[11px] font-bold ${row.totalBalance < 0 ? "text-red-500" : "text-gray-800"}`}>
+                             {row.totalBalance}
+                           </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                           <span className={`text-[11px] font-bold ${row.lop > 0 ? "text-red-600 bg-red-50 px-2 py-0.5 rounded" : "text-gray-300 italic"}`}>
+                             {row.lop > 0 ? row.lop : "0"}
+                           </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                           <span className="text-[11px] font-bold text-[#dd4b39]">
+                             {row.usedInMonth > 0 ? `-${row.usedInMonth}` : "0"}
+                           </span>
+                        </td>
+                        <td className="px-4 py-3">
+                           <button 
+                             onClick={() => router.push(`/admin/leaves/ledger/${row._id}?month=${selectedMonth}&year=${selectedYear}`)}
+                             className="bg-[#3c8dbc] text-white px-3 py-1 rounded-sm text-[10px] font-bold hover:bg-[#367fa9] shadow-sm"
+                           >
+                             View
+                           </button>
+                        </td>
+                      </tr>
+                    ))
                   ) : activeTab === "Leave Ledger" ? (
                     ledger.map((item) => (
                       <tr
@@ -521,7 +544,15 @@ const Leaves = () => {
                           {leave.totalDays}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          <span className="text-[10px] text-gray-300 italic">N/A</span>
+                          <span className="text-[11px] font-bold text-gray-700">
+                            {(() => {
+                              const empBal = monthlyReport.find(r => r._id === leave.employeeId?._id);
+                              const code = leave.leaveTypeId?.leaveCode;
+                              if (code === "EL") return empBal?.elBalance ?? 0;
+                              if (code === "CO") return empBal?.coBalance ?? 0;
+                              return empBal?.totalBalance ?? 0;
+                            })()}
+                          </span>
                         </td>
                         <td className="px-4 py-3">
                           <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-1.5 py-0.5 rounded">

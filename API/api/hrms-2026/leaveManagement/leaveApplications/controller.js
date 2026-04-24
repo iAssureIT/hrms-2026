@@ -57,11 +57,11 @@ exports.applyLeave = async (req, res) => {
         employeeId,
         leaveTypeId,
         year,
-        openingBalance: leaveType.maxDaysPerYear || 0,
-        remainingBalance: leaveType.maxDaysPerYear || 0,
+        openingBalance: 0,
+        remainingBalance: 0,
         earnedDays: 0,
         usedDays: 0,
-        createdBy: createdBy || employeeId, // Fallback to employeeId if createdBy is missing
+        createdBy: createdBy || employeeId,
       });
 
       // Also create a ledger entry for initialization
@@ -70,14 +70,15 @@ exports.applyLeave = async (req, res) => {
         leaveTypeId,
         year,
         transactionType: "OPENING",
-        days: leaveType.maxDaysPerYear || 0,
-        balanceAfter: leaveType.maxDaysPerYear || 0,
-        remarks: "Auto-initialized balance on first application",
+        days: 0,
+        balanceAfter: 0,
+        remarks: "Auto-initialized balance on first application (0 balance)",
         createdBy: createdBy || employeeId,
       });
     }
 
-    // 5. Validate Balance
+    // 5. Validate Balance (Removed hard failure to allow LOP conversion later)
+    /* 
     if (leaveType.leaveCode !== "LOP") {
       if (balance.remainingBalance < totalDays) {
         return res
@@ -85,6 +86,7 @@ exports.applyLeave = async (req, res) => {
           .json({ success: false, message: "Insufficient leave balance" });
       }
     }
+    */
 
     // 4. Create Application
     const data = await LeaveApplication.create({
@@ -180,43 +182,82 @@ exports.updateLeaveStatus = async (req, res) => {
     );
 
     // If status changed to APPROVED, update Balance and Ledger
-    if (
-      req.body.status === "APPROVED" &&
-      previousApplication.status !== "APPROVED"
-    ) {
+    if (req.body.status === "APPROVED" && previousApplication.status !== "APPROVED") {
       const year = moment(data.fromDate).year();
+      let remainingToDeduct = data.totalDays;
 
-      // 1. Update Leave Balance
-      const balance = await LeaveBalance.findOneAndUpdate(
-        {
-          employeeId: data.employeeId,
-          leaveTypeId: data.leaveTypeId,
-          year: year,
-        },
-        {
-          $inc: {
-            usedDays: data.totalDays,
-            remainingBalance: -data.totalDays,
-          },
-        },
-        { new: true, upsert: true },
-      );
+      // 1. Fetch relevant Leave Types (EL, CO)
+      const elType = await LeaveType.findOne({ $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }] });
+      const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
 
-      // 2. Create Ledger Entry
-      await LeaveLedger.create({
-        employeeId: data.employeeId,
-        leaveTypeId: data.leaveTypeId,
-        year: year,
-        transactionType: "USED",
-        days: -data.totalDays,
-        balanceAfter: balance.remainingBalance,
-        referenceId: data._id,
-        referenceType: "LEAVE_APPLICATION",
-        remarks: `Leave approved: ${data.reason}`,
-        createdBy: req.body.approvedBy || data.createdBy,
-      });
+      // 2. Consumption Hierarchy: Comp Off -> Earned Leave -> LOP
+      const hierarchy = [coType, elType];
+      
+      for (let type of hierarchy) {
+        if (!type || remainingToDeduct <= 0) continue;
 
-      // 3. Attendance Integration
+        let bal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: type._id, year: year });
+        if (!bal) {
+            bal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: type._id, year: year, openingBalance: 0, remainingBalance: 0 });
+        }
+
+        if (bal.remainingBalance > 0) {
+          const toUse = Math.min(bal.remainingBalance, remainingToDeduct);
+          
+          const updatedBal = await LeaveBalance.findOneAndUpdate(
+            { _id: bal._id },
+            { $inc: { usedDays: toUse, remainingBalance: -toUse } },
+            { new: true }
+          );
+
+          await LeaveLedger.create({
+            employeeId: data.employeeId,
+            leaveTypeId: type._id,
+            year: year,
+            transactionType: "USED",
+            days: -toUse,
+            balanceAfter: updatedBal.remainingBalance,
+            referenceId: data._id,
+            referenceType: "LEAVE_APPLICATION",
+            remarks: `Leave approved (Partially/Fully from ${type.leaveCode}): ${data.reason}`,
+            createdBy: req.body.approvedBy || data.createdBy,
+          });
+
+          remainingToDeduct -= toUse;
+        }
+      }
+
+      // 3. Any remainder goes to LOP
+      if (remainingToDeduct > 0) {
+        const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
+        if (lopType) {
+            let lopBal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year });
+            if (!lopBal) {
+                lopBal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year, openingBalance: 0, remainingBalance: 0 });
+            }
+
+            const updatedLop = await LeaveBalance.findOneAndUpdate(
+                { _id: lopBal._id },
+                { $inc: { usedDays: remainingToDeduct, remainingBalance: -remainingToDeduct } },
+                { new: true }
+            );
+
+            await LeaveLedger.create({
+                employeeId: data.employeeId,
+                leaveTypeId: lopType._id,
+                year: year,
+                transactionType: "USED",
+                days: -remainingToDeduct,
+                balanceAfter: updatedLop.remainingBalance,
+                referenceId: data._id,
+                referenceType: "LEAVE_APPLICATION",
+                remarks: `Leave approved (Converted to LOP): ${data.reason}`,
+                createdBy: req.body.approvedBy || data.createdBy,
+            });
+        }
+      }
+
+      // 4. Attendance Integration
       const start = moment(data.fromDate).startOf("day");
       const end = moment(data.toDate).startOf("day");
       const daysCount = end.diff(start, "days") + 1;
@@ -224,15 +265,9 @@ exports.updateLeaveStatus = async (req, res) => {
       for (let i = 0; i < daysCount; i++) {
         const currentDate = moment(start).add(i, "days").toDate();
         await Attendance.findOneAndUpdate(
-          {
-            employeeId: data.employeeId,
-            date: currentDate,
-          },
-          {
-            status: "LEAVE",
-            remarks: `Approved ${data.leaveTypeId?.leaveCode || "Leave"}`,
-          },
-          { upsert: true, new: true },
+          { employeeId: data.employeeId, date: currentDate },
+          { status: "LEAVE", remarks: `Approved Leave (${data.totalDays} days)` },
+          { upsert: true, new: true }
         );
       }
     }
