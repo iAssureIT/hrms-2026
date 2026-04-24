@@ -158,7 +158,7 @@ const EmployeeLeaveLedger = () => {
                 <td className="px-6 py-4 text-sm text-center font-bold text-gray-400">---</td>
                 <td className="px-6 py-4 text-sm text-center font-bold text-gray-400">---</td>
                 <td className="px-6 py-4 text-sm text-center font-bold text-[#dd4b39]">
-                   {summary?.lop > 0 ? `+${summary?.lop}` : "0"}
+                   {summary?.monthlyLopUsed > 0 ? `+${summary?.monthlyLopUsed}` : "0"}
                 </td>
                 <td className="px-6 py-4 text-center">
                    <span className={`text-sm font-bold ${summary?.lop > 0 ? "text-red-600" : "text-gray-400"}`}>

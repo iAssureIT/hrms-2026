@@ -113,7 +113,6 @@ exports.getSummaryByEmployee = async (req, res) => {
       });
 
       // Opening Balance for the month
-      // We look for the last transaction before the month started
       const typeOpeningTx = openingTransactions
         .filter(tx => tx.leaveTypeId.toString() === b.leaveTypeId?._id.toString())
         .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
@@ -135,14 +134,27 @@ exports.getSummaryByEmployee = async (req, res) => {
         summary.compOff = stats;
       }
       
-      // We only count EL and CO towards the paid balance
       if (code === "EL" || code === "CO") {
         summary.totalBalance += b.remainingBalance;
       }
     });
 
+    // Explicitly handle LOP from transactions if not in balances
+    const lopTransactions = monthlyTransactions.filter(tx => tx.leaveTypeId?.leaveCode === "LOP");
+    let monthlyLopUsed = 0;
+    lopTransactions.forEach(tx => {
+      if (tx.days < 0) monthlyLopUsed += Math.abs(tx.days);
+    });
+    
+    summary.monthlyLopUsed = monthlyLopUsed;
+
+    // The 'lop' field in summary is used by the UI for the 'Closing/Total' column
     if (summary.totalBalance < 0) {
       summary.lop = Math.abs(summary.totalBalance);
+    } else {
+      // If balance is not negative, it means EL/CO covered everything. 
+      // But if there were specific LOP transactions, we still want to show them.
+      summary.lop = monthlyLopUsed; 
     }
 
     res.status(200).json({ success: true, data: summary });

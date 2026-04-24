@@ -33,6 +33,7 @@ const Leaves = () => {
   const [selectedLeaveType, setSelectedLeaveType] = useState("all");
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tableSearch, setTableSearch] = useState("");
   const [showCompOffModal, setShowCompOffModal] = useState(false);
   const [compOffData, setCompOffData] = useState({
     employeeId: "",
@@ -203,6 +204,8 @@ const Leaves = () => {
 
   const filteredLeaves = leaves.filter((leave) => {
     if (selectedEmployee && leave.employeeId?._id !== selectedEmployee) return false;
+    if (selectedLeaveType !== "all" && leave.leaveTypeId?._id !== selectedLeaveType) return false;
+    
     if (activeTab === "Pending Requests") return leave.status === "PENDING";
     if (activeTab === "Approved") return leave.status === "APPROVED";
     if (activeTab === "Rejected") return leave.status === "REJECTED";
@@ -363,6 +366,8 @@ const Leaves = () => {
                   type="text"
                   placeholder="Filter results..."
                   className="border border-gray-300 rounded-sm px-2 py-1 focus:outline-none focus:border-[#3c8dbc]"
+                  value={tableSearch}
+                  onChange={(e) => setTableSearch(e.target.value)}
                 />
               </div>
             </div>
@@ -408,18 +413,40 @@ const Leaves = () => {
                         Loading records...
                       </td>
                     </tr>
-                  ) : (activeTab === "Leave Ledger" ? ledger : filteredLeaves)
-                      .length === 0 ? (
+                  ) : (() => {
+                      let data = activeTab === "Leave Ledger" ? ledger : filteredLeaves;
+                      if (activeTab === "Employee Balances") data = monthlyReport;
+                      
+                      const search = tableSearch.toLowerCase();
+                      if (search) {
+                        data = data.filter(item => {
+                          const empName = (item.employeeName || item.employeeId?.employeeName || "").toLowerCase();
+                          const empId = (item.employeeID || item.employeeId?.employeeID || "").toLowerCase();
+                          const remarks = (item.remarks || item.reason || "").toLowerCase();
+                          const code = (item.leaveTypeId?.leaveCode || "").toLowerCase();
+                          return empName.includes(search) || empId.includes(search) || remarks.includes(search) || code.includes(search);
+                        });
+                      }
+
+                      return data;
+                    })().length === 0 ? (
                     <tr>
                       <td
                         colSpan="5"
                         className="px-5 py-20 text-center text-gray-400 text-xs italic"
                       >
-                        No records found {selectedEmployee ? "for this employee" : ""}
+                        No records found {selectedEmployee ? "for this employee" : ""} {tableSearch ? `matching "${tableSearch}"` : ""}
                       </td>
                     </tr>
                   ) : activeTab === "Employee Balances" ? (
-                    monthlyReport.filter(r => !selectedEmployee || r._id === selectedEmployee).map((row) => (
+                    monthlyReport
+                      .filter(r => !selectedEmployee || r._id === selectedEmployee)
+                      .filter(r => {
+                        if (!tableSearch) return true;
+                        const search = tableSearch.toLowerCase();
+                        return r.employeeName.toLowerCase().includes(search) || r.employeeID.toLowerCase().includes(search);
+                      })
+                      .map((row) => (
                       <tr key={row._id} className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50">
                         <td className="px-4 py-3">
                           <div className="text-[11px] font-bold text-gray-700">{row.employeeName}</div>
@@ -453,7 +480,14 @@ const Leaves = () => {
                       </tr>
                     ))
                   ) : activeTab === "Leave Ledger" ? (
-                    ledger.map((item) => (
+                    ledger.filter(item => {
+                        if (!tableSearch) return true;
+                        const search = tableSearch.toLowerCase();
+                        return (item.employeeId?.employeeName || "").toLowerCase().includes(search) || 
+                               (item.employeeId?.employeeID || "").toLowerCase().includes(search) ||
+                               (item.remarks || "").toLowerCase().includes(search) ||
+                               (item.leaveTypeId?.leaveCode || "").toLowerCase().includes(search);
+                      }).map((item) => (
                       <tr
                         key={item._id}
                         className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
@@ -506,7 +540,14 @@ const Leaves = () => {
                       </tr>
                     ))
                   ) : (
-                    filteredLeaves.map((leave) => (
+                    filteredLeaves.filter(item => {
+                        if (!tableSearch) return true;
+                        const search = tableSearch.toLowerCase();
+                        return (item.employeeId?.employeeName || "").toLowerCase().includes(search) || 
+                               (item.employeeId?.employeeID || "").toLowerCase().includes(search) ||
+                               (item.reason || "").toLowerCase().includes(search) ||
+                               (item.leaveTypeId?.leaveCode || "").toLowerCase().includes(search);
+                      }).map((leave) => (
                       <tr
                         key={leave._id}
                         className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"

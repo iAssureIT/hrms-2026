@@ -96,40 +96,7 @@ exports.applyLeave = async (req, res) => {
 
     // 5. If status is APPROVED (Pre-authorized), update Balance and Ledger
     if (data.status === "APPROVED") {
-      const year = moment(data.fromDate).year();
-
-      // Update Leave Balance
-      const balance = await LeaveBalance.findOneAndUpdate(
-        {
-          employeeId: data.employeeId,
-          leaveTypeId: data.leaveTypeId,
-          year: year,
-        },
-        {
-          $inc: {
-            usedDays: data.totalDays,
-            remainingBalance: -data.totalDays,
-          },
-        },
-        { new: true, upsert: true },
-      );
-
-      // Create Ledger Entry
-      await LeaveLedger.create({
-        employeeId: data.employeeId,
-        leaveTypeId: data.leaveTypeId,
-        year: year,
-        transactionType: "USED",
-        days: -data.totalDays,
-        balanceAfter: balance.remainingBalance,
-        referenceId: data._id,
-        referenceType: "LEAVE_APPLICATION",
-        remarks: `Leave applied & approved: ${data.reason}`,
-        createdBy: data.createdBy,
-      });
-
-      // Attendance Integration (Placeholder)
-      // TODO
+      await deductLeaveBalance(data, data.createdBy);
     }
 
     res.status(200).json({ success: true, data });
@@ -181,83 +148,18 @@ exports.updateLeaveStatus = async (req, res) => {
       { new: true },
     );
 
-    // If status changed to APPROVED, update Balance and Ledger
+    // Case A: If status changed to APPROVED (Deduct Balance)
     if (req.body.status === "APPROVED" && previousApplication.status !== "APPROVED") {
-      const year = moment(data.fromDate).year();
-      let remainingToDeduct = data.totalDays;
+      await deductLeaveBalance(data, req.body.approvedBy || data.createdBy);
+    }
+    
+    // Case B: If status changed FROM APPROVED to REJECTED/CANCELLED (Restore Balance)
+    if (previousApplication.status === "APPROVED" && (req.body.status === "REJECTED" || req.body.status === "CANCELLED")) {
+      await restoreLeaveBalance(data, req.body.rejectedBy || req.body.approvedBy);
+    }
 
-      // 1. Fetch relevant Leave Types (EL, CO)
-      const elType = await LeaveType.findOne({ $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }] });
-      const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
-
-      // 2. Consumption Hierarchy: Comp Off -> Earned Leave -> LOP
-      const hierarchy = [coType, elType];
-      
-      for (let type of hierarchy) {
-        if (!type || remainingToDeduct <= 0) continue;
-
-        let bal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: type._id, year: year });
-        if (!bal) {
-            bal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: type._id, year: year, openingBalance: 0, remainingBalance: 0 });
-        }
-
-        if (bal.remainingBalance > 0) {
-          const toUse = Math.min(bal.remainingBalance, remainingToDeduct);
-          
-          const updatedBal = await LeaveBalance.findOneAndUpdate(
-            { _id: bal._id },
-            { $inc: { usedDays: toUse, remainingBalance: -toUse } },
-            { new: true }
-          );
-
-          await LeaveLedger.create({
-            employeeId: data.employeeId,
-            leaveTypeId: type._id,
-            year: year,
-            transactionType: "USED",
-            days: -toUse,
-            balanceAfter: updatedBal.remainingBalance,
-            referenceId: data._id,
-            referenceType: "LEAVE_APPLICATION",
-            remarks: `Leave approved (Partially/Fully from ${type.leaveCode}): ${data.reason}`,
-            createdBy: req.body.approvedBy || data.createdBy,
-          });
-
-          remainingToDeduct -= toUse;
-        }
-      }
-
-      // 3. Any remainder goes to LOP
-      if (remainingToDeduct > 0) {
-        const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
-        if (lopType) {
-            let lopBal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year });
-            if (!lopBal) {
-                lopBal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year, openingBalance: 0, remainingBalance: 0 });
-            }
-
-            const updatedLop = await LeaveBalance.findOneAndUpdate(
-                { _id: lopBal._id },
-                { $inc: { usedDays: remainingToDeduct, remainingBalance: -remainingToDeduct } },
-                { new: true }
-            );
-
-            await LeaveLedger.create({
-                employeeId: data.employeeId,
-                leaveTypeId: lopType._id,
-                year: year,
-                transactionType: "USED",
-                days: -remainingToDeduct,
-                balanceAfter: updatedLop.remainingBalance,
-                referenceId: data._id,
-                referenceType: "LEAVE_APPLICATION",
-                remarks: `Leave approved (Converted to LOP): ${data.reason}`,
-                createdBy: req.body.approvedBy || data.createdBy,
-            });
-        }
-      }
-
-      // 4. Attendance Integration
+    // 4. Attendance Integration
+    if (req.body.status === "APPROVED") {
       const start = moment(data.fromDate).startOf("day");
       const end = moment(data.toDate).startOf("day");
       const daysCount = end.diff(start, "days") + 1;
@@ -270,6 +172,15 @@ exports.updateLeaveStatus = async (req, res) => {
           { upsert: true, new: true }
         );
       }
+    } else if (req.body.status === "REJECTED" || req.body.status === "CANCELLED") {
+       // Clear attendance if it was previously set to LEAVE
+       const start = moment(data.fromDate).startOf("day");
+       const end = moment(data.toDate).startOf("day");
+       const daysCount = end.diff(start, "days") + 1;
+       for (let i = 0; i < daysCount; i++) {
+         const currentDate = moment(start).add(i, "days").toDate();
+         await Attendance.findOneAndDelete({ employeeId: data.employeeId, date: currentDate, status: "LEAVE" });
+       }
     }
 
     res.status(200).json({ success: true, data });
@@ -281,9 +192,107 @@ exports.updateLeaveStatus = async (req, res) => {
 // ✅ DELETE
 exports.deleteLeaveApplication = async (req, res) => {
   try {
+    const app = await LeaveApplication.findById(req.params.id);
+    if (app && app.status === "APPROVED") {
+        await restoreLeaveBalance(app, "SYSTEM_DELETE");
+    }
     await LeaveApplication.findByIdAndDelete(req.params.id);
     res.status(200).json({ success: true, message: "Deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+// --- Helper Functions for Production Readiness ---
+
+async function deductLeaveBalance(data, actorId) {
+    const year = moment(data.fromDate).year();
+    let remainingToDeduct = data.totalDays;
+
+    const elType = await LeaveType.findOne({ $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }] });
+    const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
+    const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
+
+    const hierarchy = [coType, elType];
+    
+    for (let type of hierarchy) {
+      if (!type || remainingToDeduct <= 0) continue;
+      let bal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: type._id, year: year });
+      if (!bal) bal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: type._id, year: year, openingBalance: 0, remainingBalance: 0 });
+
+      if (bal.remainingBalance > 0) {
+        const toUse = Math.min(bal.remainingBalance, remainingToDeduct);
+        const updatedBal = await LeaveBalance.findOneAndUpdate(
+          { _id: bal._id },
+          { $inc: { usedDays: toUse, remainingBalance: -toUse } },
+          { new: true }
+        );
+
+        await LeaveLedger.create({
+          employeeId: data.employeeId,
+          leaveTypeId: type._id,
+          year: year,
+          transactionType: "USED",
+          days: -toUse,
+          balanceAfter: updatedBal.remainingBalance,
+          referenceId: data._id,
+          referenceType: "LEAVE_APPLICATION",
+          remarks: `Leave approved (Partially/Fully from ${type.leaveCode})`,
+          createdBy: actorId,
+        });
+        remainingToDeduct -= toUse;
+      }
+    }
+
+    if (remainingToDeduct > 0 && lopType) {
+        let lopBal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year });
+        if (!lopBal) lopBal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year, openingBalance: 0, remainingBalance: 0 });
+
+        const updatedLop = await LeaveBalance.findOneAndUpdate(
+            { _id: lopBal._id },
+            { $inc: { usedDays: remainingToDeduct, remainingBalance: -remainingToDeduct } },
+            { new: true }
+        );
+
+        await LeaveLedger.create({
+            employeeId: data.employeeId,
+            leaveTypeId: lopType._id,
+            year: year,
+            transactionType: "USED",
+            days: -remainingToDeduct,
+            balanceAfter: updatedLop.remainingBalance,
+            referenceId: data._id,
+            referenceType: "LEAVE_APPLICATION",
+            remarks: `Leave approved (Converted to LOP)`,
+            createdBy: actorId,
+        });
+    }
+}
+
+async function restoreLeaveBalance(data, actorId) {
+    const year = moment(data.fromDate).year();
+    const entries = await LeaveLedger.find({ referenceId: data._id, referenceType: "LEAVE_APPLICATION", transactionType: "USED" });
+
+    for (let entry of entries) {
+        const amountToRestore = Math.abs(entry.days);
+        
+        const updatedBal = await LeaveBalance.findOneAndUpdate(
+            { employeeId: data.employeeId, leaveTypeId: entry.leaveTypeId, year: year },
+            { $inc: { usedDays: -amountToRestore, remainingBalance: amountToRestore } },
+            { new: true }
+        );
+
+        await LeaveLedger.create({
+            employeeId: data.employeeId,
+            leaveTypeId: entry.leaveTypeId,
+            year: year,
+            transactionType: "RESTORED",
+            days: amountToRestore,
+            balanceAfter: updatedBal.remainingBalance,
+            referenceId: data._id,
+            referenceType: "LEAVE_APPLICATION",
+            remarks: `Leave reversal: Balance restored`,
+            createdBy: actorId,
+        });
+    }
+}
