@@ -239,14 +239,7 @@ const AttendanceDataEntry = () => {
                     </div>
                     <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
                         <div className="flex items-center gap-2">
-                            <Tooltip content="Bulk Upload" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
-                                <div className="relative group">
-                                    <FaCloudUploadAlt
-                                        className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'upload' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
-                                        onClick={() => { setActiveTab("upload"); setStep(1); }}
-                                    />
-                                </div>
-                            </Tooltip>
+
                             <Tooltip content="Manual Entry" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
                                 <div className="relative group">
                                     <FaEdit
