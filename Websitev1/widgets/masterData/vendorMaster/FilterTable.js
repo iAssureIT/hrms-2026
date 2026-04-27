@@ -450,7 +450,7 @@ const GenericTable = ({
           : "mt-5"
       }
     >
-      <div className={("container mx-auto transition-all duration-300 ")}>
+      <div className={("transition-all duration-300 ")}>
         <style jsx>{`
           .resizing {
             cursor: col-resize !important;

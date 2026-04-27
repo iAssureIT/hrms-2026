@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Tooltip } from "flowbite-react";
 import { FaPlus, FaFilter, FaDownload, FaChevronLeft, FaChevronRight, FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCalendarTimes } from "react-icons/fa";
 import moment from "moment";
+import { BsPlusSquare } from "react-icons/bs";
 import ls from "localstorage-slim";
 
 const AttendanceMatrix = () => {
@@ -109,24 +110,39 @@ const AttendanceMatrix = () => {
     );
 
     return (
-        <section className="section">
+        <section className="section admin-box box-primary">
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-                <div className="flex items-baseline gap-3">
-                    <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Attendance Matrix</h1>
-                    <span className="text-sm font-light text-gray-500">Control panel</span>
+            {/* Theme-aligned Header */}
+            <div className="mb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                            <span className="text-[#3c8dbc]">Attendance Management</span>
+                        </div>
+                        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                            Attendance <span className="text-[#3c8dbc] font-black">Matrix</span>
+                        </h1>
+                    </div>
+                    <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+                        <div className="relative group">
+                            <BsPlusSquare
+                                className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                onClick={() => router.push('/admin/attendance-management/data-entry')}
+                            />
+                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Data Entry</span>
+                        </div>
+                        <div className="relative group">
+                            <FaDownload
+                                className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                onClick={() => {/* Add export logic if needed */ }}
+                            />
+                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Export Hub</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex gap-2 mt-4 md:mt-0">
-                    <button
-                        onClick={() => router.push('/admin/attendance-management/data-entry')}
-                        className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
-                    >
-                        <FaPlus className="text-[10px]" /> Data Entry
-                    </button>
-                    <button className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2">
-                        <FaDownload className="text-[10px]" /> Export
-                    </button>
-                </div>
+                <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                    Visualize monthly attendance trends, employee status counts, and daily presence across all organizational departments.
+                </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -136,8 +152,8 @@ const AttendanceMatrix = () => {
                 <StatusCard label="Year" value={selectedYear} icon={FaCalendarTimes} colorClass="bg-red" />
             </div>
 
-            <div className="admin-box box-primary">
-                <div className="p-4 bg-gray-50/50 border-b border-gray-100">
+            <div >
+                <div >
                     <div className="flex flex-wrap items-center gap-8">
                         <div className="flex flex-col gap-2">
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Month</label>

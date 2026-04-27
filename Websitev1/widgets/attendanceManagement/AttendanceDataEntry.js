@@ -224,37 +224,42 @@ const AttendanceDataEntry = () => {
     };
 
     return (
-        <section className="section">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-baseline gap-3">
-                    <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Attendance Data Entry</h1>
-                    <span className="text-sm font-light text-gray-500">Control panel</span>
-                </div>
-                <div className="flex items-center text-xs text-gray-400 font-bold uppercase tracking-wider">
-                    <span className="hover:text-gray-600 cursor-pointer">Admin</span>
-                    <FaChevronRight className="mx-2 text-[10px] opacity-30" />
-                    <span className="text-gray-800">Attendance</span>
-                </div>
-            </div>
-
-            <div className="admin-box border-t-0 bg-transparent shadow-none">
-                <div className="admin-box-header p-0 border-b-0">
-                    <div className="flex">
-                        <button
-                            onClick={() => { setActiveTab("upload"); setStep(1); }}
-                            className={`px-6 py-3 text-sm font-bold transition-all border-r border-gray-200 ${activeTab === 'upload' ? 'border-t-[3px] border-t-[#3c8dbc] bg-white text-gray-800' : 'text-gray-500 hover:text-gray-700 bg-[#f4f4f4]'}`}
-                        >
-                            <FaCloudUploadAlt className="inline mr-2" /> Bulk Upload Wizard
-                        </button>
-                        <button
-                            onClick={() => { setActiveTab("manual"); setStep(1); }}
-                            className={`px-6 py-3 text-sm font-bold transition-all border-r border-gray-200 ${activeTab === 'manual' ? 'border-t-[3px] border-t-[#3c8dbc] bg-white text-gray-800 focus:outline-none' : 'text-gray-500 hover:text-gray-700 bg-[#f4f4f4]'}`}
-                        >
-                            <FaRegAddressCard className="inline mr-2" /> Manual Grid Entry
-                        </button>
+        <section className="section admin-box box-primary">
+            {/* Theme-aligned Header */}
+            <div className="mb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                            <span className="text-[#3c8dbc]">Attendance Management</span>
+                        </div>
+                        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                            Attendance <span className="text-[#3c8dbc] font-black">Data Entry</span>
+                        </h1>
+                    </div>
+                    <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+                        <div className="flex items-center gap-2">
+                            <div className="relative group">
+                                <FaCloudUploadAlt
+                                    className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'upload' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
+                                    onClick={() => { setActiveTab("upload"); setStep(1); }}
+                                />
+                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Bulk Upload</span>
+                            </div>
+                            <div className="relative group">
+                                <FaEdit
+                                    className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'manual' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
+                                    onClick={() => setActiveTab("manual")}
+                                />
+                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Manual Entry</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                    Manage daily attendance records through bulk file uploads or manual entry grid for all business locations.
+                </p>
             </div>
+
 
             <div className="admin-box bg-white mt-0 border-t-0 p-8 pt-10">
                 {activeTab === 'upload' ? (
@@ -402,7 +407,7 @@ const AttendanceDataEntry = () => {
                                             <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">Loading roster...</td></tr>
                                         ) : employees.length === 0 ? (
                                             <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-400">No employees found for selection</td></tr>
-                                         ) : employees.map(emp => (
+                                        ) : employees.map(emp => (
                                             <tr key={emp.employee_id} className="hover:bg-blue-50/50 transition-colors border-b border-gray-100 last:border-0 group">
                                                 <td className="p-4 align-middle">
                                                     <div className="flex items-center gap-3">

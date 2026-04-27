@@ -368,15 +368,23 @@ function VendorList() {
 
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md">
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300 flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                        <h1 className="heading">Vendor List</h1>
-                        <div className="my-2 px-10 lg:px-0 lg:me-10 flex items-center">
+        <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc]">
+            <div className="max-w-[1440px] mx-auto">
+                {/* Theme-aligned Header */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Vendor Management</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Vendor <span className="text-[#3c8dbc] font-black">Master</span>
+                            </h1>
+                        </div>
+                        <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
                             <Tooltip content="Add New Vendor" placement="bottom" arrow={false} className="z-50 bg-[#3c8dbc] text-white text-sm px-2 py-1 rounded">
                                 <BsPlusSquare
-                                    className="cursor-pointer text-[#3c8dbc] border border-[#3c8dbc] p-1 rounded text-[30px]"
+                                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
                                     onClick={() => {
                                         const basePath = window.location.pathname.includes("admin") ? "/admin" : "/asset";
                                         router.push(
@@ -387,9 +395,12 @@ function VendorList() {
                             </Tooltip>
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Comprehensive directory of approved organizational vendors, including contact details, compliance status, and banking information.
+                    </p>
                 </div>
 
-                <div className="rounded-md  px-10 py-6">
+                <div className="bg-white pb-10">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                         {/* Center Name */}
@@ -458,13 +469,8 @@ function VendorList() {
                                 ))}
                             </select>
                         </div>
-
-
-
                     </div>
-                </div>
 
-                <div className="px-10 py-6">
                     <GenericTable
                         tableHeading={tableHeading}
                         excelHeading={excelHeading}

@@ -106,43 +106,51 @@ const EmployeeMaster = () => {
   }, [pageNumber, recsPerPage, runCount, searchText]);
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md bg-white">
-        {/* Header Section */}
-        <div className="uppercase text-xl font-semibold border-b-2 border-gray-300 flex justify-between px-10">
-          <div className="flex items-center gap-3 py-5">
-            {/* <FaUsers className="text-green-600" size={24} /> */}
-            <h1 className="text-2xl text-gray-900 tracking-tight">Employee Master</h1>
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc]">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Human Resources</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Employee <span className="text-[#3c8dbc] font-black">Master</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              <div className="relative group">
+                <BsPlusSquare
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => router.push(`/${loggedInRole}/asset-management/add-employee`)}
+                />
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Add Employee</span>
+              </div>
+              <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <FaFileUpload
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => {
+                    router.push(`/${loggedInRole}/asset-management/employee-bulk-upload`);
+                  }}
+                />
+              </Tooltip>
+              <Tooltip content="Asset Registry" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <CiViewList
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => {
+                    router.push(`/${loggedInRole}/asset-management`);
+                  }}
+                />
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex gap-3 my-5 items-center">
-            <Tooltip content="Add Employee" placement="bottom" className="bg-green" arrow={false}>
-              <FaUserPlus
-                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                onClick={() => {
-                  router.push(`/${loggedInRole}/asset-management/add-employee`);
-                }}
-              />
-            </Tooltip>
-            <Tooltip content="Bulk Upload" placement="bottom" className="bg-green" arrow={false}>
-              <FaFileUpload
-                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                onClick={() => {
-                  router.push(`/${loggedInRole}/asset-management/employee-bulk-upload`);
-                }}
-              />
-            </Tooltip>
-            <Tooltip content="Asset Registry" placement="bottom" className="bg-green" arrow={false}>
-              <CiViewList
-                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[1.5rem]"
-                onClick={() => {
-                  router.push(`/${loggedInRole}/asset-management`);
-                }}
-              />
-            </Tooltip>
-          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Maintain accurate personnel records, manage designations, and track organizational hierarchies for seamless resource allocation.
+          </p>
         </div>
 
-        <div className="px-10 pb-10">
+        <div className="bg-white">
           <FilterTable
             tableHeading={tableHeading}
             excelHeading={excelHeading}

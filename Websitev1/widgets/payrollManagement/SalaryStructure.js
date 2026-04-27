@@ -76,16 +76,16 @@ const SalaryStructure = () => {
                 </div>
                 <div className="max-h-[600px] overflow-y-auto p-0">
                     <ul className="divide-y divide-[#d2d6de]">
-                    {employees.map(emp => (
-                        <li 
-                            key={emp._id} 
-                            onClick={() => handleEmpSelect(emp)}
-                            className={`p-3 cursor-pointer transition-colors ${selectedEmp?._id === emp._id ? 'bg-[#3c8dbc] text-white border-l-4 border-[#367fa9]' : 'hover:bg-white text-[#444] border-l-4 border-transparent'}`}
-                        >
-                            <p className="font-bold text-[13px]">{emp.employeeName}</p>
-                            <p className={`text-[11px] ${selectedEmp?._id === emp._id ? 'text-blue-100' : 'text-gray-500'}`}>{emp.employeeID}</p>
-                        </li>
-                    ))}
+                        {employees.map(emp => (
+                            <li
+                                key={emp._id}
+                                onClick={() => handleEmpSelect(emp)}
+                                className={`p-3 cursor-pointer transition-colors ${selectedEmp?._id === emp._id ? 'bg-[#3c8dbc] text-white border-l-4 border-[#367fa9]' : 'hover:bg-white text-[#444] border-l-4 border-transparent'}`}
+                            >
+                                <p className="font-bold text-[13px]">{emp.employeeName}</p>
+                                <p className={`text-[11px] ${selectedEmp?._id === emp._id ? 'text-blue-100' : 'text-gray-500'}`}>{emp.employeeID}</p>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -118,11 +118,11 @@ const SalaryStructure = () => {
                                 <h5 className="flex items-center gap-2 font-bold text-gray-700 text-sm border-b border-[#d2d6de] pb-2"><FaMoneyBillWave className="text-[#3c8dbc]" /> Fixed Salary Components</h5>
                                 <div className="admin-form-group">
                                     <label className="admin-label">CTC / Monthly Gross Salary (INR)</label>
-                                    <input 
-                                        type="number" 
+                                    <input
+                                        type="number"
                                         className="admin-input font-bold text-lg"
                                         value={salaryInfo.grossSalary}
-                                        onChange={(e) => setSalaryInfo({...salaryInfo, grossSalary: e.target.value})}
+                                        onChange={(e) => setSalaryInfo({ ...salaryInfo, grossSalary: e.target.value })}
                                     />
                                     <p className="help-block text-[11px] text-gray-500 mt-1 italic">* Deductions (PF, ESIC, PT) will be auto-calculated during payroll run based on this Gross value.</p>
                                 </div>
@@ -134,19 +134,19 @@ const SalaryStructure = () => {
                                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                                     <div className="admin-form-group">
                                         <label className="admin-label">PAN Number</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.panNumber} onChange={(e) => setSalaryInfo({...salaryInfo, panNumber: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.panNumber} onChange={(e) => setSalaryInfo({ ...salaryInfo, panNumber: e.target.value })} />
                                     </div>
                                     <div className="admin-form-group">
                                         <label className="admin-label">PF Number</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.pfNumber} onChange={(e) => setSalaryInfo({...salaryInfo, pfNumber: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.pfNumber} onChange={(e) => setSalaryInfo({ ...salaryInfo, pfNumber: e.target.value })} />
                                     </div>
                                     <div className="admin-form-group">
                                         <label className="admin-label">UAN Number</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.uanNumber} onChange={(e) => setSalaryInfo({...salaryInfo, uanNumber: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.uanNumber} onChange={(e) => setSalaryInfo({ ...salaryInfo, uanNumber: e.target.value })} />
                                     </div>
                                     <div className="admin-form-group">
                                         <label className="admin-label">ESIC Number</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.esicNumber} onChange={(e) => setSalaryInfo({...salaryInfo, esicNumber: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.esicNumber} onChange={(e) => setSalaryInfo({ ...salaryInfo, esicNumber: e.target.value })} />
                                     </div>
                                 </div>
                             </div>
@@ -157,15 +157,15 @@ const SalaryStructure = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="admin-form-group">
                                         <label className="admin-label">Bank Name</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.bankName} onChange={(e) => setSalaryInfo({...salaryInfo, bankName: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.bankName} onChange={(e) => setSalaryInfo({ ...salaryInfo, bankName: e.target.value })} />
                                     </div>
                                     <div className="admin-form-group">
                                         <label className="admin-label">Account Number</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.accountNumber} onChange={(e) => setSalaryInfo({...salaryInfo, accountNumber: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.accountNumber} onChange={(e) => setSalaryInfo({ ...salaryInfo, accountNumber: e.target.value })} />
                                     </div>
                                     <div className="admin-form-group">
                                         <label className="admin-label">IFSC Code</label>
-                                        <input type="text" className="admin-input" value={salaryInfo.ifscCode} onChange={(e) => setSalaryInfo({...salaryInfo, ifscCode: e.target.value})} />
+                                        <input type="text" className="admin-input" value={salaryInfo.ifscCode} onChange={(e) => setSalaryInfo({ ...salaryInfo, ifscCode: e.target.value })} />
                                     </div>
                                 </div>
                             </div>

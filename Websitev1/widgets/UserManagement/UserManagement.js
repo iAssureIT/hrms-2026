@@ -7,9 +7,13 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import moment from "moment";
 import GenericTable from "@/widgets/UserManagement/FilterTable_UM.js";
+import { BsPlusSquare } from "react-icons/bs";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { Tooltip } from "flowbite-react";
 import dynamic from "next/dynamic";
 
 function UserManagement() {
+  const router = useRouter();
   const stdSelectField =
     "block bg-white text-black font-normal placeholder-grayThree placeholder-font-normal  rounded-md border-0 py-2.5 pl-12 w-full ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-green text-sm lg:text-sm ";
 
@@ -142,15 +146,70 @@ function UserManagement() {
       });
   };
 
+  const bulkDelete = () => {
+    if (user_ids.length > 0) {
+      Swal.fire({
+        title: " ",
+        text: `Are you sure you want to delete selected users?`,
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete!",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
+        focusCancel: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const formValues = {
+            user_id_tobedeleted: user_ids,
+          };
+          axios
+            .patch("/api/users/patch/deletestatus", formValues)
+            .then((response) => {
+              Swal.fire(" ", "Users deleted successfully.");
+              setUserIds([]);
+              getData();
+            })
+            .catch((err) => console.log("err", err));
+        }
+      });
+    } else {
+      Swal.fire(" ", "Please select at least one user to delete.");
+    }
+  };
+
   return (
-    <section className="section w-full">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300">
-            <h1 className="heading">USER MANAGEMENT</h1>
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc]">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Security Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                User <span className="text-[#3c8dbc] font-black">Management</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              <Tooltip content="Add New User" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <BsPlusSquare
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => router.push("/admin/user-management/create-user")}
+                />
+              </Tooltip>
+              <Tooltip content="Delete Selected" placement="bottom" className="bg-red-500" arrow={false}>
+                <RiDeleteBin6Line
+                  className="cursor-pointer text-red-500 hover:text-red-700 border border-red-500 p-1 hover:border-red-700 rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={bulkDelete}
+                />
+              </Tooltip>
+            </div>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Manage administrative access, role assignments, and account security for all organizational team members.
+          </p>
         </div>
-        <div className="px-10 pb-6">
+        <div className="bg-white">
           <GenericTable
             tableObjects={tableObjects ? tableObjects : {}}
             tableHeading={tableHeading}

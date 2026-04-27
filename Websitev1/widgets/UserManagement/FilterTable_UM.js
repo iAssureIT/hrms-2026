@@ -690,64 +690,8 @@ const GenericTable = ({
 
   return (
     <section className="w-full">
-      <h1 className="text-xl pb-2 font-semibold  mb-2">
-        {tableObjects?.tableName}
-      </h1>
-
       <div className="">
         <div className="block md:flex lg:flex justify-between gap-4 mt-4">
-          <div>
-            {/* <button
-              className="bg-green formButtons me-0 lg:me-4"
-              onClick={
-                () => {
-                  window.location.href = "/admin/role-management";
-                  setLoading3(true);
-                }
-                // setOpenRoleModal(true)
-              }
-            >
-              {loading3 ? (
-                <span>
-                  Add Role
-                  <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                </span>
-              ) : (
-                "Add Role"
-              )}
-            </button> */}
-            {/* <Button className="bg-green" onClick={() => {setOpenUserModal(true);setEdit(false)}}>Add User</Button> */}
-            <button
-              className="bg-[#3c8dbc] formButtons"
-              onClick={() => {
-                // setOpenUserModal(true);
-                // setLoading2(true);
-                window.open(
-                  "/admin/user-management/create-user",
-                  "_blank",
-                  "noopener,noreferrer"
-                );
-                setEdit(false);
-              }}
-            >
-              {loading2 ? (
-                <span>
-                  Add User
-                  <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                </span>
-              ) : (
-                "Add User"
-              )}
-            </button>
-          </div>
-          <div className="">
-            <button
-              className="formButtons bg-red-500 hover:bg-red-700 px-5"
-              onClick={() => setDeleteUserModal(true)}
-            >
-              Deleted Users
-            </button>
-          </div>
         </div>
         <div className="mt-3 mb-3 w-full lg:w-1/3">
           <div className="lg:me-4">
@@ -893,7 +837,6 @@ const GenericTable = ({
               <div className="basis-1/3 text-sm lg:-mt-1 mt-5">
                 <label
                   htmlFor="search"
-                  //  className="mb-4 font-semibold"
                   className="inputLabel"
                 >
                   Search

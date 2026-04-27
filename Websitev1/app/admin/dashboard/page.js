@@ -230,23 +230,27 @@ const HRMSDashboard = () => {
     };
 
     return (
-        <section className="section">
+        <section className="section admin-box box-primary">
             <div className="mx-auto">
 
-                {/* Header Row */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-                    <div className="flex items-baseline gap-3">
-                        <h1 className="text-2xl font-normal text-gray-800 tracking-tight">Dashboard</h1>
-                        <span className="text-sm font-light text-gray-500">Control panel</span>
+                {/* Theme-aligned Header */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Dashboard Management</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                HRMS <span className="text-[#3c8dbc] font-black">Dashboard</span>
+                            </h1>
+                        </div>
+                        <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+
+                        </div>
                     </div>
-                    <div className="flex gap-2 mt-4 md:mt-0">
-                        <button onClick={handleGenerateReport} className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2">
-                            <FaFileAlt /> Generate Report
-                        </button>
-                        <button onClick={() => window.location.href = '/admin/payroll-management'} className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2">
-                            <FaMoneyCheckAlt /> Run Payroll
-                        </button>
-                    </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Comprehensive overview of organizational health, employee attendance metrics, and critical administrative alerts.
+                    </p>
                 </div>
 
                 {/* KPI Cards Grid */}

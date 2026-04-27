@@ -406,11 +406,11 @@ const Dashboard = (props) => {
       axios
         .get(
           "/api/dashboard/get/dashboardData/" +
-            center_id +
-            "/" +
-            year +
-            "/" +
-            dataType
+          center_id +
+          "/" +
+          year +
+          "/" +
+          dataType
         )
         .then((res) => {
           console.log("Response dashboard", res.data);
@@ -474,15 +474,27 @@ const Dashboard = (props) => {
   };
 
   return (
-    <section className="hr-section">
+    <section className="section admin-box box-primary">
       <div className="hr-card hr-fade-in">
-        <div className="uppercase">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
-            <h1 className="hr-heading transition-all">Dashboard Overview</h1>
-            <div className="flex gap-2">
-               {/* Filters or actions could go here */}
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Dashboard Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Dashboard <span className="text-[#3c8dbc] font-black">Overview</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              {/* Add dashboard specific icons if needed */}
             </div>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Real-time analytics and tracking for center-wise performance, project utilization, and organizational metrics.
+          </p>
+        </div>
           <div className="px-4">
             <div className="bg-white">
               <div className="grid grid-cols-1 w-full lg:grid-cols-5 gap-6 lg:gap-8">
@@ -561,10 +573,10 @@ const Dashboard = (props) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full mt-10 gap-6 lg:gap-8">
                 {/* Duration Selector Card */}
                 <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
-                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-slate-100 !text-slate-500">
+                  <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-slate-100 !text-slate-500">
                     <BsClipboard2Data size={28} />
-                   </div>
-                   <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+                  </div>
+                  <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
                     <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">Select Duration</span>
                     <select
                       name="dataType"
@@ -576,7 +588,7 @@ const Dashboard = (props) => {
                       <option value="priorToFinancialYear">Prior to {year}</option>
                       <option value="current">Current ({year})</option>
                     </select>
-                   </div>
+                  </div>
                 </div>
 
                 {/* Beneficiaries Card */}
