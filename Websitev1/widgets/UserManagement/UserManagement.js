@@ -177,7 +177,7 @@ function UserManagement() {
   };
 
   return (
-    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc]">
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
       <div className="max-w-[1440px] mx-auto">
         {/* Theme-aligned Header */}
         <div className="mb-6">

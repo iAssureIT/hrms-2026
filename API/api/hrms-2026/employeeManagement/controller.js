@@ -8,28 +8,100 @@ const FailedRecords = require("../failedRecords/model.js");
 
 exports.upsertEmployee = async (req, res) => {
     const { 
-        employeeName, employeeID, employee_id, employeeEmail, employeeMobile, employeeDesignation,
+        _id, employeeName, employeeID, employee_id, employeeEmail, employeeMobile, employeeDesignation,
         center_id, centerName, subLocation_id, subLocationName,
         department_id, departmentName, subDepartment_id, subDepartmentName
     } = req.body;
 
-    // Check if employeeID is already taken by ANOTHER employee
-    if (employeeID && employeeID !== "-") {
-        const idExists = await Employees.findOne({ 
-            employeeID: employeeID, 
-            employeeEmail: { $ne: employeeEmail } 
-        });
-        if (idExists) {
-            return res.status(409).json({ 
-                message: `Employee ID "${employeeID}" is already assigned to ${idExists.employeeName}.` 
-            });
-        }
-    }
+    try {
+        if (_id) {
+            // --- EDIT MODE ---
+            
+            // 1. Check if ANOTHER employee has the same employeeID
+            if (employeeID && employeeID !== "-") {
+                const idExists = await Employees.findOne({ 
+                    employeeID: employeeID, 
+                    _id: { $ne: _id } 
+                });
+                if (idExists) {
+                    return res.status(409).json({ 
+                        message: `Employee ID "${employeeID}" is already assigned to ${idExists.employeeName}.` 
+                    });
+                }
+            }
 
-    Employees.findOneAndUpdate(
-        { employeeEmail: employeeEmail },
-        {
-            $set: {
+            // 2. Check if ANOTHER employee has the same employeeEmail
+            if (employeeEmail) {
+                const emailExists = await Employees.findOne({ 
+                    employeeEmail: employeeEmail, 
+                    _id: { $ne: _id } 
+                });
+                if (emailExists) {
+                    return res.status(409).json({ 
+                        message: `Email "${employeeEmail}" is already assigned to ${emailExists.employeeName}.` 
+                    });
+                }
+            }
+
+            // 3. Update the record
+            const updatedData = await Employees.findOneAndUpdate(
+                { _id: _id },
+                {
+                    $set: {
+                        employeeName,
+                        employeeID,
+                        employee_id,
+                        employeeEmail,
+                        employeeMobile,
+                        employeeDesignation,
+                        center_id: center_id || null,
+                        centerName,
+                        subLocation_id: subLocation_id || null,
+                        subLocationName,
+                        department_id: department_id || null,
+                        departmentName,
+                        subDepartment_id: subDepartment_id || null,
+                        subDepartmentName,
+                    }
+                },
+                { new: true }
+            );
+
+            if (updatedData) {
+                return res.status(200).json({
+                    message: "Employee updated successfully",
+                    employee_id: updatedData._id
+                });
+            } else {
+                return res.status(404).json({ message: "Employee not found" });
+            }
+
+        } else {
+            // --- ADD MODE ---
+
+            // 1. Check if ANY employee has the same employeeEmail
+            if (employeeEmail) {
+                const emailExists = await Employees.findOne({ employeeEmail: employeeEmail });
+                if (emailExists) {
+                    return res.status(409).json({ 
+                        message: `Employee with email "${employeeEmail}" already exists (${emailExists.employeeName}).` 
+                    });
+                }
+            }
+
+            // 2. Check if ANY employee has the same employeeID
+            if (employeeID && employeeID !== "-") {
+                const idExists = await Employees.findOne({ employeeID: employeeID });
+                if (idExists) {
+                    return res.status(409).json({ 
+                        message: `Employee ID "${employeeID}" already exists (${idExists.employeeName}).` 
+                    });
+                }
+            }
+
+            // 3. Create new record
+            const newEmployee = new Employees({
+                _id: new mongoose.Types.ObjectId(),
                 employeeName,
                 employeeID,
                 employee_id,
@@ -44,25 +116,20 @@ exports.upsertEmployee = async (req, res) => {
                 departmentName,
                 subDepartment_id: subDepartment_id || null,
                 subDepartmentName,
-            },
-            $setOnInsert: {
-                _id: req.body._id || new mongoose.Types.ObjectId()
-            }
-        },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-    )
-        .then(data => {
-            res.status(200).json({
-                message: "Employee updated successfully",
-                employee_id: data._id
             });
-        })
-        .catch(err => {
-            console.error("Upsert Employee Error:", err);
-            res.status(500).json({
-                error: err
+
+            const savedData = await newEmployee.save();
+            return res.status(200).json({
+                message: "Employee added successfully",
+                employee_id: savedData._id
             });
+        }
+    } catch (err) {
+        console.error("Upsert Employee Error:", err);
+        return res.status(500).json({
+            error: err.message || err
         });
+    }
 };
 
 exports.bulkUpload = async (req, res) => {

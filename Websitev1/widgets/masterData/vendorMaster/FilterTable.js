@@ -774,7 +774,9 @@ const GenericTable = ({
                                     </Tooltip>
                                   )}
                                   {loggedInRole === "admin" ||
-                                    loggedInRole === "center" ? (
+                                    loggedInRole === "center" ||
+                                    loggedInRole === "asset" ||
+                                    loggedInRole === "account" ? (
                                     <>
                                       <Tooltip
                                         content="Edit"

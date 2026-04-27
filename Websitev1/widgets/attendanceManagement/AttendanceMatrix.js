@@ -124,20 +124,22 @@ const AttendanceMatrix = () => {
                         </h1>
                     </div>
                     <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
-                        <div className="relative group">
-                            <BsPlusSquare
-                                className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                                onClick={() => router.push('/admin/attendance-management/data-entry')}
-                            />
-                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Data Entry</span>
-                        </div>
-                        <div className="relative group">
-                            <FaDownload
-                                className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                                onClick={() => {/* Add export logic if needed */ }}
-                            />
-                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Export Hub</span>
-                        </div>
+                        <Tooltip content="Data Entry" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                            <div className="relative group">
+                                <BsPlusSquare
+                                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                    onClick={() => router.push('/admin/attendance-management/data-entry')}
+                                />
+                            </div>
+                        </Tooltip>
+                        <Tooltip content="Export Hub" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                            <div className="relative group">
+                                <FaDownload
+                                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                    onClick={() => {/* Add export logic if needed */ }}
+                                />
+                            </div>
+                        </Tooltip>
                     </div>
                 </div>
                 <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">

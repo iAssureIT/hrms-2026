@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaPlus, FaSearch, FaDownload } from "react-icons/fa";
+import { BsPlusSquare } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import { Tooltip } from "flowbite-react";
 import TicketChat from "@/components/admin/helpdesk/TicketChat";
 import moment from "moment";
 import ls from "localstorage-slim";
@@ -76,38 +78,49 @@ const Helpdesk = () => {
     <section className="section">
       <main className="flex flex-col h-full bg-white overflow-hidden">
         {/* Top Header Section */}
-        {/* Top Header Section - Matches Dashboard Breadcrumbs */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
-              Helpdesk
-            </h1>
-            <span className="text-sm font-light text-gray-500">
-              Support tickets
-            </span>
+        {/* Standardized Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Helpdesk Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Support <span className="text-[#3c8dbc] font-black">Tickets</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              <Tooltip content="Create Ticket" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                <div className="relative group">
+                  <BsPlusSquare
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                    onClick={() => router.push('/admin/helpdesk/add')}
+                  />
+                </div>
+              </Tooltip>
+              <Tooltip content="Export Tickets" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                <div className="relative group">
+                  <FaDownload
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                    onClick={() => { /* Export logic */ }}
+                  />
+                </div>
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex gap-2 mt-4 md:mt-0">
-            {/* <button className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2">
-            <FaSearch /> Help Center
-          </button> */}
-            <button
-              onClick={() => router.push("/admin/helpdesk/add")}
-              className="bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2 transition-all active:scale-95"
-            >
-              <FaPlus size={10} /> Create Ticket
-            </button>
-          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Manage and track employee support requests, technical issues, and HR inquiries in one centralized dashboard.
+          </p>
         </div>
 
         {/* Main Content Area */}
         <div className="flex flex-1 overflow-hidden relative">
           {/* Left Sidebar - Ticket List Box */}
           <div
-            className={`flex flex-col bg-white border-t-[3px] border-[#3c8dbc] shadow-sm transition-all duration-300 ${
-              isMobile && selectedTicket
+            className={`flex flex-col bg-white border-t-[3px] border-[#3c8dbc] shadow-sm transition-all duration-300 ${isMobile && selectedTicket
                 ? "absolute -translate-x-full"
                 : "relative w-full lg:w-[400px]"
-            }`}
+              }`}
           >
             <div className="p-4 border-b border-gray-100 space-y-4">
               <div className="relative">
@@ -129,11 +142,10 @@ const Helpdesk = () => {
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
-                    className={`px-3 py-1 rounded-sm text-[11px] font-bold uppercase transition-all ${
-                      activeFilter === filter
+                    className={`px-3 py-1 rounded-sm text-[11px] font-bold uppercase transition-all ${activeFilter === filter
                         ? "bg-[#3c8dbc] text-white"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
+                      }`}
                   >
                     {filter}
                   </button>
@@ -160,18 +172,16 @@ const Helpdesk = () => {
                   <div
                     key={t._id}
                     onClick={() => setSelectedTicket(t)}
-                    className={`p-4 border-b border-gray-100 transition-all cursor-pointer group flex items-start gap-4 ${
-                      selectedTicket?._id === t._id
+                    className={`p-4 border-b border-gray-100 transition-all cursor-pointer group flex items-start gap-4 ${selectedTicket?._id === t._id
                         ? "bg-[#f5f5f5]"
                         : "bg-white hover:bg-[#f9f9f9]"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold border ${
-                        selectedTicket?._id === t._id
+                      className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold border ${selectedTicket?._id === t._id
                           ? "bg-[#3c8dbc] text-white border-[#3c8dbc]"
                           : "bg-gray-100 text-gray-500 border-gray-200"
-                      }`}
+                        }`}
                     >
                       {t.employeeId?.employeeName?.charAt(0) || "U"}
                     </div>
@@ -199,13 +209,12 @@ const Helpdesk = () => {
                       </p>
 
                       <div
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight text-white ${
-                          t.status === "Open"
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight text-white ${t.status === "Open"
                             ? "bg-[#00a65a]"
                             : t.status === "In Progress"
                               ? "bg-[#f39c12]"
                               : "bg-gray-400"
-                        }`}
+                          }`}
                       >
                         {t.status}
                       </div>
@@ -218,9 +227,8 @@ const Helpdesk = () => {
 
           {/* Right Content - Thread / Details */}
           <div
-            className={`flex-1 transition-all duration-300 ${
-              isMobile && !selectedTicket ? "hidden" : "flex"
-            }`}
+            className={`flex-1 transition-all duration-300 ${isMobile && !selectedTicket ? "hidden" : "flex"
+              }`}
           >
             <TicketChat
               ticket={selectedTicket}

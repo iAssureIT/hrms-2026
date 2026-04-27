@@ -49,7 +49,7 @@ const getStatusColor = (colorClass) => {
 };
 
 const MetricCard = ({ label, value, sub, icon: Icon, colorClass }) => (
-    <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+    <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
         <div
             style={{ backgroundColor: getStatusColor(colorClass) }}
             className="w-20 md:w-24 flex items-center justify-center text-white shrink-0"
@@ -289,7 +289,7 @@ const HRMSDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
 
                     {/* Attendance Trends (2/3 width) */}
-                    <div className="lg:col-span-2 bg-white border-t-[3px] border-[#3c8dbc] shadow-sm flex flex-col">
+                    <div className="lg:col-span-2 bg-white border-t-[3px] border-[#3c8dbc] shadow-md flex flex-col">
                         <div className="p-4 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="text-sm font-bold text-gray-800">Monthly Recap Report</h3>
                             <div className="flex gap-2 text-gray-400">
@@ -310,7 +310,7 @@ const HRMSDashboard = () => {
                     </div>
 
                     {/* Action Needed Panel (1/3 width) */}
-                    <div className="bg-white border-t-[3px] border-[#f39c12] shadow-sm flex flex-col overflow-hidden">
+                    <div className="bg-white border-t-[3px] border-[#f39c12] shadow-md flex flex-col overflow-hidden">
                         <div className="p-4 border-b border-gray-100">
                             <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
                                 <FaBell className="text-[#f39c12]" /> Alerts & Notices
@@ -356,7 +356,7 @@ const HRMSDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Recent Leave Requests Table (2/3 width) */}
-                    <div className="lg:col-span-2 bg-white border-t-[3px] border-[#00a65a] shadow-sm flex flex-col">
+                    <div className="lg:col-span-2 bg-white border-t-[3px] border-[#00a65a] shadow-md flex flex-col">
                         <div className="p-4 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="text-sm font-bold text-gray-800">Recent Leave Requests</h3>
                             <button className="text-xs text-[#00a65a] font-bold border border-[#00a65a] px-3 py-1 rounded hover:bg-[#00a65a] hover:text-white transition-all">View All</button>
@@ -392,33 +392,37 @@ const HRMSDashboard = () => {
                     </div>
 
                     {/* Department Distribution (1/3 width) */}
-                    <div className="bg-white rounded-[40px] border border-slate-100 shadow-2xl p-8 py-10 flex flex-col items-center">
-                        <div className="w-full text-left mb-10">
-                            <h3 className="text-lg font-black text-slate-800">Department Headcount</h3>
-                            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Distribution of active employees</p>
+                    <div className="bg-white border-t-[3px] border-[#dd4b39] shadow-md flex flex-col">
+                        <div className="p-4 border-b border-gray-100">
+                            <h3 className="text-sm font-bold text-gray-800">Department Headcount</h3>
                         </div>
-                        <div className="w-56 h-56 relative mb-10">
-                            <Doughnut data={deptData} options={{ maintainAspectRatio: false, plugins: { legend: { display: false } } }} />
-                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-4xl font-black text-slate-800 tracking-tighter">{kpis.totalEmployees}</span>
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Active</span>
+                        <div className="p-6 flex flex-col items-center">
+                            <div className="w-full text-center mb-6">
+                                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Distribution of active employees</p>
+                            </div>
+                            <div className="w-48 h-48 relative mb-8">
+                                <Doughnut data={deptData} options={{ maintainAspectRatio: false, plugins: { legend: { display: false } } }} />
+                                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span className="text-3xl font-black text-slate-800 tracking-tighter">{kpis.totalEmployees}</span>
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Total Active</span>
+                                </div>
+                            </div>
+                            <div className="w-full space-y-2 px-2">
+                                {departmentDistribution.map((dept, i) => (
+                                    <div key={i} className="flex justify-between items-center text-[11px] font-bold">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: deptData.datasets[0].backgroundColor[i] }}></div>
+                                            <span className="text-slate-500">{dept._id}</span>
+                                        </div>
+                                        <span className="text-slate-800 font-black">{dept.count}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div className="w-full space-y-3 px-4">
-                            {departmentDistribution.map((dept, i) => (
-                                <div key={i} className="flex justify-between items-center text-[11px] font-bold">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: deptData.datasets[0].backgroundColor[i] }}></div>
-                                        <span className="text-slate-500">{dept._id}</span>
-                                    </div>
-                                    <span className="text-slate-800 font-black">{dept.count}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                    </div> {/* Added this missing closing div for the Department Card */}
+                </div> {/* Closing Main Content Grid */}
 
-            </div>
+            </div> {/* Closing the mx-auto wrapper */}
         </section>
     );
 };

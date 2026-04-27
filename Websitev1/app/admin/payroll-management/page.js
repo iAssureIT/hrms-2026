@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import ProcessingFlow from "@/widgets/payrollManagement/ProcessingFlow";
 import SalaryStructure from "@/widgets/payrollManagement/SalaryStructure";
+import { Tooltip } from "flowbite-react";
+import { BsArrowRepeat } from "react-icons/bs";
+import { FaDownload } from "react-icons/fa";
 
 const PayrollManagementPage = () => {
     const [activeTab, setActiveTab] = useState("processing");
@@ -22,7 +25,22 @@ const PayrollManagementPage = () => {
                             </h1>
                         </div>
                         <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
-                            {/* Payroll specific global actions could go here */}
+                            <Tooltip content="Recalculate Run" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                                <div className="relative group">
+                                    <BsArrowRepeat
+                                        className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                        onClick={() => { /* Global refresh logic */ }}
+                                    />
+                                </div>
+                            </Tooltip>
+                            <Tooltip content="Export Reports" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                                <div className="relative group">
+                                    <FaDownload
+                                        className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                        onClick={() => { /* Global export logic */ }}
+                                    />
+                                </div>
+                            </Tooltip>
                         </div>
                     </div>
                     <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">

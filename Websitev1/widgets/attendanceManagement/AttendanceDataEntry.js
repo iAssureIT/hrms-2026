@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaCloudUploadAlt, FaExchangeAlt, FaCheckCircle, FaChevronRight, FaChevronLeft, FaTrash, FaSave, FaFilter, FaClock, FaCheck, FaUserFriends, FaRegAddressCard, FaEdit } from "react-icons/fa";
+import { Tooltip } from "flowbite-react";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import ls from "localstorage-slim";
@@ -238,20 +239,22 @@ const AttendanceDataEntry = () => {
                     </div>
                     <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
                         <div className="flex items-center gap-2">
-                            <div className="relative group">
-                                <FaCloudUploadAlt
-                                    className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'upload' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
-                                    onClick={() => { setActiveTab("upload"); setStep(1); }}
-                                />
-                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Bulk Upload</span>
-                            </div>
-                            <div className="relative group">
-                                <FaEdit
-                                    className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'manual' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
-                                    onClick={() => setActiveTab("manual")}
-                                />
-                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Manual Entry</span>
-                            </div>
+                            <Tooltip content="Bulk Upload" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                                <div className="relative group">
+                                    <FaCloudUploadAlt
+                                        className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'upload' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
+                                        onClick={() => { setActiveTab("upload"); setStep(1); }}
+                                    />
+                                </div>
+                            </Tooltip>
+                            <Tooltip content="Manual Entry" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                                <div className="relative group">
+                                    <FaEdit
+                                        className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'manual' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
+                                        onClick={() => setActiveTab("manual")}
+                                    />
+                                </div>
+                            </Tooltip>
                         </div>
                     </div>
                 </div>

@@ -499,7 +499,7 @@ const Dashboard = (props) => {
             <div className="bg-white">
               <div className="grid grid-cols-1 w-full lg:grid-cols-5 gap-6 lg:gap-8">
                 {/* Centers Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#4090FF]">
                     <HiOutlineBuildingOffice2 size={32} />
                   </div>
@@ -518,7 +518,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Districts Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#2ECFAD]">
                     <GrMapLocation size={32} />
                   </div>
@@ -531,7 +531,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Blocks Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#FF5370]">
                     <LiaCubesSolid size={32} />
                   </div>
@@ -544,7 +544,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Villages Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#FF9D4F]">
                     <MdOutlineHouse size={32} />
                   </div>
@@ -557,7 +557,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Employees Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#5da5da]">
                     <PiUsersFourBold size={32} />
                   </div>
@@ -572,7 +572,7 @@ const Dashboard = (props) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full mt-10 gap-6 lg:gap-8">
                 {/* Duration Selector Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-slate-100 !text-slate-500">
                     <BsClipboard2Data size={28} />
                   </div>
@@ -592,7 +592,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Beneficiaries Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#f15854]">
                     <PiUsersThreeBold size={32} />
                   </div>
@@ -605,7 +605,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Families Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#60bd68]">
                     <MdPeopleOutline size={32} />
                   </div>
@@ -618,7 +618,7 @@ const Dashboard = (props) => {
                 </div>
 
                 {/* Financial Utilization Card */}
-                <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+                <div className="flex bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
                   <div className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 bg-[#b276b2]">
                     <MdCurrencyRupee size={32} />
                   </div>
@@ -632,7 +632,7 @@ const Dashboard = (props) => {
               </div>
 
               <div className="grid grid-cols-1 w-full gap-6 mt-10">
-                <div className="hr-card">
+                <div className="hr-card shadow-md">
                   <div className="text-center px-4 py-2">
                     <h4 className="hr-subheading text-center mb-6">
                       Plan vs Utilization Report ({loading ? <FaSpinner className="animate-spin inline-flex mx-2 text-green" /> : year})
@@ -646,7 +646,7 @@ const Dashboard = (props) => {
                   </div>
                 </div>
 
-                <div className="hr-card">
+                <div className="hr-card shadow-md">
                   <div className="text-center px-4 py-2">
                     <h4 className="hr-subheading text-center mb-6">
                       Approval Vs Utilization Report ({loading ? <FaSpinner className="animate-spin inline-flex mx-2 text-green" /> : year})

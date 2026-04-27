@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FaHome } from "react-icons/fa";
+import { Tooltip } from "flowbite-react";
 import {
   MdSettings,
   MdWatchLater,
@@ -11,9 +12,8 @@ import {
   MdPayments,
   MdCalendarMonth,
   MdNotificationsActive,
-  MdSave,
-  MdRefresh,
 } from "react-icons/md";
+import { BsCheckSquare, BsArrowRepeat } from "react-icons/bs";
 
 // Import sections
 import AttendanceRules from "@/components/admin/settings/AttendanceRules";
@@ -122,22 +122,43 @@ const Settings = () => {
 
   return (
     <div className="font-sans w-full">
-      {/* Main Action Bar */}
-      <div className="flex justify-end gap-2 mb-6">
-        <button
-          onClick={handleDiscard}
-          className="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-sm font-bold text-xs hover:bg-gray-50 transition-all active:scale-95 flex items-center gap-2"
-        >
-          <MdRefresh size={16} /> Discard
-        </button>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-[#00a65a] border border-[#008d4c] text-white px-8 py-2 rounded-sm font-bold text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
-        >
-          <MdSave size={16} />
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
+      {/* Standardized Header */}
+      <div className="mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+              <span className="text-[#3c8dbc]">System Administration</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+              System <span className="text-[#3c8dbc] font-black">Settings</span>
+            </h1>
+          </div>
+          <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+            <Tooltip content="Discard Changes" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+              <div className="relative group">
+                <BsArrowRepeat
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={handleDiscard}
+                />
+              </div>
+            </Tooltip>
+            <Tooltip content={saving ? "Saving..." : "Save Changes"} arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+              <div className="relative group">
+                <div
+                  className={`relative ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={!saving ? handleSave : undefined}
+                >
+                  <BsCheckSquare
+                    className={`cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm ${saving ? 'animate-pulse' : ''}`}
+                  />
+                </div>
+              </div>
+            </Tooltip>
+          </div>
+        </div>
+        <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+          Configure global system rules, attendance policies, payroll structures, and notification triggers to align with organizational standards.
+        </p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -157,11 +178,10 @@ const Settings = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-3 p-4 text-left transition-all border-l-4 ${
-                      isActive
+                    className={`flex items-center gap-3 p-4 text-left transition-all border-l-4 ${isActive
                         ? "bg-[#f4f7f6] border-[#00a65a] text-[#00a65a]"
                         : "bg-white border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800"
-                    }`}
+                      }`}
                   >
                     <Icon
                       size={18}
