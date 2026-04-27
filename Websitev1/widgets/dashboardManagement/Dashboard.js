@@ -659,11 +659,10 @@ const Dashboard = (props) => {
                     />
                   </div>
                 </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
+    </div>
     </section>
   );
 };

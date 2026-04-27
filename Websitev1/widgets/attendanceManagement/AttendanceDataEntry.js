@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaCloudUploadAlt, FaExchangeAlt, FaCheckCircle, FaChevronRight, FaChevronLeft, FaTrash, FaSave, FaFilter, FaClock, FaCheck, FaUserFriends, FaRegAddressCard } from "react-icons/fa";
+import { FaCloudUploadAlt, FaExchangeAlt, FaCheckCircle, FaChevronRight, FaChevronLeft, FaTrash, FaSave, FaFilter, FaClock, FaCheck, FaUserFriends, FaRegAddressCard, FaEdit } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import ls from "localstorage-slim";
