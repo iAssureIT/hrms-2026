@@ -74,7 +74,7 @@ const Helpdesk = () => {
 
   return (
     <section className="section">
-      <main className="flex flex-col h-full bg-[#f4f6f9] overflow-hidden">
+      <main className="flex flex-col h-full bg-white overflow-hidden">
         {/* Top Header Section */}
         {/* Top Header Section - Matches Dashboard Breadcrumbs */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">

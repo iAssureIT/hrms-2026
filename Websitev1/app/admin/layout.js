@@ -1249,11 +1249,6 @@ export default function RootLayout({ children }) {
           title: "Leave Type Master",
           link: "/admin/master-data/leave-types",
         },
-        {
-          icon: <FaRegCircle />,
-          title: "Leave Policy Master",
-          link: "/admin/master-data/leave-policy",
-        },
       ],
     },
     {

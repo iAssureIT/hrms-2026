@@ -157,7 +157,7 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-6">
             {ticket.status !== "Resolved" && ticket.status !== "Closed" && (
             <button
                 onClick={markResolved}
