@@ -388,16 +388,14 @@ const AttendanceDataEntry = () => {
                             </div>
                             <div className="admin-content-area overflow-x-auto border border-gray-200">
                                 <table className="admin-table border-collapse">
-                                    <thead className="admin-table-thead">
-                                     <thead className="admin-table-thead bg-gray-50/50">
+                                    <thead className="admin-table-thead bg-gray-50/50">
                                         <tr>
-                                            <th className="p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">Employee Profile</th>
-                                            <th className="p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">In Time</th>
-                                            <th className="p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">Out Time</th>
-                                            <th className="p-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider">Attendance Status</th>
-                                            <th className="p-4 text-right text-[11px] font-bold text-gray-500 uppercase tracking-wider">Remarks / Notes</th>
+                                            <th className="admin-table-th p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider min-w-[250px]">Employee Profile</th>
+                                            <th className="admin-table-th p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider min-w-[150px]">In Time</th>
+                                            <th className="admin-table-th p-4 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider min-w-[150px]">Out Time</th>
+                                            <th className="admin-table-th p-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider min-w-[180px]">Attendance Status</th>
+                                            <th className="admin-table-th p-4 text-right text-[11px] font-bold text-gray-500 uppercase tracking-wider">Remarks / Notes</th>
                                         </tr>
-                                    </thead>
                                     </thead>
                                     <tbody>
                                         {loading ? (
