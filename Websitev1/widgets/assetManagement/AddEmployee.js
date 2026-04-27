@@ -192,7 +192,8 @@ const AddEmployee = () => {
                 }
             } catch (err) {
                 console.error("Submit error:", err);
-                Swal.fire("Error!", "Failed to save employee details.", "error");
+                const errorMsg = err.response?.data?.message || "Failed to save employee details.";
+                Swal.fire("Error!", errorMsg, "error");
             } finally {
                 setLoading(false);
             }

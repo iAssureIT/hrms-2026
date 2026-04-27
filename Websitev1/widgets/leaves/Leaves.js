@@ -16,6 +16,7 @@ import { MdHistory, MdFilterList } from "react-icons/md";
 import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
+import Swal from "sweetalert2";
 
 const Leaves = () => {
   const router = useRouter();
@@ -193,12 +194,22 @@ const Leaves = () => {
       console.log("Triggering manual accrual...");
       const res = await axios.post("/api/leave-ledger/accrue-monthly");
       console.log("Accrual Response:", res.data);
-      alert(res.data.message || "Manual accrual completed successfully.");
+      Swal.fire({
+        title: "Accrual Successful",
+        text: res.data.message || "Manual accrual completed successfully.",
+        icon: "success",
+        confirmButtonColor: "#00a65a"
+      });
       fetchLedger();
       if (selectedEmployee) fetchSummary(selectedEmployee);
     } catch (err) {
       console.error("Accrual Error:", err);
-      alert("Accrual Error: " + (err.response?.data?.message || err.message));
+      Swal.fire({
+        title: "Accrual Error",
+        text: err.response?.data?.message || err.message,
+        icon: "error",
+        confirmButtonColor: "#dd4b39"
+      });
     }
   };
 

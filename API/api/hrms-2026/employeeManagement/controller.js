@@ -6,12 +6,25 @@ const DepartmentMaster = require("../oneFieldModules/departmentMaster/model.js")
 const SubdepartmentMaster = require("../oneFieldModules/subdepartmentMaster/model.js");
 const FailedRecords = require("../failedRecords/model.js");
 
-exports.upsertEmployee = (req, res) => {
+exports.upsertEmployee = async (req, res) => {
     const { 
         employeeName, employeeID, employee_id, employeeEmail, employeeMobile, employeeDesignation,
         center_id, centerName, subLocation_id, subLocationName,
         department_id, departmentName, subDepartment_id, subDepartmentName
     } = req.body;
+
+    // Check if employeeID is already taken by ANOTHER employee
+    if (employeeID && employeeID !== "-") {
+        const idExists = await Employees.findOne({ 
+            employeeID: employeeID, 
+            employeeEmail: { $ne: employeeEmail } 
+        });
+        if (idExists) {
+            return res.status(409).json({ 
+                message: `Employee ID "${employeeID}" is already assigned to ${idExists.employeeName}.` 
+            });
+        }
+    }
 
     Employees.findOneAndUpdate(
         { employeeEmail: employeeEmail },

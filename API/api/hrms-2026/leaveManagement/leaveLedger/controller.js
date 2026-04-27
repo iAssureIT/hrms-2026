@@ -65,6 +65,7 @@ exports.accrueMonthlyLeaves = async (req, res) => {
 
     const employees = await Employee.find();
     let count = 0;
+    let creditedEmployees = [];
 
     for (let emp of employees) {
       // 2. Check if already credited this month
@@ -95,10 +96,18 @@ exports.accrueMonthlyLeaves = async (req, res) => {
           referenceType: "SYSTEM",
         });
         count++;
+        creditedEmployees.push(emp.employeeName);
       }
     }
 
-    res.status(200).json({ success: true, message: `Accrual completed. Credited ${count} employees.` });
+    res.status(200).json({ 
+        success: true, 
+        message: count > 0 
+            ? `Accrual completed. Credited ${count} employees: ${creditedEmployees.join(", ")}`
+            : `Accrual completed. No new employees needed credits for ${monthName}.`,
+        count,
+        creditedEmployees
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
