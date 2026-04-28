@@ -75,28 +75,46 @@ exports.getSummaryByEmployee = async (req, res) => {
     let openingTransactions = [];
 
     if (month !== null) {
-      const startOfMonth = moment([year, month - 1]).startOf("month").toDate();
-      const endOfMonth = moment([year, month - 1]).endOf("month").toDate();
+      const startOfMonth = moment([year, month - 1])
+        .startOf("month")
+        .toDate();
+      const endOfMonth = moment([year, month - 1])
+        .endOf("month")
+        .toDate();
 
       monthlyTransactions = await LeaveLedger.find({
         employeeId,
-        transactionDate: { $gte: startOfMonth, $lte: endOfMonth }
+        transactionDate: { $gte: startOfMonth, $lte: endOfMonth },
       }).populate("leaveTypeId");
 
       // Opening balance = all transactions before start of month
       openingTransactions = await LeaveLedger.find({
         employeeId,
         year: year,
-        transactionDate: { $lt: startOfMonth }
+        transactionDate: { $lt: startOfMonth },
       });
     }
 
     const summary = {
-      earnedLeave: { opening: 0, earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
-      compOff: { opening: 0, earned: 0, used: 0, balance: 0, monthlyEarned: 0, monthlyUsed: 0 },
+      earnedLeave: {
+        opening: 0,
+        earned: 0,
+        used: 0,
+        balance: 0,
+        monthlyEarned: 0,
+        monthlyUsed: 0,
+      },
+      compOff: {
+        opening: 0,
+        earned: 0,
+        used: 0,
+        balance: 0,
+        monthlyEarned: 0,
+        monthlyUsed: 0,
+      },
       others: [],
       totalBalance: 0,
-      lop: 0
+      lop: 0,
     };
 
     balances.forEach((b) => {
@@ -104,19 +122,21 @@ exports.getSummaryByEmployee = async (req, res) => {
       const name = b.leaveTypeId?.leaveTypeName;
 
       // Monthly Earned/Used
-      const relevantTx = monthlyTransactions.filter(tx => tx.leaveTypeId?._id.toString() === b.leaveTypeId?._id.toString());
+      const relevantTx = monthlyTransactions.filter(
+        (tx) => String(tx.leaveTypeId?._id || tx.leaveTypeId) === String(b.leaveTypeId?._id)
+      );
       let mEarned = 0;
       let mUsed = 0;
-      relevantTx.forEach(tx => {
+      relevantTx.forEach((tx) => {
         if (tx.days > 0) mEarned += tx.days;
-        else if (tx.days < 0) mUsed += Math.abs(tx.days);
+        else if (tx.days < 0 && tx.transactionType !== "ADJUSTED") mUsed += Math.abs(tx.days);
       });
 
       // Opening Balance for the month
       const typeOpeningTx = openingTransactions
-        .filter(tx => tx.leaveTypeId.toString() === b.leaveTypeId?._id.toString())
+        .filter((tx) => String(tx.leaveTypeId) === String(b.leaveTypeId?._id))
         .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
-      
+
       const openingBal = typeOpeningTx.length > 0 ? typeOpeningTx[0].balanceAfter : 0;
 
       const stats = {
@@ -125,7 +145,7 @@ exports.getSummaryByEmployee = async (req, res) => {
         used: b.usedDays,
         balance: b.remainingBalance,
         monthlyEarned: mEarned,
-        monthlyUsed: mUsed
+        monthlyUsed: mUsed,
       };
 
       if (code === "EL" || name?.toLowerCase().includes("earned")) {
@@ -133,29 +153,33 @@ exports.getSummaryByEmployee = async (req, res) => {
       } else if (code === "CO" || name?.toLowerCase().includes("comp off")) {
         summary.compOff = stats;
       }
-      
+
       if (code === "EL" || code === "CO") {
         summary.totalBalance += b.remainingBalance;
+      }
+      if (code === "LOP") {
+        summary.lopBalance = b.remainingBalance;
       }
     });
 
     // Explicitly handle LOP from transactions if not in balances
-    const lopTransactions = monthlyTransactions.filter(tx => tx.leaveTypeId?.leaveCode === "LOP");
     let monthlyLopUsed = 0;
-    lopTransactions.forEach(tx => {
-      if (tx.days < 0) monthlyLopUsed += Math.abs(tx.days);
+    monthlyTransactions.forEach((tx) => {
+      if (tx.leaveTypeId?.leaveCode === "LOP" && tx.days < 0 && tx.transactionType !== "ADJUSTED") {
+        monthlyLopUsed += Math.abs(tx.days);
+      }
     });
-    
+
     summary.monthlyLopUsed = monthlyLopUsed;
 
-    // The 'lop' field in summary is used by the UI for the 'Closing/Total' column
-    if (summary.totalBalance < 0) {
-      summary.lop = Math.abs(summary.totalBalance);
-    } else {
-      // If balance is not negative, it means EL/CO covered everything. 
-      // But if there were specific LOP transactions, we still want to show them.
-      summary.lop = monthlyLopUsed; 
-    }
+    // LOP calculation (consistency with Monthly Report):
+    // 1. Deficit in EL/CO balance (cumulative)
+    // 2. Outstanding LOP debt (cumulative)
+    // 3. LOP usage this month (even if already adjusted)
+    const lopDebt = Math.abs(summary.lopBalance < 0 ? summary.lopBalance : 0);
+    const deficit = summary.totalBalance < 0 ? Math.abs(summary.totalBalance) : 0;
+
+    summary.lop = Math.max(lopDebt, monthlyLopUsed) + deficit;
 
     res.status(200).json({ success: true, data: summary });
   } catch (err) {
@@ -169,26 +193,32 @@ exports.getMonthlyReport = async (req, res) => {
     const year = Number(req.query.year || moment().year());
     const month = Number(req.query.month || moment().month() + 1);
 
-    const startOfMonth = moment([year, month - 1]).startOf("month").toDate();
-    const endOfMonth = moment([year, month - 1]).endOf("month").toDate();
+    const startOfMonth = moment([year, month - 1])
+      .startOf("month")
+      .toDate();
+    const endOfMonth = moment([year, month - 1])
+      .endOf("month")
+      .toDate();
 
     const employees = await Employee.find();
-    const balances = await LeaveBalance.find({ year: year }).populate("leaveTypeId");
-    
+    const balances = await LeaveBalance.find({ year: year }).populate(
+      "leaveTypeId",
+    );
+
     const monthlyTransactions = await LeaveLedger.find({
-      transactionDate: { $gte: startOfMonth, $lte: endOfMonth }
+      transactionDate: { $gte: startOfMonth, $lte: endOfMonth },
     }).populate("leaveTypeId");
 
-    const report = employees.map(emp => {
-      const empBalances = balances.filter(b => b.employeeId.toString() === emp._id.toString());
-      const empTransactions = monthlyTransactions.filter(tx => tx.employeeId.toString() === emp._id.toString());
-      
+    const report = employees.map((emp) => {
+      const empBalances = balances.filter((b) => String(b.employeeId) === String(emp._id));
+      const empTransactions = monthlyTransactions.filter((tx) => String(tx.employeeId) === String(emp._id));
+
       let elBalance = 0;
       let coBalance = 0;
       let lopBalance = 0;
       let totalUsedInMonth = 0;
 
-      empBalances.forEach(b => {
+      empBalances.forEach((b) => {
         const code = b.leaveTypeId?.leaveCode?.toUpperCase();
         if (code === "EL") elBalance = b.remainingBalance;
         if (code === "CO") coBalance = b.remainingBalance;
@@ -196,24 +226,26 @@ exports.getMonthlyReport = async (req, res) => {
       });
 
       let monthlyLopUsed = 0;
-      empTransactions.forEach(tx => {
+      empTransactions.forEach((tx) => {
         if (tx.days < 0 && tx.transactionType !== "ADJUSTED") {
-            totalUsedInMonth += Math.abs(tx.days);
-            // If it's an LOP transaction, add to monthly LOP count
-            if (tx.leaveTypeId?.leaveCode === "LOP") {
-                monthlyLopUsed += Math.abs(tx.days);
-            }
+          totalUsedInMonth += Math.abs(tx.days);
+          // If it's an LOP transaction, add to monthly LOP count
+          if (tx.leaveTypeId?.leaveCode === "LOP") {
+            monthlyLopUsed += Math.abs(tx.days);
+          }
         }
       });
 
       const totalBalance = elBalance + coBalance;
-      // LOP is (deficit if EL+CO is negative) OR (any direct LOP used in month)
-      let lop = 0;
-      if (totalBalance < 0) {
-        lop = Math.abs(totalBalance);
-      } else {
-        lop = monthlyLopUsed;
-      }
+
+      // LOP calculation (consistency with Matrix Summary):
+      // 1. Deficit in EL/CO balance (cumulative)
+      // 2. Outstanding LOP debt (cumulative)
+      // 3. LOP usage this month (even if already adjusted)
+      const lopDebt = Math.abs(lopBalance < 0 ? lopBalance : 0);
+      const deficit = totalBalance < 0 ? Math.abs(totalBalance) : 0;
+
+      let lop = Math.max(lopDebt, monthlyLopUsed) + deficit;
 
       return {
         _id: emp._id,
@@ -223,7 +255,7 @@ exports.getMonthlyReport = async (req, res) => {
         coBalance,
         totalBalance,
         usedInMonth: totalUsedInMonth,
-        lop
+        lop,
       };
     });
 
@@ -252,9 +284,9 @@ exports.syncAllBalances = async (req, res) => {
     const createdBy = req.body.createdBy;
 
     const employees = await Employee.find(); // Handle records without status field
-    const leaveTypes = await LeaveType.find({ 
+    const leaveTypes = await LeaveType.find({
       leaveCode: { $ne: "LOP" },
-      $or: [{ status: "ACTIVE" }, { status: { $exists: false } }] 
+      $or: [{ status: "ACTIVE" }, { status: { $exists: false } }],
     });
 
     let createdCount = 0;
@@ -325,7 +357,9 @@ exports.bulkUpload = async (req, res) => {
   try {
     const { data: excelData, fileName, createdBy } = req.body;
     if (!Array.isArray(excelData)) {
-      return res.status(400).json({ message: "Invalid data format. Expected an array." });
+      return res
+        .status(400)
+        .json({ message: "Invalid data format. Expected an array." });
     }
 
     const validData = [];
@@ -339,11 +373,15 @@ exports.bulkUpload = async (req, res) => {
       let employee;
       if (row.employeeID && row.employeeID !== "-") {
         const lookupValue = row.employeeID.toString().trim();
-        employee = await Employee.findOne({ 
+        employee = await Employee.findOne({
           $or: [
-            { employeeID: { $regex: new RegExp("^" + lookupValue + "$", "i") } },
-            { employee_id: { $regex: new RegExp("^" + lookupValue + "$", "i") } }
-          ]
+            {
+              employeeID: { $regex: new RegExp("^" + lookupValue + "$", "i") },
+            },
+            {
+              employee_id: { $regex: new RegExp("^" + lookupValue + "$", "i") },
+            },
+          ],
         });
         if (employee) {
           row.employeeName = employee.employeeName;
@@ -357,7 +395,9 @@ exports.bulkUpload = async (req, res) => {
       // Resolve Leave Type
       let leaveType;
       if (row.leaveTypeCode && row.leaveTypeCode !== "-") {
-        leaveType = await LeaveType.findOne({ leaveCode: row.leaveTypeCode.toString().trim().toUpperCase() });
+        leaveType = await LeaveType.findOne({
+          leaveCode: row.leaveTypeCode.toString().trim().toUpperCase(),
+        });
         if (leaveType) {
           row.leaveTypeName = leaveType.leaveTypeName;
         } else {
@@ -367,10 +407,14 @@ exports.bulkUpload = async (req, res) => {
         remark += "Leave Type Code missing, ";
       }
 
-      if (!row.openingBalance && row.openingBalance !== 0) remark += "Opening Balance missing, ";
+      if (!row.openingBalance && row.openingBalance !== 0)
+        remark += "Opening Balance missing, ";
 
       if (remark) {
-        invalidData.push({ ...row, failedRemark: remark.trim().replace(/,$/, "") });
+        invalidData.push({
+          ...row,
+          failedRemark: remark.trim().replace(/,$/, ""),
+        });
         continue;
       }
 
@@ -381,7 +425,11 @@ exports.bulkUpload = async (req, res) => {
         year: Number(row.year || year),
       });
       if (exists) {
-        invalidData.push({ ...row, failedRemark: "Balance record already exists for this employee, leave type, and year" });
+        invalidData.push({
+          ...row,
+          failedRemark:
+            "Balance record already exists for this employee, leave type, and year",
+        });
         continue;
       }
 
@@ -403,7 +451,9 @@ exports.bulkUpload = async (req, res) => {
     }
 
     if (validData.length > 0) {
-      const insertedRecords = await LeaveBalance.insertMany(validData, { ordered: false });
+      const insertedRecords = await LeaveBalance.insertMany(validData, {
+        ordered: false,
+      });
       // Create opening ledger entries
       for (let rec of insertedRecords) {
         await LeaveLedger.create({
@@ -448,9 +498,11 @@ exports.filedetails = async (req, res) => {
     const goodrecords = await LeaveBalance.find({ fileName: fileName })
       .populate("employeeId", "employeeName employeeID")
       .populate("leaveTypeId", "leaveTypeName leaveCode");
-    const failedRecordsData = await FailedRecords.findOne({ fileName: fileName });
+    const failedRecordsData = await FailedRecords.findOne({
+      fileName: fileName,
+    });
     res.status(200).json({
-      goodrecords: goodrecords.map(r => ({
+      goodrecords: goodrecords.map((r) => ({
         employeeName: r.employeeId?.employeeName || "-NA-",
         employeeID: r.employeeId?.employeeID || "-NA-",
         leaveTypeName: r.leaveTypeId?.leaveTypeName || "-NA-",
@@ -460,7 +512,9 @@ exports.filedetails = async (req, res) => {
         earnedDays: r.earnedDays,
       })),
       failedRecords: failedRecordsData ? failedRecordsData.failedRecords : [],
-      totalRecords: goodrecords.length + (failedRecordsData ? failedRecordsData.totalRecords : 0),
+      totalRecords:
+        goodrecords.length +
+        (failedRecordsData ? failedRecordsData.totalRecords : 0),
     });
   } catch (error) {
     console.error("File Details Error:", error);
@@ -478,24 +532,30 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
             if (updateBadData) {
               FailedRecords.updateOne(
                 { fileName: invalidData.fileName },
-                { $set: { failedRecords: [] } }
-              ).then(() => {
-                FailedRecords.updateOne(
-                  { fileName: invalidData.fileName },
-                  {
-                    $set: { totalRecords: invalidData.totalRecords },
-                    $push: { failedRecords: invalidData.FailedRecords },
-                  }
-                ).then(resolve).catch(reject);
-              }).catch(reject);
+                { $set: { failedRecords: [] } },
+              )
+                .then(() => {
+                  FailedRecords.updateOne(
+                    { fileName: invalidData.fileName },
+                    {
+                      $set: { totalRecords: invalidData.totalRecords },
+                      $push: { failedRecords: invalidData.FailedRecords },
+                    },
+                  )
+                    .then(resolve)
+                    .catch(reject);
+                })
+                .catch(reject);
             } else {
               FailedRecords.updateOne(
                 { fileName: invalidData.fileName },
                 {
                   $set: { totalRecords: invalidData.totalRecords },
                   $push: { failedRecords: invalidData.FailedRecords },
-                }
-              ).then(resolve).catch(reject);
+                },
+              )
+                .then(resolve)
+                .catch(reject);
             }
           } else {
             FailedRecords.updateOne(
@@ -503,8 +563,10 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
               {
                 $set: { totalRecords: invalidData.totalRecords },
                 $push: { failedRecords: invalidData.FailedRecords },
-              }
-            ).then(resolve).catch(reject);
+              },
+            )
+              .then(resolve)
+              .catch(reject);
           }
         } else {
           const failedRecords = new FailedRecords({
@@ -514,7 +576,10 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
             totalRecords: invalidData.totalRecords,
             createdAt: new Date(),
           });
-          failedRecords.save().then((d) => resolve(d._id)).catch(reject);
+          failedRecords
+            .save()
+            .then((d) => resolve(d._id))
+            .catch(reject);
         }
       });
   });
