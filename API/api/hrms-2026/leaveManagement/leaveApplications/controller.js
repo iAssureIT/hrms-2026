@@ -148,9 +148,16 @@ exports.updateLeaveStatus = async (req, res) => {
       { new: true },
     );
 
-    // Case A: If status changed to APPROVED (Deduct Balance)
+    // Case A: If status changed to APPROVED
     if (req.body.status === "APPROVED" && previousApplication.status !== "APPROVED") {
-      await deductLeaveBalance(data, req.body.approvedBy || data.createdBy);
+      const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
+      
+      // If the applied leave type is CO, treat it as earning
+      if (data.leaveTypeId.toString() === coType?._id.toString()) {
+        await creditLeaveBalance(data, req.body.approvedBy || data.createdBy);
+      } else {
+        await deductLeaveBalance(data, req.body.approvedBy || data.createdBy);
+      }
     }
     
     // Case B: If status changed FROM APPROVED to REJECTED/CANCELLED (Restore Balance)
@@ -208,6 +215,7 @@ exports.deleteLeaveApplication = async (req, res) => {
 async function deductLeaveBalance(data, actorId) {
     const year = moment(data.fromDate).year();
     let remainingToDeduct = data.totalDays;
+    let adjustedTypes = [];
 
     const elType = await LeaveType.findOne({ $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }] });
     const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
@@ -237,11 +245,32 @@ async function deductLeaveBalance(data, actorId) {
           balanceAfter: updatedBal.remainingBalance,
           referenceId: data._id,
           referenceType: "LEAVE_APPLICATION",
-          remarks: `Leave approved (Partially/Fully from ${type.leaveCode})`,
+          remarks: data.leaveTypeId.toString() === lopType?._id.toString() 
+              ? `LOP adjusted using ${type.leaveCode}` 
+              : `Leave approved (Partially/Fully from ${type.leaveCode})`,
+          adjustedWith: data.leaveTypeId.toString() === lopType?._id.toString() ? "LOP" : null,
           createdBy: actorId,
         });
         remainingToDeduct -= toUse;
+        adjustedTypes.push(type.leaveCode);
       }
+    }
+
+    // If application was for LOP and was adjusted against paid leaves
+    if (data.leaveTypeId.toString() === lopType?._id.toString() && adjustedTypes.length > 0) {
+        await LeaveLedger.create({
+            employeeId: data.employeeId,
+            leaveTypeId: lopType._id,
+            year: year,
+            transactionType: "ADJUSTED",
+            days: 0,
+            balanceAfter: 0, // LOP balance doesn't really matter here
+            referenceId: data._id,
+            referenceType: "LEAVE_APPLICATION",
+            remarks: `${data.totalDays - remainingToDeduct} day(s) LOP adjusted using ${adjustedTypes.join(", ")}`,
+            adjustedWith: adjustedTypes.join(", "),
+            createdBy: actorId,
+        });
     }
 
     if (remainingToDeduct > 0 && lopType) {
@@ -263,36 +292,105 @@ async function deductLeaveBalance(data, actorId) {
             balanceAfter: updatedLop.remainingBalance,
             referenceId: data._id,
             referenceType: "LEAVE_APPLICATION",
-            remarks: `Leave approved (Converted to LOP)`,
+            remarks: data.leaveTypeId.toString() === lopType._id.toString() ? "LOP approved" : `Leave approved (Converted to LOP)`,
+            adjustedWith: adjustedTypes.length > 0 ? adjustedTypes.join(", ") : null,
             createdBy: actorId,
         });
     }
+
+    // Save adjustment info to the Application record for visibility in All Records tab
+    if (adjustedTypes.length > 0) {
+        const LeaveApplication = require("./model");
+        await LeaveApplication.findOneAndUpdate(
+            { _id: data._id },
+            { $set: { adjustedWith: adjustedTypes.join(", ") } }
+        );
+    }
+}
+
+async function creditLeaveBalance(data, actorId) {
+    const year = moment(data.fromDate).year();
+    const days = data.totalDays;
+
+    let bal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: data.leaveTypeId, year: year });
+    if (!bal) {
+        bal = await LeaveBalance.create({ 
+            employeeId: data.employeeId, 
+            leaveTypeId: data.leaveTypeId, 
+            year: year, 
+            openingBalance: 0, 
+            remainingBalance: 0,
+            earnedDays: 0,
+            usedDays: 0
+        });
+    }
+
+    const updatedBal = await LeaveBalance.findOneAndUpdate(
+        { _id: bal._id },
+        { $inc: { earnedDays: days, remainingBalance: days } },
+        { new: true }
+    );
+
+    await LeaveLedger.create({
+        employeeId: data.employeeId,
+        leaveTypeId: data.leaveTypeId,
+        year: year,
+        transactionType: "EARNED",
+        days: days,
+        balanceAfter: updatedBal.remainingBalance,
+        referenceId: data._id,
+        referenceType: "LEAVE_APPLICATION",
+        remarks: `Comp Off earned via application: ${data.reason}`,
+        createdBy: actorId,
+    });
 }
 
 async function restoreLeaveBalance(data, actorId) {
     const year = moment(data.fromDate).year();
-    const entries = await LeaveLedger.find({ referenceId: data._id, referenceType: "LEAVE_APPLICATION", transactionType: "USED" });
+    const entries = await LeaveLedger.find({ referenceId: data._id, referenceType: "LEAVE_APPLICATION" });
 
     for (let entry of entries) {
-        const amountToRestore = Math.abs(entry.days);
-        
-        const updatedBal = await LeaveBalance.findOneAndUpdate(
-            { employeeId: data.employeeId, leaveTypeId: entry.leaveTypeId, year: year },
-            { $inc: { usedDays: -amountToRestore, remainingBalance: amountToRestore } },
-            { new: true }
-        );
+        if (entry.transactionType === "USED") {
+            const amountToRestore = Math.abs(entry.days);
+            const updatedBal = await LeaveBalance.findOneAndUpdate(
+                { employeeId: data.employeeId, leaveTypeId: entry.leaveTypeId, year: year },
+                { $inc: { usedDays: -amountToRestore, remainingBalance: amountToRestore } },
+                { new: true }
+            );
 
-        await LeaveLedger.create({
-            employeeId: data.employeeId,
-            leaveTypeId: entry.leaveTypeId,
-            year: year,
-            transactionType: "RESTORED",
-            days: amountToRestore,
-            balanceAfter: updatedBal.remainingBalance,
-            referenceId: data._id,
-            referenceType: "LEAVE_APPLICATION",
-            remarks: `Leave reversal: Balance restored`,
-            createdBy: actorId,
-        });
+            await LeaveLedger.create({
+                employeeId: data.employeeId,
+                leaveTypeId: entry.leaveTypeId,
+                year: year,
+                transactionType: "RESTORED",
+                days: amountToRestore,
+                balanceAfter: updatedBal.remainingBalance,
+                referenceId: data._id,
+                referenceType: "LEAVE_APPLICATION",
+                remarks: `Leave reversal: Balance restored`,
+                createdBy: actorId,
+            });
+        } else if (entry.transactionType === "EARNED") {
+            const amountToReverse = Math.abs(entry.days);
+            const updatedBal = await LeaveBalance.findOneAndUpdate(
+                { employeeId: data.employeeId, leaveTypeId: entry.leaveTypeId, year: year },
+                { $inc: { earnedDays: -amountToReverse, remainingBalance: -amountToReverse } },
+                { new: true }
+            );
+
+            await LeaveLedger.create({
+                employeeId: data.employeeId,
+                leaveTypeId: entry.leaveTypeId,
+                year: year,
+                transactionType: "RESTORED",
+                days: -amountToReverse,
+                balanceAfter: updatedBal.remainingBalance,
+                referenceId: data._id,
+                referenceType: "LEAVE_APPLICATION",
+                remarks: `Leave reversal: Earning cancelled`,
+                createdBy: actorId,
+            });
+        }
+        // "ADJUSTED" entries don't need restoration as they are 0-day records
     }
 }

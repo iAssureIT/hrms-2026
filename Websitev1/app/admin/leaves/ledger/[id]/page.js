@@ -166,15 +166,19 @@ const EmployeeLeaveLedger = () => {
                    </span>
                 </td>
               </tr>
-              {/* Total Paid Balance Row */}
+              {/* Net Balance Row */}
               <tr className="bg-blue-50/30 border-t-2 border-gray-100">
-                <td className="px-6 py-4 text-sm font-extrabold text-[#3c8dbc]">Total Paid Balance (EL + CO)</td>
+                <td className="px-6 py-4 text-sm font-extrabold text-[#3c8dbc]">Net Balance (EL + CO - LOP)</td>
                 <td className="px-6 py-4 text-sm text-center font-bold text-gray-400">---</td>
                 <td className="px-6 py-4 text-sm text-center font-bold text-gray-400">---</td>
                 <td className="px-6 py-4 text-sm text-center font-bold text-gray-400">---</td>
                 <td className="px-6 py-4 text-center">
-                   <span className={`text-base font-black ${summary?.totalBalance < 0 ? "text-red-600" : "text-[#3c8dbc]"}`}>
-                     {summary?.totalBalance || 0}
+                   <span className={`text-sm font-black ${(summary?.totalBalance - summary?.lop) < 0 ? "text-red-600" : "text-[#3c8dbc]"}`}>
+                     {(() => {
+                       const net = (summary?.totalBalance || 0) - (summary?.lop || 0);
+                       if (net < 0) return `Deficit: ${Math.abs(net).toFixed(1)} ${Math.abs(net) === 1 ? "Day" : "Days"}`;
+                       return net.toFixed(1);
+                     })()}
                    </span>
                 </td>
               </tr>

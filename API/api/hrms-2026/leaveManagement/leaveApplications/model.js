@@ -48,6 +48,10 @@ const leaveApplicationSchema = new mongoose.Schema(
     remarks: {
       type: String,
     },
+    adjustedWith: {
+      type: String,
+      trim: true,
+    },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

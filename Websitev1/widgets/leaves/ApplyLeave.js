@@ -149,11 +149,13 @@ const ApplyLeave = () => {
                     }
                   >
                     <option value="">Select type</option>
-                    {leaveTypes.map((type) => (
-                      <option key={type._id} value={type._id}>
-                        {type.leaveTypeName} ({type.leaveCode})
-                      </option>
-                    ))}
+                    {leaveTypes
+                      .filter((type) => !["CO", "EL"].includes(type.leaveCode))
+                      .map((type) => (
+                        <option key={type._id} value={type._id}>
+                          {type.leaveTypeName} ({type.leaveCode})
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div>

@@ -95,6 +95,10 @@ exports.accrueMonthlyLeaves = async (req, res) => {
           remarks: `Monthly Accrual: ${monthName} ${year}`,
           referenceType: "SYSTEM",
         });
+
+        // 5. Adjust with LOP if debt exists
+        await adjustLOPDebt(emp._id, elType._id, year, 1, "EL");
+
         count++;
         creditedEmployees.push(emp.employeeName);
       }
@@ -148,6 +152,9 @@ exports.addCompOff = async (req, res) => {
       createdBy: approvedBy,
     });
 
+    // 4. Adjust with LOP if debt exists
+    await adjustLOPDebt(employeeId, coType._id, year, Number(days), "CO");
+
     res.status(200).json({ success: true, data });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -192,5 +199,72 @@ exports.deleteLedgerEntry = async (req, res) => {
     res.status(200).json({ success: true, message: "Ledger entry deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+// HELPER: Adjust LOP Debt with newly earned leaves
+const adjustLOPDebt = async (employeeId, leaveTypeId, year, newlyEarnedDays, leaveCode) => {
+  try {
+    // 1. Find LOP Type
+    const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
+    if (!lopType) return;
+
+    // 2. Find LOP Balance for the year
+    const lopBalance = await LeaveBalance.findOne({
+      employeeId,
+      leaveTypeId: lopType._id,
+      year,
+    });
+
+    // If usedDays > 0, there is debt to pay off
+    if (lopBalance && lopBalance.usedDays > 0) {
+      const adjustment = Math.min(newlyEarnedDays, lopBalance.usedDays);
+      if (adjustment <= 0) return;
+
+      // 3. Update LOP Balance (reduce usedDays, increase remainingBalance)
+      lopBalance = await LeaveBalance.findOneAndUpdate(
+        { _id: lopBalance._id },
+        { $inc: { usedDays: -adjustment, remainingBalance: adjustment } },
+        { new: true }
+      );
+
+      // 4. Update the newly earned leave balance (reduce remainingBalance, increase usedDays)
+      const earnedBalance = await LeaveBalance.findOneAndUpdate(
+        { employeeId, leaveTypeId, year },
+        { $inc: { remainingBalance: -adjustment, usedDays: adjustment } },
+        { new: true }
+      );
+      
+      if (earnedBalance) {
+
+        // 5. Create Ledger Entry for the newly earned leave (USED)
+        await LeaveLedger.create({
+          employeeId,
+          leaveTypeId,
+          year,
+          transactionType: "USED",
+          days: -adjustment,
+          balanceAfter: earnedBalance.remainingBalance,
+          remarks: `LOP adjusted using ${leaveCode} (post accrual)`,
+          adjustedWith: "LOP",
+          referenceType: "SYSTEM",
+        });
+
+        // 6. Create Ledger Entry for LOP (ADJUSTED)
+        await LeaveLedger.create({
+          employeeId,
+          leaveTypeId: lopType._id,
+          year,
+          transactionType: "ADJUSTED",
+          days: adjustment,
+          balanceAfter: lopBalance.remainingBalance,
+          remarks: `${adjustment} day(s) LOP cleared (post accrual)`,
+          adjustedWith: leaveCode,
+          referenceType: "SYSTEM",
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Error adjusting LOP debt:", err);
   }
 };

@@ -58,6 +58,11 @@ const leaveLedgerSchema = new mongoose.Schema(
       trim: true,
     },
 
+    adjustedWith: {
+      type: String,
+      trim: true,
+    }, // e.g. "CO", "EL", "CO, EL"
+
     transactionDate: {
       type: Date,
       default: Date.now,

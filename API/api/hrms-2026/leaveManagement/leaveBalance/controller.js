@@ -177,23 +177,43 @@ exports.getMonthlyReport = async (req, res) => {
     
     const monthlyTransactions = await LeaveLedger.find({
       transactionDate: { $gte: startOfMonth, $lte: endOfMonth }
-    });
+    }).populate("leaveTypeId");
 
     const report = employees.map(emp => {
       const empBalances = balances.filter(b => b.employeeId.toString() === emp._id.toString());
+      const empTransactions = monthlyTransactions.filter(tx => tx.employeeId.toString() === emp._id.toString());
       
       let elBalance = 0;
       let coBalance = 0;
+      let lopBalance = 0;
       let totalUsedInMonth = 0;
 
       empBalances.forEach(b => {
         const code = b.leaveTypeId?.leaveCode?.toUpperCase();
         if (code === "EL") elBalance = b.remainingBalance;
         if (code === "CO") coBalance = b.remainingBalance;
+        if (code === "LOP") lopBalance = b.remainingBalance;
+      });
+
+      let monthlyLopUsed = 0;
+      empTransactions.forEach(tx => {
+        if (tx.days < 0 && tx.transactionType !== "ADJUSTED") {
+            totalUsedInMonth += Math.abs(tx.days);
+            // If it's an LOP transaction, add to monthly LOP count
+            if (tx.leaveTypeId?.leaveCode === "LOP") {
+                monthlyLopUsed += Math.abs(tx.days);
+            }
+        }
       });
 
       const totalBalance = elBalance + coBalance;
-      const lop = totalBalance < 0 ? Math.abs(totalBalance) : 0;
+      // LOP is (deficit if EL+CO is negative) OR (any direct LOP used in month)
+      let lop = 0;
+      if (totalBalance < 0) {
+        lop = Math.abs(totalBalance);
+      } else {
+        lop = monthlyLopUsed;
+      }
 
       return {
         _id: emp._id,
