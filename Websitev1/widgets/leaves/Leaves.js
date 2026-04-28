@@ -271,7 +271,7 @@ const Leaves = () => {
   });
 
   return (
-    <section className="section">
+    <section className="section admin-box box-primary ">
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
           {/* Header Row */}
@@ -595,11 +595,12 @@ const Leaves = () => {
                           </td>
                           <td className="px-4 py-3 text-center">
                             <span
-                              className={`text-[10px] font-bold ${(row.totalBalance - row.lop) < 0 ? "text-red-500" : "text-gray-800"}`}
+                              className={`text-[10px] font-bold ${row.totalBalance - row.lop < 0 ? "text-red-500" : "text-gray-800"}`}
                             >
                               {(() => {
                                 const net = row.totalBalance - row.lop;
-                                if (net < 0) return `Deficit: ${Math.abs(net).toFixed(1)} ${Math.abs(net) === 1 ? "Day" : "Days"}`;
+                                if (net < 0)
+                                  return `Deficit: ${Math.abs(net).toFixed(1)} ${Math.abs(net) === 1 ? "Day" : "Days"}`;
                                 return net.toFixed(1);
                               })()}
                             </span>
@@ -779,21 +780,27 @@ const Leaves = () => {
                             {leave.totalDays}
                           </td>
                           <td className="px-4 py-3 text-center">
-                              <span className="text-[11px] font-bold text-gray-700">
-                                {(() => {
-                                  const empBal = monthlyReport.find(
-                                    (r) => r._id === leave.employeeId?._id,
-                                  );
-                                  const code = leave.leaveTypeId?.leaveCode;
-                                  let balance = 0;
-                                  if (code === "EL") balance = empBal?.elBalance ?? 0;
-                                  else if (code === "CO") balance = empBal?.coBalance ?? 0;
-                                  else balance = (empBal?.totalBalance || 0) - (empBal?.lop || 0);
+                            <span className="text-[11px] font-bold text-gray-700">
+                              {(() => {
+                                const empBal = monthlyReport.find(
+                                  (r) => r._id === leave.employeeId?._id,
+                                );
+                                const code = leave.leaveTypeId?.leaveCode;
+                                let balance = 0;
+                                if (code === "EL")
+                                  balance = empBal?.elBalance ?? 0;
+                                else if (code === "CO")
+                                  balance = empBal?.coBalance ?? 0;
+                                else
+                                  balance =
+                                    (empBal?.totalBalance || 0) -
+                                    (empBal?.lop || 0);
 
-                                  if (balance < 0) return `Deficit: ${Math.abs(balance).toFixed(1)}`;
-                                  return balance.toFixed(1);
-                                })()}
-                              </span>
+                                if (balance < 0)
+                                  return `Deficit: ${Math.abs(balance).toFixed(1)}`;
+                                return balance.toFixed(1);
+                              })()}
+                            </span>
                           </td>
                           <td className="px-4 py-3">
                             <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-1.5 py-0.5 rounded">
