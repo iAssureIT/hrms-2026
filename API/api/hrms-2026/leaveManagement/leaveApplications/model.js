@@ -53,6 +53,13 @@ const leaveApplicationSchema = new mongoose.Schema(
       trim: true,
     },
 
+    leaveBreakdown: [
+      {
+        leaveTypeId: { type: mongoose.Schema.Types.ObjectId, ref: "leavetypes" },
+        leaveCode: String,
+        days: Number,
+      }
+    ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",

@@ -213,99 +213,157 @@ exports.deleteLeaveApplication = async (req, res) => {
 // --- Helper Functions for Production Readiness ---
 
 async function deductLeaveBalance(data, actorId) {
-    const year = moment(data.fromDate).year();
-    let remainingToDeduct = data.totalDays;
-    let adjustedTypes = [];
+  const year = moment(data.fromDate).year();
+  let remainingToDeduct = data.totalDays;
+  let adjustedTypes = [];
+  let breakdown = [];
 
-    const elType = await LeaveType.findOne({ $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }] });
-    const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
-    const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
+  const elType = await LeaveType.findOne({
+    $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }],
+  });
+  const coType = await LeaveType.findOne({
+    $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }],
+  });
+  const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
 
-    const hierarchy = [coType, elType];
-    
-    for (let type of hierarchy) {
-      if (!type || remainingToDeduct <= 0) continue;
-      let bal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: type._id, year: year });
-      if (!bal) bal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: type._id, year: year, openingBalance: 0, remainingBalance: 0 });
+  // Priority 1: EL, Priority 2: CO
+  const hierarchy = [elType, coType];
 
-      if (bal.remainingBalance > 0) {
-        const toUse = Math.min(bal.remainingBalance, remainingToDeduct);
-        const updatedBal = await LeaveBalance.findOneAndUpdate(
-          { _id: bal._id },
-          { $inc: { usedDays: toUse, remainingBalance: -toUse } },
-          { new: true }
-        );
+  for (let type of hierarchy) {
+    if (!type || remainingToDeduct <= 0) continue;
+    let bal = await LeaveBalance.findOne({
+      employeeId: data.employeeId,
+      leaveTypeId: type._id,
+      year: year,
+    });
+    if (!bal)
+      bal = await LeaveBalance.create({
+        employeeId: data.employeeId,
+        leaveTypeId: type._id,
+        year: year,
+        openingBalance: 0,
+        remainingBalance: 0,
+      });
 
-        await LeaveLedger.create({
-          employeeId: data.employeeId,
-          leaveTypeId: type._id,
-          year: year,
-          transactionType: "USED",
-          days: -toUse,
-          balanceAfter: updatedBal.remainingBalance,
-          referenceId: data._id,
-          referenceType: "LEAVE_APPLICATION",
-          remarks: data.leaveTypeId.toString() === lopType?._id.toString() 
-              ? `LOP adjusted using ${type.leaveCode}` 
-              : `Leave approved (Partially/Fully from ${type.leaveCode})`,
-          adjustedWith: data.leaveTypeId.toString() === lopType?._id.toString() ? "LOP" : null,
-          createdBy: actorId,
-        });
-        remainingToDeduct -= toUse;
-        adjustedTypes.push(type.leaveCode);
-      }
+    if (bal.remainingBalance > 0) {
+      const toUse = Math.min(bal.remainingBalance, remainingToDeduct);
+      const updatedBal = await LeaveBalance.findOneAndUpdate(
+        { _id: bal._id },
+        { $inc: { usedDays: toUse, remainingBalance: -toUse } },
+        { new: true },
+      );
+
+      await LeaveLedger.create({
+        employeeId: data.employeeId,
+        leaveTypeId: type._id,
+        year: year,
+        transactionType: "USED",
+        days: -toUse,
+        balanceAfter: updatedBal.remainingBalance,
+        referenceId: data._id,
+        referenceType: "LEAVE_APPLICATION",
+        remarks:
+          data.leaveTypeId.toString() === lopType?._id.toString()
+            ? `LOP adjusted using ${type.leaveCode}`
+            : `Leave approved (Partially/Fully from ${type.leaveCode})`,
+        adjustedWith:
+          data.leaveTypeId.toString() === lopType?._id.toString() ? "LOP" : null,
+        createdBy: actorId,
+      });
+
+      breakdown.push({
+        leaveTypeId: type._id,
+        leaveCode: type.leaveCode,
+        days: toUse,
+      });
+
+      remainingToDeduct -= toUse;
+      adjustedTypes.push(type.leaveCode);
     }
+  }
 
-    // If application was for LOP and was adjusted against paid leaves
-    if (data.leaveTypeId.toString() === lopType?._id.toString() && adjustedTypes.length > 0) {
-        await LeaveLedger.create({
-            employeeId: data.employeeId,
-            leaveTypeId: lopType._id,
-            year: year,
-            transactionType: "ADJUSTED",
-            days: 0,
-            balanceAfter: 0, // LOP balance doesn't really matter here
-            referenceId: data._id,
-            referenceType: "LEAVE_APPLICATION",
-            remarks: `${data.totalDays - remainingToDeduct} day(s) LOP adjusted using ${adjustedTypes.join(", ")}`,
-            adjustedWith: adjustedTypes.join(", "),
-            createdBy: actorId,
-        });
-    }
+  // If application was for LOP and was adjusted against paid leaves
+  if (
+    data.leaveTypeId.toString() === lopType?._id.toString() &&
+    adjustedTypes.length > 0
+  ) {
+    await LeaveLedger.create({
+      employeeId: data.employeeId,
+      leaveTypeId: lopType._id,
+      year: year,
+      transactionType: "ADJUSTED",
+      days: 0,
+      balanceAfter: 0, // LOP balance doesn't really matter here
+      referenceId: data._id,
+      referenceType: "LEAVE_APPLICATION",
+      remarks: `${data.totalDays - remainingToDeduct} day(s) LOP adjusted using ${adjustedTypes.join(", ")}`,
+      adjustedWith: adjustedTypes.join(", "),
+      createdBy: actorId,
+    });
+  }
 
-    if (remainingToDeduct > 0 && lopType) {
-        let lopBal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year });
-        if (!lopBal) lopBal = await LeaveBalance.create({ employeeId: data.employeeId, leaveTypeId: lopType._id, year: year, openingBalance: 0, remainingBalance: 0 });
+  // If there's still remaining balance to deduct, it goes to LOP
+  if (remainingToDeduct > 0 && lopType) {
+    let lopBal = await LeaveBalance.findOne({
+      employeeId: data.employeeId,
+      leaveTypeId: lopType._id,
+      year: year,
+    });
+    if (!lopBal)
+      lopBal = await LeaveBalance.create({
+        employeeId: data.employeeId,
+        leaveTypeId: lopType._id,
+        year: year,
+        openingBalance: 0,
+        remainingBalance: 0,
+      });
 
-        const updatedLop = await LeaveBalance.findOneAndUpdate(
-            { _id: lopBal._id },
-            { $inc: { usedDays: remainingToDeduct, remainingBalance: -remainingToDeduct } },
-            { new: true }
-        );
+    const updatedLop = await LeaveBalance.findOneAndUpdate(
+      { _id: lopBal._id },
+      {
+        $inc: {
+          usedDays: remainingToDeduct,
+          remainingBalance: -remainingToDeduct,
+        },
+      },
+      { new: true },
+    );
 
-        await LeaveLedger.create({
-            employeeId: data.employeeId,
-            leaveTypeId: lopType._id,
-            year: year,
-            transactionType: "USED",
-            days: -remainingToDeduct,
-            balanceAfter: updatedLop.remainingBalance,
-            referenceId: data._id,
-            referenceType: "LEAVE_APPLICATION",
-            remarks: data.leaveTypeId.toString() === lopType._id.toString() ? "LOP approved" : `Leave approved (Converted to LOP)`,
-            adjustedWith: adjustedTypes.length > 0 ? adjustedTypes.join(", ") : null,
-            createdBy: actorId,
-        });
-    }
+    await LeaveLedger.create({
+      employeeId: data.employeeId,
+      leaveTypeId: lopType._id,
+      year: year,
+      transactionType: "USED",
+      days: -remainingToDeduct,
+      balanceAfter: updatedLop.remainingBalance,
+      referenceId: data._id,
+      referenceType: "LEAVE_APPLICATION",
+      remarks:
+        data.leaveTypeId.toString() === lopType._id.toString()
+          ? "LOP approved"
+          : `Leave approved (Converted to LOP)`,
+      adjustedWith: adjustedTypes.length > 0 ? adjustedTypes.join(", ") : null,
+      createdBy: actorId,
+    });
 
-    // Save adjustment info to the Application record for visibility in All Records tab
-    if (adjustedTypes.length > 0) {
-        const LeaveApplication = require("./model");
-        await LeaveApplication.findOneAndUpdate(
-            { _id: data._id },
-            { $set: { adjustedWith: adjustedTypes.join(", ") } }
-        );
-    }
+    breakdown.push({
+      leaveTypeId: lopType._id,
+      leaveCode: "LOP",
+      days: remainingToDeduct,
+    });
+  }
+
+  // Update Application record with breakdown and adjustment info
+  const LeaveApplication = require("./model");
+  await LeaveApplication.findOneAndUpdate(
+    { _id: data._id },
+    {
+      $set: {
+        leaveBreakdown: breakdown,
+        adjustedWith: adjustedTypes.length > 0 ? adjustedTypes.join(", ") : null,
+      },
+    },
+  );
 }
 
 async function creditLeaveBalance(data, actorId) {

@@ -430,16 +430,7 @@ const Leaves = () => {
                 </select>
                 entries
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-700">
-                Search:
-                <input
-                  type="text"
-                  placeholder="Filter results..."
-                  className="border border-gray-300 rounded-sm px-2 py-1 focus:outline-none focus:border-[#3c8dbc]"
-                  value={tableSearch}
-                  onChange={(e) => setTableSearch(e.target.value)}
-                />
-              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-700"></div>
             </div>
 
             {/* Table Area */}
@@ -519,35 +510,7 @@ const Leaves = () => {
                       if (activeTab === "Employee Balances")
                         data = monthlyReport;
 
-                      const search = tableSearch.toLowerCase();
-                      if (search) {
-                        data = data.filter((item) => {
-                          const empName = (
-                            item.employeeName ||
-                            item.employeeId?.employeeName ||
-                            ""
-                          ).toLowerCase();
-                          const empId = (
-                            item.employeeID ||
-                            item.employeeId?.employeeID ||
-                            ""
-                          ).toLowerCase();
-                          const remarks = (
-                            item.remarks ||
-                            item.reason ||
-                            ""
-                          ).toLowerCase();
-                          const code = (
-                            item.leaveTypeId?.leaveCode || ""
-                          ).toLowerCase();
-                          return (
-                            empName.includes(search) ||
-                            empId.includes(search) ||
-                            remarks.includes(search) ||
-                            code.includes(search)
-                          );
-                        });
-                      }
+                      return data;
 
                       return data;
                     })().length === 0 ? (
@@ -563,17 +526,7 @@ const Leaves = () => {
                     </tr>
                   ) : activeTab === "Employee Balances" ? (
                     monthlyReport
-                      .filter(
-                        (r) => !selectedEmployee || r._id === selectedEmployee,
-                      )
-                      .filter((r) => {
-                        if (!tableSearch) return true;
-                        const search = tableSearch.toLowerCase();
-                        return (
-                          r.employeeName.toLowerCase().includes(search) ||
-                          r.employeeID.toLowerCase().includes(search)
-                        );
-                      })
+                      .filter((r) => !selectedEmployee || r._id === selectedEmployee)
                       .map((row) => (
                         <tr
                           key={row._id}
@@ -628,22 +581,7 @@ const Leaves = () => {
                       ))
                   ) : activeTab === "Leave Ledger" ? (
                     ledger
-                      .filter((item) => {
-                        if (!tableSearch) return true;
-                        const search = tableSearch.toLowerCase();
-                        return (
-                          (item.employeeId?.employeeName || "")
-                            .toLowerCase()
-                            .includes(search) ||
-                          (item.employeeId?.employeeID || "")
-                            .toLowerCase()
-                            .includes(search) ||
-                          (item.remarks || "").toLowerCase().includes(search) ||
-                          (item.leaveTypeId?.leaveCode || "")
-                            .toLowerCase()
-                            .includes(search)
-                        );
-                      })
+                      .filter((item) => true)
                       .map((item) => (
                         <tr
                           key={item._id}
