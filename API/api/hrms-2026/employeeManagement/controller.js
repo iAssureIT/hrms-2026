@@ -8,9 +8,16 @@ const FailedRecords = require("../failedRecords/model.js");
 
 exports.upsertEmployee = async (req, res) => {
     const { 
-        _id, employeeName, employeeID, employee_id, employeeEmail, employeeMobile, employeeDesignation,
+        _id, employeeName, firstName, lastName, gender, dob, profilePhoto,
+        employeeID, employee_id, 
+        employeeEmail, personalEmail, employeeMobile, alternateContact, currentAddress, permanentAddress, isSameAddress,
+        employeeDesignation, systemRole, doj, employmentType, reportingManager_id, reportingManagerName,
         center_id, centerName, subLocation_id, subLocationName,
-        department_id, departmentName, subDepartment_id, subDepartmentName
+        department_id, departmentName, subDepartment_id, subDepartmentName,
+        assignedProjects, assignedClients,
+        panNumber, aadhaarNumber, passportNumber,
+        username, accessLevel, password,
+        skills, certifications, notes
     } = req.body;
 
     try {
@@ -49,11 +56,26 @@ exports.upsertEmployee = async (req, res) => {
                 {
                     $set: {
                         employeeName,
+                        firstName,
+                        lastName,
+                        gender,
+                        dob,
+                        profilePhoto,
                         employeeID,
                         employee_id,
                         employeeEmail,
+                        personalEmail,
                         employeeMobile,
+                        alternateContact,
+                        currentAddress,
+                        permanentAddress,
+                        isSameAddress,
                         employeeDesignation,
+                        systemRole,
+                        doj,
+                        employmentType,
+                        reportingManager_id: reportingManager_id || null,
+                        reportingManagerName,
                         center_id: center_id || null,
                         centerName,
                         subLocation_id: subLocation_id || null,
@@ -62,6 +84,17 @@ exports.upsertEmployee = async (req, res) => {
                         departmentName,
                         subDepartment_id: subDepartment_id || null,
                         subDepartmentName,
+                        assignedProjects,
+                        assignedClients,
+                        panNumber,
+                        aadhaarNumber,
+                        passportNumber,
+                        username,
+                        accessLevel,
+                        password,
+                        skills,
+                        certifications,
+                        notes
                     }
                 },
                 { new: true }
@@ -103,11 +136,26 @@ exports.upsertEmployee = async (req, res) => {
             const newEmployee = new Employees({
                 _id: new mongoose.Types.ObjectId(),
                 employeeName,
+                firstName,
+                lastName,
+                gender,
+                dob,
+                profilePhoto,
                 employeeID,
                 employee_id,
                 employeeEmail,
+                personalEmail,
                 employeeMobile,
+                alternateContact,
+                currentAddress,
+                permanentAddress,
+                isSameAddress,
                 employeeDesignation,
+                systemRole,
+                doj,
+                employmentType,
+                reportingManager_id: reportingManager_id || null,
+                reportingManagerName,
                 center_id: center_id || null,
                 centerName,
                 subLocation_id: subLocation_id || null,
@@ -116,6 +164,17 @@ exports.upsertEmployee = async (req, res) => {
                 departmentName,
                 subDepartment_id: subDepartment_id || null,
                 subDepartmentName,
+                assignedProjects,
+                assignedClients,
+                panNumber,
+                aadhaarNumber,
+                passportNumber,
+                username,
+                accessLevel,
+                password,
+                skills,
+                certifications,
+                notes
             });
 
             const savedData = await newEmployee.save();

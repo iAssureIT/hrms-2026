@@ -41,28 +41,30 @@ const EmployeeMaster = () => {
   }, [pathname]);
 
   const tableHeading = {
-    actions: "Actions",
+    employeeName: "Employee",
     employeeID: "Employee ID",
-    employeeName: "Employee Name",
+    gender: "Gender",
     employeeEmail: "Email",
     employeeMobile: "Mobile",
-    employeeDesignation: "Designation",
-    centerName: "Center",
-    subLocationName: "Sub-Location",
     departmentName: "Department",
-    subDepartmentName: "Sub-Department",
+    employeeDesignation: "Designation",
+    employmentType: "Emp Type",
+    systemRole: "Access Role",
+    doj: "Joining Date",
+    actions: "Actions",
   };
 
   const excelHeading = {
-    employeeID: "Employee ID",
     employeeName: "Full Name",
+    employeeID: "Employee ID",
+    gender: "Gender",
     employeeEmail: "Email",
     employeeMobile: "Mobile",
-    employeeDesignation: "Designation",
-    centerName: "Center",
-    subLocationName: "Sub-Location",
     departmentName: "Department",
-    subDepartmentName: "Sub-Department",
+    employeeDesignation: "Designation",
+    employmentType: "Employment Type",
+    systemRole: "System Role",
+    dateOfJoining: "Joining Date",
   };
 
   const tableObjects = {
@@ -71,6 +73,7 @@ const EmployeeMaster = () => {
     getListMethod: "post",
     deleteMethod: "delete",
     editURL: `/asset-management/add-employee?id=`,
+    viewURL: `/asset-management/employee-profile-view?id=`,
     searchApply: true,
     downloadApply: true,
     titleMsg: "Employee List",

@@ -1136,7 +1136,7 @@ import {
   faAngleLeft,
   faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaUserGraduate, FaCalendarCheck, FaFileUpload } from "react-icons/fa";
+import { FaUserGraduate, FaCalendarCheck, FaFileUpload, FaUserCircle } from "react-icons/fa";
 import { SlBookOpen } from "react-icons/sl";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
@@ -1794,285 +1794,246 @@ const GenericTable = ({
                           <td className="text-center px-1 md:px-4 py-2 font-normal border border-grayTwo border-r-0">
                             {value.centerName === "Total" || value.vNo === "Total" ? "" : serialNumber}
                           </td>
-                          {tableHeading && tableHeading.actions ? (
-                            <td className="border border-grayTwo  border-l-0 border-r-0">
-                              {value.centerName !== "Total" ? (
-                                <div className="flex flex-wrap md:flex-nowrap mx-3 gap-2 items-center justify-center">
-                                  {loggedInRole === "admin" &&
-                                    tableObjects.formURL ===
-                                    "Add Center Incharge" && (
+                          {Object.keys(tableHeading).map((key, index) => {
+                            if (key === "employeeName") {
+                              return (
+                                <td key={index} className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-300 bg-gray-50 flex items-center justify-center shrink-0 shadow-sm">
+                                      {value.profilePhoto ? (
+                                        <img src={value.profilePhoto} className="w-full h-full object-cover" />
+                                      ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                          <FaUserCircle className="text-gray-300 text-[26px]" />
+                                        </div>
+                                      )}
+                                    </div>
+                                    <span className="font-bold text-slate-700 whitespace-nowrap">{value.employeeName}</span>
+                                  </div>
+                                </td>
+                              );
+                            }
+                            if (key === "actions") {
+                              return (
+                                <td key={index} className="border border-grayTwo  border-l-0 border-r-0">
+                                  {value.centerName !== "Total" ? (
+                                    <div className="flex flex-wrap md:flex-nowrap mx-3 gap-2 items-center justify-center">
+                                      {loggedInRole === "admin" &&
+                                        tableObjects.formURL ===
+                                        "Add Center Incharge" && (
+                                          <Tooltip
+                                            placement="bottom"
+                                            className="bg-green"
+                                            arrow={false}
+                                          >
+                                            <FaPlus
+                                              className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+                                              size={"1.3rem"}
+                                              onClick={() => {
+                                                window.open(
+                                                  "/" +
+                                                  loggedInRole +
+                                                  "/master-data/center-details/add-center-incharge/" +
+                                                  value._id,
+                                                );
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        )}
                                       <Tooltip
+                                        content="View for Action"
                                         placement="bottom"
                                         className="bg-green"
                                         arrow={false}
                                       >
-                                        <FaPlus
-                                          className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                                          size={"1.3rem"}
-                                          // onClick={() =>
-                                          //   router.push(
-                                          //     "/" +
-                                          //       loggedInRole +
-                                          //       "/master-data/center-details/add-center-incharge/" +
-                                          //       value._id
-                                          //   )
-                                          // }
-                                          onClick={() => {
-                                            window.open(
-                                              "/" +
-                                              loggedInRole +
-                                              "/master-data/center-details/add-center-incharge/" +
-                                              value._id,
-                                              // "_blank"
-                                            );
-                                          }}
-                                        />
-                                      </Tooltip>
-                                    )}
-                                  <Tooltip
-                                    content="View for Action"
-                                    placement="bottom"
-                                    className="bg-green"
-                                    arrow={false}
-                                  >
-                                    {/* {console.log("formText", tableObjects.formText)} */}
-                                    {tableObjects.formText ===
-                                      "Approval Form" ||
-                                      tableObjects.formText ===
-                                      "Utilization Form" ||
-                                      tableObjects.formText ===
-                                      "Add Center Details" ? (
-                                      <FaEye
-                                        className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                                        size={"1.3rem"}
-                                        onClick={() => {
-                                          let url = "";
-                                          if (
-                                            tableObjects.formText ===
-                                            "Approval Form"
-                                          ) {
-                                            url =
-                                              "/" +
-                                              loggedInRole +
-                                              "/approval-management/approval-details/" +
-                                              value._id;
-                                          } else if (
-                                            tableObjects.formText ===
-                                            "Utilization Form"
-                                          ) {
-                                            url =
-                                              "/" +
-                                              loggedInRole +
-                                              "/utilization-management/utilization-details/" +
-                                              value._id;
-                                          } else if (
-                                            tableObjects.formText ===
-                                            "Add Center Details"
-                                          ) {
-                                            url =
-                                              "/" +
-                                              loggedInRole +
-                                              "/master-data/center-details/center-profile/" +
-                                              value._id;
-                                          }
+                                        {tableObjects.formText ===
+                                          "Approval Form" ||
+                                          tableObjects.formText ===
+                                          "Utilization Form" ||
+                                          tableObjects.formText ===
+                                          "Add Center Details" ? (
+                                          <FaEye
+                                            className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+                                            size={"1.3rem"}
+                                            onClick={() => {
+                                              let url = "";
+                                              if (
+                                                tableObjects.formText ===
+                                                "Approval Form"
+                                              ) {
+                                                url =
+                                                  "/" +
+                                                  loggedInRole +
+                                                  "/approval-management/approval-details/" +
+                                                  value._id;
+                                              } else if (
+                                                tableObjects.formText ===
+                                                "Utilization Form"
+                                              ) {
+                                                url =
+                                                  "/" +
+                                                  loggedInRole +
+                                                  "/utilization-management/utilization-details/" +
+                                                  value._id;
+                                              } else if (
+                                                tableObjects.formText ===
+                                                "Add Center Details"
+                                              ) {
+                                                url =
+                                                  "/" +
+                                                  loggedInRole +
+                                                  "/master-data/center-details/center-profile/" +
+                                                  value._id;
+                                              }
 
-                                          if (url) {
-                                            window.open(
-                                              url,
-                                              "_self",
-                                              // "noopener,noreferrer"
-                                            ); // Opens in new tab
-                                          }
-                                        }}
-                                      // onClick={() => {
-                                      //   if (
-                                      //     tableObjects.formText ===
-                                      //     "Approval Form"
-                                      //   ) {
-                                      //     router.push(
-                                      //       "/" +
-                                      //         loggedInRole +
-                                      //         "/approval-management/approval-details/" +
-                                      //         value._id
-                                      //     );
-                                      //   } else if (
-                                      //     tableObjects.formText ===
-                                      //     "Utilization Form"
-                                      //   ) {
-                                      //     router.push(
-                                      //       "/" +
-                                      //         loggedInRole +
-                                      //         "/utilization-management/utilization-details/" +
-                                      //         value._id
-                                      //     );
-                                      //   } else if (
-                                      //     tableObjects.formText ===
-                                      //     "Add Center Details"
-                                      //   ) {
-                                      //     router.push(
-                                      //       "/" +
-                                      //         loggedInRole +
-                                      //         "/master-data/center-details/center-profile/" +
-                                      //         value._id
-                                      //     );
-                                      //   }
-                                      // }}
-                                      />
-                                    ) : (
-                                      ""
-                                    )}
-                                  </Tooltip>
-                                  {tableObjects.formText === "Add CC Form" && (
-                                    <Tooltip
-                                      content="Contribution Details"
-                                      placement="bottom"
-                                      className="bg-green"
-                                      arrow={false}
-                                    >
-                                      <FaEye
-                                        className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                                        size={"1.3rem"}
-                                        // onClick={() => {
-                                        //   router.push(
-                                        //     "/" +
-                                        //       loggedInRole +
-                                        //       "/fund-management/add-cc/contribution-details/" +
-                                        //       value._id
-                                        //   );
-                                        // }}
-                                        onClick={() => {
-                                          const url = `/${loggedInRole}/fund-management/contribution-details/${value._id}`;
-                                          window.open(
-                                            url,
-                                            "_self",
-                                            // "noopener,noreferrer"
-                                          );
-                                        }}
-                                      />
-                                    </Tooltip>
-                                  )}
-                                  {loggedInRole === "admin" ||
-                                    loggedInRole === "center" ||
-                                    loggedInRole === "executive" ||
-                                    loggedInRole === "asset" ||
-                                    loggedInRole === "account" ? (
-                                    <>
-                                      {tableObjects.viewURL && (
+                                              if (url) {
+                                                window.open(
+                                                  url,
+                                                  "_self",
+                                                );
+                                              }
+                                            }}
+                                          />
+                                        ) : (
+                                          ""
+                                        )}
+                                      </Tooltip>
+                                      {tableObjects.formText === "Add CC Form" && (
                                         <Tooltip
-                                          content="View"
+                                          content="Contribution Details"
                                           placement="bottom"
                                           className="bg-green"
                                           arrow={false}
                                         >
                                           <FaEye
-                                            className="border border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+                                            className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
                                             size={"1.3rem"}
-                                            onClick={() =>
-                                              redirect("view", value._id)
-                                            }
+                                            onClick={() => {
+                                              const url = `/${loggedInRole}/fund-management/contribution-details/${value._id}`;
+                                              window.open(
+                                                url,
+                                                "_self",
+                                              );
+                                            }}
                                           />
                                         </Tooltip>
                                       )}
-                                    </>
-                                  ) : null}
-
-                                  {(loggedInRole === "admin" ||
-                                    loggedInRole === "center" ||
-                                    loggedInRole === "asset") &&
-                                    !(userDetails?.roles?.includes("fa-accounts")) ? (
-                                    <>
-                                      <Tooltip
-                                        content="Edit"
-                                        placement="bottom"
-                                        className="bg-green"
-                                        arrow={false}
-                                      >
-                                        <MdOutlineEdit
-                                          className="border  border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                                          size={"1.3rem"}
-                                          onClick={() =>
-                                            redirect("edit", value._id)
-                                          }
-                                        />
-                                      </Tooltip>
-                                      <Tooltip
-                                        content="Delete"
-                                        placement="bottom"
-                                        className="bg-red-500"
-                                        arrow={false}
-                                      >
-                                        <RiDeleteBin6Line
-                                          className="border border-red-500 text-red-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
-                                          size={"1.3rem"}
-                                          onClick={() => {
-                                            redirect("delete", value._id);
-                                            setDeleteId(value._id);
-                                          }}
-                                        />
-                                      </Tooltip>
-                                    </>
-                                  ) : null}
-                                  {/* {console.log("pathname", pathname,tableObjects?.buttonText,(pathname ==="/" + loggedInRole +"/annual-plan-management/annual-list" &&  loggedInRole !== "executive" ))} */}
-                                  {pathname ===
-                                    "/" +
-                                    loggedInRole +
-                                    "/annual-plan-management/annual-list" &&
-                                    loggedInRole !== "executive" ? (
-                                    <button
-                                      className={`formButtons text-[10px] flex justify-center items-center leading-3 rounded-none`}
-                                      onClick={() => {
-                                        redirect("redirect", value._id);
-                                      }}
-                                    >
-                                      {tableObjects?.buttonText}
-                                    </button>
-                                  ) : null}
-                                  {pathname ===
-                                    "/" +
-                                    loggedInRole +
-                                    "/approval-management/approval-list" &&
-                                    value.finalStatus === "approved" &&
-                                    loggedInRole !== "executive" &&
-                                    value.hideUtilizationButton === false ? (
-                                    <div>
-                                      <button
-                                        className={`formButtons ${value.finalStatus === "approved" &&
-                                          value.utilizationStatus !==
-                                          "Completed"
-                                          ? "block"
-                                          : "hidden"
-                                          }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
-                                        onClick={() => {
-                                          redirect("redirect", value._id);
-                                        }}
-                                      >
-                                        {tableObjects?.buttonText}
-                                      </button>
-                                      {console.log(
-                                        "value.utilizationStatus",
-                                        value.utilizationStatus,
-                                      )}
-                                      {value.utilizationStatus ? (
-                                        <div
-                                          className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${value.utilizationStatus ==
-                                            "Completed"
-                                            ? "block"
-                                            : "hidden"
-                                            } text-[10px] flex justify-center items-center leading-3`}
-                                        >
-                                          Activity Completed
-                                        </div>
+                                      {loggedInRole === "admin" ||
+                                        loggedInRole === "center" ||
+                                        loggedInRole === "executive" ||
+                                        loggedInRole === "asset" ||
+                                        loggedInRole === "account" ? (
+                                        <>
+                                          {tableObjects.viewURL && (
+                                            <Tooltip
+                                              content="View"
+                                              placement="bottom"
+                                              className="bg-green"
+                                              arrow={false}
+                                            >
+                                              <FaEye
+                                                className="border border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+                                                size={"1.3rem"}
+                                                onClick={() =>
+                                                  redirect("view", value._id)
+                                                }
+                                              />
+                                            </Tooltip>
+                                          )}
+                                        </>
                                       ) : null}
+
+                                      {(loggedInRole === "admin" ||
+                                        loggedInRole === "center" ||
+                                        loggedInRole === "asset") &&
+                                        !(userDetails?.roles?.includes("fa-accounts")) ? (
+                                        <>
+                                          <Tooltip
+                                            content="Edit"
+                                            placement="bottom"
+                                            className="bg-green"
+                                            arrow={false}
+                                          >
+                                            <MdOutlineEdit
+                                              className="border  border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+                                              size={"1.3rem"}
+                                              onClick={() =>
+                                                redirect("edit", value._id)
+                                              }
+                                            />
+                                          </Tooltip>
+                                          <Tooltip
+                                            content="Delete"
+                                            placement="bottom"
+                                            className="bg-red-500"
+                                            arrow={false}
+                                          >
+                                            <RiDeleteBin6Line
+                                              className="border border-red-500 text-red-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-red-400 hover:text-red-400"
+                                              size={"1.3rem"}
+                                              onClick={() => {
+                                                redirect("delete", value._id);
+                                                setDeleteId(value._id);
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        </>
+                                      ) : null}
+                                      {pathname ===
+                                        "/" +
+                                        loggedInRole +
+                                        "/annual-plan-management/annual-list" &&
+                                        loggedInRole !== "executive" ? (
+                                        <button
+                                          className={`formButtons text-[10px] flex justify-center items-center leading-3 rounded-none`}
+                                          onClick={() => {
+                                            redirect("redirect", value._id);
+                                          }}
+                                        >
+                                          {tableObjects?.buttonText}
+                                        </button>
+                                      ) : null}
+                                      {pathname ===
+                                        "/" +
+                                        loggedInRole +
+                                        "/approval-management/approval-list" &&
+                                        value.finalStatus === "approved" &&
+                                        loggedInRole !== "executive" &&
+                                        value.hideUtilizationButton === false ? (
+                                        <div>
+                                          <button
+                                            className={`formButtons ${value.finalStatus === "approved" &&
+                                              value.utilizationStatus !==
+                                              "Completed"
+                                              ? "block"
+                                              : "hidden"
+                                              }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
+                                            onClick={() => {
+                                              redirect("redirect", value._id);
+                                            }}
+                                          >
+                                            {tableObjects?.buttonText}
+                                          </button>
+                                          {value.utilizationStatus ? (
+                                            <div
+                                              className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${value.utilizationStatus ==
+                                                "Completed"
+                                                ? "block"
+                                                : "hidden"
+                                                } text-[10px] flex justify-center items-center leading-3`}
+                                            >
+                                              Activity Completed
+                                            </div>
+                                          ) : null}
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
                                     </div>
-                                  ) : (
-                                    ""
-                                  )}
-                                </div>
-                              ) : null}
-                            </td>
-                          ) : null}
-                          {Object.keys(tableHeading).map((key, i) => {
-                            if (key === "actions") return null;
+                                  ) : null}
+                                </td>
+                              );
+                            }
                             let value1 = value[key];
                             let valueStr =
                               value1 != null ? value1.toString() : "";

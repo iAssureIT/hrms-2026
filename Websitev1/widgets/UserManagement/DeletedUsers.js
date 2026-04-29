@@ -4,8 +4,6 @@ import { faPencil, faUser } from "@fortawesome/free-solid-svg-icons";
 import { MdClose } from "react-icons/md";
 import { useState, useEffect } from "react";
 import {
-  Card,
-  Typography,
   Tooltip,
   IconButton,
 } from "@material-tailwind/react";
@@ -160,22 +158,18 @@ function DeletedUsers(props) {
 
   return (
     <div className="w-full  ">
-      <Card className="h-full w-full overflow-scroll">
-        <table className="w-full min-w-max table-auto text-left border-2">
+      <div className="border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white">
+        <table className="w-full text-left">
           <thead>
-            <tr>
+            <tr className="bg-slate-50">
               {TABLE_HEAD.map((head) => (
                 <th
                   key={head}
-                  className="border-b-2 border-blue-gray-100 bg-blue-gray-50 p-4 bg-white"
+                  className="border-b border-slate-200 p-4 text-left"
                 >
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium leading-none  text-black"
-                  >
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">
                     {head}
-                  </Typography>
+                  </span>
                 </th>
               ))}
             </tr>
@@ -187,55 +181,19 @@ function DeletedUsers(props) {
                   { _id, firstname, lastname, email, mobile, role, status },
                   index
                 ) => {
-                  const isLast = index === userList.length - 1;
-                  const classes =
-                    //  isLast
-                    //   ? "p-4"
-                    //   // : "p-4 border-b border-blue-gray-50";
-                    //   :
-                    "py-4 px-2 border-b border-blue-gray-50 text-blue-gray-50";
-
                   return (
-                    <tr key={index}>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          <span>
-                            {firstname}&nbsp;
-                            {lastname}
-                          </span>
-                        </Typography>
+                    <tr key={index} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-4 border-b border-slate-50">
+                        <span className="text-sm font-bold text-slate-800">{firstname} {lastname}</span>
                       </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {email}
-                        </Typography>
+                      <td className="p-4 border-b border-slate-50">
+                        <span className="text-sm font-medium text-slate-600">{email}</span>
                       </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {mobile}
-                        </Typography>
+                      <td className="p-4 border-b border-slate-50">
+                        <span className="text-sm font-medium text-slate-600">{mobile}</span>
                       </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                          dangerouslySetInnerHTML={{
-                            __html: role,
-                          }}
-                        ></Typography>
+                      <td className="p-4 border-b border-slate-50">
+                        <span className="text-sm font-medium text-slate-700" dangerouslySetInnerHTML={{ __html: role }} />
                       </td>
                       {/* <td className={classes}>
                         <Typography
@@ -250,30 +208,21 @@ function DeletedUsers(props) {
                           {status}
                         </Typography>
                       </td> */}
-                      <td className={classes}>
-                        <div className="flex gap-6">
+                      <td className="p-4 border-b border-slate-50">
+                        <div className="flex items-center gap-3">
                           <button
-                            className="formButtons text-nowrap"
-                            onClick={() => {
-                              restoreUser(_id);
-                            }}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 rounded text-xs font-bold transition-all active:scale-95 shadow-sm"
+                            onClick={() => restoreUser(_id)}
                           >
                             Restore User
                           </button>
                           <button
-                            className="formButtons bg-red-500 hover:bg-red-700"
-                            onClick={() => {
-                              deleteUser(_id);
-                            }}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 rounded text-xs font-bold transition-all active:scale-95 shadow-sm"
+                            onClick={() => deleteUser(_id)}
                           >
-                            Delete User
+                            Delete Permanently
                           </button>
                         </div>
-                        {/* <Tooltip content="">
-                          <IconButton variant="text"  onClick={()=>{setDeleteModal(true);setDeleteUserId(_id)}}>
-                            <TrashIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip> */}
                       </td>
                     </tr>
                   );
@@ -282,19 +231,13 @@ function DeletedUsers(props) {
             ) : (
               <tr>
                 <td colSpan={6}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal text-center p-2"
-                  >
-                    NO DELETED USERS FOUND
-                  </Typography>
+                    <span className="text-sm font-medium text-slate-400 block text-center py-8 uppercase tracking-widest">NO DELETED USERS FOUND</span>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
-      </Card>
+      </div>
       {/* <Modal
         show={deleteModal}
         size="md"

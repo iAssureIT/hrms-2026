@@ -181,12 +181,45 @@ body {
   font-family: 'Source Sans Pro', sans-serif !important;
 }
 
+/* Premium Stack Animations */
+.stack-next-in {
+  animation: stackNextIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes stackNextIn {
+  from { transform: translateY(100%) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.stack-next-out {
+  animation: stackNextOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes stackNextOut {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(-50px) scale(0.9); opacity: 0; }
+}
+
+.stack-back-in {
+  animation: stackBackIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes stackBackIn {
+  from { transform: translateY(-100%) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.stack-back-out {
+  animation: stackBackOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes stackBackOut {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(50px) scale(0.9); opacity: 0; }
+}
+
 .admin-box {
-  @apply bg-white border-t-[3px] border-[#d2d6de] shadow-md mb-6 rounded-sm;
+  @apply bg-white border-t-[3px] border-[#d2d6de] border-l border-r border-b shadow-sm mb-6 rounded-none !important;
 }
 
 .box-primary {
-  @apply border-t-[#3c8dbc];
+  @apply border-t-[#3c8dbc] !important;
 }
 
 .admin-box-header {

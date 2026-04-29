@@ -243,6 +243,142 @@ body {
     }
   }
 
+  /* Page Turn Effect - Robust 3D Animation */
+  .page-turn-container {
+    perspective: 3000px;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    transform-style: preserve-3d;
+  }
+
+  .page-turn-active {
+    animation: pageTurn3D 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+    transform-origin: left center;
+    backface-visibility: hidden;
+  }
+
+  @keyframes pageTurn3D {
+    0% {
+      transform: rotateY(0deg) translateZ(0);
+      opacity: 1;
+    }
+    100% {
+      transform: rotateY(-120deg) translateZ(200px);
+      opacity: 0;
+    }
+  }
+
+  .page-enter-active {
+    animation: pageEnter3D 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+    transform-origin: right center;
+    backface-visibility: hidden;
+  }
+
+  @keyframes pageEnter3D {
+    0% {
+      transform: rotateY(120deg) translateZ(200px);
+      opacity: 0;
+    }
+    100% {
+      transform: rotateY(0deg) translateZ(0);
+      opacity: 1;
+    }
+  }
+
+  /* AdminLTE Premium Form Elements */
+  .admin-label {
+    @apply block text-[12px] font-bold text-[#333] uppercase mb-1.5 tracking-tight;
+  }
+
+  .admin-input {
+    @apply block w-full h-[34px] px-3 py-2 text-sm leading-tight text-[#555] bg-white border border-[#d2d6de] rounded-none shadow-none transition-all duration-200 outline-none;
+  }
+
+  .admin-input:focus {
+    @apply border-[#3c8dbc] shadow-none ring-0;
+  }
+
+  .admin-select {
+    @apply block w-full h-[34px] px-2 py-1 text-sm leading-tight text-[#555] bg-white border border-[#d2d6de] rounded-none shadow-none outline-none;
+  }
+
+  .admin-select:focus {
+    @apply border-[#3c8dbc];
+  }
+
+  .admin-form-footer {
+    @apply px-6 py-4 bg-[#fcfcfc] border-t border-[#f4f4f4] flex justify-between items-center;
+  }
+
+@layer components {
+  /* Official AdminLTE 2.x Styles */
+  .box {
+    @apply relative bg-white border-t-[3px] border-[#d2d6de] mb-5 w-full shadow-[0_1px_1px_rgba(0,0,0,0.1)] rounded-none;
+  }
+
+  .box-primary {
+    @apply border-t-[#3c8dbc] border-t-[3px] !important;
+  }
+
+  .box-header {
+    @apply relative p-3 text-gray-800 border-b border-[#f4f4f4] bg-white;
+  }
+
+  .box-header.with-border {
+    @apply border-b border-[#f4f4f4];
+  }
+
+  .box-title {
+    @apply inline-block text-lg font-bold leading-none m-0 uppercase tracking-tight;
+  }
+
+  .box-body {
+    @apply p-4;
+  }
+
+  .box-footer {
+    @apply p-4 border-t border-[#f4f4f4] bg-white;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-control {
+    @apply block w-full h-[34px] px-3 py-1.5 text-sm leading-normal text-[#555] bg-white border border-[#d2d6de] rounded-none shadow-none transition-all duration-200;
+  }
+
+  .form-control:focus {
+    @apply border-[#3c8dbc] ring-0 outline-none shadow-none;
+  }
+
+  .btn {
+    @apply inline-block px-3 py-1.5 mb-0 text-sm font-bold leading-normal text-center whitespace-nowrap align-middle cursor-pointer border border-transparent rounded-sm shadow-none transition-all duration-200 uppercase tracking-wide;
+  }
+
+  .btn-primary {
+    @apply bg-[#3c8dbc] text-white border-[#367fa9] !important;
+  }
+  .btn-primary:hover {
+    @apply bg-[#367fa9] border-[#204d74] !important;
+  }
+
+  .btn-default {
+    @apply bg-[#f4f4f4] text-[#444] border-[#ddd] !important;
+  }
+  .btn-default:hover {
+    @apply bg-[#e7e7e7] border-[#adadad] !important;
+  }
+
+  .btn-success {
+    @apply bg-[#00a65a] text-white border-[#008d4c] !important;
+  }
+  .btn-success:hover {
+    @apply bg-[#008d4c] border-[#398439] !important;
+  }
+}
+
   .otpBtn {
     @apply w-48 mx-auto text-white bg-blue-600 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center hover:bg-white hover:text-black hover:shadow hover:border;
   }

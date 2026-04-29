@@ -9,8 +9,10 @@ import moment from "moment";
 import GenericTable from "@/widgets/UserManagement/FilterTable_UM.js";
 import { BsPlusSquare } from "react-icons/bs";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Tooltip } from "flowbite-react";
+import { Tooltip, Modal } from "flowbite-react";
 import dynamic from "next/dynamic";
+
+const DeletedUsers = dynamic(() => import("@/widgets/UserManagement/DeletedUsers"), { ssr: false });
 
 function UserManagement() {
   const router = useRouter();
@@ -22,6 +24,7 @@ function UserManagement() {
   const [statusaction, setStatusaction] = useState("-");
   const [user_ids, setUserIds] = useState([]);
   const [user_id, setUser_id] = useState("");
+  const [deleteUserModal, setDeleteUserModal] = useState(false);
 
   const [runCount, setRunCount] = useState(0);
   const [centerName, setCenterName] = useState("all");
@@ -197,12 +200,13 @@ function UserManagement() {
                   onClick={() => router.push("/admin/user-management/create-user")}
                 />
               </Tooltip>
-              <Tooltip content="Delete Selected" placement="bottom" className="bg-red-500" arrow={false}>
+              <Tooltip content="Deleted Users List" placement="bottom" className="bg-red-500" arrow={false}>
                 <RiDeleteBin6Line
                   className="cursor-pointer text-red-500 hover:text-red-700 border border-red-500 p-1 hover:border-red-700 rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={bulkDelete}
+                  onClick={() => setDeleteUserModal(true)}
                 />
               </Tooltip>
+
             </div>
           </div>
           <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
@@ -245,6 +249,31 @@ function UserManagement() {
           />
         </div>
       </div>
+
+      {/* Deleted Users Modal */}
+      <Modal
+        show={deleteUserModal}
+        size="7xl"
+        onClose={() => setDeleteUserModal(false)}
+        className="bg-slate-900/50 backdrop-blur-sm"
+      >
+        <Modal.Header className="border-b border-slate-100 bg-slate-50 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-orange-100 rounded-lg">
+              <RiDeleteBin6Line className="text-orange-600 text-xl" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800">Deleted Users List</h3>
+              <p className="text-xs text-slate-500 font-medium">Restore users or permanently remove them from the system.</p>
+            </div>
+          </div>
+        </Modal.Header>
+        <Modal.Body className="p-0">
+          <div className="p-6">
+            <DeletedUsers getUserList={getData} />
+          </div>
+        </Modal.Body>
+      </Modal>
     </section>
   );
 }
