@@ -1,9 +1,9 @@
 import React from "react";
 import moment from "moment";
 
-import { FaTrash } from "react-icons/fa";
 
-const HolidayList = ({ holidays, loading, onDelete }) => {
+
+const HolidayList = ({ holidays, loading }) => {
   return (
     <div className="bg-white rounded-sm flex flex-col h-full overflow-hidden">
       <div className="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -42,13 +42,6 @@ const HolidayList = ({ holidays, loading, onDelete }) => {
                     {moment(h.date).format("MMM DD")}
                   </span>
                 </div>
-                <button
-                  onClick={() => onDelete && onDelete(h._id)}
-                  className="opacity-0 group-hover/item:opacity-100 p-2 hover:bg-black/10 rounded-sm transition-all"
-                  title="Delete Holiday"
-                >
-                  <FaTrash size={10} />
-                </button>
               </div>
             </div>
           ))

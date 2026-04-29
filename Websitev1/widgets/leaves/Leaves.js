@@ -17,6 +17,7 @@ import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
 import Swal from "sweetalert2";
+// import LeaveChatWidget from "./LeaveChatWidget";
 
 const Leaves = () => {
   const router = useRouter();
@@ -30,7 +31,15 @@ const Leaves = () => {
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(moment().format("MM"));
+  const months = moment
+    .months()
+    .map((m, i) => ({ value: moment().month(i).format("MM"), label: m }));
+
   const [selectedYear, setSelectedYear] = useState(moment().format("YYYY"));
+  const years = Array.from({ length: 5 }, (_, i) =>
+    (moment().year() - i).toString(),
+  );
+
   const [selectedLeaveType, setSelectedLeaveType] = useState("all");
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -308,73 +317,93 @@ const Leaves = () => {
           </div>
 
           {/* Filters Bar */}
-          <div className="bg-white p-3 border border-gray-100 shadow-sm rounded-sm mb-6 flex flex-wrap items-end gap-4">
-            <div className="flex-1 min-w-[200px]">
-              <label className="text-[9px] font-bold text-gray-400 uppercase mb-1 block">
-                Filter Employee
-              </label>
-              <select
-                className="w-full px-3 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 shadow-sm"
-                value={selectedEmployee}
-                onChange={(e) => setSelectedEmployee(e.target.value)}
-              >
-                <option value="">All Employees</option>
-                {employees.map((emp) => (
-                  <option key={emp._id} value={emp._id}>
-                    {emp.employeeName} ({emp.employeeID})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="w-40">
-              <label className="text-[9px] font-bold text-gray-400 uppercase mb-1 block">
-                Month / Year
-              </label>
-              <input
-                type="month"
-                className="w-full px-3 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 shadow-sm"
-                value={`${selectedYear}-${selectedMonth}`}
-                onChange={(e) => {
-                  const [y, m] = e.target.value.split("-");
-                  setSelectedYear(y);
-                  setSelectedMonth(m);
-                }}
-              />
-            </div>
-
-            <div className="w-32">
-              <label className="text-[9px] font-bold text-gray-400 uppercase mb-1 block">
-                Leave Type
-              </label>
-              <select
-                className="w-full px-3 py-1.5 border border-gray-200 rounded text-[11px] font-bold text-gray-600 focus:outline-none focus:border-[#3c8dbc] bg-gray-50 uppercase shadow-sm"
-                value={selectedLeaveType}
-                onChange={(e) => setSelectedLeaveType(e.target.value)}
-              >
-                <option value="all">All</option>
-                {leaveTypes
-                  .filter((t) => ["EL", "CO"].includes(t.leaveCode))
-                  .map((t) => (
-                    <option key={t._id} value={t._id}>
-                      {t.leaveCode}
+          <div className="bg-white p-6 border border-gray-100 shadow-sm rounded-sm mb-6">
+            <div className="flex flex-wrap items-center gap-8">
+              <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+                  Filter Employee
+                </label>
+                <select
+                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold"
+                  value={selectedEmployee}
+                  onChange={(e) => setSelectedEmployee(e.target.value)}
+                >
+                  <option value="">All Employees</option>
+                  {employees.map((emp) => (
+                    <option key={emp._id} value={emp._id}>
+                      {emp.employeeName} ({emp.employeeID})
                     </option>
                   ))}
-              </select>
-            </div>
+                </select>
+              </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  setSelectedEmployee("");
-                  setSelectedMonth(moment().format("MM"));
-                  setSelectedYear(moment().format("YYYY"));
-                  setSelectedLeaveType("all");
-                }}
-                className="px-3 py-1.5 text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-tight"
-              >
-                Clear
-              </button>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+                  Month
+                </label>
+                <select
+                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-36 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                >
+                  {months.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+                  Year
+                </label>
+                <select
+                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-28 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                >
+                  {years.map((y) => (
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+                  Leave Type
+                </label>
+                <select
+                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-32 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold uppercase"
+                  value={selectedLeaveType}
+                  onChange={(e) => setSelectedLeaveType(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  {leaveTypes
+                    .filter((t) => ["EL", "CO"].includes(t.leaveCode))
+                    .map((t) => (
+                      <option key={t._id} value={t._id}>
+                        {t.leaveCode}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <div className="flex items-end h-9 mt-auto">
+                <button
+                  onClick={() => {
+                    setSelectedEmployee("");
+                    setSelectedMonth(moment().format("MM"));
+                    setSelectedYear(moment().format("YYYY"));
+                    setSelectedLeaveType("all");
+                  }}
+                  className="px-3 py-1.5 text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-tight transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
             </div>
           </div>
 
@@ -482,9 +511,6 @@ const Leaves = () => {
                         <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
                           Remarks
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">
-                          Adjusted With
-                        </th>
                         {activeTab !== "Leave Ledger" && (
                           <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
                             Actions
@@ -498,7 +524,7 @@ const Leaves = () => {
                   {loading ? (
                     <tr>
                       <td
-                        colSpan="5"
+                        colSpan="9"
                         className="px-5 py-20 text-center text-gray-400 text-xs italic"
                       >
                         Loading records...
@@ -511,12 +537,10 @@ const Leaves = () => {
                         data = monthlyReport;
 
                       return data;
-
-                      return data;
                     })().length === 0 ? (
                     <tr>
                       <td
-                        colSpan="5"
+                        colSpan="9"
                         className="px-5 py-20 text-center text-gray-400 text-xs italic"
                       >
                         No records found{" "}
@@ -526,7 +550,9 @@ const Leaves = () => {
                     </tr>
                   ) : activeTab === "Employee Balances" ? (
                     monthlyReport
-                      .filter((r) => !selectedEmployee || r._id === selectedEmployee)
+                      .filter(
+                        (r) => !selectedEmployee || r._id === selectedEmployee,
+                      )
                       .map((row) => (
                         <tr
                           key={row._id}
@@ -580,87 +606,74 @@ const Leaves = () => {
                         </tr>
                       ))
                   ) : activeTab === "Leave Ledger" ? (
-                    ledger
-                      .filter((item) => true)
-                      .map((item) => (
-                        <tr
-                          key={item._id}
-                          className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
-                        >
-                          <td className="px-4 py-3">
-                            <div className="text-[11px] font-bold text-gray-700">
-                              {item.employeeId?.employeeName || "Unknown"}
-                            </div>
-                            <div className="text-[9px] text-gray-400">
-                              {item.employeeId?.employeeID || "N/A"}
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="text-[10px] font-bold text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
-                              {item.leaveTypeId?.leaveCode || "Leave"}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-[10px] text-gray-600">
-                            {moment(item.transactionDate).format("DD MMM YYYY")}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                                item.days > 0
-                                  ? "bg-green-100 text-[#00a65a]"
-                                  : item.transactionType === "ADJUSTED"
-                                    ? "bg-blue-100 text-[#3c8dbc]"
-                                    : "bg-red-100 text-[#dd4b39]"
-                              }`}
-                            >
-                              {item.days > 0
-                                ? "Earned"
+                    ledger.map((item) => (
+                      <tr
+                        key={item._id}
+                        className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="text-[11px] font-bold text-gray-700">
+                            {item.employeeId?.employeeName || "Unknown"}
+                          </div>
+                          <div className="text-[9px] text-gray-400">
+                            {item.employeeId?.employeeID || "N/A"}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-[10px] font-bold text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                            {item.leaveTypeId?.leaveCode || "Leave"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-[10px] text-gray-600">
+                          {moment(item.transactionDate).format("DD MMM YYYY")}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                              item.days > 0
+                                ? "bg-green-100 text-[#00a65a]"
                                 : item.transactionType === "ADJUSTED"
-                                  ? "Adjusted"
-                                  : "Used"}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-center text-[11px] font-bold">
-                            <span
-                              className={
-                                item.days > 0
-                                  ? "text-[#00a65a]"
-                                  : "text-[#dd4b39]"
-                              }
-                            >
-                              {item.days > 0 ? "+" : ""}
-                              {item.days}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-center">
-                            <div className="text-[11px] font-bold text-gray-800 bg-gray-50 rounded px-2 py-1 inline-block border border-gray-100">
-                              {item.balanceAfter}
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-100 px-1.5 py-0.5 rounded">
-                              {item.referenceType || "System"}
-                            </span>
-                          </td>
-                          <td
-                            className="px-4 py-3 text-[10px] text-gray-500 italic truncate max-w-[150px]"
-                            title={item.remarks}
+                                  ? "bg-blue-100 text-[#3c8dbc]"
+                                  : "bg-red-100 text-[#dd4b39]"
+                            }`}
                           >
-                            {item.remarks}
-                          </td>
-                          <td className="px-4 py-3 text-center">
-                            {item.adjustedWith ? (
-                              <span className="text-[10px] font-bold text-[#3c8dbc] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
-                                {item.adjustedWith}
-                              </span>
-                            ) : (
-                              <span className="text-gray-300 italic text-[10px]">
-                                ---
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      ))
+                            {item.days > 0
+                              ? "Earned"
+                              : item.transactionType === "ADJUSTED"
+                                ? "Adjusted"
+                                : "Used"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center text-[11px] font-bold">
+                          <span
+                            className={
+                              item.days > 0
+                                ? "text-[#00a65a]"
+                                : "text-[#dd4b39]"
+                            }
+                          >
+                            {item.days > 0 ? "+" : ""}
+                            {item.days}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <div className="text-[11px] font-bold text-gray-800 bg-gray-50 rounded px-2 py-1 inline-block border border-gray-100">
+                            {item.balanceAfter}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-100 px-1.5 py-0.5 rounded">
+                            {item.referenceType || "System"}
+                          </span>
+                        </td>
+                        <td
+                          className="px-4 py-3 text-[10px] text-gray-500 italic truncate max-w-[150px]"
+                          title={item.remarks}
+                        >
+                          {item.remarks}
+                        </td>
+                      </tr>
+                    ))
                   ) : (
                     filteredLeaves
                       .filter((item) => {
@@ -750,17 +763,6 @@ const Leaves = () => {
                             title={leave.reason}
                           >
                             {leave.reason}
-                          </td>
-                          <td className="px-4 py-3 text-center">
-                            {leave.adjustedWith ? (
-                              <span className="text-[10px] font-bold text-[#3c8dbc] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
-                                {leave.adjustedWith}
-                              </span>
-                            ) : (
-                              <span className="text-gray-300 italic text-[10px]">
-                                ---
-                              </span>
-                            )}
                           </td>
                           <td className="px-4 py-3">
                             {leave.status === "PENDING" ? (
@@ -931,6 +933,9 @@ const Leaves = () => {
           </div>
         </div>
       )}
+      {/* <LeaveChatWidget 
+        employeeId={selectedEmployee || ls.get("userDetails", { decrypt: true })?._id} 
+      /> */}
     </section>
   );
 };

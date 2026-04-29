@@ -61,7 +61,14 @@ exports.getHolidays = async (req, res) => {
       if (location === "Global") {
         query.locations = { $in: [/^Global$/i] };
       } else {
-        query.locations = { $in: [new RegExp(`^${location}$`, "i"), /^Global$/i, /^All$/i] };
+        query.locations = {
+          $in: [
+            new RegExp(`^${location}$`, "i"),
+            /^Global$/i,
+            /^All$/i,
+            /^All Locations$/i,
+          ],
+        };
       }
     }
 

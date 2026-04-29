@@ -45,6 +45,8 @@ const leavePolicyRoutes = require("./api/hrms-2026/leaveManagement/leavePolicy/r
 const leaveBalanceRoutes = require("./api/hrms-2026/leaveManagement/leaveBalance/route.js");
 const leaveLedgerRoutes = require("./api/hrms-2026/leaveManagement/leaveLedger/route.js");
 const leaveReportsRoutes = require("./api/hrms-2026/leaveManagement/leaveReports/route.js");
+const leaveChatRoutes = require("./api/hrms-2026/leaveManagement/leaveChat/route.js");
+
 
 // Helpdesk
 const ticketRoutes = require("./api/hrms-2026/helpdeskManagement/tickets/route.js");
@@ -98,6 +100,8 @@ const appRoutes = (app) => {
   app.use("/api/leave-balance", leaveBalanceRoutes);
   app.use("/api/leave-ledger", leaveLedgerRoutes);
   app.use("/api/leave-reports", leaveReportsRoutes);
+  app.use("/api/leave-chat", leaveChatRoutes);
+
 
   // helpdesk
   app.use("/api/tickets", ticketRoutes);

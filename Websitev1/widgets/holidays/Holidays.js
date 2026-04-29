@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { Tooltip } from "flowbite-react";
 import { FaPlus, FaFileUpload, FaHome } from "react-icons/fa";
 import { BsPlusSquare } from "react-icons/bs";
@@ -31,8 +30,18 @@ const Holidays = () => {
   const fetchLocations = async () => {
     try {
       const res = await axios.get("/api/centers/list");
-      if (res.data) {
-        setLocations(["All", ...res.data.map((c) => c.centerName)]);
+      if (res.data && res.data.length > 0) {
+        if (res.data.length === 1) {
+          const locName = res.data[0].centerName;
+          setLocations([locName]);
+          setSelectedLocation(locName);
+        } else {
+          setLocations(["All", ...res.data.map((c) => c.centerName)]);
+          setSelectedLocation("All");
+        }
+      } else {
+        setLocations(["All"]);
+        setSelectedLocation("All");
       }
     } catch (error) {
       console.error("Error fetching locations:", error);
@@ -53,7 +62,10 @@ const Holidays = () => {
           if (map.has(key)) {
             const existing = map.get(key);
             existing.locations = [
-              ...new Set([...(existing.locations || []), ...(h.locations || [])]),
+              ...new Set([
+                ...(existing.locations || []),
+                ...(h.locations || []),
+              ]),
             ];
           } else {
             const copy = { ...h, locations: [...(h.locations || [])] };
@@ -68,37 +80,6 @@ const Holidays = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDeleteHoliday = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This holiday will be permanently removed.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3c8dbc",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const res = await axios.delete(`/api/holidays/delete/${id}`);
-          if (res.data.success) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Holiday has been removed.",
-              icon: "success",
-              timer: 1500,
-              showConfirmButton: false,
-            });
-            fetchHolidays();
-          }
-        } catch (err) {
-          console.error("Error deleting holiday:", err);
-          Swal.fire("Error", "Failed to delete holiday", "error");
-        }
-      }
-    });
   };
 
   const filteredHolidays = holidays;
@@ -169,19 +150,27 @@ const Holidays = () => {
                 </h3>
               </div>
               <div className="p-4">
-                <div className="relative inline-block w-full md:w-72 group">
-                  <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-sm text-[11px] font-bold uppercase transition-all focus:outline-none focus:border-[#00a65a] focus:ring-0 cursor-pointer text-gray-700 hover:bg-white"
-                  >
+                {locations.length > 1 ? (
+                  <div className="flex flex-wrap items-center gap-2 p-1 bg-gray-100/80 rounded-sm w-fit">
                     {locations.map((loc) => (
-                      <option key={loc} value={loc} className="font-sans">
+                      <button
+                        key={loc}
+                        onClick={() => setSelectedLocation(loc)}
+                        className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-sm transition-all duration-200 ${
+                          selectedLocation === loc
+                            ? "bg-white text-[#00a65a] shadow-sm ring-1 ring-black/5"
+                            : "text-gray-500 hover:text-gray-700 hover:bg-white/50"
+                        }`}
+                      >
                         {loc === "All" ? "All Locations" : loc}
-                      </option>
+                      </button>
                     ))}
-                  </select>
-                </div>
+                  </div>
+                ) : (
+                  <div className="px-4 py-1.5 bg-[#00a65a]/10 border border-[#00a65a]/20 rounded-sm text-[10px] font-bold uppercase text-[#00a65a] inline-block tracking-wider">
+                    {selectedLocation}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -189,11 +178,7 @@ const Holidays = () => {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
               {/* Left Sidebar - Upcoming Holidays */}
               <div className="xl:col-span-4 h-[700px]">
-                <HolidayList 
-                  holidays={upcomingHolidays} 
-                  loading={loading} 
-                  onDelete={handleDeleteHoliday}
-                />
+                <HolidayList holidays={upcomingHolidays} loading={loading} />
               </div>
 
               {/* Center/Right - Calendar View */}
