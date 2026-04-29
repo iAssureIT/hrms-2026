@@ -235,7 +235,7 @@ const Leaves = () => {
     } catch (err) {
       alert(
         "Error adding Comp Off: " +
-          (err.response?.data?.message || err.message),
+        (err.response?.data?.message || err.message),
       );
     }
   };
@@ -423,16 +423,15 @@ const Leaves = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-5 py-3 text-[12px] font-bold transition-all relative whitespace-nowrap border-r border-gray-100 ${
-                      activeTab === tab
+                    className={`px-5 py-3 text-[12px] font-bold transition-all relative whitespace-nowrap border-r border-gray-100 ${activeTab === tab
                         ? "bg-white text-gray-800 border-t-2 border-t-[#00a65a] -mt-[2px]"
                         : "bg-gray-50 text-gray-400 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {tab}
                     {tab === "Pending Requests" &&
                       leaves.filter((l) => l.status === "PENDING").length >
-                        0 && (
+                      0 && (
                         <span className="ml-2 bg-[#00a65a] text-white px-1.5 py-0.5 rounded-full text-[9px]">
                           {leaves.filter((l) => l.status === "PENDING").length}
                         </span>
@@ -531,13 +530,13 @@ const Leaves = () => {
                       </td>
                     </tr>
                   ) : (() => {
-                      let data =
-                        activeTab === "Leave Ledger" ? ledger : filteredLeaves;
-                      if (activeTab === "Employee Balances")
-                        data = monthlyReport;
+                    let data =
+                      activeTab === "Leave Ledger" ? ledger : filteredLeaves;
+                    if (activeTab === "Employee Balances")
+                      data = monthlyReport;
 
-                      return data;
-                    })().length === 0 ? (
+                    return data;
+                  })().length === 0 ? (
                     <tr>
                       <td
                         colSpan="9"
@@ -629,13 +628,12 @@ const Leaves = () => {
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                              item.days > 0
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${item.days > 0
                                 ? "bg-green-100 text-[#00a65a]"
                                 : item.transactionType === "ADJUSTED"
                                   ? "bg-blue-100 text-[#3c8dbc]"
                                   : "bg-red-100 text-[#dd4b39]"
-                            }`}
+                              }`}
                           >
                             {item.days > 0
                               ? "Earned"
@@ -716,13 +714,12 @@ const Leaves = () => {
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
-                                leave.status === "APPROVED"
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${leave.status === "APPROVED"
                                   ? "bg-[#00a65a]"
                                   : leave.status === "REJECTED"
                                     ? "bg-[#dd4b39]"
                                     : "bg-[#f39c12]"
-                              }`}
+                                }`}
                             >
                               {leave.status}
                             </span>

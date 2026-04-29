@@ -1189,11 +1189,7 @@ export default function RootLayout({ children }) {
       icon: <FaMoneyCheckAlt />,
       link: "/admin/payroll-management",
     },
-    {
-      title: "Holidays",
-      icon: <FaRegCalendarAlt />,
-      link: "/admin/holidays",
-    },
+
     {
       title: "Leave Management",
       icon: <FaCalendarCheck />,

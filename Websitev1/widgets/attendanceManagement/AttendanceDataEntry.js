@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaCloudUploadAlt, FaExchangeAlt, FaCheckCircle, FaChevronRight, FaChevronLeft, FaTrash, FaSave, FaFilter, FaClock, FaCheck, FaUserFriends, FaRegAddressCard, FaEdit } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaCloudUploadAlt, FaExchangeAlt, FaCheckCircle, FaChevronRight, FaChevronLeft, FaTrash, FaSave, FaFilter, FaClock, FaCheck, FaUserFriends, FaRegAddressCard, FaEdit, FaList } from "react-icons/fa";
 import { Tooltip } from "flowbite-react";
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
@@ -10,6 +11,7 @@ import ls from "localstorage-slim";
 import moment from "moment";
 
 const AttendanceDataEntry = () => {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState("upload");
     const [loading, setLoading] = useState(false);
     const [userDetails, setUserDetails] = useState(null);
@@ -239,12 +241,30 @@ const AttendanceDataEntry = () => {
                     </div>
                     <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
                         <div className="flex items-center gap-2">
-
-                            <Tooltip content="Manual Entry" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                            {activeTab === 'upload' ? (
+                                <Tooltip content="Manual Entry" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                                    <div className="relative group">
+                                        <FaEdit
+                                            className="cursor-pointer text-gray-400 border border-gray-200 p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm hover:text-[#3c8dbc] hover:border-[#3c8dbc]"
+                                            onClick={() => setActiveTab("manual")}
+                                        />
+                                    </div>
+                                </Tooltip>
+                            ) : (
+                                <Tooltip content="Bulk Upload" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                                    <div className="relative group">
+                                        <FaCloudUploadAlt
+                                            className="cursor-pointer text-gray-400 border border-gray-200 p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm hover:text-[#3c8dbc] hover:border-[#3c8dbc]"
+                                            onClick={() => setActiveTab("upload")}
+                                        />
+                                    </div>
+                                </Tooltip>
+                            )}
+                            <Tooltip content="Attendance List" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
                                 <div className="relative group">
-                                    <FaEdit
-                                        className={`cursor-pointer border p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm ${activeTab === 'manual' ? 'text-[#3c8dbc] border-[#3c8dbc] bg-blue-50' : 'text-gray-400 border-gray-200 hover:text-[#3c8dbc] hover:border-[#3c8dbc]'}`}
-                                        onClick={() => setActiveTab("manual")}
+                                    <FaList
+                                        className="cursor-pointer text-gray-400 border border-gray-200 p-1 rounded text-[30px] transition-all active:scale-95 shadow-sm hover:text-[#3c8dbc] hover:border-[#3c8dbc]"
+                                        onClick={() => router.push('/admin/attendance-management/matrix')}
                                     />
                                 </div>
                             </Tooltip>

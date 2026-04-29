@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Tooltip } from "flowbite-react";
-import { FaPlus, FaFilter, FaDownload, FaChevronLeft, FaChevronRight, FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCalendarTimes } from "react-icons/fa";
+import { FaPlus, FaFilter, FaDownload, FaChevronLeft, FaChevronRight, FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCalendarTimes, FaRegCalendarAlt } from "react-icons/fa";
 import moment from "moment";
 import { BsPlusSquare, BsInfoCircle } from "react-icons/bs";
 import ls from "localstorage-slim";
@@ -135,6 +135,14 @@ const AttendanceMatrix = () => {
                                 <BsPlusSquare
                                     className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
                                     onClick={() => router.push('/admin/attendance-management/data-entry')}
+                                />
+                            </div>
+                        </Tooltip>
+                        <Tooltip content="Holidays" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                            <div className="relative group">
+                                <FaRegCalendarAlt
+                                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                                    onClick={() => router.push('/admin/holidays')}
                                 />
                             </div>
                         </Tooltip>
