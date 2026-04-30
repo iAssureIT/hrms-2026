@@ -165,32 +165,35 @@ const CenterDetailsList = (props) => {
   };
 
   return (
-    <section className="section">
-      <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 lg:flex lg:justify-between">
-            <h1 className="heading h-auto content-center">
-              Center Details List
-            </h1>
-
-            <div className="flex gap-3 my-5 me-10">
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Master Data Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Center <span className="text-[#3c8dbc] font-black">Details</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
               <Tooltip
                 content="Geographical Bulk Upload"
                 placement="bottom"
-                className="bg-green"
+                className="bg-[#3c8dbc]"
                 arrow={false}
               >
                 {loading3 ? (
-                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                  <FaSpinner className="animate-spin text-center text-[#3c8dbc] inline-flex mx-2" />
                 ) : (
                   <FaFileUpload
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
                     onClick={() => {
-                      // setLoading3(true);
                       window.open(
                         "/admin/master-data/center-details/add-geographical-data",
-                        '_self'
-                        // "noopener,noreferrer"
+                        "_self",
                       );
                     }}
                   />
@@ -199,20 +202,18 @@ const CenterDetailsList = (props) => {
               <Tooltip
                 content="Add Center Details"
                 placement="bottom"
-                className="bg-green"
+                className="bg-[#3c8dbc]"
                 arrow={false}
               >
                 {loading4 ? (
-                  <FaSpinner className="animate-spin text-center text-Green inline-flex mx-2" />
+                  <FaSpinner className="animate-spin text-center text-[#3c8dbc] inline-flex mx-2" />
                 ) : (
                   <BsPlusSquare
-                    className="cursor-pointer text-green hover:text-Green border border-green p-0.5 hover:border-Green rounded text-[30px]"
+                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
                     onClick={() => {
-                      // setLoading4(true);
                       window.open(
                         "/admin/master-data/center-details/center-details-submission",
-                        '_self'
-                        // "noopener,noreferrer"
+                        "_self",
                       );
                     }}
                   />
@@ -220,6 +221,9 @@ const CenterDetailsList = (props) => {
               </Tooltip>
             </div>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Comprehensive overview of organizational centers, location-specific data, and administrative oversight.
+          </p>
         </div>
         <div className="px-10 py-6">
           <GenericTable

@@ -82,7 +82,7 @@ const BankDetailsList = () => {
     try {
       const response = await axios.post(
         "/api/bank-details/post/list",
-        formValues
+        formValues,
       );
       if (response.data.success) {
         setTotalRecs(response.data.totalRecs);
@@ -146,11 +146,18 @@ const BankDetailsList = () => {
   };
 
   return (
-    <section className="section">
+    <section className="admin-box box-primary">
       <div className="box border-2 rounded-md shadow-md">
-        <div className="uppercase text-xl font-semibold">
-          <div className="border-b-2 border-gray-300 lg:flex lg:justify-between">
-            <h1 className="heading h-auto content-center">Bank Details List</h1>
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100 px-4 pt-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Master Data Management</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Bank <span className="text-[#3c8dbc] font-black">Details</span>
+              </h1>
+            </div>
             <div className="my-2 px-10 lg:px-0 lg:me-10">
               <button
                 className="formButtons"
@@ -159,7 +166,7 @@ const BankDetailsList = () => {
                   window.open(
                     "/admin/master-data/bank-details/bank-details-submission",
                     "_blank",
-                    "noopener,noreferrer"
+                    "noopener,noreferrer",
                   );
                 }}
               >

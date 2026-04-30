@@ -206,9 +206,24 @@ const TwoFieldComponent = ({
 
   return (
     <div className="p-4">
-      <h3 className="admin-heading mb-4 px-2">
-        {oneField.fieldlabel} & {twoField.fieldlabel} Management
-      </h3>
+      {/* Theme-aligned Header */}
+      <div className="mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+              <span className="text-[#3c8dbc]">
+                {oneField.fieldlabel} & {twoField.fieldlabel} Management
+              </span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+              {oneField.fieldlabel} &{" "}
+              <span className="text-[#3c8dbc] font-black">
+                {twoField.fieldlabel}
+              </span>
+            </h1>
+          </div>
+        </div>
+      </div>
 
       <div className="admin-box box-primary">
           <div className="admin-box-header border-b border-gray-100">

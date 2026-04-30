@@ -17,7 +17,7 @@ import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
 import Swal from "sweetalert2";
-// import LeaveChatWidget from "./LeaveChatWidget";
+import LeaveChatWidget from "./LeaveChatWidget";
 
 const Leaves = () => {
   const router = useRouter();
@@ -284,35 +284,38 @@ const Leaves = () => {
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
           {/* Header Row */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
-                Leave Management
-              </h1>
-              <span className="text-sm font-light text-gray-500">
-                Dashboard & Ledger
-              </span>
-            </div>
-            <div className="flex gap-2 mt-4 md:mt-0">
-              <button
-                onClick={triggerManualAccrual}
-                className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
-                title="Run monthly EL credit manually"
-              >
-                <FaClock size={12} /> Run Accrual
-              </button>
-              <button
-                onClick={() => setShowCompOffModal(true)}
-                className="bg-[#3c8dbc] border border-[#367fa9] text-white px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
-              >
-                <FaCalendarCheck size={12} /> Credit Comp Off
-              </button>
-              <button
-                onClick={() => router.push(`/${loggedInRole}/leaves/apply`)}
-                className="bg-[#00a65a] border border-[#008d4c] text-white px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2"
-              >
-                <FaPlus size={12} /> Apply Leave
-              </button>
+          {/* Theme-aligned Header */}
+          <div className="mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                  <span className="text-[#3c8dbc]">Leave Management</span>
+                </div>
+                <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                  Leave <span className="text-[#3c8dbc] font-black">Management</span>
+                </h1>
+              </div>
+              <div className="flex gap-2 mt-4 md:mt-0 mb-1">
+                <button
+                  onClick={triggerManualAccrual}
+                  className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
+                  title="Run monthly EL credit manually"
+                >
+                  <FaClock size={12} /> Run Accrual
+                </button>
+                <button
+                  onClick={() => setShowCompOffModal(true)}
+                  className="bg-[#3c8dbc] border border-[#367fa9] text-white px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
+                >
+                  <FaCalendarCheck size={12} /> Credit Comp Off
+                </button>
+                <button
+                  onClick={() => router.push(`/${loggedInRole}/leaves/apply`)}
+                  className="bg-[#00a65a] border border-[#008d4c] text-white px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2"
+                >
+                  <FaPlus size={12} /> Apply Leave
+                </button>
+              </div>
             </div>
           </div>
 
@@ -930,9 +933,11 @@ const Leaves = () => {
           </div>
         </div>
       )}
-      {/* <LeaveChatWidget 
-        employeeId={selectedEmployee || ls.get("userDetails", { decrypt: true })?._id} 
-      /> */}
+      <LeaveChatWidget
+        employeeId={
+          selectedEmployee || ls.get("userDetails", { decrypt: true })?._id
+        }
+      />
     </section>
   );
 };
