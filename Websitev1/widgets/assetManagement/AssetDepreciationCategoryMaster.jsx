@@ -163,7 +163,7 @@ const AssetDepreciationCategoryMaster = () => {
                 <span className="text-[#3c8dbc]">Asset Management</span>
               </div>
               <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Asset <span className="text-[#3c8dbc] font-black">Depreciation Master</span>
+                Asset Depreciation <span className="text-[#3c8dbc] font-black">Master</span>
               </h1>
             </div>
           </div>
@@ -239,7 +239,7 @@ const AssetDepreciationCategoryMaster = () => {
             </div>
           </form>
 
-          <div className="border-t border-gray-100 pt-8 mt-8">
+          <div className="mt-8">
             <h3 className="admin-box-title uppercase mb-6">Category List</h3>
 
             <div className="overflow-x-auto">

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaSpinner } from "react-icons/fa";
 
 const LeaveTypesManagement = () => {
   const [leaveTypes, setLeaveTypes] = useState([]);
@@ -94,117 +94,126 @@ const LeaveTypesManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Leave Types</h1>
-          <p className="text-gray-500 text-sm">
-            Configure different types of leaves available for employees.
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Human Resources</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Leave Type <span className="text-[#3c8dbc] font-black">Master</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              <button
+                onClick={() => {
+                  resetForm();
+                  setShowModal(true);
+                }}
+                className="admin-btn-primary flex items-center gap-2"
+              >
+                <FaPlus size={14} /> Add Leave Type
+              </button>
+            </div>
+          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Configure different types of leaves available for employees, including paid/unpaid status and carry-forward policies.
           </p>
         </div>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md"
-        >
-          <FaPlus size={14} /> Add Leave Type
-        </button>
-      </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left font-sans">
-          <thead className="bg-gray-50/50 text-gray-400 text-xs uppercase font-medium">
-            <tr>
-              <th className="px-6 py-4">Name</th>
-              <th className="px-6 py-4">Code</th>
-              <th className="px-6 py-4">Paid</th>
-              <th className="px-6 py-4">Carry Forward</th>
-              <th className="px-6 py-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading ? (
-              <tr>
-                <td
-                  colSpan="5"
-                  className="px-6 py-12 text-center text-gray-400 font-medium"
-                >
-                  Loading...
-                </td>
-              </tr>
-            ) : leaveTypes.length === 0 ? (
-              <tr>
-                <td
-                  colSpan="5"
-                  className="px-6 py-12 text-center text-gray-400 font-medium"
-                >
-                  No leave types configured
-                </td>
-              </tr>
-            ) : (
-              leaveTypes.map((type) => (
-                <tr
-                  key={type._id}
-                  className="hover:bg-gray-50/80 transition-colors"
-                >
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-800">
-                    {type.leaveTypeName}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-md font-mono text-xs">
-                      {type.leaveCode}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    {type.isPaid ? (
-                      <span className="text-green-600 flex items-center gap-1 font-medium">
-                        <FaCheck size={10} /> Yes
-                      </span>
-                    ) : (
-                      <span className="text-red-500 flex items-center gap-1 font-medium">
-                        <FaTimes size={10} /> No
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    {type.carryForward ? (
-                      <div>
-                        <span className="text-green-600 font-medium">Yes</span>
-                        {type.carryForwardLimit > 0 && (
-                          <div className="text-[10px] text-gray-400">
-                            Limit: {type.carryForwardLimit}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-gray-400">No</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEdit(type)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                        title="Edit"
-                      >
-                        <FaEdit size={14} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(type._id)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                        title="Delete"
-                      >
-                        <FaTrash size={14} />
-                      </button>
-                    </div>
-                  </td>
+        <div className="admin-box box-primary mt-6 !border-none !shadow-none">
+          <div className="admin-box-header border-b border-gray-100 !px-0">
+            <h3 className="admin-box-title uppercase">Leave Types List</h3>
+          </div>
+
+          <div className="py-6 px-0 overflow-x-auto">
+            <table className="admin-table">
+              <thead className="admin-table-thead">
+                <tr>
+                  <th className="admin-table-th">Name</th>
+                  <th className="admin-table-th">Code</th>
+                  <th className="admin-table-th text-center">Paid</th>
+                  <th className="admin-table-th">Carry Forward</th>
+                  <th className="admin-table-th w-32 text-center">Actions</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="admin-table-td text-center py-10 text-[#3c8dbc]">
+                      <FaSpinner className="animate-spin text-3xl inline-block" />
+                    </td>
+                  </tr>
+                ) : leaveTypes.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="admin-table-td text-center py-10 text-gray-400 font-bold italic">
+                      No leave types configured
+                    </td>
+                  </tr>
+                ) : (
+                  leaveTypes.map((type) => (
+                    <tr key={type._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="admin-table-td font-bold text-gray-900">
+                        {type.leaveTypeName}
+                      </td>
+                      <td className="admin-table-td">
+                        <span className="bg-blue-50 text-[#3c8dbc] text-[10px] font-bold px-2 py-0.5 rounded border border-blue-100">
+                          {type.leaveCode}
+                        </span>
+                      </td>
+                      <td className="admin-table-td text-center">
+                        {type.isPaid ? (
+                          <span className="text-green-600 font-bold text-xs uppercase flex items-center justify-center gap-1">
+                            <FaCheck size={10} /> Paid
+                          </span>
+                        ) : (
+                          <span className="text-red-500 font-bold text-xs uppercase flex items-center justify-center gap-1">
+                            <FaTimes size={10} /> Unpaid
+                          </span>
+                        )}
+                      </td>
+                      <td className="admin-table-td">
+                        {type.carryForward ? (
+                          <div>
+                            <span className="text-green-600 font-bold text-xs uppercase">Yes</span>
+                            {type.carryForwardLimit > 0 && (
+                              <div className="text-[10px] text-gray-400 font-bold">
+                                Limit: {type.carryForwardLimit}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 font-bold text-xs uppercase">No</span>
+                        )}
+                      </td>
+                      <td className="admin-table-td">
+                        <div className="flex gap-2 justify-center">
+                          <button
+                            onClick={() => handleEdit(type)}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                            title="Edit"
+                          >
+                            <FaEdit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(type._id)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            title="Delete"
+                          >
+                            <FaTrash size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       {showModal && (
@@ -386,7 +395,7 @@ const LeaveTypesManagement = () => {
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

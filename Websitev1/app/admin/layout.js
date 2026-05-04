@@ -1207,44 +1207,38 @@ export default function RootLayout({ children }) {
       submenuItems: [
         {
           icon: <FaRegCircle />,
-          title: "Center Details",
+          title: "Location",
           link: "/admin/master-data/center-details/center-details-list",
         },
         {
           icon: <FaRegCircle />,
-          title: "Location Master",
+          title: "Sub-Location ",
           link: "/admin/master-data/sublocation",
         },
         {
           icon: <FaRegCircle />,
-          title: "Asset Category Master",
+          title: "Department ",
+          link: "/admin/master-data/department-subdepartment",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Category & Depreciation",
+          link: "/admin/master-data/asset-depreciation",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset sub-Category ",
           link: "/admin/master-data/asset-category-subcategory",
         },
-        {
-          icon: <FaRegCircle />,
-          title: "Bank Details",
-          link: "/admin/master-data/bank-details/bank-details-list",
-        },
-        {
-          icon: <FaRegCircle />,
-          title: "Unit of Measurement",
-          link: "/admin/master-data/unit",
-        },
+
+
         {
           icon: <FaRegCircle />,
           title: "Asset Inspection Checklist Master",
           link: "/admin/master-data/asset-inspection-checklist",
         },
-        {
-          icon: <FaRegCircle />,
-          title: "Asset Depreciation Master",
-          link: "/admin/master-data/asset-depreciation",
-        },
-        {
-          icon: <FaRegCircle />,
-          title: "Department Master",
-          link: "/admin/master-data/department-subdepartment",
-        },
+
+
         {
           icon: <FaRegCircle />,
           title: "Leave Type Master",

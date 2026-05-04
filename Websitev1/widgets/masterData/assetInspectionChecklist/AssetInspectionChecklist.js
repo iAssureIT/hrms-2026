@@ -166,13 +166,26 @@ const AssetInspectionChecklist = () => {
     };
 
     return (
-        <div className="p-4">
-            <div className="admin-box box-primary">
-                <div className="admin-box-header border-b border-gray-100 mb-6">
-                    <h3 className="admin-box-title">Asset Inspection Checklist Master</h3>
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* Theme-aligned Header */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Asset Governance</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Asset Inspection <span className="text-[#3c8dbc] font-black">Checklist Master</span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Define standardized inspection parameters to ensure asset compliance and maintenance quality.
+                    </p>
                 </div>
 
-                <div className="p-6">
+                <div className="p-0">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="admin-form-group">
@@ -211,7 +224,7 @@ const AssetInspectionChecklist = () => {
                             </div>
                         </div>
 
-                        <div className="mt-8 p-6 bg-gray-50 border border-dashed border-[#d2d6de] rounded">
+                        <div className="mt-8 p-6 bg-gray-50 rounded">
                             <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-4">Define Checklist Items</h4>
                             <div className="flex flex-col lg:flex-row items-end gap-4">
                                 <div className="flex-1 w-full">
@@ -332,7 +345,7 @@ const AssetInspectionChecklist = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 

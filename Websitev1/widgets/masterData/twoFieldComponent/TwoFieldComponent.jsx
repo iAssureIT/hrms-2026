@@ -205,32 +205,36 @@ const TwoFieldComponent = ({
   };
 
   return (
-    <div className="p-4">
-      {/* Theme-aligned Header */}
-      <div className="mb-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-              <span className="text-[#3c8dbc]">
-                {oneField.fieldlabel} & {twoField.fieldlabel} Management
-              </span>
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">
+                  {oneField.fieldlabel} & {twoField.fieldlabel} Management
+                </span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                {oneField.fieldlabel} &{" "}
+                <span className="text-[#3c8dbc] font-black">
+                  {twoField.fieldlabel}
+                </span>
+              </h1>
             </div>
-            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-              {oneField.fieldlabel} &{" "}
-              <span className="text-[#3c8dbc] font-black">
-                {twoField.fieldlabel}
-              </span>
-            </h1>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Manage organizational masters with parent-child relationships for granular classification and reporting.
+          </p>
         </div>
-      </div>
 
-      <div className="admin-box box-primary">
-          <div className="admin-box-header border-b border-gray-100">
-              <h3 className="admin-box-title">Add New {twoField.fieldlabel}</h3>
+        <div className="admin-box box-primary !border-none !shadow-none !mt-0">
+          <div className="admin-box-header border-b border-gray-100 !px-0">
+            <h3 className="admin-box-title">Add New {twoField.fieldlabel}</h3>
           </div>
 
-          <div className="p-6">
+          <div className="py-6 px-0">
             <form onSubmit={handleSubmit}>
               <div className="grid lg:grid-cols-2 gap-6 w-full">
                 {/* First Field */}
@@ -240,7 +244,7 @@ const TwoFieldComponent = ({
                     <span className="text-red-500 ms-1">*</span>
                     {
                       showAddButton && (
-                        <button 
+                        <button
                           type="button"
                           className="ms-2 text-[#4285F4] hover:text-blue-700 transition-colors"
                           onClick={() => setOpenModal(true)}
@@ -314,128 +318,129 @@ const TwoFieldComponent = ({
               </div>
             </form>
           </div>
-      </div>
-
-      <div className="admin-box box-primary mt-6">
-        <div className="admin-box-header border-b border-gray-100">
-          <h3 className="admin-box-title">Existing {twoField.fieldlabel} List</h3>
         </div>
-        
-        <div className="p-6 overflow-x-auto">
-          {items && items.length > 0 ? (
-            <table className="admin-table">
-              <thead className="admin-table-thead">
-                <tr>
-                  <th className="admin-table-th w-20">SR. No.</th>
-                  <th className="admin-table-th">{oneField.fieldlabel}</th>
-                  {oneField.showImg === true && <th className="admin-table-th">Icon</th>}
-                  <th className="admin-table-th">{twoField.fieldlabel}</th>
-                  {twoField.showImg === true && <th className="admin-table-th">Icon</th>}
-                  <th className="admin-table-th w-32 text-center">ACTION</th>
-                </tr>
-              </thead>
 
-              <tbody>
-                {Array.isArray(items) &&
-                  items.map((data, index) => {
-                    const Img = dropdownData.find(
-                      (img) => img.fieldValue === data.dropdownValue
-                    );
-
-                    return (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="admin-table-td font-bold text-center">
-                          {index + 1}
-                        </td>
-                        <td className="admin-table-td">
-                          {data.dropdownvalue}
-                        </td>
-
-                        {oneField.showImg === true && (
-                          <td className="admin-table-td text-center">
-                            <img
-                              src={Img}
-                              alt="icon img"
-                              className="h-8 inline-block"
-                            />
-                          </td>
-                        )}
-                        <td className="admin-table-td">
-                          {data.inputValue}
-                        </td>
-                        {twoField.showImg === true && (
-                          <td className="admin-table-td text-center">
-                            $$
-                          </td>
-                        )}
-                        <td className="admin-table-td">
-                          <div className="flex gap-2 justify-center">
-                            <button
-                              title="Edit"
-                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                              onClick={() => handleEdit(data)}
-                            >
-                              <MdOutlineEdit size={18} />
-                            </button>
-                            <button
-                              title="Delete"
-                              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                              onClick={() => handleDelete(data._id)}
-                            >
-                              <RiDeleteBin6Line size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          ) : (
-            <div className="w-full text-center py-8 text-gray-400 font-bold italic bg-gray-50 border border-dashed border-gray-200">
-              Data not found
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Modal
-        show={openModal}
-        size="6xl"
-        onClose={() => {
-          setOpenModal(false)
-          setCheckRelode((count) => count + 1)
-        }}
-        className="lg:px-44 px-1 bg-[#1111114f] pt-10 "
-      >
-        <Modal.Body>
-          <div className="mx-auto">
-            <div className="flex justify-end relative mb-4">
-              <button
-                className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
-                onClick={() => {
-                  setOpenModal(false)
-                  setCheckRelode((count) => count + 1)
-                }}
-              >
-                <IoMdClose />
-              </button>
-            </div>
-            <OneFieldComponent
-              openModal={openModal}
-              setOpenModal={setOpenModal}
-              fieldLabel={oneFieldLable}
-              apiPath={oneField.apiPath}
-              updateDropdownValue={updateDropdownValue}
-              setUpdateDropdownValue={setUpdateDropdownValue}
-              checkRelode={checkRelode}
-              setCheckRelode={setCheckRelode}
-              className="-pt-20"
-            />
+        <div className="admin-box box-primary mt-6 !border-none !shadow-none">
+          <div className="admin-box-header border-b border-gray-100 !px-0">
+            <h3 className="admin-box-title">Existing {twoField.fieldlabel} List</h3>
           </div>
-        </Modal.Body>
-      </Modal>
-    </div>
+
+          <div className="py-6 px-0 overflow-x-auto">
+            {items && items.length > 0 ? (
+              <table className="admin-table">
+                <thead className="admin-table-thead">
+                  <tr>
+                    <th className="admin-table-th w-20">SR. No.</th>
+                    <th className="admin-table-th">{oneField.fieldlabel}</th>
+                    {oneField.showImg === true && <th className="admin-table-th">Icon</th>}
+                    <th className="admin-table-th">{twoField.fieldlabel}</th>
+                    {twoField.showImg === true && <th className="admin-table-th">Icon</th>}
+                    <th className="admin-table-th w-32 text-center">ACTION</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {Array.isArray(items) &&
+                    items.map((data, index) => {
+                      const Img = dropdownData.find(
+                        (img) => img.fieldValue === data.dropdownValue
+                      );
+
+                      return (
+                        <tr key={index} className="hover:bg-gray-50 transition-colors">
+                          <td className="admin-table-td font-bold text-center">
+                            {index + 1}
+                          </td>
+                          <td className="admin-table-td">
+                            {data.dropdownvalue}
+                          </td>
+
+                          {oneField.showImg === true && (
+                            <td className="admin-table-td text-center">
+                              <img
+                                src={Img}
+                                alt="icon img"
+                                className="h-8 inline-block"
+                              />
+                            </td>
+                          )}
+                          <td className="admin-table-td">
+                            {data.inputValue}
+                          </td>
+                          {twoField.showImg === true && (
+                            <td className="admin-table-td text-center">
+                              $$
+                            </td>
+                          )}
+                          <td className="admin-table-td">
+                            <div className="flex gap-2 justify-center">
+                              <button
+                                title="Edit"
+                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                onClick={() => handleEdit(data)}
+                              >
+                                <MdOutlineEdit size={18} />
+                              </button>
+                              <button
+                                title="Delete"
+                                className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                                onClick={() => handleDelete(data._id)}
+                              >
+                                <RiDeleteBin6Line size={18} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="w-full text-center py-8 text-gray-400 font-bold italic bg-gray-50 border border-dashed border-gray-200">
+                Data not found
+              </div>
+            )}
+          </div>
+        </div>
+
+        <Modal
+          show={openModal}
+          size="6xl"
+          onClose={() => {
+            setOpenModal(false)
+            setCheckRelode((count) => count + 1)
+          }}
+          className="lg:px-44 px-1 bg-[#1111114f] pt-10 "
+        >
+          <Modal.Body>
+            <div className="mx-auto">
+              <div className="flex justify-end relative mb-4">
+                <button
+                  className="bg-red-400 hover:bg-red-800 text-white font-bold py-1 px-1 border-red-700 rounded-sm"
+                  onClick={() => {
+                    setOpenModal(false)
+                    setCheckRelode((count) => count + 1)
+                  }}
+                >
+                  <IoMdClose />
+                </button>
+              </div>
+              <OneFieldComponent
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                fieldLabel={oneFieldLable}
+                apiPath={oneField.apiPath}
+                updateDropdownValue={updateDropdownValue}
+                setUpdateDropdownValue={setUpdateDropdownValue}
+                checkRelode={checkRelode}
+                setCheckRelode={setCheckRelode}
+                className="-pt-20"
+              />
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div>
+    </section>
   );
 };
 

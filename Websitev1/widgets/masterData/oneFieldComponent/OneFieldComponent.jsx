@@ -244,190 +244,196 @@ const OneFieldComponent = ({
   };
 
   return (
-    <div className="p-4">
-      {/* Theme-aligned Header */}
-      <div className="mb-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-              <span className="text-[#3c8dbc]">
-                {oneField.fieldlabel} Management
-              </span>
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">
+                  {oneField.fieldlabel} Management
+                </span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                {oneField.fieldlabel}{" "}
+                <span className="text-[#3c8dbc] font-black">Management</span>
+              </h1>
             </div>
-            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-              {oneField.fieldlabel}{" "}
-              <span className="text-[#3c8dbc] font-black">Management</span>
-            </h1>
           </div>
-        </div>
-      </div>
-
-      <div className="admin-box box-primary">
-        <div className="admin-box-header border-b border-gray-100 mb-6">
-          <div className="flex gap-2">
-            <Tooltip
-              content={activeTab === "bulk" ? "Go to Form" : "Bulk Upload"}
-              placement="bottom"
-              arrow={false}
-              className="z-50 bg-[#3c8dbc] text-white text-xs px-2 py-1 rounded"
-            >
-              <button className="flex items-center">
-                {activeTab === "failure" ? (
-                  <BsPlusSquare
-                    className="cursor-pointer text-[#4285F4] text-[28px] hover:scale-110 transition-transform"
-                    onClick={() => setActiveTab("active")}
-                  />
-                ) : (
-                  <FaFileUpload
-                    className="cursor-pointer text-[#4285F4] text-[28px] hover:scale-110 transition-transform"
-                    onClick={() => setActiveTab("failure")}
-                  />
-                )}
-              </button>
-            </Tooltip>
-          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Standardize organizational master data for consistent classification and reporting across all modules.
+          </p>
         </div>
 
-        <div className="p-6">
-          {activeTab === "active" ? (
-            <div className="flex flex-col w-full">
-              <form onSubmit={handleSubmit} className="mb-8">
-                <div className="flex flex-col lg:flex-row gap-6 items-end">
-                  <div className="flex-1 w-full">
-                    <label className="admin-label">
-                      {oneField.fieldlabel}
-                      <span className="text-red-500 ms-1">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="admin-input"
-                      placeholder={`Enter ${oneField.fieldlabel}`}
-                      value={field}
-                      required
-                      onChange={(e) => {
-                        setField(e.target.value);
-                        if (errorMessage) setErrorMessage("");
-                      }}
+        <div className="admin-box box-primary !border-none !shadow-none !mt-0">
+          <div className="admin-box-header border-b border-gray-100 !px-0 flex justify-between items-center">
+            <h3 className="admin-box-title">Add New {oneField.fieldlabel}</h3>
+            <div className="flex gap-2">
+              <Tooltip
+                content={activeTab === "bulk" ? "Go to Form" : "Bulk Upload"}
+                placement="bottom"
+                arrow={false}
+                className="z-50 bg-[#3c8dbc] text-white text-xs px-2 py-1 rounded"
+              >
+                <button className="flex items-center">
+                  {activeTab === "failure" ? (
+                    <BsPlusSquare
+                      className="cursor-pointer text-[#4285F4] text-[28px] hover:scale-110 transition-transform"
+                      onClick={() => setActiveTab("active")}
                     />
-                    {errorMessage && (
-                      <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+                  ) : (
+                    <FaFileUpload
+                      className="cursor-pointer text-[#4285F4] text-[28px] hover:scale-110 transition-transform"
+                      onClick={() => setActiveTab("failure")}
+                    />
+                  )}
+                </button>
+              </Tooltip>
+            </div>
+          </div>
+
+          <div className="py-6 px-0">
+            {activeTab === "active" ? (
+              <div className="flex flex-col w-full">
+                <form onSubmit={handleSubmit} className="mb-8">
+                  <div className="flex flex-col lg:flex-row gap-6 items-end">
+                    <div className="flex-1 w-full">
+                      <label className="admin-label">
+                        {oneField.fieldlabel}
+                        <span className="text-red-500 ms-1">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="admin-input"
+                        placeholder={`Enter ${oneField.fieldlabel}`}
+                        value={field}
+                        required
+                        onChange={(e) => {
+                          setField(e.target.value);
+                          if (errorMessage) setErrorMessage("");
+                        }}
+                      />
+                      {errorMessage && (
+                        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+                      )}
+                    </div>
+                    <div className="w-full lg:w-auto">
+                      <button type="submit" className="admin-btn-primary min-w-[120px]">
+                        {checkUpdate ? "Update Record" : "Save Record"}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <div className="border-t border-gray-100 pt-8 mt-4 !border-none">
+                  <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6 gap-4">
+                    <div className="flex items-center gap-4">
+                      <h3 className="admin-box-title uppercase m-0">{fieldLabel} List</h3>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-bold text-gray-500 uppercase">Per Page:</label>
+                        <select
+                          className="admin-select !w-16 !py-1"
+                          onChange={(event) => setRecsPerPage(Number(event.target.value))}
+                          value={recsPerPage}
+                        >
+                          <option value={10}>10</option>
+                          <option value={20}>20</option>
+                          <option value={50}>50</option>
+                          <option value={100}>100</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <Tooltip
+                      content="Download Excel"
+                      placement="top"
+                      className="z-50 bg-[#3c8dbc] text-white text-xs px-2 py-1 rounded"
+                      arrow={false}
+                    >
+                      <button onClick={exportToExcel} className="p-2 text-[#3c8dbc] hover:bg-blue-50 border border-[#3c8dbc] rounded transition-colors">
+                        <FaFileDownload size={20} />
+                      </button>
+                    </Tooltip>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="admin-table">
+                      <thead className="admin-table-thead">
+                        <tr>
+                          <th className="admin-table-th w-20 text-center">Sr.No</th>
+                          <th className="admin-table-th text-center w-32">Action</th>
+                          <th className="admin-table-th">{oneField.fieldlabel}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {loading ? (
+                          <tr>
+                            <td colSpan={3} className="admin-table-td text-center text-[#3c8dbc] py-10">
+                              <FaSpinner className="animate-spin text-3xl inline-block" />
+                            </td>
+                          </tr>
+                        ) : data && data.length > 0 ? (
+                          data.map((item, index) => (
+                            <tr key={item._id || index} className="hover:bg-gray-50 transition-colors">
+                              <td className="admin-table-td text-center font-bold">{startSerialNumber + index}</td>
+                              <td className="admin-table-td">
+                                <div className="flex gap-2 justify-center">
+                                  <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" onClick={() => handleEditClick(item)}>
+                                    <MdOutlineEdit size={18} />
+                                  </button>
+                                  <button className="p-1.5 text-red-600 hover:bg-red-50 rounded" onClick={() => handleDelete(item._id)}>
+                                    <RiDeleteBin6Line size={18} />
+                                  </button>
+                                </div>
+                              </td>
+                              <td className="admin-table-td">{item.fieldValue || item.centerName}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={3} className="admin-table-td text-center py-10 text-gray-400 font-bold italic">No Record Found!</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+
+                    {numOfPages.length > 1 && (
+                      <div className="flex justify-center mt-8">
+                        <ul className="flex items-center gap-1">
+                          {pageNumber > 1 && (
+                            <li onClick={() => setPageNumber(prev => prev - 1)} className="px-3 py-1 border border-[#d2d6de] cursor-pointer hover:bg-gray-200">
+                              <IoIosArrowBack size={18} />
+                            </li>
+                          )}
+                          {numOfPages.map(page => (
+                            <li key={page} onClick={() => setPageNumber(page)} className={`px-3 py-1 border border-[#d2d6de] cursor-pointer text-sm font-bold ${pageNumber === page ? "bg-[#3c8dbc] text-white" : "text-gray-600 hover:bg-gray-200"}`}>
+                              {page}
+                            </li>
+                          ))}
+                          {pageNumber < numOfPages.length && (
+                            <li onClick={() => setPageNumber(prev => prev + 1)} className="px-3 py-1 border border-[#d2d6de] cursor-pointer hover:bg-gray-200">
+                              <IoIosArrowForward size={18} />
+                            </li>
+                          )}
+                        </ul>
+                      </div>
                     )}
                   </div>
-                  <div className="w-full lg:w-auto">
-                    <button type="submit" className="admin-btn-primary min-w-[120px]">
-                      {checkUpdate ? "Update Record" : "Save Record"}
-                    </button>
-                  </div>
-                </div>
-              </form>
-
-              <div className="border-t border-gray-100 pt-8 mt-4">
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6 gap-4">
-                  <div className="flex items-center gap-4">
-                    <h3 className="admin-box-title uppercase m-0">{fieldLabel} List</h3>
-                    <div className="flex items-center gap-2">
-                      <label className="text-xs font-bold text-gray-500 uppercase">Per Page:</label>
-                      <select
-                        className="admin-select !w-16 !py-1"
-                        onChange={(event) => setRecsPerPage(Number(event.target.value))}
-                        value={recsPerPage}
-                      >
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <Tooltip
-                    content="Download Excel"
-                    placement="top"
-                    className="z-50 bg-[#3c8dbc] text-white text-xs px-2 py-1 rounded"
-                    arrow={false}
-                  >
-                    <button onClick={exportToExcel} className="p-2 text-[#3c8dbc] hover:bg-blue-50 border border-[#3c8dbc] rounded transition-colors">
-                      <FaFileDownload size={20} />
-                    </button>
-                  </Tooltip>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="admin-table">
-                    <thead className="admin-table-thead">
-                      <tr>
-                        <th className="admin-table-th w-20 text-center">Sr.No</th>
-                        <th className="admin-table-th text-center w-32">Action</th>
-                        <th className="admin-table-th">{oneField.fieldlabel}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {loading ? (
-                        <tr>
-                          <td colSpan={3} className="admin-table-td text-center text-[#3c8dbc] py-10">
-                            <FaSpinner className="animate-spin text-3xl inline-block" />
-                          </td>
-                        </tr>
-                      ) : data && data.length > 0 ? (
-                        data.map((item, index) => (
-                          <tr key={item._id || index} className="hover:bg-gray-50 transition-colors">
-                            <td className="admin-table-td text-center font-bold">{startSerialNumber + index}</td>
-                            <td className="admin-table-td">
-                              <div className="flex gap-2 justify-center">
-                                <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" onClick={() => handleEditClick(item)}>
-                                  <MdOutlineEdit size={18} />
-                                </button>
-                                <button className="p-1.5 text-red-600 hover:bg-red-50 rounded" onClick={() => handleDelete(item._id)}>
-                                  <RiDeleteBin6Line size={18} />
-                                </button>
-                              </div>
-                            </td>
-                            <td className="admin-table-td">{item.fieldValue || item.centerName}</td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={3} className="admin-table-td text-center py-10 text-gray-400 font-bold italic">No Record Found!</td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-
-                  {numOfPages.length > 1 && (
-                    <div className="flex justify-center mt-8">
-                      <ul className="flex items-center gap-1">
-                        {pageNumber > 1 && (
-                          <li onClick={() => setPageNumber(prev => prev - 1)} className="px-3 py-1 border border-[#d2d6de] cursor-pointer hover:bg-gray-200">
-                            <IoIosArrowBack size={18} />
-                          </li>
-                        )}
-                        {numOfPages.map(page => (
-                          <li key={page} onClick={() => setPageNumber(page)} className={`px-3 py-1 border border-[#d2d6de] cursor-pointer text-sm font-bold ${pageNumber === page ? "bg-[#3c8dbc] text-white" : "text-gray-600 hover:bg-gray-200"}`}>
-                            {page}
-                          </li>
-                        ))}
-                        {pageNumber < numOfPages.length && (
-                          <li onClick={() => setPageNumber(prev => prev + 1)} className="px-3 py-1 border border-[#d2d6de] cursor-pointer hover:bg-gray-200">
-                            <IoIosArrowForward size={18} />
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
                 </div>
               </div>
-            </div>
-          ) : (
-            <BulkUpload
-              fieldLabel={fieldLabel}
-              goodRecordsHeading={goodRecordsHeading}
-              failedtableHeading={failedtableHeading}
-              fileDetailUrl={fileDetailUrl}
-            />
-          )}
+            ) : (
+              <BulkUpload
+                fieldLabel={fieldLabel}
+                goodRecordsHeading={goodRecordsHeading}
+                failedtableHeading={failedtableHeading}
+                fileDetailUrl={fileDetailUrl}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

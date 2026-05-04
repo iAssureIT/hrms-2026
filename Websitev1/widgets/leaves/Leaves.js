@@ -16,10 +16,6 @@ import {
 } from "react-icons/fa";
 import { MdHistory, MdFilterList } from "react-icons/md";
 import { BsPlusSquare } from "react-icons/bs";
-<<<<<<< Updated upstream
-=======
-import { Tooltip } from "flowbite-react";
->>>>>>> Stashed changes
 import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
@@ -242,7 +238,7 @@ const Leaves = () => {
     } catch (err) {
       alert(
         "Error adding Comp Off: " +
-          (err.response?.data?.message || err.message),
+        (err.response?.data?.message || err.message),
       );
     }
   };
@@ -287,7 +283,6 @@ const Leaves = () => {
   });
 
   return (
-<<<<<<< Updated upstream
     <section className="section admin-box box-primary ">
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
@@ -346,46 +341,6 @@ const Leaves = () => {
                   </div>
                 </Tooltip>
               </div>
-=======
-    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
-      <div className="max-w-[1440px] mx-auto">
-        {/* Theme-aligned Header */}
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                <span className="text-[#3c8dbc]">Human Resources</span>
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Leave <span className="text-[#3c8dbc] font-black">Management</span>
-              </h1>
-            </div>
-            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
-              <Tooltip content="Apply Leave" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-                <BsPlusSquare
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={() => router.push(`/${loggedInRole}/leaves/apply`)}
-                />
-              </Tooltip>
-              <Tooltip content="Credit Comp Off" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-                <FaCalendarCheck
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={() => setShowCompOffModal(true)}
-                />
-              </Tooltip>
-              <Tooltip content="Run Accrual" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-                <FaClock
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={triggerManualAccrual}
-                />
-              </Tooltip>
-              <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-                <FaFileUpload
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={() => router.push(`/${loggedInRole}/leaves/bulk-upload`)}
-                />
-              </Tooltip>
->>>>>>> Stashed changes
             </div>
           </div>
           <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
@@ -393,561 +348,511 @@ const Leaves = () => {
           </p>
         </div>
 
-          {/* Filters Bar */}
-          <div className="bg-white p-6 border border-slate-200 shadow-sm rounded-sm mb-6">
-            <div className="flex flex-wrap items-center gap-6">
-              <div className="flex flex-col gap-1.5 flex-1 min-w-[200px]">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Filter Employee
-                </label>
-                <select
-                  className="admin-select h-10 font-bold"
-                  value={selectedEmployee}
-                  onChange={(e) => setSelectedEmployee(e.target.value)}
-                >
-                  <option value="">All Employees</option>
-                  {employees.map((emp) => (
-                    <option key={emp._id} value={emp._id}>
-                      {emp.employeeName} ({emp.employeeID})
+        {/* Filters Bar */}
+        <div className="bg-white p-6 border border-slate-200 shadow-sm rounded-sm mb-6">
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex flex-col gap-1.5 flex-1 min-w-[200px]">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Filter Employee
+              </label>
+              <select
+                className="admin-select h-10 font-bold"
+                value={selectedEmployee}
+                onChange={(e) => setSelectedEmployee(e.target.value)}
+              >
+                <option value="">All Employees</option>
+                {employees.map((emp) => (
+                  <option key={emp._id} value={emp._id}>
+                    {emp.employeeName} ({emp.employeeID})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Month
+              </label>
+              <select
+                className="admin-select h-10 w-36 font-bold"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              >
+                {months.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Year
+              </label>
+              <select
+                className="admin-select h-10 w-28 font-bold"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Leave Type
+              </label>
+              <select
+                className="admin-select h-10 w-32 font-bold uppercase"
+                value={selectedLeaveType}
+                onChange={(e) => setSelectedLeaveType(e.target.value)}
+              >
+                <option value="all">All</option>
+                {leaveTypes
+                  .filter((t) => ["EL", "CO"].includes(t.leaveCode))
+                  .map((t) => (
+                    <option key={t._id} value={t._id}>
+                      {t.leaveCode}
                     </option>
                   ))}
-                </select>
-              </div>
+              </select>
+            </div>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Month
-                </label>
-                <select
-                  className="admin-select h-10 w-36 font-bold"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                >
-                  {months.map((m) => (
-                    <option key={m.value} value={m.value}>
-                      {m.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Year
-                </label>
-                <select
-                  className="admin-select h-10 w-28 font-bold"
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                >
-                  {years.map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Leave Type
-                </label>
-                <select
-                  className="admin-select h-10 w-32 font-bold uppercase"
-                  value={selectedLeaveType}
-                  onChange={(e) => setSelectedLeaveType(e.target.value)}
-                >
-                  <option value="all">All</option>
-                  {leaveTypes
-                    .filter((t) => ["EL", "CO"].includes(t.leaveCode))
-                    .map((t) => (
-                      <option key={t._id} value={t._id}>
-                        {t.leaveCode}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              <div className="flex items-end h-10 mt-auto">
-                <button
-                  onClick={() => {
-                    setSelectedEmployee("");
-                    setSelectedMonth(moment().format("MM"));
-                    setSelectedYear(moment().format("YYYY"));
-                    setSelectedLeaveType("all");
-                  }}
-                  className="px-3 py-1.5 text-[10px] font-black text-slate-400 hover:text-[#3c8dbc] uppercase tracking-widest transition-colors"
-                >
-                  Clear Filters
-                </button>
-              </div>
+            <div className="flex items-end h-10 mt-auto">
+              <button
+                onClick={() => {
+                  setSelectedEmployee("");
+                  setSelectedMonth(moment().format("MM"));
+                  setSelectedYear(moment().format("YYYY"));
+                  setSelectedLeaveType("all");
+                }}
+                className="px-3 py-1.5 text-[10px] font-black text-slate-400 hover:text-[#3c8dbc] uppercase tracking-widest transition-colors"
+              >
+                Clear Filters
+              </button>
             </div>
           </div>
+        </div>
 
-<<<<<<< Updated upstream
-          {/* Main Box */}
-          <div className="bg-white  shadow-sm flex flex-col mb-10">
-            {/* Box Header with Tabs */}
-            <div className="border-b border-gray-100 flex flex-col md:flex-row justify-between items-center bg-white px-2">
-              <div className="flex overflow-x-auto no-scrollbar">
-                {[
-                  "Pending Requests",
-                  "Approved",
-                  "Rejected",
-                  "Employee Balances",
-                  "Leave Ledger",
-                  "All Records",
-                ].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-5 py-3 text-[12px] font-bold transition-all relative whitespace-nowrap border-r border-gray-100 ${
-                      activeTab === tab
-                        ? "bg-white text-gray-800 border-t-2 border-t-[#00a65a] -mt-[2px]"
-                        : "bg-gray-50 text-gray-400 hover:bg-gray-100"
-                    }`}
-                  >
-                    {tab}
-                    {tab === "Pending Requests" &&
-                      leaves.filter((l) => l.status === "PENDING").length >
-                        0 && (
-                        <span className="ml-2 bg-[#00a65a] text-white px-1.5 py-0.5 rounded-full text-[9px]">
-                          {leaves.filter((l) => l.status === "PENDING").length}
-                        </span>
-                      )}
-                  </button>
-                ))}
-              </div>
-              <div className="p-3 hidden md:block">
-                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  Current View: {activeTab}
-                </h3>
-              </div>
-=======
-          {/* Main Box with Tabs */}
-          <div className="bg-white shadow-sm border border-slate-200 flex flex-col mb-10 rounded-sm">
-            {/* Tab Navigation */}
-            <div className="flex border-b border-slate-200 mb-0 bg-slate-50/30 px-2 overflow-x-auto no-scrollbar">
+        {/* Main Box */}
+        <div className="bg-white  shadow-sm flex flex-col mb-10">
+          {/* Box Header with Tabs */}
+          <div className="border-b border-gray-100 flex flex-col md:flex-row justify-between items-center bg-white px-2">
+            <div className="flex overflow-x-auto no-scrollbar">
               {[
-                { id: "Pending Requests", icon: <FaClock className="text-sm" /> },
-                { id: "Approved", icon: <FaCheck className="text-sm" /> },
-                { id: "Rejected", icon: <FaTimes className="text-sm" /> },
-                { id: "Employee Balances", icon: <FaUser className="text-sm" /> },
-                { id: "Leave Ledger", icon: <MdHistory className="text-base" /> },
-                { id: "All Records", icon: <FaFileUpload className="text-sm" /> },
+                "Pending Requests",
+                "Approved",
+                "Rejected",
+                "Employee Balances",
+                "Leave Ledger",
+                "All Records",
               ].map((tab) => (
                 <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-[12px] font-bold tracking-tight transition-all relative whitespace-nowrap ${activeTab === tab.id
-                      ? "text-[#3c8dbc] bg-white border-x border-slate-200 -mb-[1px] z-10"
-                      : "text-slate-400 hover:text-slate-600"
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-5 py-3 text-[12px] font-bold transition-all relative whitespace-nowrap border-r border-gray-100 ${activeTab === tab
+                    ? "bg-white text-gray-800 border-t-2 border-t-[#00a65a] -mt-[2px]"
+                    : "bg-gray-50 text-gray-400 hover:bg-gray-100"
                     }`}
                 >
-                  <span className={`transition-opacity ${activeTab === tab.id ? 'opacity-100' : 'opacity-50'}`}>
-                    {tab.icon}
-                  </span>
-                  {tab.id}
-                  {tab.id === "Pending Requests" &&
+                  {tab}
+                  {tab === "Pending Requests" &&
                     leaves.filter((l) => l.status === "PENDING").length >
                     0 && (
-                      <span className="ml-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-[9px]">
+                      <span className="ml-2 bg-[#00a65a] text-white px-1.5 py-0.5 rounded-full text-[9px]">
                         {leaves.filter((l) => l.status === "PENDING").length}
                       </span>
                     )}
-                  {activeTab === tab.id && (
-                    <div className="absolute top-0 left-0 w-full h-[2px] bg-[#3c8dbc]"></div>
-                  )}
                 </button>
               ))}
->>>>>>> Stashed changes
             </div>
-
-            {/* DataTable Controls */}
-            <div className="p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-2 text-xs text-gray-700">
-                Show
-                <select className="border border-gray-300 rounded-sm px-1 py-1 focus:outline-none bg-white">
-                  <option>10</option>
-                  <option>25</option>
-                  <option>50</option>
-                  <option>100</option>
-                </select>
-                entries
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-700"></div>
+            <div className="p-3 hidden md:block">
+              <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Current View: {activeTab}
+              </h3>
             </div>
+          </div>
 
-            {/* Table Area */}
-            <div className="overflow-x-auto min-h-[400px]">
-              <table className="admin-table">
-                <thead className="admin-table-thead">
+          {/* DataTable Controls */}
+          <div className="p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2 text-xs text-gray-700">
+              Show
+              <select className="border border-gray-300 rounded-sm px-1 py-1 focus:outline-none bg-white">
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+              entries
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-700"></div>
+          </div>
+
+          {/* Table Area */}
+          <div className="overflow-x-auto min-h-[400px]">
+            <table className="admin-table">
+              <thead className="admin-table-thead">
+                <tr>
+                  <th className="admin-table-th uppercase tracking-wider">
+                    Employee
+                  </th>
+                  {activeTab === "Employee Balances" ? (
+                    <>
+                      <th className="admin-table-th uppercase tracking-wider text-center">
+                        EL Balance
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider text-center">
+                        CO Balance
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider text-center">
+                        Net Balance
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider text-center text-red-600">
+                        LOP
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider">
+                        Action
+                      </th>
+                    </>
+                  ) : (
+                    <>
+                      <th className="admin-table-th uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider">
+                        Transaction
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider text-center">
+                        Days
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider text-center">
+                        Balance
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider">
+                        Source
+                      </th>
+                      <th className="admin-table-th uppercase tracking-wider">
+                        Remarks
+                      </th>
+                      {activeTab !== "Leave Ledger" && (
+                        <th className="admin-table-th uppercase tracking-wider">
+                          Actions
+                        </th>
+                      )}
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
                   <tr>
-                    <th className="admin-table-th uppercase tracking-wider">
-                      Employee
-                    </th>
-                    {activeTab === "Employee Balances" ? (
-                      <>
-                        <th className="admin-table-th uppercase tracking-wider text-center">
-                          EL Balance
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider text-center">
-                          CO Balance
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider text-center">
-                          Net Balance
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider text-center text-red-600">
-                          LOP
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider">
-                          Action
-                        </th>
-                      </>
-                    ) : (
-                      <>
-                        <th className="admin-table-th uppercase tracking-wider">
-                          Type
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider">
-                          Transaction
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider text-center">
-                          Days
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider text-center">
-                          Balance
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider">
-                          Source
-                        </th>
-                        <th className="admin-table-th uppercase tracking-wider">
-                          Remarks
-                        </th>
-                        {activeTab !== "Leave Ledger" && (
-                          <th className="admin-table-th uppercase tracking-wider">
-                            Actions
-                          </th>
-                        )}
-                      </>
-                    )}
+                    <td
+                      colSpan="9"
+                      className="px-5 py-20 text-center text-gray-400 text-xs italic"
+                    >
+                      Loading records...
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td
-                        colSpan="9"
-                        className="px-5 py-20 text-center text-gray-400 text-xs italic"
-                      >
-                        Loading records...
-                      </td>
-                    </tr>
-                  ) : (() => {
-                      let data =
-                        activeTab === "Leave Ledger" ? ledger : filteredLeaves;
-                      if (activeTab === "Employee Balances")
-                        data = monthlyReport;
+                ) : (() => {
+                  let data =
+                    activeTab === "Leave Ledger" ? ledger : filteredLeaves;
+                  if (activeTab === "Employee Balances")
+                    data = monthlyReport;
 
-                      return data;
-                    })().length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan="9"
-                        className="px-5 py-20 text-center text-gray-400 text-xs italic"
-                      >
-                        No records found{" "}
-                        {selectedEmployee ? "for this employee" : ""}{" "}
-                        {tableSearch ? `matching "${tableSearch}"` : ""}
-                      </td>
-                    </tr>
-                  ) : activeTab === "Employee Balances" ? (
-                    monthlyReport
-                      .filter(
-                        (r) => !selectedEmployee || r._id === selectedEmployee,
-                      )
-                      .map((row) => (
-                        <tr
-                          key={row._id}
-                          className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
-                        >
-                          <td className="admin-table-td">
-                            <div className="text-[12px] font-bold text-slate-700">
-                              {row.employeeName}
-                            </div>
-                            <div className="text-[10px] text-slate-400 font-medium">
-                              {row.employeeID}
-                            </div>
-                          </td>
-                          <td className="admin-table-td text-[12px] font-bold text-center">
-                            {row.elBalance}
-                          </td>
-                          <td className="admin-table-td text-[12px] font-bold text-center">
-                            {row.coBalance}
-                          </td>
-                          <td className="admin-table-td text-center">
-                            <span
-                              className={`text-[11px] font-bold ${row.totalBalance - row.lop < 0 ? "text-red-500" : "text-slate-800"}`}
-                            >
-                              {(() => {
-                                const net = row.totalBalance - row.lop;
-                                if (net < 0)
-                                  return `Deficit: ${Math.abs(net).toFixed(1)} ${Math.abs(net) === 1 ? "Day" : "Days"}`;
-                                return net.toFixed(1);
-                              })()}
-                            </span>
-                          </td>
-                          <td className="admin-table-td text-center">
-                            <span
-                              className={`text-[11px] font-bold ${row.lop > 0 ? "text-red-600 bg-red-50 px-2 py-0.5 rounded" : "text-slate-300 italic"}`}
-                            >
-                              {row.lop > 0 ? row.lop : "0"}
-                            </span>
-                          </td>
-                          <td className="admin-table-td">
-                            <button
-                              onClick={() =>
-                                router.push(
-                                  `/admin/leaves/ledger/${row._id}?month=${selectedMonth}&year=${selectedYear}`,
-                                )
-                              }
-                              className="admin-btn-primary !px-3 !py-1 !text-[10px] font-black uppercase tracking-tight"
-                            >
-                              View
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                  ) : activeTab === "Leave Ledger" ? (
-                    ledger.map((item) => (
+                  return data;
+                })().length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="9"
+                      className="px-5 py-20 text-center text-gray-400 text-xs italic"
+                    >
+                      No records found{" "}
+                      {selectedEmployee ? "for this employee" : ""}{" "}
+                      {tableSearch ? `matching "${tableSearch}"` : ""}
+                    </td>
+                  </tr>
+                ) : activeTab === "Employee Balances" ? (
+                  monthlyReport
+                    .filter(
+                      (r) => !selectedEmployee || r._id === selectedEmployee,
+                    )
+                    .map((row) => (
                       <tr
-                        key={item._id}
+                        key={row._id}
                         className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
                       >
                         <td className="admin-table-td">
                           <div className="text-[12px] font-bold text-slate-700">
-                            {item.employeeId?.employeeName || "Unknown"}
+                            {row.employeeName}
                           </div>
                           <div className="text-[10px] text-slate-400 font-medium">
-                            {item.employeeId?.employeeID || "N/A"}
+                            {row.employeeID}
                           </div>
                         </td>
-                        <td className="admin-table-td">
-                          <span className="text-[10px] font-black text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase">
-                            {item.leaveTypeId?.leaveCode || "Leave"}
-                          </span>
+                        <td className="admin-table-td text-[12px] font-bold text-center">
+                          {row.elBalance}
                         </td>
-                        <td className="admin-table-td text-[11px] text-slate-600 font-medium">
-                          {moment(item.transactionDate).format("DD MMM YYYY")}
+                        <td className="admin-table-td text-[12px] font-bold text-center">
+                          {row.coBalance}
                         </td>
-                        <td className="admin-table-td">
+                        <td className="admin-table-td text-center">
                           <span
-<<<<<<< Updated upstream
-                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                              item.days > 0
-=======
-                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${item.days > 0
->>>>>>> Stashed changes
-                                ? "bg-green-100 text-[#00a65a]"
-                                : item.transactionType === "ADJUSTED"
-                                  ? "bg-blue-100 text-[#3c8dbc]"
-                                  : "bg-red-100 text-[#dd4b39]"
-                            }`}
+                            className={`text-[11px] font-bold ${row.totalBalance - row.lop < 0 ? "text-red-500" : "text-slate-800"}`}
                           >
-                            {item.days > 0
-                              ? "Earned"
-                              : item.transactionType === "ADJUSTED"
-                                ? "Adjusted"
-                                : "Used"}
-                          </span>
-                        </td>
-                        <td className="admin-table-td text-center text-[12px] font-bold">
-                          <span
-                            className={
-                              item.days > 0
-                                ? "text-[#00a65a]"
-                                : "text-[#dd4b39]"
-                            }
-                          >
-                            {Math.abs(item.days)}
+                            {(() => {
+                              const net = row.totalBalance - row.lop;
+                              if (net < 0)
+                                return `Deficit: ${Math.abs(net).toFixed(1)} ${Math.abs(net) === 1 ? "Day" : "Days"}`;
+                              return net.toFixed(1);
+                            })()}
                           </span>
                         </td>
                         <td className="admin-table-td text-center">
-                          <div className="text-[11px] font-bold text-slate-800 bg-slate-50 rounded px-2 py-1 inline-block border border-slate-200">
-                            {item.balanceAfter}
+                          <span
+                            className={`text-[11px] font-bold ${row.lop > 0 ? "text-red-600 bg-red-50 px-2 py-0.5 rounded" : "text-slate-300 italic"}`}
+                          >
+                            {row.lop > 0 ? row.lop : "0"}
+                          </span>
+                        </td>
+                        <td className="admin-table-td">
+                          <button
+                            onClick={() =>
+                              router.push(
+                                `/admin/leaves/ledger/${row._id}?month=${selectedMonth}&year=${selectedYear}`,
+                              )
+                            }
+                            className="admin-btn-primary !px-3 !py-1 !text-[10px] font-black uppercase tracking-tight"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                ) : activeTab === "Leave Ledger" ? (
+                  ledger.map((item) => (
+                    <tr
+                      key={item._id}
+                      className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
+                    >
+                      <td className="admin-table-td">
+                        <div className="text-[12px] font-bold text-slate-700">
+                          {item.employeeId?.employeeName || "Unknown"}
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-medium">
+                          {item.employeeId?.employeeID || "N/A"}
+                        </div>
+                      </td>
+                      <td className="admin-table-td">
+                        <span className="text-[10px] font-black text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase">
+                          {item.leaveTypeId?.leaveCode || "Leave"}
+                        </span>
+                      </td>
+                      <td className="admin-table-td text-[11px] text-slate-600 font-medium">
+                        {moment(item.transactionDate).format("DD MMM YYYY")}
+                      </td>
+                      <td className="admin-table-td">
+                        <span
+                          className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${item.days > 0
+                            ? "bg-green-100 text-[#00a65a]"
+                            : item.transactionType === "ADJUSTED"
+                              ? "bg-blue-100 text-[#3c8dbc]"
+                              : "bg-red-100 text-[#dd4b39]"
+                            }`}
+                        >
+                          {item.days > 0
+                            ? "Earned"
+                            : item.transactionType === "ADJUSTED"
+                              ? "Adjusted"
+                              : "Used"}
+                        </span>
+                      </td>
+                      <td className="admin-table-td text-center text-[12px] font-bold">
+                        <span
+                          className={
+                            item.days > 0
+                              ? "text-[#00a65a]"
+                              : "text-[#dd4b39]"
+                          }
+                        >
+                          {Math.abs(item.days)}
+                        </span>
+                      </td>
+                      <td className="admin-table-td text-center">
+                        <div className="text-[11px] font-bold text-slate-800 bg-slate-50 rounded px-2 py-1 inline-block border border-slate-200">
+                          {item.balanceAfter}
+                        </div>
+                      </td>
+                      <td className="admin-table-td">
+                        <span className="text-[9px] font-black text-slate-400 uppercase bg-slate-100 px-1.5 py-0.5 rounded tracking-tighter">
+                          {item.referenceType || "System"}
+                        </span>
+                      </td>
+                      <td
+                        className="admin-table-td text-[11px] text-slate-500 italic truncate max-w-[150px]"
+                        title={item.remarks}
+                      >
+                        {item.remarks}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  filteredLeaves
+                    .filter((item) => {
+                      if (!tableSearch) return true;
+                      const search = tableSearch.toLowerCase();
+                      return (
+                        (item.employeeId?.employeeName || "")
+                          .toLowerCase()
+                          .includes(search) ||
+                        (item.employeeId?.employeeID || "")
+                          .toLowerCase()
+                          .includes(search) ||
+                        (item.reason || "").toLowerCase().includes(search) ||
+                        (item.leaveTypeId?.leaveCode || "")
+                          .toLowerCase()
+                          .includes(search)
+                      );
+                    })
+                    .map((leave) => (
+                      <tr
+                        key={leave._id}
+                        className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
+                      >
+                        <td className="admin-table-td">
+                          <div className="text-[12px] font-bold text-slate-700">
+                            {leave.employeeId?.employeeName || "Unknown"}
+                          </div>
+                          <div className="text-[10px] text-slate-400 font-medium">
+                            {leave.employeeId?.employeeID || "N/A"}
                           </div>
                         </td>
                         <td className="admin-table-td">
-                          <span className="text-[9px] font-black text-slate-400 uppercase bg-slate-100 px-1.5 py-0.5 rounded tracking-tighter">
-                            {item.referenceType || "System"}
+                          <span className="text-[10px] font-black text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200 uppercase">
+                            {leave.leaveTypeId?.leaveCode || "Leave"}
+                          </span>
+                        </td>
+                        <td className="admin-table-td text-[11px] text-slate-600 font-medium">
+                          {moment(leave.fromDate).format("DD MMM")} -{" "}
+                          {moment(leave.toDate).format("DD MMM YYYY")}
+                        </td>
+                        <td className="admin-table-td">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${leave.status === "APPROVED"
+                              ? "bg-[#00a65a]"
+                              : leave.status === "REJECTED"
+                                ? "bg-[#dd4b39]"
+                                : "bg-[#f39c12]"
+                              }`}
+                          >
+                            {leave.status}
+                          </span>
+                        </td>
+                        <td className="admin-table-td text-center text-[12px] font-bold text-slate-700">
+                          {leave.totalDays}
+                        </td>
+                        <td className="admin-table-td text-center">
+                          <span className="text-[12px] font-bold text-slate-700">
+                            {(() => {
+                              const empBal = monthlyReport.find(
+                                (r) => r._id === leave.employeeId?._id,
+                              );
+                              const code = leave.leaveTypeId?.leaveCode;
+                              let balance = 0;
+                              if (code === "EL")
+                                balance = empBal?.elBalance ?? 0;
+                              else if (code === "CO")
+                                balance = empBal?.coBalance ?? 0;
+                              else
+                                balance =
+                                  (empBal?.totalBalance || 0) -
+                                  (empBal?.lop || 0);
+
+                              if (balance < 0)
+                                return `Deficit: ${Math.abs(balance).toFixed(1)}`;
+                              return balance.toFixed(1);
+                            })()}
+                          </span>
+                        </td>
+                        <td className="admin-table-td">
+                          <span className="text-[9px] font-black text-slate-400 uppercase bg-slate-50 px-1.5 py-0.5 rounded tracking-tighter">
+                            Application
                           </span>
                         </td>
                         <td
                           className="admin-table-td text-[11px] text-slate-500 italic truncate max-w-[150px]"
-                          title={item.remarks}
+                          title={leave.reason}
                         >
-                          {item.remarks}
+                          {leave.reason}
+                        </td>
+                        <td className="admin-table-td">
+                          {leave.status === "PENDING" ? (
+                            <div className="flex gap-2">
+                              <Tooltip content="Approve" arrow={false} placement="top" className="bg-[#00a65a]">
+                                <button
+                                  onClick={() =>
+                                    updateStatus(leave._id, "APPROVED")
+                                  }
+                                  className="bg-[#00a65a] text-white p-1.5 rounded-sm hover:shadow-md transition-all active:scale-95"
+                                >
+                                  <FaCheck size={12} />
+                                </button>
+                              </Tooltip>
+                              <Tooltip content="Reject" arrow={false} placement="top" className="bg-[#dd4b39]">
+                                <button
+                                  onClick={() =>
+                                    updateStatus(leave._id, "REJECTED")
+                                  }
+                                  className="bg-[#dd4b39] text-white p-1.5 rounded-sm hover:shadow-md transition-all active:scale-95"
+                                >
+                                  <FaTimes size={12} />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          ) : (
+                            <span className="text-[10px] font-black text-slate-300 uppercase italic tracking-widest">
+                              Finalized
+                            </span>
+                          )}
                         </td>
                       </tr>
                     ))
-                  ) : (
-                    filteredLeaves
-                      .filter((item) => {
-                        if (!tableSearch) return true;
-                        const search = tableSearch.toLowerCase();
-                        return (
-                          (item.employeeId?.employeeName || "")
-                            .toLowerCase()
-                            .includes(search) ||
-                          (item.employeeId?.employeeID || "")
-                            .toLowerCase()
-                            .includes(search) ||
-                          (item.reason || "").toLowerCase().includes(search) ||
-                          (item.leaveTypeId?.leaveCode || "")
-                            .toLowerCase()
-                            .includes(search)
-                        );
-                      })
-                      .map((leave) => (
-                        <tr
-                          key={leave._id}
-                          className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
-                        >
-                          <td className="admin-table-td">
-                            <div className="text-[12px] font-bold text-slate-700">
-                              {leave.employeeId?.employeeName || "Unknown"}
-                            </div>
-                            <div className="text-[10px] text-slate-400 font-medium">
-                              {leave.employeeId?.employeeID || "N/A"}
-                            </div>
-                          </td>
-                          <td className="admin-table-td">
-                            <span className="text-[10px] font-black text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200 uppercase">
-                              {leave.leaveTypeId?.leaveCode || "Leave"}
-                            </span>
-                          </td>
-                          <td className="admin-table-td text-[11px] text-slate-600 font-medium">
-                            {moment(leave.fromDate).format("DD MMM")} -{" "}
-                            {moment(leave.toDate).format("DD MMM YYYY")}
-                          </td>
-                          <td className="admin-table-td">
-                            <span
-<<<<<<< Updated upstream
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
-                                leave.status === "APPROVED"
-=======
-                              className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest text-white ${leave.status === "APPROVED"
->>>>>>> Stashed changes
-                                  ? "bg-[#00a65a]"
-                                  : leave.status === "REJECTED"
-                                    ? "bg-[#dd4b39]"
-                                    : "bg-[#f39c12]"
-                              }`}
-                            >
-                              {leave.status}
-                            </span>
-                          </td>
-                          <td className="admin-table-td text-center text-[12px] font-bold text-slate-700">
-                            {leave.totalDays}
-                          </td>
-                          <td className="admin-table-td text-center">
-                            <span className="text-[12px] font-bold text-slate-700">
-                              {(() => {
-                                const empBal = monthlyReport.find(
-                                  (r) => r._id === leave.employeeId?._id,
-                                );
-                                const code = leave.leaveTypeId?.leaveCode;
-                                let balance = 0;
-                                if (code === "EL")
-                                  balance = empBal?.elBalance ?? 0;
-                                else if (code === "CO")
-                                  balance = empBal?.coBalance ?? 0;
-                                else
-                                  balance =
-                                    (empBal?.totalBalance || 0) -
-                                    (empBal?.lop || 0);
+                )}
+              </tbody>
+            </table>
+          </div>
 
-                                if (balance < 0)
-                                  return `Deficit: ${Math.abs(balance).toFixed(1)}`;
-                                return balance.toFixed(1);
-                              })()}
-                            </span>
-                          </td>
-                          <td className="admin-table-td">
-                            <span className="text-[9px] font-black text-slate-400 uppercase bg-slate-50 px-1.5 py-0.5 rounded tracking-tighter">
-                              Application
-                            </span>
-                          </td>
-                          <td
-                            className="admin-table-td text-[11px] text-slate-500 italic truncate max-w-[150px]"
-                            title={leave.reason}
-                          >
-                            {leave.reason}
-                          </td>
-                          <td className="admin-table-td">
-                            {leave.status === "PENDING" ? (
-                              <div className="flex gap-2">
-                                <Tooltip content="Approve" arrow={false} placement="top" className="bg-[#00a65a]">
-                                  <button
-                                    onClick={() =>
-                                      updateStatus(leave._id, "APPROVED")
-                                    }
-                                    className="bg-[#00a65a] text-white p-1.5 rounded-sm hover:shadow-md transition-all active:scale-95"
-                                  >
-                                    <FaCheck size={12} />
-                                  </button>
-                                </Tooltip>
-                                <Tooltip content="Reject" arrow={false} placement="top" className="bg-[#dd4b39]">
-                                  <button
-                                    onClick={() =>
-                                      updateStatus(leave._id, "REJECTED")
-                                    }
-                                    className="bg-[#dd4b39] text-white p-1.5 rounded-sm hover:shadow-md transition-all active:scale-95"
-                                  >
-                                    <FaTimes size={12} />
-                                  </button>
-                                </Tooltip>
-                              </div>
-                            ) : (
-                              <span className="text-[10px] font-black text-slate-300 uppercase italic tracking-widest">
-                                Finalized
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                  )}
-                </tbody>
-              </table>
+          {/* Pagination Area */}
+          <div className="p-4 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-50">
+            <div className="text-xs text-gray-500">
+              Found{" "}
+              {
+                (activeTab === "Leave Ledger" ? ledger : filteredLeaves)
+                  .length
+              }{" "}
+              records
             </div>
-
-            {/* Pagination Area */}
-            <div className="p-4 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-50">
-              <div className="text-xs text-gray-500">
-                Found{" "}
-                {
-                  (activeTab === "Leave Ledger" ? ledger : filteredLeaves)
-                    .length
-                }{" "}
-                records
-              </div>
-              <div className="flex border border-gray-200 rounded-sm overflow-hidden shadow-sm">
-                <button className="px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50 border-r border-gray-200">
-                  Previous
-                </button>
-                <button className="px-3 py-1.5 text-xs bg-[#3c8dbc] text-white border-r border-gray-200">
-                  1
-                </button>
-                <button className="px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50">
-                  Next
-                </button>
-              </div>
+            <div className="flex border border-gray-200 rounded-sm overflow-hidden shadow-sm">
+              <button className="px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50 border-r border-gray-200">
+                Previous
+              </button>
+              <button className="px-3 py-1.5 text-xs bg-[#3c8dbc] text-white border-r border-gray-200">
+                1
+              </button>
+              <button className="px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50">
+                Next
+              </button>
             </div>
           </div>
         </div>
+      </main>
 
       {/* Comp Off Modal */}
       {showCompOffModal && (

@@ -165,8 +165,8 @@ const CenterDetailsList = (props) => {
   };
 
   return (
-    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
-      <div className="max-w-[1440px] mx-auto">
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
         {/* Theme-aligned Header */}
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
@@ -175,7 +175,7 @@ const CenterDetailsList = (props) => {
                 <span className="text-[#3c8dbc]">Master Data Management</span>
               </div>
               <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Center <span className="text-[#3c8dbc] font-black">Details</span>
+                Location <span className="text-[#3c8dbc] font-black">Master</span>
               </h1>
             </div>
             <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
@@ -225,7 +225,8 @@ const CenterDetailsList = (props) => {
             Comprehensive overview of organizational centers, location-specific data, and administrative oversight.
           </p>
         </div>
-        <div className="px-10 py-6">
+
+        <div className="mt-8">
           <GenericTable
             tableObjects={tableObjects ? tableObjects : {}}
             tableHeading={tableHeading}

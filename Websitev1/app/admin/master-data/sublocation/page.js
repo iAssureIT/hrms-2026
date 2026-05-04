@@ -4,7 +4,7 @@ import TwoFieldComponent from "@/widgets/masterData/twoFieldComponent/TwoFieldCo
 
 const Page = () => {
     const oneFieldInputObj = {
-        fieldlabel: "Centers/Location",
+        fieldlabel: "Location",
         getListAPI: "/api/centers/list",
     };
 
@@ -20,7 +20,7 @@ const Page = () => {
         <div>
             <TwoFieldComponent
                 oneField={oneFieldInputObj}
-                oneFieldLable="Centers/Location"
+                oneFieldLable="Location"
                 twoFieldLable="Sub-location"
                 twoField={twoFieldInputObj}
                 showAddButton={false}
