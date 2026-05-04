@@ -1195,11 +1195,11 @@ export default function RootLayout({ children }) {
       icon: <FaCalendarCheck />,
       link: "/admin/leaves",
     },
-    // {
-    //   title: "Helpdesk",
-    //   icon: <FaHeadset />,
-    //   link: "/admin/helpdesk",
-    // },
+    {
+      title: "Helpdesk",
+      icon: <FaHeadset />,
+      link: "/admin/helpdesk",
+    },
     {
       title: "Master Data",
       submenu: true,

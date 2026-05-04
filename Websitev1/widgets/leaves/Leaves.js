@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Tooltip } from "flowbite-react";
 import {
   FaPlus,
   FaFilter,
@@ -13,11 +14,12 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { MdHistory, MdFilterList } from "react-icons/md";
+import { BsPlusSquare } from "react-icons/bs";
 import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
 import Swal from "sweetalert2";
-import LeaveChatWidget from "./LeaveChatWidget";
+// import LeaveChatWidget from "./LeaveChatWidget";
 
 const Leaves = () => {
   const router = useRouter();
@@ -235,7 +237,7 @@ const Leaves = () => {
     } catch (err) {
       alert(
         "Error adding Comp Off: " +
-        (err.response?.data?.message || err.message),
+          (err.response?.data?.message || err.message),
       );
     }
   };
@@ -288,33 +290,55 @@ const Leaves = () => {
           <div className="mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
               <div className="space-y-1">
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                  <span className="text-[#3c8dbc]">Leave Management</span>
-                </div>
                 <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                  Leave <span className="text-[#3c8dbc] font-black">Management</span>
+                  Leave{" "}
+                  <span className="text-[#3c8dbc] font-black">Management</span>
                 </h1>
               </div>
-              <div className="flex gap-2 mt-4 md:mt-0 mb-1">
-                <button
-                  onClick={triggerManualAccrual}
-                  className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
-                  title="Run monthly EL credit manually"
+              <div className="flex gap-4 mt-4 md:mt-0 mb-1">
+                <Tooltip
+                  content="Run Accrual"
+                  arrow={false}
+                  placement="bottom"
+                  className="bg-[#3c8dbc]"
                 >
-                  <FaClock size={12} /> Run Accrual
-                </button>
-                <button
-                  onClick={() => setShowCompOffModal(true)}
-                  className="bg-[#3c8dbc] border border-[#367fa9] text-white px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-[#367fa9] shadow-sm flex items-center gap-2"
+                  <div className="relative group">
+                    <FaClock
+                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1.5 hover:border-[#367fa9] rounded text-[34px] transition-all active:scale-95 shadow-sm"
+                      onClick={triggerManualAccrual}
+                    />
+                  </div>
+                </Tooltip>
+
+                <Tooltip
+                  content="Credit Comp Off"
+                  arrow={false}
+                  placement="bottom"
+                  className="bg-[#3c8dbc]"
                 >
-                  <FaCalendarCheck size={12} /> Credit Comp Off
-                </button>
-                <button
-                  onClick={() => router.push(`/${loggedInRole}/leaves/apply`)}
-                  className="bg-[#00a65a] border border-[#008d4c] text-white px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2"
+                  <div className="relative group">
+                    <FaCalendarCheck
+                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1.5 hover:border-[#367fa9] rounded text-[34px] transition-all active:scale-95 shadow-sm"
+                      onClick={() => setShowCompOffModal(true)}
+                    />
+                  </div>
+                </Tooltip>
+
+                <Tooltip
+                  content="Apply Leave"
+                  arrow={false}
+                  placement="bottom"
+                  className="bg-[#3c8dbc]"
                 >
-                  <FaPlus size={12} /> Apply Leave
-                </button>
+                  <div className="relative group">
+                    <BsPlusSquare
+                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1.5 hover:border-[#367fa9] rounded text-[34px] transition-all active:scale-95 shadow-sm"
+                      onClick={() =>
+                        router.push(`/${loggedInRole}/leaves/apply`)
+                      }
+                    />
+                  </div>
+                </Tooltip>
               </div>
             </div>
           </div>
@@ -426,15 +450,16 @@ const Leaves = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-5 py-3 text-[12px] font-bold transition-all relative whitespace-nowrap border-r border-gray-100 ${activeTab === tab
+                    className={`px-5 py-3 text-[12px] font-bold transition-all relative whitespace-nowrap border-r border-gray-100 ${
+                      activeTab === tab
                         ? "bg-white text-gray-800 border-t-2 border-t-[#00a65a] -mt-[2px]"
                         : "bg-gray-50 text-gray-400 hover:bg-gray-100"
-                      }`}
+                    }`}
                   >
                     {tab}
                     {tab === "Pending Requests" &&
                       leaves.filter((l) => l.status === "PENDING").length >
-                      0 && (
+                        0 && (
                         <span className="ml-2 bg-[#00a65a] text-white px-1.5 py-0.5 rounded-full text-[9px]">
                           {leaves.filter((l) => l.status === "PENDING").length}
                         </span>
@@ -533,13 +558,13 @@ const Leaves = () => {
                       </td>
                     </tr>
                   ) : (() => {
-                    let data =
-                      activeTab === "Leave Ledger" ? ledger : filteredLeaves;
-                    if (activeTab === "Employee Balances")
-                      data = monthlyReport;
+                      let data =
+                        activeTab === "Leave Ledger" ? ledger : filteredLeaves;
+                      if (activeTab === "Employee Balances")
+                        data = monthlyReport;
 
-                    return data;
-                  })().length === 0 ? (
+                      return data;
+                    })().length === 0 ? (
                     <tr>
                       <td
                         colSpan="9"
@@ -631,12 +656,13 @@ const Leaves = () => {
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${item.days > 0
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                              item.days > 0
                                 ? "bg-green-100 text-[#00a65a]"
                                 : item.transactionType === "ADJUSTED"
                                   ? "bg-blue-100 text-[#3c8dbc]"
                                   : "bg-red-100 text-[#dd4b39]"
-                              }`}
+                            }`}
                           >
                             {item.days > 0
                               ? "Earned"
@@ -653,8 +679,7 @@ const Leaves = () => {
                                 : "text-[#dd4b39]"
                             }
                           >
-                            {item.days > 0 ? "+" : ""}
-                            {item.days}
+                            {Math.abs(item.days)}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -717,12 +742,13 @@ const Leaves = () => {
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${leave.status === "APPROVED"
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
+                                leave.status === "APPROVED"
                                   ? "bg-[#00a65a]"
                                   : leave.status === "REJECTED"
                                     ? "bg-[#dd4b39]"
                                     : "bg-[#f39c12]"
-                                }`}
+                              }`}
                             >
                               {leave.status}
                             </span>
@@ -933,11 +959,11 @@ const Leaves = () => {
           </div>
         </div>
       )}
-      <LeaveChatWidget
+      {/* <LeaveChatWidget
         employeeId={
           selectedEmployee || ls.get("userDetails", { decrypt: true })?._id
         }
-      />
+      /> */}
     </section>
   );
 };
