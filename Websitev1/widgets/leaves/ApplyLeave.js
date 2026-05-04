@@ -78,33 +78,37 @@ const ApplyLeave = () => {
   };
 
   return (
-    <section className="section">
-      <main className="p-4 min-h-screen">
-        <div className="mx-auto">
-          {/* Page Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
-                Apply Leave
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Human Resources / Leaves</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Apply <span className="text-[#3c8dbc] font-black">Leave</span>
               </h1>
-              <span className="text-sm font-light text-gray-500">
-                Submit Application
-              </span>
             </div>
-            <div className="flex gap-2 mt-4 md:mt-0">
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
               <button
                 onClick={() => router.push("/admin/leaves")}
-                className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
+                className="admin-btn-primary flex items-center gap-2 !px-4 !py-1.5"
               >
                 <FaArrowLeft size={12} /> Back to Dashboard
               </button>
             </div>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Submit a new leave application for approval. Please ensure all details are accurate before submission.
+          </p>
+        </div>
 
           {/* Form Container (AdminLTE Box) */}
-          <div className="max-w-2xl mx-auto bg-white border-t-[3px] border-[#00a65a] shadow-sm overflow-hidden mt-6">
-            <div className="px-5 py-3 border-b border-gray-100 bg-white">
-              <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
+          <div className="max-w-2xl mx-auto bg-white border-t-[3px] border-[#3c8dbc] shadow-lg overflow-hidden mt-8 rounded-sm">
+            <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">
                 Application Form
               </h3>
             </div>
@@ -113,12 +117,12 @@ const ApplyLeave = () => {
               {/* Target Employee */}
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">
+                  <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">
                     Target Employee <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-sm text-xs font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc] bg-white"
+                    className="admin-select h-10 font-bold"
                     value={formData.employeeId}
                     onChange={(e) =>
                       setFormData({ ...formData, employeeId: e.target.value })
@@ -137,12 +141,12 @@ const ApplyLeave = () => {
               {/* Category & Status */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">
+                  <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">
                     Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-sm text-xs font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc] bg-white"
+                    className="admin-select h-10 font-bold"
                     value={formData.leaveTypeId}
                     onChange={(e) =>
                       setFormData({ ...formData, leaveTypeId: e.target.value })
@@ -159,11 +163,11 @@ const ApplyLeave = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">
+                  <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">
                     Approval Status
                   </label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-sm text-xs font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc] bg-white"
+                    className="admin-select h-10 font-bold"
                     value={formData.status}
                     onChange={(e) =>
                       setFormData({ ...formData, status: e.target.value })
@@ -178,13 +182,13 @@ const ApplyLeave = () => {
               {/* Dates */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">
+                  <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">
                     Start Date <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-sm text-xs font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc]"
+                    className="admin-input h-10 font-bold"
                     value={formData.fromDate}
                     onChange={(e) =>
                       setFormData({ ...formData, fromDate: e.target.value })
@@ -192,13 +196,13 @@ const ApplyLeave = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">
+                  <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">
                     End Date <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-sm text-xs font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc]"
+                    className="admin-input h-10 font-bold"
                     value={formData.toDate}
                     onChange={(e) =>
                       setFormData({ ...formData, toDate: e.target.value })
@@ -209,11 +213,11 @@ const ApplyLeave = () => {
 
               {/* Reason */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2">
+                <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">
                   Statement of Reason
                 </label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm text-xs font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc] min-h-[100px] resize-none"
+                  className="admin-input min-h-[100px] resize-none py-3 font-medium"
                   placeholder="Provide detailed context..."
                   value={formData.reason}
                   onChange={(e) =>
@@ -223,26 +227,25 @@ const ApplyLeave = () => {
               </div>
 
               {/* Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <div className="flex justify-end gap-4 pt-6 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => router.push("/admin/leaves")}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-sm text-xs font-normal text-gray-700 hover:bg-gray-50 transition-all"
+                  className="px-6 py-2 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2 bg-[#00a65a] border border-[#008d4c] text-white rounded-sm text-xs font-normal hover:bg-[#008d4c] shadow-sm transition-all disabled:opacity-50"
+                  className="admin-btn-primary !px-8 !py-2 !text-xs !font-black uppercase tracking-widest"
                 >
                   {loading ? "Submitting..." : "Submit Application"}
                 </button>
               </div>
             </form>
           </div>
-        </div>
-      </main>
+      </div>
     </section>
   );
 };

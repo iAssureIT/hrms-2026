@@ -23,38 +23,37 @@ import { FaSpinner } from "react-icons/fa";
 import { Tooltip } from "flowbite-react";
 import GenericTable from "@/widgets/GenericTable/FilterTable";
 
-const MetricCard = ({
-    title,
-    value,
-    icon: Icon,
-    gradient,
-    secondaryColor,
-    activeTextColor,
-}) => (
-    <div className={`relative overflow-hidden rounded-3xl transition-all duration-500 shadow-sm h-[110px] p-[1.5px] bg-gradient-to-br from-slate-100 to-slate-200`}>
-        <div className={`w-full h-full rounded-[22px] p-4 relative overflow-hidden bg-white`}>
-            {/* Subtle Background Icon */}
-            <div className={`absolute -right-4 -bottom-4 opacity-[0.03] transform  ${secondaryColor}`}>
-                <Icon size={120} />
-            </div>
+const getStatusColor = (colorClass) => {
+    const colors = {
+        'bg-aqua': '#00c0ef',
+        'bg-green': '#00a65a',
+        'bg-red': '#dd4b39',
+        'bg-yellow': '#f39c12',
+        'bg-cyan': '#00c0ef'
+    };
+    return colors[colorClass] || colors['bg-aqua'];
+};
 
-            <div className="flex justify-between items-start relative z-10">
-                <div className="space-y-2">
-                    <span className={`text-[9px] font-extrabold uppercase tracking-[0.2em] block text-slate-400`}>
-                        {title}
-                    </span>
-                    <h3 className="text-2xl font-black text-slate-800 tracking-tighter items-baseline flex gap-1">
-                        {value}
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Units</span>
-                    </h3>
-                </div>
-                <div className={`p-3 rounded-2xl shadow-md ${gradient} text-white`}>
-                    <Icon size={20} />
-                </div>
-            </div>
+const StatusCard = ({ label, value, icon: Icon, colorClass }) => (
+    <div className={`flex bg-white shadow-sm transition-all duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200`}>
+        <div
+            style={{ backgroundColor: getStatusColor(colorClass) }}
+            className="w-20 md:w-24 flex items-center justify-center text-white shrink-0"
+        >
+            <Icon size={36} className="text-white opacity-90" />
+        </div>
+        <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden relative">
+            <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">
+                {label}
+            </span>
+            <h3 className="text-2xl font-extrabold text-gray-800 leading-none items-baseline flex gap-1">
+                {value}
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Units</span>
+            </h3>
         </div>
     </div>
 );
+
 
 const ReportContent = () => {
     const router = useRouter();
@@ -167,77 +166,72 @@ const ReportContent = () => {
     };
 
     return (
-        <section className="section bg-white min-h-screen pb-10">
-            <div className="box border-2 rounded-md shadow-md max-w-[1400px] mx-auto mt-4 overflow-hidden bg-white">
+        <section className="section admin-box box-primary no-print">
+            <div className="hr-card hr-fade-in">
                 {/* ── Page Header ── */}
-                <div className="border-b border-slate-100 flex justify-between px-10 bg-white no-print">
-                    <div className="py-6">
-                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
-                            <span>Verification Report</span>
-                            <span className="text-[#3c8dbc] font-black">• {activeAudit.auditNo}</span>
-                        </div>
-                        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-                            Audit <span className="text-[#3c8dbc] font-black">Findings</span>
-                        </h1>
-                        <p className="text-[12px] font-bold text-slate-400 mt-1 uppercase tracking-tight italic">
-                            {activeAudit.auditTitle}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-6 my-6">
-                        <div className="flex items-center gap-4 bg-slate-50 px-6 py-2.5 rounded-[22px] border border-slate-100 shadow-sm">
-                            <div className="text-right">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Compliance</p>
-                                <p className="text-lg font-black text-slate-800 leading-none">VERIFIED</p>
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Verification Report • {activeAudit.auditNo}</span>
                             </div>
-                            <div className="w-10 h-10 rounded-full border-[3px] border-emerald-500 flex items-center justify-center text-emerald-600">
-                                <MdCheckCircle size={22} />
-                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Audit <span className="text-[#3c8dbc] font-black">Findings</span>
+                            </h1>
                         </div>
-
-                        <div className="flex gap-3">
+                        <div className="flex items-center gap-6 pt-4 md:pt-0 mb-1">
+                            <div className="flex items-center gap-4 bg-slate-50 px-6 py-2.5 rounded-[22px] border border-slate-100 shadow-sm">
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Compliance</p>
+                                    <p className="text-lg font-black text-slate-800 leading-none">VERIFIED</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-full border-[3px] border-emerald-500 flex items-center justify-center text-emerald-600">
+                                    <MdCheckCircle size={22} />
+                                </div>
+                            </div>
 
                             <Tooltip content="Back to List" placement="bottom" className="bg-slate-600" arrow={false}>
-                                <MdArrowBack
-                                    className="cursor-pointer text-slate-400 hover:text-white hover:bg-slate-400 border border-slate-200 p-2 rounded-xl text-[40px] shadow-sm transition-all"
-                                    onClick={() => router.back()}
-                                />
+                                <div onClick={() => router.back()}
+                                    className="text-slate-400 border border-slate-200 p-1.5 rounded cursor-pointer hover:bg-slate-400 hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <MdArrowBack size={20} />
+                                </div>
                             </Tooltip>
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-[12px] leading-relaxed mt-2 pl-1 italic">
+                        {activeAudit.auditTitle}
+                    </p>
                 </div>
 
-                {/* ── Metric Cards (High Fidelity Style) ── */}
-                <div className="px-10 py-10 bg-slate-50/20 grid grid-cols-4 gap-8">
-                    <MetricCard
-                        title="Audit Scope"
+
+                {/* ── Metric Cards ── */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <StatusCard
+                        label="Audit Scope"
                         value={activeAudit.summary.totalAssets}
                         icon={HiSquares2X2}
-                        secondaryColor="text-amber-600"
-                        gradient="bg-gradient-to-br from-amber-400 to-amber-600"
+                        colorClass="bg-yellow"
                     />
-                    <MetricCard
-                        title="Verified Found"
+                    <StatusCard
+                        label="Verified Found"
                         value={activeAudit.summary.verifiedAssets - activeAudit.summary.missingAssets}
                         icon={HiShieldCheck}
-                        secondaryColor="text-teal-600"
-                        gradient="bg-gradient-to-br from-teal-500 to-teal-700"
+                        colorClass="bg-green"
                     />
-                    <MetricCard
-                        title="Missing Assets"
+                    <StatusCard
+                        label="Missing Assets"
                         value={activeAudit.summary.missingAssets}
                         icon={HiClock}
-                        secondaryColor="text-rose-600"
-                        gradient="bg-gradient-to-br from-rose-400 to-rose-600"
+                        colorClass="bg-red"
                     />
-                    <MetricCard
-                        title="Discrepancies"
+                    <StatusCard
+                        label="Discrepancies"
                         value={activeAudit.summary.discrepancyCount}
                         icon={MdLayers}
-                        secondaryColor="text-cyan-600"
-                        gradient="bg-gradient-to-br from-cyan-500 to-cyan-700"
+                        colorClass="bg-cyan"
                     />
                 </div>
+
 
                 {/* ── Detailed Table Section ── */}
                 <div className="px-10 pb-10">

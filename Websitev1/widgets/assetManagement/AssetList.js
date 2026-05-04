@@ -44,58 +44,46 @@ import {
 } from "react-icons/hi2";
 import ls from "localstorage-slim";
 
-const MetricCard = ({
-  title,
-  value,
-  icon: Icon,
-  onClick,
-  isActive,
-  gradient,
-  secondaryColor,
-  activeGradient,
-  activeTextColor,
-  activeIndicator,
-  tooltip,
-}) => (
+const getStatusColor = (colorClass) => {
+  const colors = {
+    'bg-aqua': '#00c0ef',
+    'bg-green': '#00a65a',
+    'bg-red': '#dd4b39',
+    'bg-yellow': '#f39c12'
+  };
+  return colors[colorClass] || colors['bg-aqua'];
+};
+
+const StatusCard = ({ label, value, icon: Icon, colorClass, onClick, isActive }) => (
   <div
     onClick={onClick}
-    className={`relative overflow-hidden rounded-3xl transition-all duration-500 cursor-pointer group h-[120px] p-[1.5px]
-            ${isActive
-        ? `${activeGradient} shadow-xl scale-[1.02]`
-        : "bg-gradient-to-br from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400 hover:scale-[1.02] shadow-sm active:scale-95"
-      }`}
+    className={`flex bg-white shadow-sm hover:shadow-md transition-all duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200 cursor-pointer group ${isActive ? 'ring-2 ring-[#3c8dbc] ring-inset' : ''}`}
   >
-    <div className={`w-full h-full rounded-[22px] p-5 relative overflow-hidden transition-colors duration-500 ${isActive ? "bg-white/95" : "bg-white"}`}>
-      {/* Subtle Background Icon */}
-      <div className={`absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 transform group-hover:scale-110 group-hover:-rotate-12 ${secondaryColor}`}>
-        <Icon size={140} />
-      </div>
-
-      <div className="flex justify-between items-start relative z-10">
-        <div className="space-y-4">
-          <span className={`text-[10px] font-extrabold uppercase tracking-[0.2em] block transition-colors duration-300 ${isActive ? activeTextColor : "text-slate-400"}`}>
-            {title}
-          </span>
-          <h3 className="text-3xl font-black text-slate-800 tracking-tighter items-baseline flex gap-1">
-            {value}
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{value > 1 ? "Units" : "Unit"}</span>
-          </h3>
-        </div>
-        <div className={`p-3.5 rounded-2xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${gradient} text-white`}>
-          <Icon size={24} />
-        </div>
-      </div>
-
-      {/* Active Indicator Pulse */}
+    <div
+      style={{ backgroundColor: getStatusColor(colorClass) }}
+      className="w-16 md:w-20 flex items-center justify-center text-white shrink-0 transition-transform duration-500 group-hover:scale-110"
+    >
+      <Icon size={32} className="text-white opacity-90" />
+    </div>
+    <div className="flex flex-col justify-center px-3 py-2 flex-grow overflow-hidden relative">
+      <span className="text-gray-500 text-[10px] md:text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-normal">
+        {label}
+      </span>
+      <h3 className="text-xl md:text-2xl font-extrabold text-gray-800 leading-none">
+        {value}
+      </h3>
       {isActive && (
-        <div className="absolute top-3 right-3 flex h-2 w-2">
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${activeIndicator} opacity-75`}></span>
-          <span className={`relative inline-flex rounded-full h-2 w-2 ${activeIndicator} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}></span>
+        <div className="absolute top-2 right-2">
+          <div className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3c8dbc] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3c8dbc]"></span>
+          </div>
         </div>
       )}
     </div>
   </div>
 );
+
 
 function AssetList() {
   const pathname = usePathname();
@@ -317,7 +305,7 @@ function AssetList() {
             purchaseCost: item.purchaseCost ? `₹${item.purchaseCost}` : "-NA-",
           };
         });
-        
+
         if (response.data.totalCost !== undefined && transformedData.length > 0) {
           transformedData.push({
             assetID: "Total",
@@ -332,7 +320,7 @@ function AssetList() {
             centerName: "Total", // To hide serial number and actions in GenericTable
           });
         }
-        
+
         setTableData(transformedData);
         setTotalRecs(response.data.totalRecs);
       } else {
@@ -409,8 +397,8 @@ function AssetList() {
   };
 
   return (
-    <section className="section p-6 md:p-10 bg-white min-h-screen">
-      <div className="max-w-[1440px] mx-auto">
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
             <div className="space-y-1">
@@ -489,321 +477,312 @@ function AssetList() {
             Comprehensive oversight and management of enterprise assets with
             real-time tracking, allocation status, and lifecycle monitoring.
           </p>
-        </div>
-
-        {/* --- METRICS --- */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 mb-12">
-          <MetricCard
-            title="Total Assets"
-            value={counts.total}
-            icon={HiSquares2X2}
-            secondaryColor="text-amber-600"
-            gradient="bg-gradient-to-br from-amber-400 to-amber-600"
-            activeGradient="bg-gradient-to-br from-amber-400 to-amber-600"
-            activeTextColor="text-amber-600"
-            activeIndicator="bg-amber-500"
-            onClick={() => {
-              setActiveStatusFilter("all");
-              setPageNumber(1);
-            }}
-            isActive={activeStatusFilter === "all"}
-            tooltip="View All Assets"
-          />
-          <MetricCard
-            title="Allocated"
-            value={counts.allocated}
-            icon={HiUserGroup}
-            secondaryColor="text-teal-600"
-            gradient="bg-gradient-to-br from-teal-500 to-teal-700"
-            activeGradient="bg-gradient-to-br from-teal-400 to-teal-600"
-            activeTextColor="text-teal-600"
-            activeIndicator="bg-teal-500"
-            onClick={() => {
-              setActiveStatusFilter("ALLOCATED");
-              setPageNumber(1);
-            }}
-            isActive={activeStatusFilter === "ALLOCATED"}
-            tooltip="View Allocated Assets"
-          />
-          <MetricCard
-            title="Available"
-            value={counts.available}
-            icon={HiShieldCheck}
-            secondaryColor="text-rose-600"
-            gradient="bg-gradient-to-br from-rose-400 to-rose-600"
-            activeGradient="bg-gradient-to-br from-rose-400 to-rose-600"
-            activeTextColor="text-rose-600"
-            activeIndicator="bg-rose-500"
-            onClick={() => {
-              setActiveStatusFilter("ACTIVE");
-              setPageNumber(1);
-            }}
-            isActive={activeStatusFilter === "ACTIVE"}
-            tooltip="View Available Assets"
-          />
-          <MetricCard
-            title="Pending"
-            value={counts.pending}
-            icon={HiClock}
-            secondaryColor="text-cyan-600"
-            gradient="bg-gradient-to-br from-cyan-500 to-cyan-700"
-            activeGradient="bg-gradient-to-br from-cyan-400 to-cyan-600"
-            activeTextColor="text-cyan-600"
-            activeIndicator="bg-cyan-500"
-            onClick={() => {
-              setActiveStatusFilter("PENDING");
-              setPageNumber(1);
-            }}
-            isActive={activeStatusFilter === "PENDING"}
-            tooltip="View Assets Pending Approval"
-          />
-        </div>
-
-        {/* --- FILTERS & TABLE --- */}
-        <div className="bg-white">
-          <div
-            className="flex items-center gap-4 mb-2 cursor-pointer group select-none"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
-              <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
-              <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
+          <div className="px-0 py-2">
+            {/* Dashboard Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+              <StatusCard
+                label="Total Assets"
+                value={counts.total}
+                icon={HiSquares2X2}
+                colorClass="bg-aqua"
+                onClick={() => {
+                  setActiveStatusFilter("all");
+                  setPageNumber(1);
+                }}
+                isActive={activeStatusFilter === "all"}
+              />
+              <StatusCard
+                label="Allocated"
+                value={counts.allocated}
+                icon={HiUserGroup}
+                colorClass="bg-green"
+                onClick={() => {
+                  setActiveStatusFilter("ALLOCATED");
+                  setPageNumber(1);
+                }}
+                isActive={activeStatusFilter === "ALLOCATED"}
+              />
+              <StatusCard
+                label="Available"
+                value={counts.available}
+                icon={HiShieldCheck}
+                colorClass="bg-aqua"
+                onClick={() => {
+                  setActiveStatusFilter("ACTIVE");
+                  setPageNumber(1);
+                }}
+                isActive={activeStatusFilter === "ACTIVE"}
+              />
+              <StatusCard
+                label="Pending"
+                value={counts.pending}
+                icon={HiClock}
+                colorClass="bg-yellow"
+                onClick={() => {
+                  setActiveStatusFilter("ASSET_APPROVAL_PENDING");
+                  setPageNumber(1);
+                }}
+                isActive={activeStatusFilter === "ASSET_APPROVAL_PENDING"}
+              />
+              <StatusCard
+                label="Inactive"
+                value={counts.rejected || 0}
+                icon={HiShieldCheck}
+                colorClass="bg-red"
+                onClick={() => {
+                  setActiveStatusFilter("INACTIVE");
+                  setPageNumber(1);
+                }}
+                isActive={activeStatusFilter === "INACTIVE"}
+              />
             </div>
-            <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
-            <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
           </div>
 
-          <div
-            className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden ${showFilters ? 'max-h-[1000px] opacity-100 mb-8 translate-y-0' : 'max-h-0 opacity-0 mb-0 -translate-y-4'
-              }`}
-          >
-            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 items-end pt-2">
-              {loggedInRole !== "center" &&
-              !(
-                userDetails?.roles?.includes("asset-incharge") &&
-                !userDetails?.roles?.includes("admin") &&
-                !userDetails?.roles?.includes("asset-admin")
-              ) && (
+          {/* --- FILTERS & TABLE --- */}
+          <div className="bg-white">
+            <div
+              className="flex items-center gap-4 mb-2 cursor-pointer group select-none"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
+                <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
+                <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
+              </div>
+              <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
+              <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
+            </div>
+
+            <div
+              className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden ${showFilters ? 'max-h-[1000px] opacity-100 mb-8 translate-y-0' : 'max-h-0 opacity-0 mb-0 -translate-y-4'
+                }`}
+            >
+              <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 items-end pt-2">
+                {loggedInRole !== "center" &&
+                  !(
+                    userDetails?.roles?.includes("asset-incharge") &&
+                    !userDetails?.roles?.includes("admin") &&
+                    !userDetails?.roles?.includes("asset-admin")
+                  ) && (
+                    <div>
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                        Center
+                      </label>
+                      <div className="relative">
+                        <select
+                          className="stdSelectField w-full"
+                          value={center_id ? `${center_id}|${centerName}` : "all"}
+                          onChange={(e) => {
+                            setPageNumber(1);
+                            if (e.target.value === "all") {
+                              setCenter_id("all");
+                              setCenterName("all");
+                            } else {
+                              const [id, name] = e.target.value.split("|");
+                              setCenter_id(id);
+                              setCenterName(name);
+                            }
+                          }}
+                        >
+                          <option value="all">All</option>
+                          {centerNameList.map((c) => (
+                            <option key={c._id} value={`${c._id}|${c.centerName}`}>
+                              {c.centerName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
                 <div>
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                    Center
+                    Asset Category
                   </label>
                   <div className="relative">
                     <select
                       className="stdSelectField w-full"
-                      value={center_id ? `${center_id}|${centerName}` : "all"}
+                      value={category_id}
                       onChange={(e) => {
+                        setCategory_id(e.target.value);
                         setPageNumber(1);
-                        if (e.target.value === "all") {
-                          setCenter_id("all");
-                          setCenterName("all");
-                        } else {
-                          const [id, name] = e.target.value.split("|");
-                          setCenter_id(id);
-                          setCenterName(name);
-                        }
                       }}
                     >
                       <option value="all">All</option>
-                      {centerNameList.map((c) => (
-                        <option key={c._id} value={`${c._id}|${c.centerName}`}>
-                          {c.centerName}
+                      {Array.isArray(assetCategoryList) &&
+                        assetCategoryList.map((cat) => (
+                          <option key={cat._id} value={cat._id}>
+                            {cat.fieldValue}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                    Department
+                  </label>
+                  <div className="relative">
+                    <select
+                      className="stdSelectField w-full"
+                      value={department_id}
+                      onChange={(e) => {
+                        setDepartment_id(e.target.value);
+                        setPageNumber(1);
+                      }}
+                    >
+                      <option value="all">All</option>
+                      {departmentList.map((dept) => (
+                        <option key={dept._id} value={dept._id}>
+                          {dept.fieldValue}
                         </option>
                       ))}
                     </select>
                   </div>
                 </div>
-              )}
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                  Asset Category
-                </label>
-                <div className="relative">
-                  <select
-                    className="stdSelectField w-full"
-                    value={category_id}
-                    onChange={(e) => {
-                      setCategory_id(e.target.value);
-                      setPageNumber(1);
-                    }}
-                  >
-                    <option value="all">All</option>
-                    {Array.isArray(assetCategoryList) &&
-                      assetCategoryList.map((cat) => (
-                        <option key={cat._id} value={cat._id}>
-                          {cat.fieldValue}
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                    Sub-Department
+                  </label>
+                  <div className="relative">
+                    <select
+                      className="stdSelectField w-full"
+                      value={subdepartment_id}
+                      onChange={(e) => {
+                        setSubdepartment_id(e.target.value);
+                        setPageNumber(1);
+                      }}
+                      disabled={department_id === "all"}
+                    >
+                      <option value="all">All</option>
+                      {subDepartmentList.map((sd) => (
+                        <option key={sd._id} value={sd._id}>
+                          {sd.inputValue}
                         </option>
                       ))}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                  Department
-                </label>
-                <div className="relative">
-                  <select
-                    className="stdSelectField w-full"
-                    value={department_id}
-                    onChange={(e) => {
-                      setDepartment_id(e.target.value);
-                      setPageNumber(1);
-                    }}
-                  >
-                    <option value="all">All</option>
-                    {departmentList.map((dept) => (
-                      <option key={dept._id} value={dept._id}>
-                        {dept.fieldValue}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                  Sub-Department
-                </label>
-                <div className="relative">
-                  <select
-                    className="stdSelectField w-full"
-                    value={subdepartment_id}
-                    onChange={(e) => {
-                      setSubdepartment_id(e.target.value);
-                      setPageNumber(1);
-                    }}
-                    disabled={department_id === "all"}
-                  >
-                    <option value="all">All</option>
-                    {subDepartmentList.map((sd) => (
-                      <option key={sd._id} value={sd._id}>
-                        {sd.inputValue}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                  Status
-                </label>
-                <div className="relative">
-                  <select
-                    className="stdSelectField w-full"
-                    value={activeStatusFilter}
-                    onChange={(e) => {
-                      setActiveStatusFilter(e.target.value);
-                      setPageNumber(1);
-                    }}
-                  >
-                    <option value="all">All</option>
-                    <option value="PENDING_ALL">All Pending Approval</option>
-                    <option value="ASSET_APPROVAL_PENDING">
-                      Asset Approval Pending
-                    </option>
-                    <option value="ACTIVE">Active</option>
-                    <option value="ALLOCATION_APPROVAL_PENDING">
-                      Allocation Approval Pending
-                    </option>
-                    <option value="ALLOCATED">Allocated</option>
-                    <option value="MAINTENANCE">Maintenance</option>
-                    <option value="DISPOSED">Disposed</option>
-                    <option value="INACTIVE">Inactive</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                  From Date
-                </label>
-                <div className="relative date-picker-container">
-                  <DatePicker
-                    selected={
-                      fromDate && fromDate !== "all" ? new Date(fromDate) : null
-                    }
-                    onChange={(date) => {
-                      setFromDate(moment(date).format("YYYY-MM-DD"));
-                      setPageNumber(1);
-                    }}
-                    dateFormat="dd-MM-yyyy"
-                    placeholderText="From"
-                    className="stdSelectField w-full"
-                    wrapperClassName="w-full"
-                    onFocus={(e) => e.target.blur()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    inputMode="none"
-                    portalId="datepicker-portal"
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <MdCalendarToday className="h-4 w-4 text-gray-400" />
+                    </select>
                   </div>
                 </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
-                  To Date
-                </label>
-                <div className="relative date-picker-container">
-                  <DatePicker
-                    selected={
-                      toDate && toDate !== "all" ? new Date(toDate) : null
-                    }
-                    onChange={(date) => {
-                      setToDate(moment(date).format("YYYY-MM-DD"));
-                      setPageNumber(1);
-                    }}
-                    dateFormat="dd-MM-yyyy"
-                    placeholderText="To"
-                    className="stdSelectField w-full"
-                    wrapperClassName="w-full"
-                    onFocus={(e) => e.target.blur()}
-                    onKeyDown={(e) => e.preventDefault()}
-                    inputMode="none"
-                    portalId="datepicker-portal"
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <MdCalendarToday className="h-4 w-4 text-gray-400" />
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                    Status
+                  </label>
+                  <div className="relative">
+                    <select
+                      className="stdSelectField w-full"
+                      value={activeStatusFilter}
+                      onChange={(e) => {
+                        setActiveStatusFilter(e.target.value);
+                        setPageNumber(1);
+                      }}
+                    >
+                      <option value="all">All</option>
+                      <option value="PENDING_ALL">All Pending Approval</option>
+                      <option value="ASSET_APPROVAL_PENDING">
+                        Asset Approval Pending
+                      </option>
+                      <option value="ACTIVE">Active</option>
+                      <option value="ALLOCATION_APPROVAL_PENDING">
+                        Allocation Approval Pending
+                      </option>
+                      <option value="ALLOCATED">Allocated</option>
+                      <option value="MAINTENANCE">Maintenance</option>
+                      <option value="DISPOSED">Disposed</option>
+                      <option value="INACTIVE">Inactive</option>
+                    </select>
                   </div>
                 </div>
-              </div>
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                    From Date
+                  </label>
+                  <div className="relative date-picker-container">
+                    <DatePicker
+                      selected={
+                        fromDate && fromDate !== "all" ? new Date(fromDate) : null
+                      }
+                      onChange={(date) => {
+                        setFromDate(moment(date).format("YYYY-MM-DD"));
+                        setPageNumber(1);
+                      }}
+                      dateFormat="dd-MM-yyyy"
+                      placeholderText="From"
+                      className="stdSelectField w-full"
+                      wrapperClassName="w-full"
+                      onFocus={(e) => e.target.blur()}
+                      onKeyDown={(e) => e.preventDefault()}
+                      inputMode="none"
+                      portalId="datepicker-portal"
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <MdCalendarToday className="h-4 w-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                    To Date
+                  </label>
+                  <div className="relative date-picker-container">
+                    <DatePicker
+                      selected={
+                        toDate && toDate !== "all" ? new Date(toDate) : null
+                      }
+                      onChange={(date) => {
+                        setToDate(moment(date).format("YYYY-MM-DD"));
+                        setPageNumber(1);
+                      }}
+                      dateFormat="dd-MM-yyyy"
+                      placeholderText="To"
+                      className="stdSelectField w-full"
+                      wrapperClassName="w-full"
+                      onFocus={(e) => e.target.blur()}
+                      onKeyDown={(e) => e.preventDefault()}
+                      inputMode="none"
+                      portalId="datepicker-portal"
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <MdCalendarToday className="h-4 w-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
 
-              {/* <div className="flex items-center pb-1 gap-3">
+                {/* <div className="flex items-center pb-1 gap-3">
               <span className="text-[10px] font-bold text-slate-400 px-3 py-2 bg-slate-50 rounded-lg border border-slate-100 whitespace-nowrap">
                 Showing Page {pageNumber} of {numOfPages.length}
               </span>
             </div> */}
+              </div>
+            </div>
+
+            <div className="p-0 table-professional">
+              <GenericTable
+                tableObjects={tableObjects}
+                tableHeading={tableHeading}
+                excelHeading={excelHeading}
+                setRunCount={setRunCount}
+                runCount={runCount}
+                recsPerPage={recsPerPage}
+                setRecsPerPage={setRecsPerPage}
+                getData={getData}
+                filterData={filterData}
+                tableData={tableData}
+                setTableData={setTableData}
+                numOfPages={numOfPages}
+                setNumOfPages={setNumOfPages}
+                pageNumber={pageNumber}
+                setPageNumber={setPageNumber}
+                searchText={searchText}
+                setSearchText={setSearchText}
+                totalRecs={totalRecs}
+                setTotalRecs={setTotalRecs}
+                search={search}
+                setSearch={setSearch}
+                loading={loading3}
+              />
             </div>
           </div>
-
-          <div className="p-0 table-professional">
-            <GenericTable
-              tableObjects={tableObjects}
-              tableHeading={tableHeading}
-              excelHeading={excelHeading}
-              setRunCount={setRunCount}
-              runCount={runCount}
-              recsPerPage={recsPerPage}
-              setRecsPerPage={setRecsPerPage}
-              getData={getData}
-              filterData={filterData}
-              tableData={tableData}
-              setTableData={setTableData}
-              numOfPages={numOfPages}
-              setNumOfPages={setNumOfPages}
-              pageNumber={pageNumber}
-              setPageNumber={setPageNumber}
-              searchText={searchText}
-              setSearchText={setSearchText}
-              totalRecs={totalRecs}
-              setTotalRecs={setTotalRecs}
-              search={search}
-              setSearch={setSearch}
-              loading={loading3}
-            />
-          </div>
         </div>
-      </div>
 
-      <style jsx global>{`
+        <style jsx global>{`
         .table-professional .GenericTable section {
           padding-top: 0 !important;
           margin-top: 0 !important;
@@ -883,6 +862,7 @@ function AssetList() {
           color: #1e293b !important;
         }
       `}</style>
+      </div>
     </section>
   );
 }

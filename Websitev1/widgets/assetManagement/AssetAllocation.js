@@ -478,63 +478,49 @@ const AssetAllocation = () => {
     const isFormDisabled = isInactive || isAllocated;
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md bg-white">
-                {/* ── Page Header ── */}
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300 flex justify-between">
-                        <h1 className="heading h-auto content-center">Asset Allocation</h1>
-                        <div className="flex gap-3 my-5 me-10 items-center">
-                            <Tooltip content="Asset List" placement="bottom" className="bg-green" arrow={false}>
-                                <CiViewList
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => {
-                                        router.push(`/${loggedInRole}/management`);
-                                    }}
-                                />
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Asset Management</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Asset <span className="text-[#3c8dbc] font-black">Allocation</span>
+                            </h1>
+                        </div>
+                        <div className="flex flex-wrap gap-4 me-10 pt-4 md:pt-0 mb-1">
+                            <Tooltip content="Asset List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <CiViewList size={20} />
+                                </div>
                             </Tooltip>
-                            {/* Allocate Asset icon hidden as we are on this page */}
-                            <Tooltip
-                                content="Allocation Approval List"
-                                placement="bottom"
-                                className="bg-green"
-                                arrow={false}
-                            >
-                                <FaListUl
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => {
-                                        router.push(`/${loggedInRole}/management/allocation-approval-list`);
-                                    }}
-                                />
+                            <Tooltip content="Allocation Approval List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management/allocation-approval-list`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <FaListUl size={20} />
+                                </div>
                             </Tooltip>
-                            <Tooltip
-                                content="Bulk Upload"
-                                placement="bottom"
-                                className="bg-green"
-                                arrow={false}
-                            >
-                                <FaFileUpload
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => {
-                                        router.push(`/${loggedInRole}/management/bulk-upload`);
-                                    }}
-                                />
+                            <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management/bulk-upload`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <FaFileUpload size={20} />
+                                </div>
                             </Tooltip>
-                            <Tooltip
-                                content="Add Asset"
-                                placement="bottom"
-                                className="bg-green"
-                                arrow={false}
-                            >
-                                <BsPlusSquare
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => {
-                                        router.push(`/${loggedInRole}/management/asset-submission`);
-                                    }}
-                                />
+                            <Tooltip content="Add Asset" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management/asset-submission`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <BsPlusSquare size={20} />
+                                </div>
                             </Tooltip>
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Assign assets to employees and track allocation history with comprehensive inspection checklists.
+                    </p>
                 </div>
 
                 <div className="px-10 py-8">

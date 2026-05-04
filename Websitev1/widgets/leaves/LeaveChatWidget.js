@@ -187,7 +187,7 @@ const LeaveChatWidget = ({ employeeId }) => {
               className={`p-2 rounded transition-all ${
                 loading || !input.trim()
                   ? "bg-gray-100 text-gray-300"
-                  : "bg-[#00a65a] text-white hover:bg-[#008d4c] shadow-md"
+                  : "bg-[#3c8dbc] text-white hover:bg-[#367fa9] shadow-md"
               }`}
             >
               <FaPaperPlane size={14} />

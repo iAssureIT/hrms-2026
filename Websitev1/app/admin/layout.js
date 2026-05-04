@@ -1099,54 +1099,54 @@ export default function RootLayout({ children }) {
   const sidebarData = [
     { title: "Dashboard", link: "/admin/dashboard" },
 
-    // {
-    //   title: "Asset Management",
-    //   submenu: true,
-    //   icon: <BsBoxes />,
-    //   submenuItems: [
-    //     {
-    //       icon: <FaRegCircle />,
-    //       title: "Asset Registry",
-    //       link: "/admin/asset-management",
-    //     },
-    //     {
-    //       icon: <FaRegCircle />,
-    //       title: "Asset Maintenance",
-    //       link: "/admin/asset-management/maintenance-list",
-    //     },
-    //     {
-    //       icon: <FaRegCircle />,
-    //       title: "Asset Audit",
-    //       link: "/admin/asset-management/asset-audit",
-    //     },
-    //     {
-    //       icon: <FaRegCircle />,
-    //       title: "Asset Depreciation",
-    //       link: "/admin/asset-management/depreciation",
-    //     },
-    //     {
-    //       icon: <FaRegCircle />,
-    //       title: "Gate Pass Management",
-    //       link: "/admin/asset-management/gate-pass-management",
-    //     },
-    //     {
-    //       icon: <FaRegCircle />,
-    //       title: "Asset Disposal",
-    //       link: "/admin/asset-management/asset-disposal",
-    //     },
-    // {
-    //   icon: <FaRegCircle />,
-    //   title: "Vendor Master",
-    //   link: "/admin/master-data/vendor-master/vendor-list",
-    // },
-    //   ],
-    // },
+    {
+      title: "Asset Management",
+      submenu: true,
+      icon: <BsBoxes />,
+      submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Registry",
+          link: "/admin/asset-management",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Maintenance",
+          link: "/admin/asset-management/maintenance-list",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Audit",
+          link: "/admin/asset-management/asset-audit",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Depreciation",
+          link: "/admin/asset-management/depreciation",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Gate Pass Management",
+          link: "/admin/asset-management/gate-pass-management",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Disposal",
+          link: "/admin/asset-management/asset-disposal",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Vendor Master",
+          link: "/admin/master-data/vendor-master/vendor-list",
+        },
+      ],
+    },
 
-    // {
-    //   title: "User Management",
-    //   icon: <FaUser />,
-    //   link: "/admin/user-management",
-    // },
+    {
+      title: "User Management",
+      icon: <FaUser />,
+      link: "/admin/user-management",
+    },
     // {
     //   title: "Notification Management",
     //   submenu: true,

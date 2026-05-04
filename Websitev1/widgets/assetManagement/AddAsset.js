@@ -443,53 +443,43 @@ const AddAsset = () => {
     );
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md">
-                {/* ── Page Header ── */}
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300 flex justify-between">
-                        <h1 className="heading">Central Asset Registry</h1>
-                        <div className="flex gap-3 my-5 me-10">
-                            <Tooltip content="Asset List" placement="bottom" className="bg-green" arrow={false}>
-                                <CiViewList
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => window.open(`/${loggedInRole}/management`, '_self')}
-                                />
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Asset Operations</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Central <span className="text-[#3c8dbc] font-black">Asset Registry</span>
+                            </h1>
+                        </div>
+                        <div className="flex flex-wrap gap-4 me-10 pt-4 md:pt-0 mb-1">
+                            <Tooltip content="Asset List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => window.open(`/${loggedInRole}/management`, '_self')}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <CiViewList size={20} />
+                                </div>
                             </Tooltip>
-                            <Tooltip
-                                content="Allocate Asset"
-                                placement="bottom"
-                                className="bg-green"
-                                arrow={false}
-                            >
-                                <FaUserPlus
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => {
-                                        router.push(`/${loggedInRole}/management/asset-allocation`);
-                                    }}
-                                />
+                            <Tooltip content="Allocate Asset" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management/asset-allocation`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <FaUserPlus size={20} />
+                                </div>
                             </Tooltip>
-                            <Tooltip
-                                content="Allocation Approval List"
-                                placement="bottom"
-                                className="bg-green"
-                                arrow={false}
-                            >
-                                <FaListUl
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => {
-                                        router.push(`/${loggedInRole}/management/allocation-approval-list`);
-                                    }}
-                                />
-                            </Tooltip>
-                            <Tooltip content="Bulk Upload" placement="bottom" className="bg-green" arrow={false}>
-                                <FaFileUpload
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => window.open(`/${loggedInRole}/management/bulk-upload`, '_self')}
-                                />
+                            <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => window.open(`/${loggedInRole}/management/bulk-upload`, '_self')}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <FaFileUpload size={20} />
+                                </div>
                             </Tooltip>
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Register new enterprise assets, track procurement details, and manage physical specifications in the master inventory.
+                    </p>
                 </div>
 
                 {/* ── Form ── */}

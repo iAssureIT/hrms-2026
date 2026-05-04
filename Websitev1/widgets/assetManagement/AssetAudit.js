@@ -134,14 +134,14 @@ const AssetAudit = () => {
     };
 
     return (
-        <section className="section p-6 md:p-10 bg-white min-h-screen">
-            <div className="max-w-[1440px] mx-auto">
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
                 {/* Header */}
                 <div className="mb-6">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
                         <div className="space-y-1">
                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                                <span className="text-[#3c8dbc]">Asset Audits</span>
+                                <span className="text-[#3c8dbc]">Asset Operations</span>
                             </div>
                             <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
                                 Asset <span className="text-[#3c8dbc] font-black">Audits</span>
@@ -162,6 +162,7 @@ const AssetAudit = () => {
                         Formally verify physical assets across enterprise locations. Ensure data integrity between digital records and floor reality.
                     </p>
                 </div>
+
 
                 <div className="space-y-6">
                     {/* Table Section */}

@@ -135,26 +135,36 @@ const MaintenanceApproval = () => {
     }
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md bg-white">
-                {/* Standard Header Section */}
-                <div className="uppercase text-xl font-semibold border-b-2 border-gray-300 px-10 py-5 flex justify-between items-center">
-                    <h1 className="heading h-auto content-center p-0">Maintenance Approval</h1>
-                    <div className="flex items-center gap-4">
-                        <Tooltip content="Asset List" placement="bottom" className="bg-green" arrow={false}>
-                            <div onClick={() => router.push(`/${loggedInRole}/management/asset-list`)}
-                                className="text-green border border-green p-1 rounded cursor-pointer hover:bg-green hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
-                                <MdListAlt size={20} />
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Maintenance Operations</span>
                             </div>
-                        </Tooltip>
-                        <span className="text-[10px] font-black text-amber-500 bg-amber-50 px-3 py-1 rounded border border-amber-100 uppercase tracking-widest">{pendingRequests.length} Pending</span>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Service <span className="text-[#3c8dbc] font-black">Authorization</span>
+                            </h1>
+                        </div>
+                        <div className="flex items-center gap-4 pt-4 md:pt-0 mb-1">
+                            <Tooltip content="Asset List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management/asset-list`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <MdListAlt size={20} />
+                                </div>
+                            </Tooltip>
+                            <span className="text-[10px] font-black text-[#f39c12] bg-amber-50 px-3 py-1 rounded border border-amber-100 uppercase tracking-widest">
+                                {pendingRequests.length} Pending Requests
+                            </span>
+                        </div>
                     </div>
-                </div>
-
-                <div className="px-10 py-8">
-                    <p className="text-[13px] text-gray-500 mb-8 leading-relaxed">
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
                         Verify technical service reports, authorize spare part costs, and schedule maintenance activities for reported breakdowns.
                     </p>
+                </div>
+
 
                     <div className="grid lg:grid-cols-12 gap-8 min-h-[600px]">
                         {/* Left Sidebar: Worklist */}
@@ -346,7 +356,6 @@ const MaintenanceApproval = () => {
                         </div>
                     </div>
                 </div>
-            </div>
 
             <style jsx global>{`
                 .stdInputField {

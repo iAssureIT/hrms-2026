@@ -5,7 +5,7 @@ import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import ls from "localstorage-slim";
 import moment from "moment";
-import { FaSearch, FaCloudUploadAlt, FaTrashAlt, FaSpinner, FaCheck, FaExclamationTriangle, FaHistory, FaBuilding, FaRupeeSign } from "react-icons/fa";
+import { FaSearch, FaCloudUploadAlt, FaTrashAlt, FaSpinner, FaCheck, FaExclamationTriangle, FaHistory, FaBuilding, FaRupeeSign, FaListUl } from "react-icons/fa";
 import { Tooltip } from "flowbite-react";
 import { BsPlusSquare } from "react-icons/bs";
 import { MdGavel, MdOutlineFactCheck, MdInfo, MdCheckCircle, MdDescription, MdDateRange, MdLabel, MdWidgets } from "react-icons/md";
@@ -98,92 +98,44 @@ const AssetDisposal = () => {
     };
 
     useEffect(() => {
-        // Form init logic if any
-    }, [center_id]);
-
-    useEffect(() => {
-        const impact = parseFloat(formData.disposalValue) - parseFloat(formData.nbvAtDisposal);
-        setFinancialImpact(impact || 0);
+        const impact = (formData.disposalValue || 0) - (formData.nbvAtDisposal || 0);
+        setFinancialImpact(impact);
     }, [formData.disposalValue, formData.nbvAtDisposal]);
 
-    const fetchRecentDisposals = async () => {
-        try {
-            const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-disposal/get/list`, {
-                center_id: center_id === "all" ? undefined : center_id,
-                status: "APPROVED"
-            });
-            if (res.data.success) {
-                setRecentDisposals(res.data.tableData.slice(0, 5));
-            }
-        } catch (err) {
-            console.error("Error fetching recent disposals:", err);
-        }
-    };
-
-    const fetchPendingDisposals = async () => {
-        try {
-            const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-disposal/get/list`, {
-                center_id: center_id === "all" ? undefined : center_id,
-                status: "PENDING"
-            });
-            if (res.data.success) {
-                setPendingDisposals(res.data.tableData);
-            }
-        } catch (err) {
-            console.error("Error fetching pending disposals:", err);
-        }
-    };
-
-    const searchAssets = async (text) => {
-        setFormData({ ...formData, assetCode: text, asset_id: "" });
-        const trimmedText = text.trim();
-        if (trimmedText.length > 2) {
-            try {
-                const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management-new/post/list`, {
-                    searchText: trimmedText,
-                    pageNumber: 1,
-                    recsPerPage: 20,
-                    center_ID: center_id,
-                    assetStatus: "INACTIVE"
-                });
-                if (res.data.success) {
-                    setAssetSuggestions(res.data.tableData);
-                    setShowSuggestions(true);
-                }
-            } catch (err) {
-                console.error("Error searching assets:", err);
-            }
-        } else {
+    const searchAssets = async (searchText) => {
+        setFormData({ ...formData, assetCode: searchText });
+        if (searchText.length < 2) {
             setAssetSuggestions([]);
             setShowSuggestions(false);
+            return;
+        }
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/asset-management-new/get/list`, {
+                searchText: searchText,
+                center_id: center_id,
+                recsPerPage: 10,
+                pageNumber: 1
+            });
+            if (res.data && res.data.tableData) {
+                setAssetSuggestions(res.data.tableData);
+                setShowSuggestions(true);
+            }
+        } catch (error) {
+            console.error("Asset search error:", error);
         }
     };
 
     const handleAssetSelect = (asset) => {
-        const annualDepr = asset.purchaseCost / (asset.usefulLife || 10);
-        const yearsHeld = moment(formData.disposalDate).diff(moment(asset.purchaseDate), 'years', true);
-        const nbv = Math.max(0, asset.purchaseCost - (annualDepr * Math.max(0, yearsHeld)));
-
         setFormData({
             ...formData,
+            asset_id: asset._id,
             assetName: asset.assetName,
             assetCode: asset.assetID,
             assetCategory: asset.category,
-            assetModel: asset.model,
-            asset_id: asset._id,
-            purchaseCost: asset.purchaseCost,
-            nbvAtDisposal: parseFloat(nbv.toFixed(2))
+            assetModel: asset.model || "N/A",
+            purchaseCost: asset.purchaseValue || 0,
+            nbvAtDisposal: asset.netBookValue || 0
         });
-
-        // Pre-populate center_id from asset if available, but NOT if user is an incharge (who is restricted)
-        if (!isIncharge) {
-            if (asset.currentAllocation?.center?._id) {
-                setCenter_id(asset.currentAllocation.center._id);
-            } else if (asset.center_id) {
-                setCenter_id(asset.center_id);
-            }
-        }
-
         setShowSuggestions(false);
     };
 
@@ -255,46 +207,47 @@ const AssetDisposal = () => {
                     makerRemarks: "",
                     uploadProof: []
                 });
-                fetchRecentDisposals();
             }
-        } catch (err) {
-            Swal.fire("Error", "Failed to submit disposal request", "error");
+        } catch (error) {
+            console.error("Disposal error:", error);
+            Swal.fire("Error", "Failed to initialize disposal request", "error");
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleApprovalAction = () => {
-        // Redirection logic
-        const targetPath = pathname.includes("admin") || pathname.includes("asset") || pathname.includes("management")
-            ? `/${loggedInRole}/management/disposal-approval`
-            : `/${loggedInRole}/asset-management/disposal-approval`;
-        router.push(targetPath);
-    };
-
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md">
-                {/* ── Page Header ── */}
-                <div className="border-b-2 border-slate-100 flex justify-between px-10 py-5 uppercase text-xl font-semibold">
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                            <span className="text-green-600">Asset Management</span>
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Asset Management</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Asset <span className="text-[#3c8dbc] font-black">Disposal</span>
+                            </h1>
                         </div>
-                        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                            Asset <span className="text-green-600 font-black">Disposal</span>
-                        </h1>
-                    </div>
-                    <div className="flex gap-3 my-5">
-                        {(isApprover || isIncharge) && (
-                            <Tooltip content="Disposal Approval List" placement="bottom" className="bg-green" arrow={false}>
-                                <CiViewList
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={handleApprovalAction}
-                                />
+                        <div className="flex flex-wrap gap-4 me-10 pt-4 md:pt-0 mb-1">
+                            <Tooltip content="Asset List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <CiViewList size={20} />
+                                </div>
                             </Tooltip>
-                        )}
+                            <Tooltip content="Disposal Approval List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`/${loggedInRole}/management/disposal-approval`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <FaListUl size={20} />
+                                </div>
+                            </Tooltip>
+                        </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Manage the decommissioning and disposal of enterprise assets with proper documentation and approval workflows.
+                    </p>
                 </div>
 
                 <div className="px-10 py-6">
@@ -333,36 +286,28 @@ const AssetDisposal = () => {
                                                             >
                                                                 <div>
                                                                     <p className="text-xs font-bold text-gray-900">{asset.assetName}</p>
-                                                                    <p className="text-[10px] text-gray-500 mt-0.5 uppercase tracking-tight">
-                                                                        {asset.assetID} | {asset.category} {asset.serialNumber ? `| SN: ${asset.serialNumber}` : ""}
-                                                                    </p>
+                                                                    <p className="text-[9px] text-gray-400 font-black uppercase">{asset.assetID}</p>
                                                                 </div>
-                                                                <div className={`px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest border ${asset.assetStatus === "INACTIVE" || asset.assetStatus === "ASSET_APPROVAL_REJECTED"
-                                                                    ? "bg-red-50 text-red-600 border-red-200"
-                                                                    : "bg-gray-50 text-gray-600 border-gray-200"
-                                                                    }`}>
-                                                                    {asset.assetStatus}
-                                                                </div>
+                                                                <span className="text-[9px] font-black text-gray-400 uppercase">{asset.category}</span>
                                                             </div>
                                                         ))}
                                                     </div>
                                                 )}
                                             </div>
+
                                             <div>
                                                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Center *</label>
                                                 <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
                                                     <IconWrapper icon={FaBuilding} />
                                                     <select
-                                                        className="stdSelectField h-10 pl-12"
+                                                        className="stdSelectField pl-12"
                                                         value={center_id}
                                                         onChange={(e) => setCenter_id(e.target.value)}
-                                                        disabled={loggedInRole === "center" || isIncharge}
+                                                        disabled={isIncharge}
                                                     >
-                                                        <option value="" disabled>-- Select Center --</option>
-                                                        {centerNameList.map((center) => (
-                                                            <option key={center._id} value={center._id}>
-                                                                {center.centerName}
-                                                            </option>
+                                                        <option value="all">All Centers</option>
+                                                        {centerNameList.map(c => (
+                                                            <option key={c._id} value={c._id}>{c.centerName}</option>
                                                         ))}
                                                     </select>
                                                 </div>
@@ -370,113 +315,122 @@ const AssetDisposal = () => {
                                         </div>
 
                                         {formData.asset_id && (
-                                            <div className="mt-6 bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-4 shadow-sm animate-in fade-in duration-300">
-                                                <div className="p-3 bg-green-50 text-green rounded-lg shrink-0">
-                                                    <FaTrashAlt size={20} />
+                                            <div className="mt-8 grid md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-500">
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-black text-gray-400 uppercase">Selected Asset</p>
+                                                    <p className="text-xs font-bold text-[#3c8dbc] uppercase">{formData.assetName}</p>
                                                 </div>
-                                                <div className="min-w-0">
-                                                    <h4 className="text-sm font-bold text-gray-900 truncate">{formData.assetName}</h4>
-                                                    <p className="text-[10px] text-gray-500 font-bold uppercase">{formData.assetCode}</p>
-                                                    <div className="mt-2 flex items-center gap-2">
-                                                        <span className="text-[10px] font-bold text-gray-400 uppercase">Valuation:</span>
-                                                        <span className="text-xs font-bold text-green">₹{formData.nbvAtDisposal.toLocaleString()}</span>
-                                                    </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-black text-gray-400 uppercase">Original Cost</p>
+                                                    <p className="text-xs font-bold text-gray-900">₹{formData.purchaseCost.toLocaleString()}</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-black text-gray-400 uppercase">Book Value</p>
+                                                    <p className="text-xs font-bold text-gray-900">₹{formData.nbvAtDisposal.toLocaleString()}</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-black text-gray-400 uppercase">Category</p>
+                                                    <p className="text-xs font-black text-gray-400 uppercase">{formData.assetCategory}</p>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* Section 2: Disposal Details */}
-                                    <div className="border border-gray-200 rounded-lg p-5 mt-5 shadow-md">
+                                    {/* Section 2: Disposal Terms */}
+                                    <div className="border border-gray-200 rounded-lg p-5 shadow-md">
                                         <SectionHeader
-                                            title="Disposal Configuration"
-                                            subtitle="Setup recovery value and disposal method."
+                                            title="Disposal Terms & Valuation"
+                                            subtitle="Define the financial parameters of derecognition."
                                         />
 
                                         <div className="grid md:grid-cols-3 gap-6">
                                             <div>
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Disposal Type *</label>
-                                                <select
-                                                    name="disposalType"
-                                                    className="stdSelectField mt-2"
-                                                    value={formData.disposalType}
-                                                    onChange={handleInputChange}
-                                                >
-                                                    <option>Public/Private Sale</option>
-                                                    <option>Scrap</option>
-                                                    <option>Donation</option>
-                                                    <option>Lost/Damage</option>
-                                                </select>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Disposal Method</label>
+                                                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                    <IconWrapper icon={MdWidgets} />
+                                                    <select
+                                                        name="disposalType"
+                                                        className="stdSelectField pl-12"
+                                                        value={formData.disposalType}
+                                                        onChange={handleInputChange}
+                                                    >
+                                                        <option value="Public/Private Sale">Public/Private Sale</option>
+                                                        <option value="Scrap/Destruction">Scrap/Destruction</option>
+                                                        <option value="Donation">Donation</option>
+                                                        <option value="Trade-in">Trade-in</option>
+                                                    </select>
+                                                </div>
                                             </div>
+
                                             <div>
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Disposal Date *</label>
-                                                <input
-                                                    type="date"
-                                                    name="disposalDate"
-                                                    className="stdInputField mt-2"
-                                                    value={formData.disposalDate}
-                                                    onChange={handleInputChange}
-                                                />
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Effective Date</label>
+                                                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                    <IconWrapper icon={MdDateRange} />
+                                                    <input
+                                                        type="date"
+                                                        name="disposalDate"
+                                                        className="stdInputField pl-12"
+                                                        value={formData.disposalDate}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
                                             </div>
+
                                             <div>
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Recovery Value (₹) *</label>
-                                                <input
-                                                    type="number"
-                                                    name="disposalValue"
-                                                    className="stdInputField mt-2"
-                                                    value={formData.disposalValue}
-                                                    onChange={handleInputChange}
-                                                />
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Realization Value (₹) *</label>
+                                                <div className="relative mt-2 rounded-md shadow-sm text-gray-500">
+                                                    <IconWrapper icon={FaRupeeSign} />
+                                                    <input
+                                                        type="number"
+                                                        name="disposalValue"
+                                                        className="stdInputField pl-12"
+                                                        placeholder="0.00"
+                                                        value={formData.disposalValue}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 
-                                        {formData.asset_id && (
-                                            <div className={`mt-6 p-4 rounded-lg flex items-center justify-between border ${financialImpact >= 0 ? "bg-green/5 border-green/20" : "bg-red-50 border-red-100"}`}>
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`${financialImpact >= 0 ? "text-green" : "text-red-500"}`}>
-                                                        {financialImpact >= 0 ? <MdCheckCircle size={24} /> : <FaExclamationTriangle size={20} />}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Impact Analysis</p>
-                                                        <h4 className={`text-sm font-bold ${financialImpact >= 0 ? "text-green" : "text-red-700"}`}>
-                                                            {financialImpact >= 0 ? `+₹${financialImpact.toLocaleString()} Gain` : `-₹${Math.abs(financialImpact).toLocaleString()} Loss`}
-                                                        </h4>
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Book Value</p>
-                                                    <p className="text-xs font-bold text-gray-700">₹{formData.nbvAtDisposal.toLocaleString()}</p>
+                                        <div className="mt-8 flex items-center gap-6 p-6 bg-slate-900 rounded-xl text-white">
+                                            <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
+                                                <MdOutlineFactCheck className="text-amber-400" size={24} />
+                                            </div>
+                                            <div className="flex-grow">
+                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Projected Financial Impact</p>
+                                                <div className="flex items-baseline gap-2">
+                                                    <h2 className={`text-2xl font-black ${financialImpact >= 0 ? "text-green-400" : "text-red-400"}`}>
+                                                        {financialImpact >= 0 ? "+" : "-"}₹{Math.abs(financialImpact).toLocaleString()}
+                                                    </h2>
+                                                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                                        ({financialImpact >= 0 ? "Gain" : "Loss"} on Sale)
+                                                    </span>
                                                 </div>
                                             </div>
-                                        )}
+                                            <div className="hidden md:block text-right">
+                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">Audit Compliant</p>
+                                                <MdCheckCircle className="text-green-500 ml-auto" size={20} />
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    {/* Section 3: Documentation */}
-                                    <div className="border border-gray-200 rounded-lg p-5 mt-5 shadow-md">
+                                    {/* Section 3: Justification */}
+                                    <div className="border border-gray-200 rounded-lg p-5 shadow-md">
                                         <SectionHeader
-                                            title="Remarks & Evidence"
-                                            subtitle="Provide justification and supporting documents."
+                                            title="Justification & Proofs"
+                                            subtitle="Provide reasoning and attach supporting evidence."
                                         />
 
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Maker Remarks *</label>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Disposal Remarks *</label>
                                                 <textarea
                                                     name="makerRemarks"
-                                                    rows="4"
-                                                    className="stdInputField w-full h-auto py-3 leading-relaxed"
-                                                    placeholder="Reason for disposal..."
+                                                    className="w-full border border-gray-200 rounded-lg p-4 text-xs font-bold text-gray-700 focus:ring-2 focus:ring-[#3c8dbc] outline-none min-h-[100px] transition-all bg-gray-50/30"
+                                                    placeholder="Provide detailed reasoning for derecognizing this asset from the registry..."
                                                     value={formData.makerRemarks}
                                                     onChange={handleInputChange}
-                                                    required
-                                                ></textarea>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Upload Proof / Certificate</label>
-                                                <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-green hover:bg-green/5 transition-all cursor-pointer group h-[calc(100%-24px)] flex flex-col justify-center">
-                                                    <FaCloudUploadAlt className="text-gray-300 mb-2 mx-auto group-hover:text-green transition-all" size={32} />
-                                                    <p className="text-xs font-bold text-gray-500">Drop files here</p>
-                                                </div>
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -491,10 +445,6 @@ const AssetDisposal = () => {
                                         </button>
                                     </div>
                                 </form>
-                            </div>
-
-                            {/* Bottom Information (Compliance) */}
-                            <div className="pt-10 border-t-2 border-gray-100">
                             </div>
                         </div>
                     </div>

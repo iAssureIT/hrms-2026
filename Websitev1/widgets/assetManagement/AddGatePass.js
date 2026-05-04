@@ -364,22 +364,33 @@ const AddGatePass = ({ editId }) => {
     };
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md">
-                {/* ── Page Header ── */}
-                <div className="uppercase text-xl font-semibold">
-                    <div className="border-b-2 border-gray-300 flex justify-between">
-                        <h1 className="heading">Issue New Gate Pass</h1>
-                        <div className="flex gap-3 my-5 me-10">
-                            <Tooltip content="Gate Pass List" placement="bottom" className="bg-green" arrow={false}>
-                                <CiViewList
-                                    className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => router.push(`${pathname.replace('/add-gate-pass', '')}/gate-pass-management`)}
-                                />
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Movement Operations</span>
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Issue <span className="text-[#3c8dbc] font-black">Gate Pass</span>
+                            </h1>
+                        </div>
+                        <div className="flex items-center gap-3 pt-4 md:pt-0 mb-1">
+                            <Tooltip content="Gate Pass List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                <div onClick={() => router.push(`${pathname.replace('/add-gate-pass', '')}/gate-pass-management`)}
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    <CiViewList size={20} />
+                                </div>
                             </Tooltip>
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                        Authorize the external movement of enterprise assets. Valid documentation is required for security clearance at all exit points.
+                    </p>
                 </div>
+
 
                 <div className="px-10 py-6">
                     <form onSubmit={handleSubmit} className="space-y-8 bg-white text-secondary">

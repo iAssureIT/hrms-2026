@@ -139,45 +139,54 @@ const MaintenanceView = () => {
     );
 
     return (
-        <section className="section bg-white p-6">
-            <div className="max-w-6xl mx-auto" ref={printRef}>
-                {/* ── HEADER SECTION (FLUSH WITH VIEWASSET) ── */}
-                <div className="bg-white border-2 rounded-xl shadow-lg overflow-hidden mb-8">
-                    <div className="border-b-2 border-gray-100 px-10 py-6 flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50/50 gap-4">
-                        <div className="flex flex-col gap-3">
-                            <h1 className="mb-0 text-xl font-bold uppercase tracking-wide text-black">
-                                Maintenance Analysis: <span className="text-green">{data.maintenanceID}</span>
-                            </h1>
-                            <div className={`w-fit px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wide border shadow-sm text-center ${data.status === "COMPLETED" ? "text-green-700 bg-white border-green-500" :
-                                    data.status === "IN_PROGRESS" ? "text-cyan-600 bg-white border-cyan-500" :
-                                        data.status === "AWAITING_APPROVAL" ? "text-amber-500 bg-white border-amber-500" :
-                                            "text-gray-700 bg-white border-gray-400"
-                                }`}>
-                                Status: {data.status?.replace(/_/g, " ")}
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in" ref={printRef}>
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Maintenance Report</span>
                             </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Service <span className="text-[#3c8dbc] font-black">Analysis</span>
+                            </h1>
                         </div>
+                        <div className="flex items-center gap-4 pt-4 md:pt-0 mb-1 no-print">
+                            <div className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest border shadow-sm flex items-center gap-2 ${
+                                data.status === "COMPLETED" ? "text-emerald-600 bg-emerald-50 border-emerald-100" :
+                                data.status === "IN_PROGRESS" ? "text-sky-600 bg-sky-50 border-sky-100" :
+                                data.status === "AWAITING_APPROVAL" ? "text-amber-600 bg-amber-50 border-amber-100" :
+                                "text-slate-600 bg-slate-50 border-slate-200"
+                            }`}>
+                                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                                    data.status === "COMPLETED" ? "bg-emerald-500" :
+                                    data.status === "IN_PROGRESS" ? "bg-sky-500" :
+                                    data.status === "AWAITING_APPROVAL" ? "bg-amber-500" :
+                                    "bg-slate-500"
+                                }`}></div>
+                                {data.status?.replace(/_/g, " ")}
+                            </div>
 
-                        <div className="flex items-center gap-3 no-print">
-                            <Tooltip content="Download Report" placement="bottom" className="bg-green" arrow={false}>
+                            <Tooltip content="Download Report" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
                                 <div onClick={handlePrint}
-                                    className="text-green border border-green p-1 rounded cursor-pointer hover:bg-green hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
                                     <MdFileDownload size={20} />
                                 </div>
                             </Tooltip>
-                            <Tooltip content="Maintenance List" placement="bottom" className="bg-green" arrow={false}>
+                            <Tooltip content="Maintenance List" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
                                 <div onClick={() => router.push(`/${loggedInRole}/management/maintenance-list`)}
-                                    className="text-green border border-green p-1 rounded cursor-pointer hover:bg-green hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                    className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
                                     <CiViewList size={20} />
                                 </div>
                             </Tooltip>
-                            {/* <Tooltip content="Edit Record" placement="bottom" className="bg-green" arrow={false}>
-                                <div onClick={() => router.push(`/${loggedInRole}/management/add-maintenance/${data._id}`)}
-                                     className="text-green border border-green p-1 rounded cursor-pointer hover:bg-green hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
-                                    <BsPlusSquare size={16} />
-                                </div>
-                            </Tooltip> */}
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1 italic">
+                        Reference: {data.maintenanceID} • Detailed technical diagnosis and financial expenditure audit for the selected maintenance lifecycle.
+                    </p>
+                </div>
+
 
                     {/* ── LIFECYCLE ACTIONS ── */}
                     {!(userDetails?.roles?.includes("fa-accounts")) && (data.status === "SCHEDULED" || data.status === "IN_PROGRESS" || data.status === "UNDER_OBSERVATION") && (
@@ -370,7 +379,6 @@ const MaintenanceView = () => {
                         </div>
                     </div>
                 </div>
-            </div>
             <style jsx global>{`
                 @media print {
                     .no-print { display: none !important; }

@@ -33,58 +33,46 @@ import ls from "localstorage-slim";
 
 import GenericTable from "@/widgets/GenericTable/FilterTable";
 
-const MetricCard = ({
-  title,
-  value,
-  icon: Icon,
-  onClick,
-  isActive,
-  gradient,
-  secondaryColor,
-  activeGradient,
-  activeTextColor,
-  activeIndicator,
-  tooltip,
-}) => (
-  <div
+const getStatusColor = (colorClass) => {
+  const colors = {
+    'bg-aqua': '#00c0ef',
+    'bg-green': '#00a65a',
+    'bg-red': '#dd4b39',
+    'bg-yellow': '#f39c12'
+  };
+  return colors[colorClass] || colors['bg-aqua'];
+};
+
+const StatusCard = ({ label, value, icon: Icon, colorClass, onClick, isActive }) => (
+  <div 
     onClick={onClick}
-    className={`relative overflow-hidden rounded-3xl transition-all duration-500 cursor-pointer group h-[120px] p-[1.5px]
-            ${isActive
-        ? `${activeGradient} shadow-xl scale-[1.02]`
-        : "bg-gradient-to-br from-slate-200 to-slate-300 hover:from-slate-300 hover:to-slate-400 hover:scale-[1.02] shadow-sm active:scale-95"
-      }`}
+    className={`flex bg-white shadow-sm hover:shadow-md transition-all duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200 cursor-pointer group ${isActive ? 'ring-2 ring-[#3c8dbc] ring-inset' : ''}`}
   >
-    <div className={`w-full h-full rounded-[22px] p-5 relative overflow-hidden transition-colors duration-500 ${isActive ? "bg-white/95" : "bg-white"}`}>
-      {/* Subtle Background Icon */}
-      <div className={`absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 transform group-hover:scale-110 group-hover:-rotate-12 ${secondaryColor}`}>
-        <Icon size={140} />
-      </div>
-
-      <div className="flex justify-between items-start relative z-10">
-        <div className="space-y-4">
-          <span className={`text-[10px] font-extrabold uppercase tracking-[0.2em] block transition-colors duration-300 ${isActive ? activeTextColor : "text-slate-400"}`}>
-            {title}
-          </span>
-          <h3 className="text-3xl font-black text-slate-800 tracking-tighter items-baseline flex gap-1">
-            {value}
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{value > 1 ? "Units" : "Unit"}</span>
-          </h3>
-        </div>
-        <div className={`p-3.5 rounded-2xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${gradient} text-white`}>
-          <Icon size={24} />
-        </div>
-      </div>
-
-      {/* Active Indicator Pulse */}
+    <div
+      style={{ backgroundColor: getStatusColor(colorClass) }}
+      className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 transition-transform duration-500 group-hover:scale-110"
+    >
+      <Icon size={36} className="text-white opacity-90" />
+    </div>
+    <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden relative">
+      <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">
+        {label}
+      </span>
+      <h3 className="text-2xl font-extrabold text-gray-800 leading-none">
+        {value} <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{value > 1 ? "Units" : "Unit"}</span>
+      </h3>
       {isActive && (
-        <div className="absolute top-3 right-3 flex h-2 w-2">
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${activeIndicator} opacity-75`}></span>
-          <span className={`relative inline-flex rounded-full h-2 w-2 ${activeIndicator} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}></span>
+        <div className="absolute top-2 right-2">
+          <div className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3c8dbc] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3c8dbc]"></span>
+          </div>
         </div>
       )}
     </div>
   </div>
 );
+
 
 
 const AllocationApproval = () => {
@@ -540,8 +528,8 @@ const AllocationApproval = () => {
   if (!mounted) return null;
 
   return (
-    <section className="section p-6 md:p-10 bg-white min-h-screen">
-      <div className="max-w-[1440px] mx-auto">
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
             <div className="space-y-1">
@@ -627,60 +615,41 @@ const AllocationApproval = () => {
             {/* ── Main Content (Stats + Table) ── */}
             <div className="xl:col-span-12 space-y-6">
               {/* Stats Cards */}
-              <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 mb-12">
-                <MetricCard
-                  title="Total Requests"
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <StatusCard
+                  label="Total Requests"
                   value={counts.total}
                   icon={HiSquares2X2}
-                  secondaryColor="text-amber-600"
-                  gradient="bg-gradient-to-br from-amber-400 to-amber-600"
-                  activeGradient="bg-gradient-to-br from-amber-400 to-amber-600"
-                  activeTextColor="text-amber-600"
-                  activeIndicator="bg-amber-500"
+                  colorClass="bg-yellow"
                   onClick={() => setActiveStatusFilter("all")}
                   isActive={activeStatusFilter === "all"}
-                  tooltip="View Total Requests"
                 />
-                <MetricCard
-                  title="Pending"
+                <StatusCard
+                  label="Pending"
                   value={counts.pending}
                   icon={HiClock}
-                  secondaryColor="text-cyan-600"
-                  gradient="bg-gradient-to-br from-cyan-500 to-cyan-700"
-                  activeGradient="bg-gradient-to-br from-cyan-400 to-cyan-600"
-                  activeTextColor="text-cyan-600"
-                  activeIndicator="bg-cyan-500"
+                  colorClass="bg-aqua"
                   onClick={() => setActiveStatusFilter("PENDING")}
                   isActive={activeStatusFilter === "PENDING"}
-                  tooltip="View Pending Requests"
                 />
-                <MetricCard
-                  title="Allocated"
+                <StatusCard
+                  label="Allocated"
                   value={counts.approved}
                   icon={HiUserGroup}
-                  secondaryColor="text-teal-600"
-                  gradient="bg-gradient-to-br from-teal-500 to-teal-700"
-                  activeGradient="bg-gradient-to-br from-teal-400 to-teal-600"
-                  activeTextColor="text-teal-600"
-                  activeIndicator="bg-teal-500"
+                  colorClass="bg-green"
                   onClick={() => setActiveStatusFilter("APPROVED")}
                   isActive={activeStatusFilter === "APPROVED"}
-                  tooltip="View Active Requests"
                 />
-                <MetricCard
-                  title="Rejected"
+                <StatusCard
+                  label="Rejected"
                   value={counts.rejected}
                   icon={HiShieldCheck}
-                  secondaryColor="text-rose-600"
-                  gradient="bg-gradient-to-br from-rose-400 to-rose-600"
-                  activeGradient="bg-gradient-to-br from-rose-400 to-rose-600"
-                  activeTextColor="text-rose-600"
-                  activeIndicator="bg-rose-500"
+                  colorClass="bg-red"
                   onClick={() => setActiveStatusFilter("REJECTED")}
                   isActive={activeStatusFilter === "REJECTED"}
-                  tooltip="View Rejected Requests"
                 />
               </div>
+
 
 
               <div

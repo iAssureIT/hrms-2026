@@ -215,56 +215,56 @@ const ReconciliationContent = () => {
     };
 
     return (
-        <section className="section bg-white min-h-screen">
-            <div className="box border-2 rounded-md shadow-md max-w-[1400px] mx-auto mt-4 overflow-hidden">
-                {/* ── Page Header ── */}
-                <div className="border-b-2 border-gray-100 flex justify-between px-10 bg-white">
-                    <div className="py-5">
-                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                            <span>Audit No</span>
-                            <span className="text-[#3c8dbc]">{activeAudit.auditNo}</span>
-                        </div>
-                        <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">
-                            Asset <span className="text-[#3c8dbc]">Reconciliation</span>
-                        </h1>
-                        <p className="text-[12px] font-bold text-slate-400 mt-1 uppercase tracking-tight italic">
-                            {activeAudit.auditTitle}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-6 my-5">
-                        {/* Progress Indicator */}
-                        <div className="flex items-center gap-4 bg-slate-50 px-6 py-2 rounded-2xl border border-slate-100 shadow-sm">
-                            <div className="text-right">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Completion</p>
-                                <p className="text-lg font-black text-slate-800 leading-none">
-                                    {activeAudit.summary.verifiedAssets}<span className="text-slate-300 mx-1">/</span>{activeAudit.summary.totalAssets}
-                                </p>
+        <section className="section admin-box box-primary">
+            <div className="hr-card hr-fade-in">
+                {/* --- Page Header --- */}
+                <div className="mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                                <span className="text-[#3c8dbc]">Audit No • {activeAudit.auditNo}</span>
                             </div>
-                            <div className="w-12 h-12 rounded-full border-[4px] border-slate-200 border-t-[#3c8dbc] flex items-center justify-center font-black text-[10px] text-[#3c8dbc]">
-                                {activeAudit.summary.totalAssets > 0 ? Math.round((activeAudit.summary.verifiedAssets / activeAudit.summary.totalAssets) * 100) : 0}%
-                            </div>
+                            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                                Asset <span className="text-[#3c8dbc] font-black">Reconciliation</span>
+                            </h1>
                         </div>
+                        <div className="flex items-center gap-6 pt-4 md:pt-0 mb-1">
+                            {/* Progress Indicator */}
+                            <div className="flex items-center gap-4 bg-slate-50 px-6 py-2 rounded-2xl border border-slate-100 shadow-sm">
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Completion</p>
+                                    <p className="text-lg font-black text-slate-800 leading-none">
+                                        {activeAudit.summary.verifiedAssets}<span className="text-slate-300 mx-1">/</span>{activeAudit.summary.totalAssets}
+                                    </p>
+                                </div>
+                                <div className="w-12 h-12 rounded-full border-[4px] border-slate-200 border-t-[#3c8dbc] flex items-center justify-center font-black text-[10px] text-[#3c8dbc]">
+                                    {activeAudit.summary.totalAssets > 0 ? Math.round((activeAudit.summary.verifiedAssets / activeAudit.summary.totalAssets) * 100) : 0}%
+                                </div>
+                            </div>
 
-                        {/* Standard Icon Buttons */}
-                        <div className="flex gap-3">
-                            {activeAudit.status !== 'Completed' && !(userDetails?.roles?.includes("fa-accounts")) && (
-                                <Tooltip content="Finalize Audit" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-                                    <MdAssignmentTurnedIn
-                                        className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded-lg text-[36px] shadow-sm transition-all"
-                                        onClick={finalizeAudit}
-                                    />
+                            <div className="flex gap-3">
+                                {activeAudit.status !== 'Completed' && !(userDetails?.roles?.includes("fa-accounts")) && (
+                                    <Tooltip content="Finalize Audit" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                                        <div onClick={finalizeAudit}
+                                            className="text-[#3c8dbc] border border-[#3c8dbc] p-1.5 rounded cursor-pointer hover:bg-[#3c8dbc] hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                            <MdAssignmentTurnedIn size={20} />
+                                        </div>
+                                    </Tooltip>
+                                )}
+                                <Tooltip content="Back to List" placement="bottom" className="bg-slate-600" arrow={false}>
+                                    <div onClick={() => router.back()}
+                                        className="text-slate-400 border border-slate-200 p-1.5 rounded cursor-pointer hover:bg-slate-400 hover:text-white transition-all shadow-sm bg-white flex items-center justify-center h-[32px] w-[32px]">
+                                        <MdArrowBack size={20} />
+                                    </div>
                                 </Tooltip>
-                            )}
-                            <Tooltip content="Back to List" placement="bottom" className="bg-slate-600" arrow={false}>
-                                <MdArrowBack
-                                    className="cursor-pointer text-slate-400 hover:text-white hover:bg-slate-400 border border-slate-200 p-1.5 rounded-lg text-[36px] shadow-sm transition-all"
-                                    onClick={() => router.back()}
-                                />
-                            </Tooltip>
+                            </div>
                         </div>
                     </div>
+                    <p className="text-slate-500 font-medium max-w-xl text-[12px] leading-relaxed mt-2 pl-1 italic">
+                        {activeAudit.auditTitle}
+                    </p>
                 </div>
+
 
                 {/* ── Filter Table ── */}
                 <div className="px-6 py-6 bg-slate-50/30">

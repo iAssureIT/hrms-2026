@@ -12,9 +12,14 @@ import {
   FaHistory,
   FaClock,
   FaUser,
+  FaDownload,
 } from "react-icons/fa";
 import { MdHistory, MdFilterList } from "react-icons/md";
 import { BsPlusSquare } from "react-icons/bs";
+<<<<<<< Updated upstream
+=======
+import { Tooltip } from "flowbite-react";
+>>>>>>> Stashed changes
 import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
@@ -282,6 +287,7 @@ const Leaves = () => {
   });
 
   return (
+<<<<<<< Updated upstream
     <section className="section admin-box box-primary ">
       <main className="p-4 min-h-screen">
         <div className="mx-auto">
@@ -340,18 +346,62 @@ const Leaves = () => {
                   </div>
                 </Tooltip>
               </div>
+=======
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Human Resources</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Leave <span className="text-[#3c8dbc] font-black">Management</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              <Tooltip content="Apply Leave" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <BsPlusSquare
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => router.push(`/${loggedInRole}/leaves/apply`)}
+                />
+              </Tooltip>
+              <Tooltip content="Credit Comp Off" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <FaCalendarCheck
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => setShowCompOffModal(true)}
+                />
+              </Tooltip>
+              <Tooltip content="Run Accrual" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <FaClock
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={triggerManualAccrual}
+                />
+              </Tooltip>
+              <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                <FaFileUpload
+                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                  onClick={() => router.push(`/${loggedInRole}/leaves/bulk-upload`)}
+                />
+              </Tooltip>
+>>>>>>> Stashed changes
             </div>
           </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Monitor employee leave requests, manage balance accruals, and maintain a detailed history of all time-off transactions.
+          </p>
+        </div>
 
           {/* Filters Bar */}
-          <div className="bg-white p-6 border border-gray-100 shadow-sm rounded-sm mb-6">
-            <div className="flex flex-wrap items-center gap-8">
-              <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+          <div className="bg-white p-6 border border-slate-200 shadow-sm rounded-sm mb-6">
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex flex-col gap-1.5 flex-1 min-w-[200px]">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                   Filter Employee
                 </label>
                 <select
-                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold"
+                  className="admin-select h-10 font-bold"
                   value={selectedEmployee}
                   onChange={(e) => setSelectedEmployee(e.target.value)}
                 >
@@ -364,12 +414,12 @@ const Leaves = () => {
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                   Month
                 </label>
                 <select
-                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-36 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold"
+                  className="admin-select h-10 w-36 font-bold"
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
                 >
@@ -381,12 +431,12 @@ const Leaves = () => {
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                   Year
                 </label>
                 <select
-                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-28 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold"
+                  className="admin-select h-10 w-28 font-bold"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
                 >
@@ -398,12 +448,12 @@ const Leaves = () => {
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                   Leave Type
                 </label>
                 <select
-                  className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-32 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400 font-bold uppercase"
+                  className="admin-select h-10 w-32 font-bold uppercase"
                   value={selectedLeaveType}
                   onChange={(e) => setSelectedLeaveType(e.target.value)}
                 >
@@ -418,7 +468,7 @@ const Leaves = () => {
                 </select>
               </div>
 
-              <div className="flex items-end h-9 mt-auto">
+              <div className="flex items-end h-10 mt-auto">
                 <button
                   onClick={() => {
                     setSelectedEmployee("");
@@ -426,14 +476,15 @@ const Leaves = () => {
                     setSelectedYear(moment().format("YYYY"));
                     setSelectedLeaveType("all");
                   }}
-                  className="px-3 py-1.5 text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-tight transition-colors"
+                  className="px-3 py-1.5 text-[10px] font-black text-slate-400 hover:text-[#3c8dbc] uppercase tracking-widest transition-colors"
                 >
-                  Clear
+                  Clear Filters
                 </button>
               </div>
             </div>
           </div>
 
+<<<<<<< Updated upstream
           {/* Main Box */}
           <div className="bg-white  shadow-sm flex flex-col mb-10">
             {/* Box Header with Tabs */}
@@ -472,6 +523,44 @@ const Leaves = () => {
                   Current View: {activeTab}
                 </h3>
               </div>
+=======
+          {/* Main Box with Tabs */}
+          <div className="bg-white shadow-sm border border-slate-200 flex flex-col mb-10 rounded-sm">
+            {/* Tab Navigation */}
+            <div className="flex border-b border-slate-200 mb-0 bg-slate-50/30 px-2 overflow-x-auto no-scrollbar">
+              {[
+                { id: "Pending Requests", icon: <FaClock className="text-sm" /> },
+                { id: "Approved", icon: <FaCheck className="text-sm" /> },
+                { id: "Rejected", icon: <FaTimes className="text-sm" /> },
+                { id: "Employee Balances", icon: <FaUser className="text-sm" /> },
+                { id: "Leave Ledger", icon: <MdHistory className="text-base" /> },
+                { id: "All Records", icon: <FaFileUpload className="text-sm" /> },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-4 text-[12px] font-bold tracking-tight transition-all relative whitespace-nowrap ${activeTab === tab.id
+                      ? "text-[#3c8dbc] bg-white border-x border-slate-200 -mb-[1px] z-10"
+                      : "text-slate-400 hover:text-slate-600"
+                    }`}
+                >
+                  <span className={`transition-opacity ${activeTab === tab.id ? 'opacity-100' : 'opacity-50'}`}>
+                    {tab.icon}
+                  </span>
+                  {tab.id}
+                  {tab.id === "Pending Requests" &&
+                    leaves.filter((l) => l.status === "PENDING").length >
+                    0 && (
+                      <span className="ml-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-[9px]">
+                        {leaves.filter((l) => l.status === "PENDING").length}
+                      </span>
+                    )}
+                  {activeTab === tab.id && (
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-[#3c8dbc]"></div>
+                  )}
+                </button>
+              ))}
+>>>>>>> Stashed changes
             </div>
 
             {/* DataTable Controls */}
@@ -490,56 +579,56 @@ const Leaves = () => {
             </div>
 
             {/* Table Area */}
-            <div className="overflow-x-auto min-h-[300px]">
-              <table className="w-full text-left border-collapse border-b border-gray-200">
-                <thead className="bg-[#f9f9f9]">
+            <div className="overflow-x-auto min-h-[400px]">
+              <table className="admin-table">
+                <thead className="admin-table-thead">
                   <tr>
-                    <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                    <th className="admin-table-th uppercase tracking-wider">
                       Employee
                     </th>
                     {activeTab === "Employee Balances" ? (
                       <>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">
+                        <th className="admin-table-th uppercase tracking-wider text-center">
                           EL Balance
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">
+                        <th className="admin-table-th uppercase tracking-wider text-center">
                           CO Balance
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">
+                        <th className="admin-table-th uppercase tracking-wider text-center">
                           Net Balance
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center text-red-600">
+                        <th className="admin-table-th uppercase tracking-wider text-center text-red-600">
                           LOP
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                        <th className="admin-table-th uppercase tracking-wider">
                           Action
                         </th>
                       </>
                     ) : (
                       <>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                        <th className="admin-table-th uppercase tracking-wider">
                           Type
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                        <th className="admin-table-th uppercase tracking-wider">
                           Date
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                        <th className="admin-table-th uppercase tracking-wider">
                           Transaction
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">
+                        <th className="admin-table-th uppercase tracking-wider text-center">
                           Days
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider text-center">
+                        <th className="admin-table-th uppercase tracking-wider text-center">
                           Balance
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                        <th className="admin-table-th uppercase tracking-wider">
                           Source
                         </th>
-                        <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                        <th className="admin-table-th uppercase tracking-wider">
                           Remarks
                         </th>
                         {activeTab !== "Leave Ledger" && (
-                          <th className="px-4 py-3 text-[11px] font-bold text-gray-700 border-b border-gray-200 uppercase tracking-wider">
+                          <th className="admin-table-th uppercase tracking-wider">
                             Actions
                           </th>
                         )}
@@ -585,23 +674,23 @@ const Leaves = () => {
                           key={row._id}
                           className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
                         >
-                          <td className="px-4 py-3">
-                            <div className="text-[11px] font-bold text-gray-700">
+                          <td className="admin-table-td">
+                            <div className="text-[12px] font-bold text-slate-700">
                               {row.employeeName}
                             </div>
-                            <div className="text-[9px] text-gray-400">
+                            <div className="text-[10px] text-slate-400 font-medium">
                               {row.employeeID}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-[11px] font-bold text-center">
+                          <td className="admin-table-td text-[12px] font-bold text-center">
                             {row.elBalance}
                           </td>
-                          <td className="px-4 py-3 text-[11px] font-bold text-center">
+                          <td className="admin-table-td text-[12px] font-bold text-center">
                             {row.coBalance}
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="admin-table-td text-center">
                             <span
-                              className={`text-[10px] font-bold ${row.totalBalance - row.lop < 0 ? "text-red-500" : "text-gray-800"}`}
+                              className={`text-[11px] font-bold ${row.totalBalance - row.lop < 0 ? "text-red-500" : "text-slate-800"}`}
                             >
                               {(() => {
                                 const net = row.totalBalance - row.lop;
@@ -611,21 +700,21 @@ const Leaves = () => {
                               })()}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="admin-table-td text-center">
                             <span
-                              className={`text-[11px] font-bold ${row.lop > 0 ? "text-red-600 bg-red-50 px-2 py-0.5 rounded" : "text-gray-300 italic"}`}
+                              className={`text-[11px] font-bold ${row.lop > 0 ? "text-red-600 bg-red-50 px-2 py-0.5 rounded" : "text-slate-300 italic"}`}
                             >
                               {row.lop > 0 ? row.lop : "0"}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="admin-table-td">
                             <button
                               onClick={() =>
                                 router.push(
                                   `/admin/leaves/ledger/${row._id}?month=${selectedMonth}&year=${selectedYear}`,
                                 )
                               }
-                              className="bg-[#3c8dbc] text-white px-3 py-1 rounded-sm text-[10px] font-bold hover:bg-[#367fa9] shadow-sm"
+                              className="admin-btn-primary !px-3 !py-1 !text-[10px] font-black uppercase tracking-tight"
                             >
                               View
                             </button>
@@ -638,26 +727,30 @@ const Leaves = () => {
                         key={item._id}
                         className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
                       >
-                        <td className="px-4 py-3">
-                          <div className="text-[11px] font-bold text-gray-700">
+                        <td className="admin-table-td">
+                          <div className="text-[12px] font-bold text-slate-700">
                             {item.employeeId?.employeeName || "Unknown"}
                           </div>
-                          <div className="text-[9px] text-gray-400">
+                          <div className="text-[10px] text-slate-400 font-medium">
                             {item.employeeId?.employeeID || "N/A"}
                           </div>
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="text-[10px] font-bold text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                        <td className="admin-table-td">
+                          <span className="text-[10px] font-black text-[#3c8dbc] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 uppercase">
                             {item.leaveTypeId?.leaveCode || "Leave"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-[10px] text-gray-600">
+                        <td className="admin-table-td text-[11px] text-slate-600 font-medium">
                           {moment(item.transactionDate).format("DD MMM YYYY")}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="admin-table-td">
                           <span
+<<<<<<< Updated upstream
                             className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
                               item.days > 0
+=======
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${item.days > 0
+>>>>>>> Stashed changes
                                 ? "bg-green-100 text-[#00a65a]"
                                 : item.transactionType === "ADJUSTED"
                                   ? "bg-blue-100 text-[#3c8dbc]"
@@ -671,7 +764,7 @@ const Leaves = () => {
                                 : "Used"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center text-[11px] font-bold">
+                        <td className="admin-table-td text-center text-[12px] font-bold">
                           <span
                             className={
                               item.days > 0
@@ -682,18 +775,18 @@ const Leaves = () => {
                             {Math.abs(item.days)}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center">
-                          <div className="text-[11px] font-bold text-gray-800 bg-gray-50 rounded px-2 py-1 inline-block border border-gray-100">
+                        <td className="admin-table-td text-center">
+                          <div className="text-[11px] font-bold text-slate-800 bg-slate-50 rounded px-2 py-1 inline-block border border-slate-200">
                             {item.balanceAfter}
                           </div>
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-100 px-1.5 py-0.5 rounded">
+                        <td className="admin-table-td">
+                          <span className="text-[9px] font-black text-slate-400 uppercase bg-slate-100 px-1.5 py-0.5 rounded tracking-tighter">
                             {item.referenceType || "System"}
                           </span>
                         </td>
                         <td
-                          className="px-4 py-3 text-[10px] text-gray-500 italic truncate max-w-[150px]"
+                          className="admin-table-td text-[11px] text-slate-500 italic truncate max-w-[150px]"
                           title={item.remarks}
                         >
                           {item.remarks}
@@ -723,27 +816,31 @@ const Leaves = () => {
                           key={leave._id}
                           className="hover:bg-[#f5f5f5] transition-colors border-b border-gray-50"
                         >
-                          <td className="px-4 py-3">
-                            <div className="text-[11px] font-bold text-gray-700">
+                          <td className="admin-table-td">
+                            <div className="text-[12px] font-bold text-slate-700">
                               {leave.employeeId?.employeeName || "Unknown"}
                             </div>
-                            <div className="text-[9px] text-gray-400">
+                            <div className="text-[10px] text-slate-400 font-medium">
                               {leave.employeeId?.employeeID || "N/A"}
                             </div>
                           </td>
-                          <td className="px-4 py-3">
-                            <span className="text-[10px] font-bold text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">
+                          <td className="admin-table-td">
+                            <span className="text-[10px] font-black text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200 uppercase">
                               {leave.leaveTypeId?.leaveCode || "Leave"}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-[10px] text-gray-600">
+                          <td className="admin-table-td text-[11px] text-slate-600 font-medium">
                             {moment(leave.fromDate).format("DD MMM")} -{" "}
                             {moment(leave.toDate).format("DD MMM YYYY")}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="admin-table-td">
                             <span
+<<<<<<< Updated upstream
                               className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
                                 leave.status === "APPROVED"
+=======
+                              className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest text-white ${leave.status === "APPROVED"
+>>>>>>> Stashed changes
                                   ? "bg-[#00a65a]"
                                   : leave.status === "REJECTED"
                                     ? "bg-[#dd4b39]"
@@ -753,11 +850,11 @@ const Leaves = () => {
                               {leave.status}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-center text-[11px] font-bold text-gray-700">
+                          <td className="admin-table-td text-center text-[12px] font-bold text-slate-700">
                             {leave.totalDays}
                           </td>
-                          <td className="px-4 py-3 text-center">
-                            <span className="text-[11px] font-bold text-gray-700">
+                          <td className="admin-table-td text-center">
+                            <span className="text-[12px] font-bold text-slate-700">
                               {(() => {
                                 const empBal = monthlyReport.find(
                                   (r) => r._id === leave.employeeId?._id,
@@ -779,41 +876,43 @@ const Leaves = () => {
                               })()}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
-                            <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-1.5 py-0.5 rounded">
+                          <td className="admin-table-td">
+                            <span className="text-[9px] font-black text-slate-400 uppercase bg-slate-50 px-1.5 py-0.5 rounded tracking-tighter">
                               Application
                             </span>
                           </td>
                           <td
-                            className="px-4 py-3 text-[10px] text-gray-500 italic truncate max-w-[150px]"
+                            className="admin-table-td text-[11px] text-slate-500 italic truncate max-w-[150px]"
                             title={leave.reason}
                           >
                             {leave.reason}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="admin-table-td">
                             {leave.status === "PENDING" ? (
-                              <div className="flex gap-1">
-                                <button
-                                  onClick={() =>
-                                    updateStatus(leave._id, "APPROVED")
-                                  }
-                                  className="bg-[#00a65a] text-white px-2 py-1.5 rounded-sm text-[10px] hover:shadow-md transition-all"
-                                  title="Approve"
-                                >
-                                  <FaCheck />
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    updateStatus(leave._id, "REJECTED")
-                                  }
-                                  className="bg-[#dd4b39] text-white px-2 py-1.5 rounded-sm text-[10px] hover:shadow-md transition-all"
-                                  title="Reject"
-                                >
-                                  <FaTimes />
-                                </button>
+                              <div className="flex gap-2">
+                                <Tooltip content="Approve" arrow={false} placement="top" className="bg-[#00a65a]">
+                                  <button
+                                    onClick={() =>
+                                      updateStatus(leave._id, "APPROVED")
+                                    }
+                                    className="bg-[#00a65a] text-white p-1.5 rounded-sm hover:shadow-md transition-all active:scale-95"
+                                  >
+                                    <FaCheck size={12} />
+                                  </button>
+                                </Tooltip>
+                                <Tooltip content="Reject" arrow={false} placement="top" className="bg-[#dd4b39]">
+                                  <button
+                                    onClick={() =>
+                                      updateStatus(leave._id, "REJECTED")
+                                    }
+                                    className="bg-[#dd4b39] text-white p-1.5 rounded-sm hover:shadow-md transition-all active:scale-95"
+                                  >
+                                    <FaTimes size={12} />
+                                  </button>
+                                </Tooltip>
                               </div>
                             ) : (
-                              <span className="text-[9px] font-bold text-gray-300 uppercase italic">
+                              <span className="text-[10px] font-black text-slate-300 uppercase italic tracking-widest">
                                 Finalized
                               </span>
                             )}
@@ -849,7 +948,6 @@ const Leaves = () => {
             </div>
           </div>
         </div>
-      </main>
 
       {/* Comp Off Modal */}
       {showCompOffModal && (

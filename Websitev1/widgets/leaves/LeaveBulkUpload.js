@@ -141,62 +141,59 @@ const LeaveBulkUpload = () => {
   };
 
   return (
-    <section className="section">
-      <main className=" min-h-screen">
-        <div className="mx-auto">
-          {/* Page Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
-                Bulk Upload
+    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Theme-aligned Header */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Bulk <span className="text-[#3c8dbc] font-black">Upload</span>
               </h1>
-              <span className="text-sm font-light text-gray-500">
-                Leave Balance Import
-              </span>
             </div>
-            <div className="flex gap-2 mt-4 md:mt-0">
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
               <button
                 onClick={() => router.push(`/${loggedInRole}/leaves`)}
-                className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-sm font-normal text-xs hover:bg-gray-50 shadow-sm flex items-center gap-2"
+                className="admin-btn-primary flex items-center gap-2 !px-4 !py-1.5"
               >
-                <FaListUl size={12} /> Back to List
+                <FaListUl size={12} /> Back to Dashboard
               </button>
             </div>
           </div>
-
-          {/* Bulk Upload Box */}
-          <div className="bg-white border-t-[3px] border-[#00a65a] shadow-sm flex flex-col mb-10 overflow-hidden">
-            <div className="px-5 py-3 border-b border-gray-100 bg-white">
-              <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
-                Import Records
-              </h3>
-            </div>
-
-            <div className="p-6">
-              <BulkUpload
-                url={
-                  process.env.NEXT_PUBLIC_BASE_URL +
-                  "/api/leave-balance/bulk-upload"
-                }
-                fileurl=""
-                downloadTemplate={downloadTemplate}
-                data={[]}
-                uploadedData={uploadedData}
-                getData={getData}
-                getFileDetails={getFileDetails}
-                fileDetails={fileDetails}
-                tableObjects={tableObjects}
-                goodRecordsHeading={goodRecordsHeading}
-                failedtableHeading={failedtableHeading}
-                failedRecordsTable={failedRecordsTable}
-                failedRecordsCount={failedRecordsCount}
-                goodRecordsTable={goodRecordsTable}
-                goodDataCount={goodDataCount}
-              />
-            </div>
-          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Import leave balances and historical records in bulk using Excel templates. Ensure Employee IDs match the master records.
+          </p>
         </div>
-      </main>
+
+        {/* Bulk Upload Box */}
+
+
+        <div className="p-6">
+          <BulkUpload
+            url={
+              process.env.NEXT_PUBLIC_BASE_URL +
+              "/api/leave-balance/bulk-upload"
+            }
+            fileurl=""
+            downloadTemplate={downloadTemplate}
+            data={[]}
+            uploadedData={uploadedData}
+            getData={getData}
+            getFileDetails={getFileDetails}
+            fileDetails={fileDetails}
+            tableObjects={tableObjects}
+            goodRecordsHeading={goodRecordsHeading}
+            failedtableHeading={failedtableHeading}
+            failedRecordsTable={failedRecordsTable}
+            failedRecordsCount={failedRecordsCount}
+            goodRecordsTable={goodRecordsTable}
+            goodDataCount={goodDataCount}
+          />
+        </div>
+
+      </div>
     </section>
   );
 };
