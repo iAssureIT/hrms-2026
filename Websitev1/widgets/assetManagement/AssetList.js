@@ -133,7 +133,7 @@ function AssetList() {
     pending: 0,
     rejected: 0,
   });
-  const [activeStatusFilter, setActiveStatusFilter] = useState("all");
+  const [activeStatusFilter, setActiveStatusFilter] = useState(null);
   const [fromDate, setFromDate] = useState("all");
   const [toDate, setToDate] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
@@ -176,11 +176,11 @@ function AssetList() {
     deleteMethod: "delete",
     getListMethod: "post",
     apiURL: "/api/asset-management-new",
-    editURL: "/management/asset-submission/",
-    viewURL: "/management/asset-view/",
+    editURL: "/asset-management/asset-submission/",
+    viewURL: "/asset-management/asset-view/",
     downloadApply: true,
     searchApply: true,
-    formURL: "/management/asset-submission",
+    formURL: "/asset-management/asset-submission",
     formText: "Add Asset",
     titleMsg: "Asset Registry",
   };
@@ -232,7 +232,7 @@ function AssetList() {
         department_ID: department_id,
         subdepartment_ID: subdepartment_id,
         category_id: category_id,
-        assetStatus: activeStatusFilter,
+        assetStatus: activeStatusFilter || "all",
         fromDate: fromDate,
         toDate: toDate,
       };
@@ -417,58 +417,58 @@ function AssetList() {
                   className="bg-[#3c8dbc]"
                   arrow={false}
                 >
-                  <FaUserPlus
+                    <FaUserPlus
+                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
+                      onClick={() =>
+                        router.push(`/${loggedInRole}/asset-management/asset-allocation`)
+                      }
+                    />
+                  </Tooltip>
+                )}
+                {/* Allocation Approval List */}
+                <Tooltip
+                  content="Allocation Approval List"
+                  placement="bottom"
+                  className="bg-[#3c8dbc]"
+                  arrow={false}
+                >
+                  <FaListUl
                     className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
                     onClick={() =>
-                      router.push(`/${loggedInRole}/management/asset-allocation`)
+                      router.push(
+                        `/${loggedInRole}/asset-management/allocation-approval-list`,
+                      )
                     }
                   />
                 </Tooltip>
-              )}
-              {/* Allocation Approval List */}
-              <Tooltip
-                content="Allocation Approval List"
-                placement="bottom"
-                className="bg-[#3c8dbc]"
-                arrow={false}
-              >
-                <FaListUl
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
-                  onClick={() =>
-                    router.push(
-                      `/${loggedInRole}/management/allocation-approval-list`,
-                    )
-                  }
-                />
-              </Tooltip>
-              {!(userDetails?.roles?.includes("fa-accounts")) && (
-                <>
-                  <Tooltip
-                    content="Bulk Upload"
-                    placement="bottom"
-                    className="bg-[#3c8dbc]"
-                    arrow={false}
-                  >
-                    <FaFileUpload
-                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
-                      onClick={() =>
-                        router.push(`/${loggedInRole}/management/bulk-upload`)
-                      }
-                    />
-                  </Tooltip>
-                  <Tooltip
-                    content="Add Asset"
-                    placement="bottom"
-                    className="bg-[#3c8dbc]"
-                    arrow={false}
-                  >
-                    <BsPlusSquare
-                      className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
-                      onClick={() =>
-                        router.push(`/${loggedInRole}/management/asset-submission`)
-                      }
-                    />
-                  </Tooltip>
+                {!(userDetails?.roles?.includes("fa-accounts")) && (
+                  <>
+                    <Tooltip
+                      content="Bulk Upload"
+                      placement="bottom"
+                      className="bg-[#3c8dbc]"
+                      arrow={false}
+                    >
+                      <FaFileUpload
+                        className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
+                        onClick={() =>
+                          router.push(`/${loggedInRole}/asset-management/bulk-upload`)
+                        }
+                      />
+                    </Tooltip>
+                    <Tooltip
+                      content="Add Asset"
+                      placement="bottom"
+                      className="bg-[#3c8dbc]"
+                      arrow={false}
+                    >
+                      <BsPlusSquare
+                        className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px]"
+                        onClick={() =>
+                          router.push(`/${loggedInRole}/asset-management/asset-submission`)
+                        }
+                      />
+                    </Tooltip>
                 </>
               )}
             </div>
@@ -479,7 +479,7 @@ function AssetList() {
           </p>
           <div className="px-0 py-2">
             {/* Dashboard Metric Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               <StatusCard
                 label="Total Assets"
                 value={counts.total}
@@ -523,17 +523,6 @@ function AssetList() {
                   setPageNumber(1);
                 }}
                 isActive={activeStatusFilter === "ASSET_APPROVAL_PENDING"}
-              />
-              <StatusCard
-                label="Inactive"
-                value={counts.rejected || 0}
-                icon={HiShieldCheck}
-                colorClass="bg-red"
-                onClick={() => {
-                  setActiveStatusFilter("INACTIVE");
-                  setPageNumber(1);
-                }}
-                isActive={activeStatusFilter === "INACTIVE"}
               />
             </div>
           </div>

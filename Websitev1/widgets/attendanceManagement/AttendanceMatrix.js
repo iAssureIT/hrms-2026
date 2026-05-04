@@ -7,7 +7,9 @@ import { Tooltip } from "flowbite-react";
 import { FaPlus, FaFilter, FaDownload, FaChevronLeft, FaChevronRight, FaUsers, FaUserCheck, FaUserTimes, FaClock, FaCalendarTimes, FaRegCalendarAlt } from "react-icons/fa";
 import moment from "moment";
 import { BsPlusSquare, BsInfoCircle } from "react-icons/bs";
+import { MdFilterList, MdExpandMore } from "react-icons/md";
 import ls from "localstorage-slim";
+import * as XLSX from "xlsx";
 
 const AttendanceMatrix = () => {
     const router = useRouter();
@@ -20,6 +22,7 @@ const AttendanceMatrix = () => {
     const [centers, setCenters] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [showLegend, setShowLegend] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
 
     const months = moment.months().map((m, i) => ({ value: i + 1, label: m }));
     const years = Array.from({ length: 5 }, (_, i) => moment().year() - i);
@@ -64,6 +67,29 @@ const AttendanceMatrix = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const exportToExcel = () => {
+        const workbook = XLSX.utils.book_new();
+        const header = ["Employee Name", "Employee ID", "Department"];
+        daysArray.forEach(day => header.push(day.toString()));
+        header.push("P/A/L/E", "Total Hours");
+
+        const worksheetData = [header];
+
+        matrixData.forEach(emp => {
+            const row = [emp.employeeName, emp.employeeID, emp.departmentName];
+            daysArray.forEach(day => {
+                row.push(emp.attendance[day] || "-");
+            });
+            row.push(`${emp.monthlyStats.P}/${emp.monthlyStats.A}/${emp.monthlyStats.L}/${emp.monthlyStats.E}`);
+            row.push((emp.monthlyStats.totalHours / 60).toFixed(1));
+            worksheetData.push(row);
+        });
+
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance Matrix");
+        XLSX.writeFile(workbook, `Attendance_Matrix_${months.find(m => m.value === selectedMonth).label}_${selectedYear}.xlsx`);
     };
 
     const daysInMonth = moment([selectedYear, selectedMonth - 1]).daysInMonth();
@@ -150,7 +176,7 @@ const AttendanceMatrix = () => {
                             <div className="relative group">
                                 <FaDownload
                                     className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                                    onClick={() => {/* Add export logic if needed */ }}
+                                    onClick={exportToExcel}
                                 />
                             </div>
                         </Tooltip>
@@ -168,13 +194,28 @@ const AttendanceMatrix = () => {
                 <StatusCard label="Year" value={selectedYear} icon={FaCalendarTimes} colorClass="bg-red" />
             </div>
 
-            <div >
-                <div >
-                    <div className="flex flex-wrap items-center gap-8">
+            <div className="bg-white">
+                <div
+                    className="flex items-center gap-4 mb-2 cursor-pointer group select-none"
+                    onClick={() => setShowFilters(!showFilters)}
+                >
+                    <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
+                        <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
+                        <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
+                    </div>
+                    <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
+                    <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                </div>
+
+                <div
+                    className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden ${showFilters ? 'max-h-[1000px] opacity-100 mb-8 translate-y-0' : 'max-h-0 opacity-0 mb-0 -translate-y-4'
+                        }`}
+                >
+                    <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 items-end pt-2">
                         <div className="flex flex-col gap-2">
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Month</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-36 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={selectedMonth}
                                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                             >
@@ -184,7 +225,7 @@ const AttendanceMatrix = () => {
                         <div className="flex flex-col gap-2">
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Year</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-28 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={selectedYear}
                                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                             >
@@ -194,7 +235,7 @@ const AttendanceMatrix = () => {
                         <div className="flex flex-col gap-2">
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Center</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-56 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={center_id}
                                 onChange={(e) => setCenter_id(e.target.value)}
                             >
@@ -205,7 +246,7 @@ const AttendanceMatrix = () => {
                         <div className="flex flex-col gap-2">
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Department</label>
                             <select
-                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-56 p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
+                                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 h-9 outline-none transition-all shadow-sm hover:border-gray-400"
                                 value={department_id}
                                 onChange={(e) => setDepartment_id(e.target.value)}
                             >
@@ -213,178 +254,179 @@ const AttendanceMatrix = () => {
                                 {departments.map(d => <option key={d._id} value={d._id}>{d.fieldValue}</option>)}
                             </select>
                         </div>
-                        <div className="flex-1 flex justify-end  mb-1 pr-2">
-                            <Tooltip content="Show Legend" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
-                                <BsInfoCircle
-                                    className={`cursor-pointer transition-all duration-300 text-[24px] ${showLegend ? 'text-[#3c8dbc] scale-110' : 'text-gray-400 hover:text-[#3c8dbc]'}`}
-                                    onClick={() => setShowLegend(!showLegend)}
-                                />
-                            </Tooltip>
-                        </div>
                     </div>
                 </div>
+                <div className="flex justify-end mb-4">
+                    <Tooltip content="Show Legend" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
+                        <BsInfoCircle
+                            className={`cursor-pointer transition-all duration-300 text-[24px] ${showLegend ? 'text-[#3c8dbc] scale-110' : 'text-gray-400 hover:text-[#3c8dbc]'}`}
+                            onClick={() => setShowLegend(!showLegend)}
+                        />
+                    </Tooltip>
+                </div>
+            </div>
 
-                {/* Collapsible Legend Section */}
-                <div
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${showLegend ? 'max-h-40 opacity-100 my-6' : 'max-h-0 opacity-0 my-0'}`}
-                >
-                    <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-sm flex flex-wrap gap-x-8 gap-y-4">
-                        {[
-                            { s: 'P', l: 'Present', c: 'bg-[#00a65a] text-white border-[#008d4c]' },
-                            { s: 'A', l: 'Absent', c: 'bg-[#dd4b39] text-white border-[#d73925]' },
-                            { s: 'L', l: 'Late', c: 'bg-[#f39c12] text-white border-[#e08e0b]' },
-                            { s: 'E', l: 'Early Exit', c: 'bg-rose-100 text-rose-700 border-rose-200' },
-                            { s: 'H', l: 'Holiday', c: 'bg-[#00c0ef] text-white border-[#00add7]' },
-                            { s: 'W', l: 'Weekly Off', c: 'bg-gray-100 text-gray-500 border-gray-200' },
-                            { s: 'F', l: 'Half Day', c: 'bg-[#00a65a] text-white border-[#008d4c]' },
-                            { s: 'OT', l: 'Overtime (>1hr)', c: 'bg-blue-600 text-white border-blue-700 !text-[8px]' },
-                            { s: 'EH', l: 'Early Hours (>1hr)', c: 'bg-indigo-600 text-white border-indigo-700 !text-[8px]' },
-                        ].map(item => (
-                            <div key={item.s} className="flex items-center gap-3 group">
-                                <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border shadow-sm transition-transform group-hover:scale-110 ${item.c}`}>
-                                    {item.s}
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-[11px] font-bold text-slate-700 leading-none">{item.l}</span>
-                                    <span className="text-[9px] text-slate-400 font-medium uppercase tracking-tight mt-0.5">{item.s === 'OT' || item.s === 'EH' ? 'Indicator' : 'Status'}</span>
-                                </div>
+            {/* Collapsible Legend Section */}
+            <div
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${showLegend ? 'max-h-40 opacity-100 my-6' : 'max-h-0 opacity-0 my-0'}`}
+            >
+                <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-sm flex flex-wrap gap-x-8 gap-y-4">
+                    {[
+                        { s: 'P', l: 'Present', c: 'bg-[#00a65a] text-white border-[#008d4c]' },
+                        { s: 'A', l: 'Absent', c: 'bg-[#dd4b39] text-white border-[#d73925]' },
+                        { s: 'L', l: 'Late', c: 'bg-[#f39c12] text-white border-[#e08e0b]' },
+                        { s: 'E', l: 'Early Exit', c: 'bg-rose-100 text-rose-700 border-rose-200' },
+                        { s: 'H', l: 'Holiday', c: 'bg-[#00c0ef] text-white border-[#00add7]' },
+                        { s: 'W', l: 'Weekly Off', c: 'bg-gray-100 text-gray-500 border-gray-200' },
+                        { s: 'F', l: 'Half Day', c: 'bg-[#00a65a] text-white border-[#008d4c]' },
+                        { s: 'OT', l: 'Overtime (>1hr)', c: 'bg-blue-600 text-white border-blue-700 !text-[8px]' },
+                        { s: 'EH', l: 'Early Hours (>1hr)', c: 'bg-indigo-600 text-white border-indigo-700 !text-[8px]' },
+                    ].map(item => (
+                        <div key={item.s} className="flex items-center gap-3 group">
+                            <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border shadow-sm transition-transform group-hover:scale-110 ${item.c}`}>
+                                {item.s}
                             </div>
-                        ))}
-                    </div>
+                            <div className="flex flex-col">
+                                <span className="text-[11px] font-bold text-slate-700 leading-none">{item.l}</span>
+                                <span className="text-[9px] text-slate-400 font-medium uppercase tracking-tight mt-0.5">{item.s === 'OT' || item.s === 'EH' ? 'Indicator' : 'Status'}</span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
+            </div>
 
-                <div className="admin-box-header bg-gray-50/50">
-                    {/* <h3 className="admin-box-title">Monthly Attendance Roster</h3> */}
-                </div>
-                <div className="admin-content-area overflow-x-auto border border-gray-200">
-                    <table className="admin-table border-collapse">
-                        <thead className="admin-table-thead">
-                            <tr className="border-b border-gray-200">
-                                <th className="admin-table-th sticky left-0 z-20 bg-[#f9f9f9] min-w-[180px] border-r border-gray-200 !text-[12px] uppercase">
-                                    Employee
-                                </th>
+            <div className="admin-box-header bg-gray-50/50">
+                {/* <h3 className="admin-box-title">Monthly Attendance Roster</h3> */}
+            </div>
+            <div className="admin-content-area overflow-x-auto border border-gray-200">
+                <table className="admin-table border-collapse">
+                    <thead className="admin-table-thead">
+                        <tr className="border-b border-gray-200">
+                            <th className="admin-table-th sticky left-0 z-20 bg-[#f9f9f9] min-w-[180px] border-r border-gray-200 !text-[12px] uppercase">
+                                Employee
+                            </th>
+                            {(() => {
+                                let weekCounter = 0;
+                                return daysArray.map(day => {
+                                    const isSun = moment([selectedYear, selectedMonth - 1, day]).day() === 0;
+                                    const isLastDay = day === daysInMonth;
+                                    const showWeekly = isSun || (isLastDay && !isSun);
+
+                                    return (
+                                        <React.Fragment key={day}>
+                                            <th className={`admin-table-th text-center min-w-[42px] py-1 border-r border-gray-100 ${isWeekend(day) ? 'bg-gray-100 text-gray-500' : ''}`}>
+                                                <div className="text-[9px] font-black uppercase opacity-60 leading-none mb-1">
+                                                    {moment([selectedYear, selectedMonth - 1, day]).format("ddd")}
+                                                </div>
+                                                <div className="text-[12px]">
+                                                    {day}
+                                                </div>
+                                            </th>
+                                            {showWeekly && (
+                                                <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc] !text-[12px] border-r border-gray-100 uppercase">
+                                                    W{++weekCounter}
+                                                </th>
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                });
+                            })()}
+                            <th className="admin-table-th text-center min-w-[70px] !text-[12px] uppercase">P/A/L/E</th>
+                            <th className="admin-table-th text-center min-w-[70px] !text-[11px] uppercase">Total Hrs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan={daysInMonth + 10} className="py-20 text-center">
+                                    <div className="flex flex-col items-center gap-4">
+                                        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                                        <p className="text-slate-400 font-bold text-sm tracking-tight">Syncing attendance data...</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : matrixData.length === 0 ? (
+                            <tr>
+                                <td colSpan={daysInMonth + 10} className="py-20 text-center">
+                                    <p className="text-slate-400 font-bold text-sm tracking-tight text-center">No records found for this criteria</p>
+                                </td>
+                            </tr>
+                        ) : matrixData.map(emp => (
+                            <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
+                                <td className="admin-table-td sticky left-0 z-10 bg-white min-w-[200px] border-r border-gray-100">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-gray-800">{emp.employeeName}</span>
+                                        <span className="text-[10px] text-gray-400">{emp.employeeID} • {emp.departmentName}</span>
+                                    </div>
+                                </td>
                                 {(() => {
                                     let weekCounter = 0;
                                     return daysArray.map(day => {
                                         const isSun = moment([selectedYear, selectedMonth - 1, day]).day() === 0;
                                         const isLastDay = day === daysInMonth;
                                         const showWeekly = isSun || (isLastDay && !isSun);
+                                        const currentWeekKey = `W${weekCounter + 1}`;
 
                                         return (
                                             <React.Fragment key={day}>
-                                                <th className={`admin-table-th text-center min-w-[42px] py-1 border-r border-gray-100 ${isWeekend(day) ? 'bg-gray-100 text-gray-500' : ''}`}>
-                                                    <div className="text-[9px] font-black uppercase opacity-60 leading-none mb-1">
-                                                        {moment([selectedYear, selectedMonth - 1, day]).format("ddd")}
-                                                    </div>
-                                                    <div className="text-[12px]">
-                                                        {day}
-                                                    </div>
-                                                </th>
+                                                <td className={`admin-table-td text-center p-1 border-r border-gray-50 ${isWeekend(day) ? 'bg-gray-50/80' : ''}`}>
+                                                    <Tooltip
+                                                        content={emp.timings[day] ? (
+                                                            <div className="p-2 space-y-1 text-xs">
+                                                                <p className="font-bold border-b border-gray-600 pb-1 mb-1">{moment([selectedYear, selectedMonth - 1, day]).format("DD MMM (ddd)")}</p>
+                                                                <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[day].in}</b></p>
+                                                                <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[day].out}</b></p>
+                                                                <p className="flex justify-between gap-4 pt-1 border-t border-gray-600"><span>Total:</span><b>{(emp.timings[day].total / 60).toFixed(1)} hrs</b></p>
+                                                                {emp.timings[day].overtime > 0 && <p className="flex justify-between gap-4 text-blue-400"><span>Overtime:</span><b>{(emp.timings[day].overtime / 60).toFixed(1)} hrs</b></p>}
+                                                                {emp.timings[day].earlyHours > 0 && <p className="flex justify-between gap-4 text-indigo-400"><span>Early Hours:</span><b>{(emp.timings[day].earlyHours / 60).toFixed(1)} hrs</b></p>}
+                                                            </div>
+                                                        ) : moment([selectedYear, selectedMonth - 1, day]).format("DD MMM (ddd)")}
+                                                        arrow={false}
+                                                    >
+                                                        <div className="relative mx-auto w-7 h-7">
+                                                            {(emp.attendance[day] || !isWeekend(day)) && (
+                                                                <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default ${getStatusColorTable(emp.attendance[day])}`}>
+                                                                    {emp.attendance[day]}
+                                                                </div>
+                                                            )}
+                                                            {emp.timings[day]?.overtime > 0 && (
+                                                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 border border-white flex items-center justify-center rounded-full" title="Overtime">
+                                                                    <span className="text-[6px] text-white">O</span>
+                                                                </div>
+                                                            )}
+                                                            {emp.timings[day]?.earlyHours > 0 && (
+                                                                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-indigo-600 border border-white flex items-center justify-center rounded-full" title="Early Hours">
+                                                                    <span className="text-[6px] text-white">E</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </Tooltip>
+                                                </td>
                                                 {showWeekly && (
-                                                    <th className="admin-table-th text-center min-w-[50px] bg-blue-50 text-[#3c8dbc] !text-[12px] border-r border-gray-100 uppercase">
-                                                        W{++weekCounter}
-                                                    </th>
+                                                    <td className="admin-table-td text-center bg-blue-50/30 font-bold text-[10px] text-[#3c8dbc] border-r border-gray-100">
+                                                        {(() => {
+                                                            const val = emp.weeklyHours[currentWeekKey];
+                                                            weekCounter++; // Increment after using the key
+                                                            return val ? (val / 60).toFixed(1) + 'h' : '0.0h';
+                                                        })()}
+                                                    </td>
                                                 )}
                                             </React.Fragment>
                                         );
                                     });
                                 })()}
-                                <th className="admin-table-th text-center min-w-[70px] !text-[12px] uppercase">P/A/L/E</th>
-                                <th className="admin-table-th text-center min-w-[70px] !text-[11px] uppercase">Total Hrs</th>
+                                <td className="admin-table-td text-center font-bold text-[10px] text-gray-600 bg-gray-50/50">
+                                    {emp.monthlyStats.P}/{emp.monthlyStats.A}/{emp.monthlyStats.L}/{emp.monthlyStats.E}
+                                </td>
+                                <td className="admin-table-td text-center font-bold text-[10px] text-blue-700 bg-gray-50/50">
+                                    {(emp.monthlyStats.totalHours / 60).toFixed(1)}h
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan={daysInMonth + 10} className="py-20 text-center">
-                                        <div className="flex flex-col items-center gap-4">
-                                            <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-                                            <p className="text-slate-400 font-bold text-sm tracking-tight">Syncing attendance data...</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) : matrixData.length === 0 ? (
-                                <tr>
-                                    <td colSpan={daysInMonth + 10} className="py-20 text-center">
-                                        <p className="text-slate-400 font-bold text-sm tracking-tight text-center">No records found for this criteria</p>
-                                    </td>
-                                </tr>
-                            ) : matrixData.map(emp => (
-                                <tr key={emp.employee_id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="admin-table-td sticky left-0 z-10 bg-white min-w-[200px] border-r border-gray-100">
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-gray-800">{emp.employeeName}</span>
-                                            <span className="text-[10px] text-gray-400">{emp.employeeID} • {emp.departmentName}</span>
-                                        </div>
-                                    </td>
-                                    {(() => {
-                                        let weekCounter = 0;
-                                        return daysArray.map(day => {
-                                            const isSun = moment([selectedYear, selectedMonth - 1, day]).day() === 0;
-                                            const isLastDay = day === daysInMonth;
-                                            const showWeekly = isSun || (isLastDay && !isSun);
-                                            const currentWeekKey = `W${weekCounter + 1}`;
-
-                                            return (
-                                                <React.Fragment key={day}>
-                                                    <td className={`admin-table-td text-center p-1 border-r border-gray-50 ${isWeekend(day) ? 'bg-gray-50/80' : ''}`}>
-                                                        <Tooltip
-                                                            content={emp.timings[day] ? (
-                                                                <div className="p-2 space-y-1 text-xs">
-                                                                    <p className="font-bold border-b border-gray-600 pb-1 mb-1">{moment([selectedYear, selectedMonth - 1, day]).format("DD MMM (ddd)")}</p>
-                                                                    <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[day].in}</b></p>
-                                                                    <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[day].out}</b></p>
-                                                                    <p className="flex justify-between gap-4 pt-1 border-t border-gray-600"><span>Total:</span><b>{(emp.timings[day].total / 60).toFixed(1)} hrs</b></p>
-                                                                    {emp.timings[day].overtime > 0 && <p className="flex justify-between gap-4 text-blue-400"><span>Overtime:</span><b>{(emp.timings[day].overtime / 60).toFixed(1)} hrs</b></p>}
-                                                                    {emp.timings[day].earlyHours > 0 && <p className="flex justify-between gap-4 text-indigo-400"><span>Early Hours:</span><b>{(emp.timings[day].earlyHours / 60).toFixed(1)} hrs</b></p>}
-                                                                </div>
-                                                            ) : moment([selectedYear, selectedMonth - 1, day]).format("DD MMM (ddd)")}
-                                                            arrow={false}
-                                                        >
-                                                            <div className="relative mx-auto w-7 h-7">
-                                                                {(emp.attendance[day] || !isWeekend(day)) && (
-                                                                    <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default ${getStatusColorTable(emp.attendance[day])}`}>
-                                                                        {emp.attendance[day]}
-                                                                    </div>
-                                                                )}
-                                                                {emp.timings[day]?.overtime > 0 && (
-                                                                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 border border-white flex items-center justify-center rounded-full" title="Overtime">
-                                                                        <span className="text-[6px] text-white">O</span>
-                                                                    </div>
-                                                                )}
-                                                                {emp.timings[day]?.earlyHours > 0 && (
-                                                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-indigo-600 border border-white flex items-center justify-center rounded-full" title="Early Hours">
-                                                                        <span className="text-[6px] text-white">E</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </Tooltip>
-                                                    </td>
-                                                    {showWeekly && (
-                                                        <td className="admin-table-td text-center bg-blue-50/30 font-bold text-[10px] text-[#3c8dbc] border-r border-gray-100">
-                                                            {(() => {
-                                                                const val = emp.weeklyHours[currentWeekKey];
-                                                                weekCounter++; // Increment after using the key
-                                                                return val ? (val / 60).toFixed(1) + 'h' : '0.0h';
-                                                            })()}
-                                                        </td>
-                                                    )}
-                                                </React.Fragment>
-                                            );
-                                        });
-                                    })()}
-                                    <td className="admin-table-td text-center font-bold text-[10px] text-gray-600 bg-gray-50/50">
-                                        {emp.monthlyStats.P}/{emp.monthlyStats.A}/{emp.monthlyStats.L}/{emp.monthlyStats.E}
-                                    </td>
-                                    <td className="admin-table-td text-center font-bold text-[10px] text-blue-700 bg-gray-50/50">
-                                        {(emp.monthlyStats.totalHours / 60).toFixed(1)}h
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                    </tbody>
+                </table>
             </div>
+
 
 
         </section>

@@ -9,7 +9,9 @@ import moment from "moment";
 import GenericTable from "@/widgets/UserManagement/FilterTable_UM.js";
 import { BsPlusSquare } from "react-icons/bs";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdFilterList, MdExpandMore } from "react-icons/md";
 import { Tooltip, Modal } from "flowbite-react";
+import ls from "localstorage-slim";
 import dynamic from "next/dynamic";
 
 const DeletedUsers = dynamic(() => import("@/widgets/UserManagement/DeletedUsers"), { ssr: false });
@@ -39,6 +41,8 @@ function UserManagement() {
   const [totalRecs, setTotalRecs] = useState("-");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [roleList, setRoleList] = useState([]);
 
   const tableHeading = {
     actions: "Actions",
@@ -66,6 +70,107 @@ function UserManagement() {
   useEffect(() => {
     getData();
   }, [pageNumber, recsPerPage, searchText, statusaction, roleaction]);
+
+  useEffect(() => {
+    const user = ls.get("userDetails", { decrypt: true });
+    setUser_id(user?.user_id);
+    getRoleList();
+  }, []);
+
+  const getRoleList = () => {
+    axios
+      .post("/api/roles/get/list")
+      .then((response) => {
+        var roleList = [];
+        for (let index = 0; index < response.data.length; index++) {
+          let roleData = {
+            role_id: response.data[index]._id,
+            role: response.data[index].role,
+          };
+          roleList.push(roleData);
+        }
+        setRoleList(
+          roleList.sort((a, b) => {
+            return a.role.localeCompare(b.role);
+          })
+        );
+      })
+      .catch((err) => console.log("err", err));
+  };
+
+  const performAction = (e) => {
+    var action = e.split("_")[0];
+    if (user_ids.length > 0) {
+      if (action === "status") {
+        const status = e.split("_")[1];
+
+        Swal.fire({
+          title: " ",
+          text: `Are you sure you want to ${status} selected Users?`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Confirm!",
+          reverseButtons: true,
+          focusCancel: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const formValues = {
+              userID: user_ids,
+              status: e.split("_")[1],
+              username: user_id,
+            };
+            axios
+              .patch("/api/users/patch/status", formValues)
+              .then((res) => {
+                if (res.data === "USER_STATUS_UPDATED") {
+                  Swal.fire(" ", "Status updated successfully");
+                } else if (res.data === "USER_STATUS_NOT_UPDATED") {
+                  Swal.fire(" ", "Status is not updated.");
+                } else {
+                  Swal.fire(" ", "Status is not modified.");
+                }
+                getData();
+                setStatusaction("-");
+                setRoleAction("-");
+                setUserIds([]);
+              })
+              .catch((err) => {
+                console.log("err", err);
+              });
+          }
+        });
+      } else {
+        const formValues = {
+          userID: user_ids,
+          username: user_id,
+          role: e.split("_")[1],
+          action: action,
+        };
+
+        axios
+          .patch("/api/users/patch/roles", formValues)
+          .then((res) => {
+            if (res.data === "USER_ROLE_UPDATED") {
+              Swal.fire(" ", "Role updated successfully");
+            } else if (res.data === "USER_ROLE_NOT_UPDATED") {
+              Swal.fire(" ", "Role is not updated.");
+            } else {
+              Swal.fire(" ", "Role already exists.");
+            }
+            getData();
+            setStatusaction("-");
+            setRoleAction("-");
+            setUserIds([]);
+          })
+          .catch((err) => {
+            console.log("err", err);
+          });
+      }
+    } else {
+      Swal.fire(" ", "Please select atleast one user");
+    }
+  };
 
   const getData = () => {
     var formValues = {
@@ -180,8 +285,8 @@ function UserManagement() {
   };
 
   return (
-    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
-      <div className="max-w-[1440px] mx-auto">
+    <section className="section admin-box box-primary">
+      <div className="hr-card hr-fade-in">
         {/* Theme-aligned Header */}
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
@@ -212,6 +317,96 @@ function UserManagement() {
           <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
             Manage administrative access, role assignments, and account security for all organizational team members.
           </p>
+        </div>
+
+        <div className="bg-white">
+          <div
+            className="flex items-center gap-4 mb-2 cursor-pointer group select-none"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
+              <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
+              <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
+            </div>
+            <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
+            <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
+          </div>
+
+          <div
+            className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden ${showFilters ? 'max-h-[1000px] opacity-100 mb-8 translate-y-0' : 'max-h-0 opacity-0 mb-0 -translate-y-4'
+              }`}
+          >
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 items-end pt-2 mb-4">
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                  Select action to perform
+                </label>
+                <select
+                  id="action"
+                  value={action}
+                  onChange={(e) => performAction(e.target.value)}
+                  className="stdSelectField w-full"
+                >
+                  <option value="" disabled>-- Select Action --</option>
+                  <optgroup label="Active / Inactive">
+                    <option value="status_inactive">Inactivate selected User</option>
+                    <option value="status_active">Activate selected User</option>
+                  </optgroup>
+                  <optgroup label="Add Roles">
+                    {roleList.map((item, index) => (
+                      <option key={index} value={"add_" + item.role}>Add {item.role} Role to selected</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Remove Roles">
+                    {roleList.map((item, index) => (
+                      <option key={index} value={"remove_" + item.role}>Remove {item.role} Role from selected</option>
+                    ))}
+                  </optgroup>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                  Select Status
+                </label>
+                <select
+                  id="statusaction"
+                  value={statusaction}
+                  onChange={(e) => {
+                    setStatusaction(e.target.value);
+                    setPageNumber(1);
+                  }}
+                  className="stdSelectField w-full"
+                >
+                  <option value="-" disabled>-- Select Status --</option>
+                  <option value="all">Show all</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                  Select Role
+                </label>
+                <select
+                  id="roleaction"
+                  value={roleaction}
+                  onChange={(e) => {
+                    setRoleAction(e.target.value);
+                    setPageNumber(1);
+                  }}
+                  className="stdSelectField w-full"
+                >
+                  <option value="-" disabled>-- Select Role --</option>
+                  <option value="all">Show all</option>
+                  {roleList.map((item, index) => (
+                    <option key={index} value={item.role}>{item.role}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="bg-white">
           <GenericTable

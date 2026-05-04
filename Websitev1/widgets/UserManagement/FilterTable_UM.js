@@ -693,103 +693,6 @@ const GenericTable = ({
       <div className="">
         <div className="block md:flex lg:flex justify-between gap-4 mt-4">
         </div>
-        <div className="mt-3 mb-3 w-full lg:w-1/3">
-          <div className="lg:me-4">
-            <label className="inputLabel font-semibold">
-              Select action to perform :
-            </label>
-            <select
-              id="action"
-              value={action}
-              onChange={(e) => performAction(e.target.value)}
-              // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-              className="stdSelectField pl-3"
-            >
-              <option value="" disabled>
-                -- Select Action --
-              </option>
-              <optgroup label="Active / Inactive">
-                <option value="status_inactive">
-                  Inactivate selected User
-                </option>
-                <option value="status_active">Activate selected User</option>
-              </optgroup>
-              <optgroup label="Add Roles">
-                {roleList.map((item, index) => {
-                  return (
-                    <option key={index} value={"add_" + item.role}>
-                      Add {item.role} Role to selected
-                    </option>
-                  );
-                })}
-              </optgroup>
-              <optgroup label="Remove Roles">
-                {roleList.map((item, index) => {
-                  return (
-                    <option key={index} value={"remove_" + item.role}>
-                      Remove {item.role} Role from selected
-                    </option>
-                  );
-                })}
-              </optgroup>
-            </select>
-          </div>
-        </div>
-        <label className="inputLabel font-semibold">Filters :</label>
-        <div className="grid gap-3 lg:gap-6 md:grid-cols-2 lg:grid-cols-3 mt-1 mb-5">
-          <div>
-            <label htmlFor="statusaction" className="inputLabel  font-semibold">
-              Select Status :
-            </label>
-            <select
-              id="statusaction"
-              value={statusaction}
-              onChange={
-                (e) => setStatusaction(e.target.value)
-                // getListByStatusRole(e.target.value, roleaction)
-              }
-              // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-              className="stdSelectField pl-3"
-            >
-              <option value="-" disabled>
-                -- Select Status --
-              </option>
-              <option value="all">Show all</option>
-              <option value="active">active</option>
-              <option value="inactive">inactive</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="roleaction" className="inputLabel  font-semibold">
-              Select Role :
-            </label>
-            <select
-              id="roleaction"
-              value={roleaction}
-              onChange={
-                (e) => setRoleAction(e.target.value)
-                // getListByStatusRole(statusaction, e.target.value)
-              }
-              // <select id="roleaction" value={roleaction} onChange={(e)=>getListByRole(e.target.value)}
-              // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-              className="stdSelectField pl-3"
-            >
-              <option value="-" disabled>
-                -- Select Role --
-              </option>
-              <option value="all">Show all</option>
-              {roleList.map((item, index) => {
-                return (
-                  <option key={index} value={item.role}>
-                    {item.role}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        </div>
-
         <div className="flex lg:flex-row md:flex-col flex-col mt-2 justify-between w-full">
           <div className="basis-1/3  text-sm">
             <div className="w-1/2 text-nowrap">
@@ -893,7 +796,7 @@ const GenericTable = ({
                     key="checkbox"
                     color="blue"
                     checked={checked}
-                    onClick={(e) => selectAllUsers(e)}
+                    onChange={(e) => selectAllUsers(e)}
                   />
                 </th>
                 {tableHeading ? (
@@ -947,7 +850,7 @@ const GenericTable = ({
                             checked={
                               user_ids?.indexOf(value._id) > -1 ? true : false
                             }
-                            onClick={(e) => addUserIds(e, value._id)}
+                            onChange={(e) => addUserIds(e, value._id)}
                           />
                         </td>
                         {tableHeading && tableHeading.actions ? (

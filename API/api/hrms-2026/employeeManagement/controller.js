@@ -212,6 +212,11 @@ exports.bulkUpload = async (req, res) => {
             if (!row.employeeMobile || row.employeeMobile === "-") remark += "Mobile missing, ";
             if (!row.employeeDesignation || row.employeeDesignation === "-") remark += "Designation missing, ";
             if (!row.employeeID || row.employeeID === "-") remark += "Employee ID missing, ";
+            if (!row.gender || row.gender === "-") remark += "Gender missing, ";
+            if (!row.currentAddress || row.currentAddress === "-") remark += "Current Address missing, ";
+            if (!row.departmentName || row.departmentName === "-") remark += "Department missing, ";
+            if (!row.systemRole || row.systemRole === "-") remark += "System Role missing, ";
+            if (!row.doj || row.doj === "-") remark += "Date of Joining missing, ";
 
             if (remark) {
                 invalidData.push({ ...row, failedRemark: remark.trim().replace(/,$/, "") });
@@ -382,13 +387,16 @@ exports.getOneEmployee = (req, res) => {
 
 exports.getEmployeeList = (req, res) => {
     const { recsPerPage, pageNumber } = req.params;
-    const { searchText, removePagination } = req.body;
+    const { searchText, removePagination, status } = req.body;
     
     // Support both params and body for recsPerPage and pageNumber
     const limit = parseInt(recsPerPage || req.body.recsPerPage) || 10;
     const skip = (parseInt(pageNumber || req.body.pageNumber) - 1) * limit;
 
     let query = {};
+    if (status) {
+        query.status = status;
+    }
     if (searchText && searchText !== "-") {
         query = {
             $or: [
@@ -523,4 +531,39 @@ var insertFailedRecords = async (invalidData, updateBadData) => {
                 }
             });
     });
+};
+
+exports.getMetrics = async (req, res) => {
+    try {
+        const [
+            totalCount,
+            activeCount,
+            departments,
+            genderBreakdown
+        ] = await Promise.all([
+            Employees.countDocuments(),
+            Employees.countDocuments({ status: "Active" }),
+            Employees.distinct("departmentName"),
+            Employees.aggregate([
+                { $group: { _id: "$gender", count: { $sum: 1 } } }
+            ])
+        ]);
+
+        const genderObj = { Male: 0, Female: 0, Other: 0 };
+        genderBreakdown.forEach(item => {
+            if (item._id === "Male") genderObj.Male = item.count;
+            else if (item._id === "Female") genderObj.Female = item.count;
+            else genderObj.Other += item.count;
+        });
+
+        res.status(200).json({
+            totalWorkforce: totalCount,
+            activeEmployees: activeCount,
+            totalDepartments: departments.length,
+            genderRatio: genderObj
+        });
+    } catch (error) {
+        console.error("Get Metrics Error:", error);
+        res.status(500).json({ error: error.message });
+    }
 };

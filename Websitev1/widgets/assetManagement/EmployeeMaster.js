@@ -5,10 +5,50 @@ import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import { Tooltip } from "flowbite-react";
 import { CiViewList } from "react-icons/ci";
-import { FaUserTie, FaFileUpload, FaListUl, FaUserPlus, FaUsers } from "react-icons/fa";
+import { FaUserTie, FaFileUpload, FaListUl, FaUserPlus, FaUsers, FaBuilding, FaVenusMars, FaSpinner } from "react-icons/fa";
 import { BsPlusSquare } from "react-icons/bs";
 import ls from "localstorage-slim";
 import FilterTable from "@/widgets/GenericTable/FilterTable";
+
+const getStatusColor = (colorClass) => {
+  const colors = {
+    'bg-aqua': '#00c0ef',
+    'bg-green': '#00a65a',
+    'bg-red': '#dd4b39',
+    'bg-yellow': '#f39c12'
+  };
+  return colors[colorClass] || colors['bg-aqua'];
+};
+
+const StatusCard = ({ label, value, icon: Icon, colorClass, onClick, isActive }) => (
+  <div
+    onClick={onClick}
+    className={`flex bg-white shadow-sm hover:shadow-md transition-all duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200 cursor-pointer group ${isActive ? 'ring-2 ring-[#3c8dbc] ring-inset' : ''}`}
+  >
+    <div
+      style={{ backgroundColor: getStatusColor(colorClass) }}
+      className="w-20 md:w-24 flex items-center justify-center text-white shrink-0 transition-transform duration-500 group-hover:scale-110"
+    >
+      <Icon size={36} className="text-white opacity-90" />
+    </div>
+    <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden relative">
+      <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">
+        {label}
+      </span>
+      <h3 className="text-2xl font-extrabold text-gray-800 leading-none">
+        {value}
+      </h3>
+      {isActive && (
+        <div className="absolute top-2 right-2">
+          <div className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3c8dbc] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3c8dbc]"></span>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+);
 
 const EmployeeMaster = () => {
   const router = useRouter();
@@ -25,6 +65,13 @@ const EmployeeMaster = () => {
   const [runCount, setRunCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [filterData, setFilterData] = useState({});
+  const [activeStatusFilter, setActiveStatusFilter] = useState(null);
+  const [counts, setCounts] = useState({
+    totalWorkforce: 0,
+    activeEmployees: 0,
+    totalDepartments: 0,
+    genderRatio: { Male: 0, Female: 0, Other: 0 }
+  });
 
   useEffect(() => {
     if (pathname.includes("admin")) {
@@ -85,6 +132,7 @@ const EmployeeMaster = () => {
       searchText: searchText,
       pageNumber: pageNumber,
       recsPerPage: recsPerPage,
+      status: activeStatusFilter,
     };
     setFilterData(formValues);
 
@@ -104,13 +152,24 @@ const EmployeeMaster = () => {
     }
   };
 
+  const getMetrics = async () => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/get/metrics`);
+      if (response.data) {
+        setCounts(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching employee metrics:", error);
+    }
+  };
+
   useEffect(() => {
+    getMetrics();
     getData();
-  }, [pageNumber, recsPerPage, runCount, searchText]);
+  }, [pageNumber, recsPerPage, runCount, searchText, activeStatusFilter]);
 
   return (
-    <section className="section p-6 md:p-10 bg-white min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
-      <div className="max-w-[1440px] mx-auto">
+    <section className="section admin-box box-primary">
         {/* Theme-aligned Header */}
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
@@ -119,7 +178,7 @@ const EmployeeMaster = () => {
                 <span className="text-[#3c8dbc]">Human Resources</span>
               </div>
               <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Employee <span className="text-[#3c8dbc] font-black">Master</span>
+                Employee <span className="text-[#3c8dbc] font-black">Management</span>
               </h1>
             </div>
             <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
@@ -146,6 +205,46 @@ const EmployeeMaster = () => {
           </p>
         </div>
 
+        {/* Dashboard Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <StatusCard
+            label="Total Workforce"
+            value={counts.totalWorkforce}
+            icon={FaUsers}
+            colorClass="bg-aqua"
+            onClick={() => {
+              setActiveStatusFilter(null);
+              setPageNumber(1);
+            }}
+            isActive={activeStatusFilter === null}
+          />
+          <StatusCard
+            label="Active Employees"
+            value={counts.activeEmployees}
+            icon={FaUserTie}
+            colorClass="bg-green"
+            onClick={() => {
+              setActiveStatusFilter("Active");
+              setPageNumber(1);
+            }}
+            isActive={activeStatusFilter === "Active"}
+          />
+          <StatusCard
+            label="Total Departments"
+            value={counts.totalDepartments}
+            icon={FaBuilding}
+            colorClass="bg-yellow"
+            isActive={false}
+          />
+          <StatusCard
+            label="Female Employee"
+            value={`${counts.genderRatio?.Female || 0} `}
+            icon={FaVenusMars}
+            colorClass="bg-red"
+            isActive={false}
+          />
+        </div>
+
         <div className="bg-white">
           <FilterTable
             tableHeading={tableHeading}
@@ -170,7 +269,6 @@ const EmployeeMaster = () => {
             loading={loading}
           />
         </div>
-      </div>
     </section>
   );
 };

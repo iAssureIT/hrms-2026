@@ -10,5 +10,6 @@ router.delete('/delete/:id', employeeController.deleteEmployee);
 router.get('/filedetails/:fileName', employeeController.filedetails);
 router.post('/list/:recsPerPage/:pageNumber', employeeController.getEmployeeList);
 router.post('/post/list', employeeController.getEmployeeList);
+router.post('/get/metrics', employeeController.getMetrics);
 
 module.exports = router;

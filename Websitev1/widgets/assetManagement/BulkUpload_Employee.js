@@ -183,272 +183,273 @@ const BulkUpload = (props) => {
   };
   const SheetJSFT = ["xlsx", "xls", "csv"];
   return (
-    <section className="section">
-      <div className="m-4 grid">
-        <div className="flex justify-between">
-          <div className="">
-            <h4 className="subHeading">Bulk Upload</h4>
-            <div className=" bulkEmployeeImg">
-              {props.downloadTemplate ? (
-                <a
-                  href="#"
-                  onClick={props.downloadTemplate}
-                  title="Click to download template"
-                >
-                  <img src="/images/generic/Excel-download-icon.png" />
-                </a>
-              ) : (
-                <a
-                  target="_blank"
-                  href={props.fileurl}
-                  title="Click to download template"
-                  download
-                >
-                  <img src="/images/generic/Excel-download-icon.png" />
-                </a>
-              )}
-            </div>
-            <div className="bulkEmployeeVerif mx-4">
-              <ul className="bodyText text-grayTwo font-normal">
-                <li>
-                  Please use attached File Template format for bulkupload into
-                  system.
-                </li>
-                <li>Please do not change the Heading of following file.</li>
-                <li>File format must be .xlsx or .xls.</li>
-                <li>The Date format should be DD/MM/YYYY</li>
-              </ul>
-            </div>
+    <div className="m-4 grid">
+      <div className="flex justify-between">
+        <div className="">
+          <h4 className="subHeading">Bulk Upload</h4>
+          <div className=" bulkEmployeeImg">
+            {props.downloadTemplate ? (
+              <a
+                href="#"
+                onClick={props.downloadTemplate}
+                title="Click to download template"
+              >
+                <img src="/images/generic/Excel-download-icon.png" />
+              </a>
+            ) : (
+              <a
+                target="_blank"
+                href={props.fileurl}
+                title="Click to download template"
+                download
+              >
+                <img src="/images/generic/Excel-download-icon.png" />
+              </a>
+            )}
           </div>
+          <div className="bulkEmployeeVerif mx-4">
+            <ul className="bodyText text-grayTwo font-normal">
+              <li>
+                Please use attached File Template format for bulkupload into
+                system.
+              </li>
+              <li>Fields marked with an asterisk (*) are mandatory.</li>
+              <li>Please do not change the Heading of following file.</li>
+              <li>File format must be .xlsx or .xls.</li>
+              <li>The Date format should be DD/MM/YYYY</li>
+            </ul>
+          </div>
+        </div>
 
-          <div className="bg-gray-100 mt-4 p-4 grid justify-items-center">
-            <h5 className="subHeading">Upload Progress</h5>
-            {/* <div style={{ width: 150, height: 150,marginTop:'10px' }}>
+        <div className="bg-gray-100 mt-4 p-4 grid justify-items-center">
+          <h5 className="subHeading">Upload Progress</h5>
+          {/* <div style={{ width: 150, height: 150,marginTop:'10px' }}>
             <CircularProgressbar value={percentage} text={`${percentage}%`} />
             </div> */}
-            {/* <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+          {/* <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
                 className="bg-green-600 h-4 rounded-full"
                 style={{ width: `${percentage}%` }}
               ></div>
             </div> */}
-            <div style={{ width: "100%", marginTop: "10px" }}>
-              <ProgressBar percentage={percentage} />
-            </div>
-            <div className="uploadMsg">{uploadFinishMessage}</div>
+          <div style={{ width: "100%", marginTop: "10px" }}>
+            <ProgressBar percentage={percentage} />
           </div>
+          <div className="uploadMsg">{uploadFinishMessage}</div>
         </div>
-        {/* <div className=" bulkuploadFileouter"> */}
-        <div className="h-auto">
-          <div className="w-full">
-            <div className="my-3 w-full">
-              <div
-                className={`flex items-center border border-dashed p-4 rounded-md border-[#c5c5c5]`}
+      </div>
+      {/* <div className=" bulkuploadFileouter"> */}
+      <div className="h-auto">
+        <div className="w-full">
+          <div className="my-3 w-full">
+            <div
+              className={`flex items-center border border-dashed p-4 rounded-md border-[#c5c5c5]`}
+            >
+              <Tooltip
+                content="Upload file"
+                placement="bottom"
+                className="bg-[#3c8dbc]"
+                arrow={false}
               >
-                <Tooltip
-                  content="Upload file"
-                  placement="bottom"
-                  className="bg-green"
-                  arrow={false}
+                <label
+                  className="flex mt-1 cursor-pointer appearance-none rounded-md text-sm transition disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75 w-16 "
+                  tabIndex="0"
                 >
-                  <label
-                    className="flex mt-1 cursor-pointer appearance-none rounded-md text-sm transition disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75 w-16 "
-                    tabIndex="0"
+                  <span
+                    htmlFor="photo-dropbox"
+                    className="flex items-center space-x-2"
                   >
-                    <span
-                      htmlFor="photo-dropbox"
-                      className="flex items-center space-x-2"
-                    >
-                      <div className="p-3 bg-green rounded-md hover:bg-Green">
-                        <svg
-                          className="h-8 w-8 stroke-white text-white"
-                          viewBox="0 0 256 256"
-                        >
-                          <path
-                            d="M96,208H72A56,56,0,0,1,72,96a57.5,57.5,0,0,1,13.9,1.7"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="24"
-                          ></path>
-                          <path
-                            d="M80,128a80,80,0,1,1,144,48"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="24"
-                          ></path>
-                          <polyline
-                            points="118.1 161.9 152 128 185.9 161.9"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="24"
-                          ></polyline>
-                          <line
-                            x1="152"
-                            y1="208"
-                            x2="152"
-                            y2="128"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="24"
-                          ></line>
-                        </svg>
-                      </div>
-                    </span>
-                    <input
-                      ref={fileInput}
-                      type="file"
-                      id="photo-dropbox"
-                      // className="stdInputField NOpadding"
-                      className="sr-only"
-                      accept={SheetJSFT}
-                      onChange={(e) => handleChange(e)}
-                    />
-                  </label>
-                </Tooltip>
-
-                <div className="font-normal text-gray-600 text-md ps-3 flex items-center w-full">
-                  {fileName ? (
-                    <div className="text-center min-w-24 border border-gray-400 px-3 py-2 rounded-md relative">
-                      <div className="w-full flex justify-end">
-                        <Tooltip
-                          content="Remove"
-                          className="bg-red-500"
-                          arrow={false}
-                          placement="top"
-                        >
-                          <IoCloseCircleSharp
-                            onClick={deleteFile}
-                            className="hover:text-red-600 cursor-pointer  text-red-500 bg-white text-[18px] z-[2]"
-                          />
-                        </Tooltip>
-                      </div>
-                      <div className="flex justify-center relative">
-                        <img
-                          src="/images/generic/excel-file-icon.png"
-                          className="text-2xl h-8 w-8 content-center z-[1]"
-                        />
-                      </div>
-                      <div className="w-full text-center text-nowrap flex pt-1 text-sm font-medium">
-                        {fileName}
-                      </div>
+                    <div className="p-3 bg-[#3c8dbc] rounded-md hover:bg-[#367fa9]">
+                      <svg
+                        className="h-8 w-8 stroke-white text-white"
+                        viewBox="0 0 256 256"
+                      >
+                        <path
+                          d="M96,208H72A56,56,0,0,1,72,96a57.5,57.5,0,0,1,13.9,1.7"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="24"
+                        ></path>
+                        <path
+                          d="M80,128a80,80,0,1,1,144,48"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="24"
+                        ></path>
+                        <polyline
+                          points="118.1 161.9 152 128 185.9 161.9"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="24"
+                        ></polyline>
+                        <line
+                          x1="152"
+                          y1="208"
+                          x2="152"
+                          y2="128"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="24"
+                        ></line>
+                      </svg>
                     </div>
-                  ) : (
-                    "Select file for upload"
-                  )}
-                </div>
+                  </span>
+                  <input
+                    ref={fileInput}
+                    type="file"
+                    id="photo-dropbox"
+                    // className="stdInputField NOpadding"
+                    className="sr-only"
+                    accept={SheetJSFT}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </label>
+              </Tooltip>
+
+              <div className="font-normal text-gray-600 text-md ps-3 flex items-center w-full">
+                {fileName ? (
+                  <div className="text-center min-w-24 border border-gray-400 px-3 py-2 rounded-md relative">
+                    <div className="w-full flex justify-end">
+                      <Tooltip
+                        content="Remove"
+                        className="bg-red-500"
+                        arrow={false}
+                        placement="top"
+                      >
+                        <IoCloseCircleSharp
+                          onClick={deleteFile}
+                          className="hover:text-red-600 cursor-pointer  text-red-500 bg-white text-[18px] z-[2]"
+                        />
+                      </Tooltip>
+                    </div>
+                    <div className="flex justify-center relative">
+                      <img
+                        src="/images/generic/excel-file-icon.png"
+                        className="text-2xl h-8 w-8 content-center z-[1]"
+                      />
+                    </div>
+                    <div className="w-full text-center text-nowrap flex pt-1 text-sm font-medium">
+                      {fileName}
+                    </div>
+                  </div>
+                ) : (
+                  "Select file for upload"
+                )}
               </div>
             </div>
           </div>
         </div>
-        {/* </div> */}
-        {inputFileData.length > 0 ? (
-          loading ? (
-            <div className="flex justify-end" style={{ marginTop: "2%" }}>
-              <button className="formButtons cursor-pointer" disabled>
-                <span>
-                  Submit
-                  <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
-                </span>
-              </button>
-            </div>
-          ) : (
-            <div className="flex justify-end" style={{ marginTop: "2%" }}>
-              <button
-                className="formButtons cursor-pointer"
-                onClick={() => bulkUpload()}
-              >
-                Submit
-              </button>
-            </div>
-          )
-        ) : (
+      </div>
+      {/* </div> */}
+      {inputFileData.length > 0 ? (
+        loading ? (
           <div className="flex justify-end" style={{ marginTop: "2%" }}>
             <button className="formButtons cursor-pointer" disabled>
+              <span>
+                Submit
+                <FaSpinner className="animate-spin inline-flex mx-2 text-lg text-white text-center" />
+              </span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-end" style={{ marginTop: "2%" }}>
+            <button
+              className="formButtons cursor-pointer"
+              onClick={() => bulkUpload()}
+            >
               Submit
             </button>
           </div>
-        )}
-      </div>
-      {props.fileDetails ? (
-        <div>
-          <div className="flex mb-4 capitalise">
-            <button
-              className={`px-6 py-2 hover:bg-gray-200 ${
-                activeTab === "active"
-                  ? "text-green bg-white border-green border-b-2"
-                  : "text-gray-700"
+        )
+      ) : (
+        <div className="flex justify-end" style={{ marginTop: "2%" }}>
+          <button className="formButtons cursor-pointer" disabled>
+            Submit
+          </button>
+        </div>
+      )}
+
+      {
+    props.fileDetails ? (
+      <div>
+        <div className="flex mb-4 capitalise">
+          <button
+            className={`px-6 py-2 hover:bg-gray-200 ${activeTab === "active"
+                ? "text-[#3c8dbc] bg-white border-[#3c8dbc] border-b-2"
+                : "text-gray-700"
               }`}
-              onClick={() => setActiveTab("active")}
-            >
-              Success
-            </button>
-            <button
-              className={`px-6 py-2 flex gap-2 justify-center items-center hover:bg-gray-200 ${
-                activeTab === "failure"
-                  ? "text-green bg-white border-green border-b-2"
-                  : "text-gray-700"
+            onClick={() => setActiveTab("active")}
+          >
+            Success
+          </button>
+          <button
+            className={`px-6 py-2 flex gap-2 justify-center items-center hover:bg-gray-200 ${activeTab === "failure"
+                ? "text-[#3c8dbc] bg-white border-[#3c8dbc] border-b-2"
+                : "text-gray-700"
               }`}
-              onClick={() => setActiveTab("failure")}
-            >
-              Failure
-              {/* <div className="rounded-full bg-red-500 px-2 py-[1px] text-sm text-white">
+            onClick={() => setActiveTab("failure")}
+          >
+            Failure
+            {/* <div className="rounded-full bg-red-500 px-2 py-[1px] text-sm text-white">
                 {props?.fileDetails?.failedRecords?.length}
               </div> */}
-            </button>
-          </div>
-          <div>
-            {activeTab === "active" ? (
-              <div
-                id={"success" + props.goodDataCount}
-                className="tab-pane fade"
-              >
-                <h5>
-                  Total {props?.fileDetails?.goodrecords?.length} good{" "}
-                  {props?.fileDetails?.totalRecords > 1 ? "records" : "record"}{" "}
-                  found from file.
-                </h5>
+          </button>
+        </div>
+        <div>
+          {activeTab === "active" ? (
+            <div
+              id={"success" + props.goodDataCount}
+              className="tab-pane fade"
+            >
+              <h5>
+                Total {props?.fileDetails?.goodrecords?.length} good{" "}
+                {props?.fileDetails?.totalRecords > 1 ? "records" : "record"}{" "}
+                found from file.
+              </h5>
+              <GenericTable
+                downloadTableName="good-data"
+                tableObjects={props.tableObjects}
+                tableHeading={props.goodRecordsHeading}
+                tableData={props.goodRecordsTable}
+              />
+            </div>
+          ) : (
+            <div
+              id={"failure" + props.failedRecordsCount}
+              className="tab-pane fade in"
+            >
+              {/* <div id={"failure"+props.failedRecordsCount} className="tab-pane fade in active"> */}
+              <h5>
+                Out of {inputFileData.length}{" "}
+                {inputFileData.length > 1 ? "records" : "record"}, &nbsp;
+                {props?.fileDetails?.failedRecords?.length} bad{" "}
+                {props?.fileDetails?.failedRecords?.length > 1
+                  ? "records were "
+                  : "record was "}
+                found.
+              </h5>
+              <div>
                 <GenericTable
-                  downloadTableName="good-data"
+                  downloadTableName="failed-data"
                   tableObjects={props.tableObjects}
-                  tableHeading={props.goodRecordsHeading}
-                  tableData={props.goodRecordsTable}
+                  tableHeading={props.failedtableHeading}
+                  tableData={props.failedRecordsTable}
                 />
               </div>
-            ) : (
-              <div
-                id={"failure" + props.failedRecordsCount}
-                className="tab-pane fade in"
-              >
-                {/* <div id={"failure"+props.failedRecordsCount} className="tab-pane fade in active"> */}
-                <h5>
-                  Out of {inputFileData.length}{" "}
-                  {inputFileData.length > 1 ? "records" : "record"}, &nbsp;
-                  {props?.fileDetails?.failedRecords?.length} bad{" "}
-                  {props?.fileDetails?.failedRecords?.length > 1
-                    ? "records were "
-                    : "record was "}
-                  found.
-                </h5>
-                <div>
-                  <GenericTable
-                    downloadTableName="failed-data"
-                    tableObjects={props.tableObjects}
-                    tableHeading={props.failedtableHeading}
-                    tableData={props.failedRecordsTable}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      ) : loading ? (
-        <FaSpinner className="animate-spin inline-flex mx-2 text-green" />
-      ) : null}
-    </section>
+      </div>
+    ) : loading ? (
+      <FaSpinner className="animate-spin inline-flex mx-2 text-[#3c8dbc]" />
+    ) : null
+  }
+    </div>
+    
   );
 };
 export default BulkUpload;

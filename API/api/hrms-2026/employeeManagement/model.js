@@ -8,6 +8,9 @@ const employeeSchema = new mongoose.Schema({
     gender: { type: String, trim: true },
     dob: { type: Date },
     profilePhoto: { type: String, trim: true },
+    maritalStatus: { type: String, trim: true },
+    bloodGroup: { type: String, trim: true },
+    nationality: { type: String, trim: true },
 
     employeeID: { type: String, trim: true, unique: true },
     employee_id: { type: String, trim: true },
@@ -65,6 +68,7 @@ const employeeSchema = new mongoose.Schema({
         }
     ],
     fileName: { type: String, trim: true },
+    status: { type: String, trim: true, default: "Active" },
 });
 
 module.exports = mongoose.model('Employees', employeeSchema);

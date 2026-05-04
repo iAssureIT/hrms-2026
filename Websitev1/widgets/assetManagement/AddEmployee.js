@@ -45,6 +45,9 @@ const AddEmployee = () => {
         lastName: "",
         gender: "",
         dob: "",
+        maritalStatus: "",
+        nationality: "",
+        bloodGroup: "",
         profilePhoto: "",
         employeeID: "",
         employeeEmail: "",
@@ -167,8 +170,19 @@ const AddEmployee = () => {
             if (!formData.gender) errors.gender = "Required";
         }
         if (step === 2) {
-            if (!formData.employeeMobile) errors.employeeMobile = "Required";
-            if (!formData.employeeEmail) errors.employeeEmail = "Required";
+            if (!formData.employeeMobile) {
+                errors.employeeMobile = "Required";
+            } else if (!/^\d{10}$/.test(formData.employeeMobile)) {
+                errors.employeeMobile = "Must be 10 digits";
+            }
+            if (!formData.employeeEmail) {
+                errors.employeeEmail = "Required";
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.employeeEmail)) {
+                errors.employeeEmail = "Invalid email format";
+            }
+            if (formData.personalEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.personalEmail)) {
+                errors.personalEmail = "Invalid email format";
+            }
             if (!formData.currentAddress) errors.currentAddress = "Required";
         }
         if (step === 3) {
@@ -179,13 +193,13 @@ const AddEmployee = () => {
         }
         if (step === 4) {
             if (formData.panNumber && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
-                errors.panNumber = "Invalid PAN format (e.g. ABCDE1234F)";
+                errors.panNumber = "Format: ABCDE1234F";
             }
             if (formData.aadhaarNumber && !/^\d{12}$/.test(formData.aadhaarNumber.replace(/\s/g, ""))) {
-                errors.aadhaarNumber = "Aadhaar must be 12 digits";
+                errors.aadhaarNumber = "Must be 12 digits";
             }
-            if (formData.passportNumber && !/^[A-Z][0-9]{7}$/.test(formData.passportNumber)) {
-                errors.passportNumber = "Invalid Passport format (e.g. A1234567)";
+            if (formData.passportNumber && !/^[A-Z][0-9]{7,8}$/.test(formData.passportNumber)) {
+                errors.passportNumber = "Invalid format (e.g. A1234567)";
             }
         }
         if (step === 5) {
@@ -228,15 +242,17 @@ const AddEmployee = () => {
 
     const renderInput = (label, field, type = "text", placeholder = "", required = false) => (
         <div className="mb-4">
-            <label className="admin-label">{label} {required && <span className="text-red-500">*</span>}</label>
+            <label className="admin-label text-slate-600 mb-1.5 flex items-center gap-1">
+                {label} {required && <span className="text-red-500 font-bold text-xs">*</span>}
+            </label>
             <input
                 type={type}
-                className="admin-input"
+                className={`admin-input !h-10 px-4 transition-all duration-300 ${formErrors[field] ? 'border-red-500 bg-red-50/30' : 'border-slate-200 hover:border-slate-400 focus:border-[#3c8dbc] focus:shadow-[0_0_0_1px_#3c8dbc] bg-white'}`}
                 placeholder={placeholder}
                 value={formData[field]}
                 onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
             />
-            {formErrors[field] && <p className="text-[10px] text-red-600 mt-1">{formErrors[field]}</p>}
+            {formErrors[field] && <p className="text-[9px] text-red-600 mt-1.5 font-black uppercase tracking-widest pl-1">{formErrors[field]}</p>}
         </div>
     );
 
@@ -251,15 +267,43 @@ const AddEmployee = () => {
                                 {renderInput("First Name", "firstName", "text", "John", true)}
                                 {renderInput("Last Name", "lastName", "text", "Doe", true)}
                                 <div className="mb-4">
-                                    <label className="admin-label">Gender <span className="text-red-500">*</span></label>
-                                    <select className="admin-select" value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
+                                    <label className="admin-label text-slate-600 mb-1.5 flex items-center gap-1">Gender <span className="text-red-500 font-bold text-xs">*</span></label>
+                                    <select className={`admin-select !h-10 px-4 transition-all duration-300 ${formErrors.gender ? 'border-red-500 bg-red-50/30' : 'border-slate-200 hover:border-slate-400 focus:border-[#3c8dbc] bg-white'}`} value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
                                         <option value="">Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
-                                    {formErrors.gender && <p className="text-[10px] text-red-600 mt-1">{formErrors.gender}</p>}
+                                    {formErrors.gender && <p className="text-[9px] text-red-600 mt-1.5 font-black uppercase tracking-widest pl-1">{formErrors.gender}</p>}
                                 </div>
                                 {renderInput("Date of Birth", "dob", "date")}
+                                
+                                <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-x-6 border-t border-slate-50 pt-4 mt-2">
+                                    {renderInput("Nationality", "nationality", "text", "e.g. Indian")}
+                                    <div className="mb-4">
+                                        <label className="admin-label text-slate-600 mb-1.5">Marital Status</label>
+                                        <select className="admin-select !h-10 px-4 bg-white border-slate-200" value={formData.maritalStatus} onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value })}>
+                                            <option value="">Select Status</option>
+                                            <option value="Single">Single</option>
+                                            <option value="Married">Married</option>
+                                            <option value="Divorced">Divorced</option>
+                                            <option value="Widowed">Widowed</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="admin-label text-slate-600 mb-1.5">Blood Group</label>
+                                        <select className="admin-select !h-10 px-4 bg-white border-slate-200" value={formData.bloodGroup} onChange={(e) => setFormData({ ...formData, bloodGroup: e.target.value })}>
+                                            <option value="">Select Group</option>
+                                            <option value="A+">A+</option>
+                                            <option value="A-">A-</option>
+                                            <option value="B+">B+</option>
+                                            <option value="B-">B-</option>
+                                            <option value="O+">O+</option>
+                                            <option value="O-">O-</option>
+                                            <option value="AB+">AB+</option>
+                                            <option value="AB-">AB-</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className="col-span-12 md:col-span-4 flex flex-col items-center pt-6">
@@ -341,11 +385,12 @@ const AddEmployee = () => {
                         </div>
 
                         <div className="col-span-6">
-                            <label className="admin-label">Department <span className="text-red-500">*</span></label>
-                            <select className="admin-select" value={formData.department_id} onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}>
+                            <label className="admin-label text-slate-600 mb-1.5 flex items-center gap-1">Department <span className="text-red-500 font-bold text-xs">*</span></label>
+                            <select className={`admin-select !h-10 px-4 transition-all duration-300 ${formErrors.department_id ? 'border-red-500 bg-red-50/30' : 'border-slate-200 hover:border-slate-400 focus:border-[#3c8dbc] bg-white'}`} value={formData.department_id} onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}>
                                 <option value="">Select Department</option>
-                                {departmentList.map(d => <option key={d._id} value={d._id}>{d.departmentName || d.department}</option>)}
+                                {departmentList.map(d => <option key={d._id} value={d._id}>{d.departmentName || d.department || d.fieldValue}</option>)}
                             </select>
+                            {formErrors.department_id && <p className="text-[9px] text-red-600 mt-1.5 font-black uppercase tracking-widest pl-1">{formErrors.department_id}</p>}
                         </div>
                         <div className="col-span-6">{renderInput("Designation", "employeeDesignation", "text", "e.g. Senior Frontend Engineer", true)}</div>
 

@@ -1098,6 +1098,26 @@ export default function RootLayout({ children }) {
 
   const sidebarData = [
     { title: "Dashboard", link: "/admin/dashboard" },
+    {
+      icon: <FaUser />,
+      title: "Employee Management",
+      link: "/admin/asset-management/employee-master",
+    },
+    {
+      title: "Attendance Matrix",
+      icon: <FaCalendarCheck />,
+      link: "/admin/attendance-management/matrix",
+    },
+    {
+      title: "Leave Management",
+      icon: <FaCalendarCheck />,
+      link: "/admin/leaves",
+    },
+    {
+      title: "Payroll Management",
+      icon: <FaMoneyCheckAlt />,
+      link: "/admin/payroll-management",
+    },
 
     {
       title: "Asset Management",
@@ -1106,7 +1126,7 @@ export default function RootLayout({ children }) {
       submenuItems: [
         {
           icon: <FaRegCircle />,
-          title: "Asset Registry",
+          title: "Asset Inventory",
           link: "/admin/asset-management",
         },
         {
@@ -1114,11 +1134,7 @@ export default function RootLayout({ children }) {
           title: "Asset Maintenance",
           link: "/admin/asset-management/maintenance-list",
         },
-        {
-          icon: <FaRegCircle />,
-          title: "Asset Audit",
-          link: "/admin/asset-management/asset-audit",
-        },
+
         {
           icon: <FaRegCircle />,
           title: "Asset Depreciation",
@@ -1128,6 +1144,11 @@ export default function RootLayout({ children }) {
           icon: <FaRegCircle />,
           title: "Gate Pass Management",
           link: "/admin/asset-management/gate-pass-management",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Audit",
+          link: "/admin/asset-management/asset-audit",
         },
         {
           icon: <FaRegCircle />,
@@ -1142,11 +1163,7 @@ export default function RootLayout({ children }) {
       ],
     },
 
-    {
-      title: "User Management",
-      icon: <FaUser />,
-      link: "/admin/user-management",
-    },
+
     // {
     //   title: "Notification Management",
     //   submenu: true,
@@ -1179,27 +1196,15 @@ export default function RootLayout({ children }) {
     //     },
     //   ],
     // },
-    {
-      title: "Attendance Matrix",
-      icon: <FaCalendarCheck />,
-      link: "/admin/attendance-management/matrix",
-    },
-    {
-      title: "Payroll Management",
-      icon: <FaMoneyCheckAlt />,
-      link: "/admin/payroll-management",
-    },
 
-    {
-      title: "Leave Management",
-      icon: <FaCalendarCheck />,
-      link: "/admin/leaves",
-    },
-    {
-      title: "Helpdesk",
-      icon: <FaHeadset />,
-      link: "/admin/helpdesk",
-    },
+
+
+
+    // {
+    //   title: "Helpdesk",
+    //   icon: <FaHeadset />,
+    //   link: "/admin/helpdesk",
+    // },
     {
       title: "Master Data",
       submenu: true,
@@ -1246,10 +1251,11 @@ export default function RootLayout({ children }) {
         },
       ],
     },
+
     {
+      title: "User Management",
       icon: <FaUser />,
-      title: "Employee Master",
-      link: "/admin/asset-management/employee-master",
+      link: "/admin/user-management",
     },
 
     // {

@@ -153,11 +153,11 @@ function MaintenanceList() {
       deleteMethod: "delete",
       getListMethod: "post",
       apiURL: "/api/asset-maintenance",
-      editURL: "/management/add-maintenance/",
-      viewURL: "/management/maintenance-view/",
+      editURL: "/asset-management/add-maintenance/",
+      viewURL: "/asset-management/maintenance-view/",
       downloadApply: true,
       searchApply: true,
-      formURL: "/management/add-maintenance",
+      formURL: "/asset-management/add-maintenance",
       formText: "Add Maintenance",
       titleMsg: "Maintenance Management",
     }),
@@ -327,7 +327,7 @@ function MaintenanceList() {
                   <BsPlusSquare
                     className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
                     onClick={() => {
-                      router.push(`/${loggedInRole}/management/add-maintenance`);
+                      router.push(`/${loggedInRole}/asset-management/add-maintenance`);
                     }}
                   />
                 </Tooltip>
@@ -347,7 +347,7 @@ function MaintenanceList() {
                       className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
                       onClick={() => {
                         router.push(
-                          `/${loggedInRole}/management/maintenance-approval`,
+                          `/${loggedInRole}/asset-management/maintenance-approval`,
                         );
                       }}
                     />

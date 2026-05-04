@@ -29,28 +29,50 @@ const EmployeeBulkUpload = () => {
     const [failedRecordsTable, setFailedRecordsTable] = useState([]);
 
     const [goodRecordsHeading, setGoodRecordsHeading] = useState({
-        employeeName: "Full Name",
-        employeeID: "Employee ID",
-        employeeEmail: "Email",
-        employeeMobile: "Mobile",
-        employeeDesignation: "Designation",
+        employeeName: "Full Name*",
+        employeeID: "Employee ID*",
+        gender: "Gender*",
+        employeeEmail: "Email*",
+        employeeMobile: "Mobile*",
+        currentAddress: "Current Address*",
+        departmentName: "Department*",
+        employeeDesignation: "Designation*",
+        systemRole: "System Role*",
+        doj: "Date of Joining*",
+        employmentType: "Employment Type",
         centerName: "Center",
         subLocationName: "Sub-Location",
-        departmentName: "Department",
         subDepartmentName: "Sub-Department",
+        maritalStatus: "Marital Status",
+        bloodGroup: "Blood Group",
+        nationality: "Nationality",
+        panNumber: "PAN Number",
+        aadhaarNumber: "Aadhaar Number",
+        passportNumber: "Passport Number"
     });
 
     const [failedtableHeading, setFailedtableHeading] = useState({
-        employeeName: "Full Name",
-        employeeID: "Employee ID",
-        employeeEmail: "Email",
-        employeeMobile: "Mobile",
-        employeeDesignation: "Designation",
+        employeeName: "Full Name*",
+        employeeID: "Employee ID*",
+        gender: "Gender*",
+        employeeEmail: "Email*",
+        employeeMobile: "Mobile*",
+        currentAddress: "Current Address*",
+        departmentName: "Department*",
+        employeeDesignation: "Designation*",
+        systemRole: "System Role*",
+        doj: "Date of Joining*",
+        employmentType: "Employment Type",
         centerName: "Center",
         subLocationName: "Sub-Location",
-        departmentName: "Department",
         subDepartmentName: "Sub-Department",
-        failedRemark: "Failed Data Remark",
+        maritalStatus: "Marital Status",
+        bloodGroup: "Blood Group",
+        nationality: "Nationality",
+        panNumber: "PAN Number",
+        aadhaarNumber: "Aadhaar Number",
+        passportNumber: "Passport Number",
+        failedRemark: "Failed Data Remark"
     });
 
     const [tableObjects, setTableObjects] = useState({
@@ -84,25 +106,47 @@ const EmployeeBulkUpload = () => {
                     const gRecords = response.data.goodrecords.map(a => ({
                         employeeName: a.employeeName || "-NA-",
                         employeeID: a.employeeID || "-NA-",
+                        gender: a.gender || "-NA-",
                         employeeEmail: a.employeeEmail || "-NA-",
                         employeeMobile: a.employeeMobile || "-NA-",
+                        currentAddress: a.currentAddress || "-NA-",
+                        departmentName: a.departmentName || "-NA-",
                         employeeDesignation: a.employeeDesignation || "-NA-",
+                        systemRole: a.systemRole || "-NA-",
+                        doj: a.doj ? new Date(a.doj).toLocaleDateString() : "-NA-",
+                        employmentType: a.employmentType || "-NA-",
                         centerName: a.centerName || "-NA-",
                         subLocationName: a.subLocationName || "-NA-",
-                        departmentName: a.departmentName || "-NA-",
                         subDepartmentName: a.subDepartmentName || "-NA-",
+                        maritalStatus: a.maritalStatus || "-NA-",
+                        bloodGroup: a.bloodGroup || "-NA-",
+                        nationality: a.nationality || "-NA-",
+                        panNumber: a.panNumber || "-NA-",
+                        aadhaarNumber: a.aadhaarNumber || "-NA-",
+                        passportNumber: a.passportNumber || "-NA-",
                     }));
 
                     const fRecords = response.data.failedRecords.map(a => ({
                         employeeName: a.employeeName || "-NA-",
                         employeeID: a.employeeID || "-NA-",
+                        gender: a.gender || "-NA-",
                         employeeEmail: a.employeeEmail || "-NA-",
                         employeeMobile: a.employeeMobile || "-NA-",
+                        currentAddress: a.currentAddress || "-NA-",
+                        departmentName: a.departmentName || "-NA-",
                         employeeDesignation: a.employeeDesignation || "-NA-",
+                        systemRole: a.systemRole || "-NA-",
+                        doj: a.doj ? new Date(a.doj).toLocaleDateString() : "-NA-",
+                        employmentType: a.employmentType || "-NA-",
                         centerName: a.centerName || "-NA-",
                         subLocationName: a.subLocationName || "-NA-",
-                        departmentName: a.departmentName || "-NA-",
                         subDepartmentName: a.subDepartmentName || "-NA-",
+                        maritalStatus: a.maritalStatus || "-NA-",
+                        bloodGroup: a.bloodGroup || "-NA-",
+                        nationality: a.nationality || "-NA-",
+                        panNumber: a.panNumber || "-NA-",
+                        aadhaarNumber: a.aadhaarNumber || "-NA-",
+                        passportNumber: a.passportNumber || "-NA-",
                         failedRemark: a.failedRemark || "-NA-",
                     }));
 
@@ -119,37 +163,18 @@ const EmployeeBulkUpload = () => {
         e.preventDefault();
         const templateData = [
             [
-                "Full Name",
-                "Employee ID",
-                "Email",
-                "Mobile",
-                "Designation",
-                "Center",
-                "Sub-Location",
-                "Department",
-                "Sub-Department"
+                "Full Name*", "Employee ID*", "Gender*", "Email*", "Mobile*", "Current Address*",
+                "Department*", "Designation*", "System Role*", "Date of Joining*", "Employment Type",
+                "Center", "Sub-Location", "Sub-Department", 
+                "Marital Status", "Blood Group", "Nationality", 
+                "PAN Number", "Aadhaar Number", "Passport Number"
             ],
             [
-                "John Doe",
-                "EMP001",
-                "john.doe@example.com",
-                "9876543210",
-                "Process Manager",
-                "Mumbai",
-                "Andheri",
-                "Operations",
-                "Production"
-            ],
-            [
-                "Jane Smith",
-                "EMP002",
-                "jane.smith@example.com",
-                "9876543211",
-                "Assistant Manager",
-                "Pune",
-                "Hinjewadi",
-                "HR",
-                "Recruitment"
+                "John Doe", "EMP001", "Male", "john.doe@example.com", "9876543210", "123 Main St, Mumbai",
+                "Operations", "Process Manager", "employee", "2024-01-15", "Full-Time",
+                "Mumbai", "Andheri", "Production", 
+                "Single", "O+", "Indian", 
+                "ABCDE1234F", "123456789012", "A1234567"
             ]
         ];
         const workbook = XLSX.utils.book_new();
@@ -159,50 +184,64 @@ const EmployeeBulkUpload = () => {
     };
 
     return (
-        <section className="section">
-            <div className="box border-2 rounded-md shadow-md bg-white">
-                <div className="uppercase text-xl font-semibold border-b-2 border-gray-300 flex justify-between px-10">
-                    <div className="flex items-center gap-3 py-5">
-                        <h1 className="text-2xl text-gray-900 tracking-tight">Employee Bulk Upload</h1>
+        <section className="section admin-box box-primary !p-6" style={{ fontFamily: "'Source Sans Pro', sans-serif" }}>
+            {/* Theme-aligned Header */}
+            <div className="mb-8 border-b border-slate-100 pb-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1 text-[#3c8dbc]">
+                            <span>Human Resources</span>
+                        </div>
+                        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                            Employee <span className="text-[#3c8dbc] font-black uppercase">Bulk Upload</span>
+                        </h1>
                     </div>
-                    <div className="flex gap-3 my-5 items-center">
-                        <Tooltip content="Employee Master" placement="bottom" className="bg-green" arrow={false}>
-                            <FaUsers
-                                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                    <div className="flex gap-4 pt-4 md:pt-0">
+                        <Tooltip content="Employee Master" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                            <div
+                                className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-2 rounded transition-all active:scale-95 shadow-sm"
                                 onClick={() => {
-                                    router.push(`/${loggedInRole}/management/employee-master`);
+                                    router.push(`/${loggedInRole}/asset-management/employee-master`);
                                 }}
-                            />
+                            >
+                                <FaUsers className="text-lg" />
+                            </div>
                         </Tooltip>
-                        <Tooltip content="Add Employee" placement="bottom" className="bg-green" arrow={false}>
-                            <FaUserPlus
-                                className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
+                        <Tooltip content="Add Employee" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+                            <div
+                                className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-2 rounded transition-all active:scale-95 shadow-sm"
                                 onClick={() => {
-                                    router.push(`/${loggedInRole}/management/add-employee`);
+                                    router.push(`/${loggedInRole}/asset-management/add-employee`);
                                 }}
-                            />
+                            >
+                                <FaUserPlus className="text-lg" />
+                            </div>
                         </Tooltip>
                     </div>
                 </div>
-                <div className="p-5">
-                    <BulkUpload
-                        url={process.env.NEXT_PUBLIC_BASE_URL + "/api/employees/bulk-upload"}
-                        fileurl="" // S3 URL no longer needed
-                        downloadTemplate={downloadTemplate}
-                        data={[]}
-                        uploadedData={uploadedData}
-                        getData={getData}
-                        getFileDetails={getFileDetails}
-                        fileDetails={fileDetails}
-                        tableObjects={tableObjects}
-                        goodRecordsHeading={goodRecordsHeading}
-                        failedtableHeading={failedtableHeading}
-                        failedRecordsTable={failedRecordsTable}
-                        failedRecordsCount={failedRecordsCount}
-                        goodRecordsTable={goodRecordsTable}
-                        goodDataCount={goodDataCount}
-                    />
-                </div>
+                <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+                    Upload employee data in bulk using Excel templates to quickly populate your organizational directory.
+                </p>
+            </div>
+
+            <div className="p-0">
+                <BulkUpload
+                    url={process.env.NEXT_PUBLIC_BASE_URL + "/api/employees/bulk-upload"}
+                    fileurl="" // S3 URL no longer needed
+                    downloadTemplate={downloadTemplate}
+                    data={[]}
+                    uploadedData={uploadedData}
+                    getData={getData}
+                    getFileDetails={getFileDetails}
+                    fileDetails={fileDetails}
+                    tableObjects={tableObjects}
+                    goodRecordsHeading={goodRecordsHeading}
+                    failedtableHeading={failedtableHeading}
+                    failedRecordsTable={failedRecordsTable}
+                    failedRecordsCount={failedRecordsCount}
+                    goodRecordsTable={goodRecordsTable}
+                    goodDataCount={goodDataCount}
+                />
             </div>
         </section>
     );

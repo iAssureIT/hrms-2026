@@ -2,20 +2,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Tooltip } from "flowbite-react";
-import {
-  FaPlus,
-  FaFilter,
-  FaCheck,
-  FaTimes,
-  FaFileUpload,
-  FaCalendarCheck,
-  FaHistory,
-  FaClock,
-  FaUser,
-  FaDownload,
-} from "react-icons/fa";
-import { MdHistory, MdFilterList } from "react-icons/md";
-import { BsPlusSquare } from "react-icons/bs";
+import { MdHistory, MdFilterList, MdExpandMore } from "react-icons/md";
+import { BsPlusSquare, BsInfoCircle } from "react-icons/bs";
+import { FaPlus, FaFilter, FaCheck, FaTimes, FaFileUpload, FaCalendarCheck, FaHistory, FaClock, FaUser, FaDownload, FaUsers, FaUserCheck, FaUserTimes } from "react-icons/fa";
 import moment from "moment";
 import { useRouter, usePathname } from "next/navigation";
 import ls from "localstorage-slim";
@@ -45,6 +34,7 @@ const Leaves = () => {
 
   const [selectedLeaveType, setSelectedLeaveType] = useState("all");
   const [summary, setSummary] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tableSearch, setTableSearch] = useState("");
   const [showCompOffModal, setShowCompOffModal] = useState(false);
@@ -282,15 +272,47 @@ const Leaves = () => {
     return true;
   });
 
+  const getStatusColor = (colorClass) => {
+    const colors = {
+      'bg-aqua': '#00c0ef',
+      'bg-green': '#00a65a',
+      'bg-red': '#dd4b39',
+      'bg-yellow': '#f39c12'
+    };
+    return colors[colorClass] || colors['bg-aqua'];
+  };
+
+  const StatusCard = ({ label, value, icon: Icon, colorClass }) => (
+    <div className="flex bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-none md:rounded-sm overflow-hidden h-24 border border-gray-200">
+      <div
+        style={{ backgroundColor: getStatusColor(colorClass) }}
+        className="w-20 md:w-24 flex items-center justify-center text-white shrink-0"
+      >
+        <Icon size={36} className="text-white opacity-90" />
+      </div>
+      <div className="flex flex-col justify-center px-4 py-2 flex-grow overflow-hidden">
+        <span className="text-gray-500 text-[11px] font-bold uppercase tracking-wider mb-1 line-clamp-2 leading-snug whitespace-normal break-words">
+          {label}
+        </span>
+        <h3 className="text-2xl font-extrabold text-gray-800 leading-none">
+          {value}
+        </h3>
+      </div>
+    </div>
+  );
+
   return (
     <section className="section admin-box box-primary ">
-      <main className="p-4 min-h-screen">
+      <div className="hr-card hr-fade-in">
         <div className="mx-auto">
           {/* Header Row */}
           {/* Theme-aligned Header */}
           <div className="mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
               <div className="space-y-1">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                  <span className="text-[#3c8dbc]">Leave Management</span>
+                </div>
                 <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
                   Leave{" "}
                   <span className="text-[#3c8dbc] font-black">Management</span>
@@ -348,93 +370,117 @@ const Leaves = () => {
           </p>
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatusCard label="Total Requests" value={leaves.length} icon={FaUsers} colorClass="bg-aqua" />
+          <StatusCard label="Pending Approval" value={leaves.filter(l => l.status === "PENDING").length} icon={FaClock} colorClass="bg-yellow" />
+          <StatusCard label="Approved Leaves" value={leaves.filter(l => l.status === "APPROVED").length} icon={FaUserCheck} colorClass="bg-green" />
+          <StatusCard label="Rejected Requests" value={leaves.filter(l => l.status === "REJECTED").length} icon={FaUserTimes} colorClass="bg-red" />
+        </div>
+
         {/* Filters Bar */}
-        <div className="bg-white p-6 border border-slate-200 shadow-sm rounded-sm mb-6">
-          <div className="flex flex-wrap items-center gap-6">
-            <div className="flex flex-col gap-1.5 flex-1 min-w-[200px]">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                Filter Employee
-              </label>
-              <select
-                className="admin-select h-10 font-bold"
-                value={selectedEmployee}
-                onChange={(e) => setSelectedEmployee(e.target.value)}
-              >
-                <option value="">All Employees</option>
-                {employees.map((emp) => (
-                  <option key={emp._id} value={emp._id}>
-                    {emp.employeeName} ({emp.employeeID})
-                  </option>
-                ))}
-              </select>
+        <div className="bg-white">
+          <div
+            className="flex items-center gap-4 mb-2 cursor-pointer group select-none"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <div className="flex items-center gap-2 text-slate-800 hover:text-[#3c8dbc] transition-colors">
+              <MdFilterList className={`text-xl ${showFilters ? 'text-[#3c8dbc]' : 'text-slate-600'}`} />
+              <span className="text-[11px] font-bold uppercase tracking-widest"> Show Filters</span>
             </div>
+            <div className={`flex-1 h-[1px] ${showFilters ? 'bg-[#3c8dbc]/20' : 'bg-slate-100'} group-hover:bg-[#3c8dbc]/30 transition-colors`}></div>
+            <MdExpandMore className={`text-xl transition-all duration-300 ${showFilters ? 'rotate-180 text-[#3c8dbc]' : 'text-slate-400 group-hover:text-slate-600'}`} />
+          </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                Month
-              </label>
-              <select
-                className="admin-select h-10 w-36 font-bold"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-              >
-                {months.map((m) => (
-                  <option key={m.value} value={m.value}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                Year
-              </label>
-              <select
-                className="admin-select h-10 w-28 font-bold"
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-              >
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                Leave Type
-              </label>
-              <select
-                className="admin-select h-10 w-32 font-bold uppercase"
-                value={selectedLeaveType}
-                onChange={(e) => setSelectedLeaveType(e.target.value)}
-              >
-                <option value="all">All</option>
-                {leaveTypes
-                  .filter((t) => ["EL", "CO"].includes(t.leaveCode))
-                  .map((t) => (
-                    <option key={t._id} value={t._id}>
-                      {t.leaveCode}
+          <div
+            className={`transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden ${showFilters ? 'max-h-[1000px] opacity-100 mb-8 translate-y-0' : 'max-h-0 opacity-0 mb-0 -translate-y-4'
+              }`}
+          >
+            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 items-end pt-2">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Filter Employee
+                </label>
+                <select
+                  className="admin-select h-10 font-bold w-full"
+                  value={selectedEmployee}
+                  onChange={(e) => setSelectedEmployee(e.target.value)}
+                >
+                  <option value="">All Employees</option>
+                  {employees.map((emp) => (
+                    <option key={emp._id} value={emp._id}>
+                      {emp.employeeName} ({emp.employeeID})
                     </option>
                   ))}
-              </select>
-            </div>
+                </select>
+              </div>
 
-            <div className="flex items-end h-10 mt-auto">
-              <button
-                onClick={() => {
-                  setSelectedEmployee("");
-                  setSelectedMonth(moment().format("MM"));
-                  setSelectedYear(moment().format("YYYY"));
-                  setSelectedLeaveType("all");
-                }}
-                className="px-3 py-1.5 text-[10px] font-black text-slate-400 hover:text-[#3c8dbc] uppercase tracking-widest transition-colors"
-              >
-                Clear Filters
-              </button>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Month
+                </label>
+                <select
+                  className="admin-select h-10 w-full font-bold"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                >
+                  {months.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Year
+                </label>
+                <select
+                  className="admin-select h-10 w-full font-bold"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                >
+                  {years.map((y) => (
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Leave Type
+                </label>
+                <select
+                  className="admin-select h-10 w-full font-bold uppercase"
+                  value={selectedLeaveType}
+                  onChange={(e) => setSelectedLeaveType(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  {leaveTypes
+                    .filter((t) => ["EL", "CO"].includes(t.leaveCode))
+                    .map((t) => (
+                      <option key={t._id} value={t._id}>
+                        {t.leaveCode}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <div className="lg:col-span-4 flex justify-end">
+                <button
+                  onClick={() => {
+                    setSelectedEmployee("");
+                    setSelectedMonth(moment().format("MM"));
+                    setSelectedYear(moment().format("YYYY"));
+                    setSelectedLeaveType("all");
+                  }}
+                  className="px-3 py-1.5 text-[10px] font-black text-slate-400 hover:text-[#3c8dbc] uppercase tracking-widest transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -852,7 +898,7 @@ const Leaves = () => {
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Comp Off Modal */}
       {showCompOffModal && (
@@ -962,11 +1008,8 @@ const Leaves = () => {
           </div>
         </div>
       )}
-      {/* <LeaveChatWidget
-        employeeId={
-          selectedEmployee || ls.get("userDetails", { decrypt: true })?._id
-        }
-      /> */}
+
+
     </section>
   );
 };

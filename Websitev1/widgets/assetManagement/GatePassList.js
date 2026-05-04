@@ -110,7 +110,7 @@ const GatePassList = () => {
         apiURL: "/api/gate-pass",
         searchApply: true,
         downloadApply: true,
-        formURL: `/${loggedInRole}/management/add-gate-pass`,
+        formURL: `/${loggedInRole}/asset-management/add-gate-pass`,
     };
 
     useEffect(() => {
@@ -159,7 +159,7 @@ const GatePassList = () => {
                     _id: pass._id,
                     passNo: `
                         <a 
-                            href="/${loggedInRole || pathname.split("/")[1]}/management/${pass.status === "Pending" ? "add-gate-pass?editId=" : "print-gate-pass/"}${pass._id}"
+                            href="/${loggedInRole || pathname.split("/")[1]}/asset-management/${pass.status === "Pending" ? "add-gate-pass?editId=" : "print-gate-pass/"}${pass._id}"
                             class="font-black text-green-600 hover:text-blue-800 cursor-pointer transition-all hover:underline"
                         >
                             ${pass.passNo}
@@ -238,7 +238,7 @@ const GatePassList = () => {
                             >
                                 <BsPlusSquare
                                     className="cursor-pointer text-green hover:text-Green border border-green p-1 hover:border-Green rounded text-[30px]"
-                                    onClick={() => router.push(`${pathname.split('/management')[0]}/management/add-gate-pass`)}
+                                    onClick={() => router.push(`${pathname.split('/asset-management')[0]}/asset-management/add-gate-pass`)}
                                 />
                             </Tooltip>
                         </div>
