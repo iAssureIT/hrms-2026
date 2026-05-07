@@ -118,36 +118,54 @@ const AddTicketPage = () => {
   const priorities = [
     { id: "Low", label: "Low" },
     { id: "Medium", label: "Medium" },
-    { id: "High", label: "High" },
     { id: "Urgent", label: "Urgent" },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50/30 p-4 lg:p-6 animate-fadeIn flex flex-col items-center">
-      <div className="w-full max-w-[640px]">
+    <section className="section p-6 md:p-10 bg-slate-50/30 min-h-screen border-t-[3px] border-[#3c8dbc] shadow-md">
+      <div className="max-w-[1440px] mx-auto">
         {/* Header Section */}
         <div className="mb-6">
-            <button 
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-200/60">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+                <span className="text-[#3c8dbc]">Helpdesk Management / Tickets</span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+                Create <span className="text-[#3c8dbc] font-black">Ticket</span>
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+              <button
                 onClick={() => router.push("/admin/helpdesk")}
-                className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors mb-3 text-[12px] font-bold group uppercase tracking-wider"
-            >
-                <FaChevronLeft size={9} className="group-hover:-translate-x-0.5 transition-transform" />
-                Back to List
-            </button>
-            <h1 className="text-xl font-bold text-slate-800">Create New Ticket</h1>
-            <p className="text-slate-400 text-[13px] mt-0.5 font-medium">Fill in the details below to raise a support request.</p>
+                className="admin-btn-primary flex items-center gap-2 !px-4 !py-1.5"
+              >
+                <FaChevronLeft size={12} /> Back to List
+              </button>
+            </div>
+          </div>
+          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+            Submit a new support ticket for assistance. Please ensure all details are accurate before submission.
+          </p>
         </div>
 
         {/* Main Form Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-            <form onSubmit={handleSubmit} className="p-6 lg:p-8 space-y-6">
+        <div className="max-w-2xl mx-auto bg-white border-t-[3px] border-[#3c8dbc] shadow-lg overflow-hidden mt-10 rounded-sm">
+            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">
+                    Ticket Form
+                </h3>
+            </div>
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
                 {/* Subject */}
-                <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Subject <span className="text-red-500">*</span></label>
+                <div>
+                    <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400 block mb-1.5">
+                        Subject <span className="text-red-500">*</span>
+                    </label>
                     <input
                         type="text"
                         required
-                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-[13px] text-slate-800 focus:outline-none focus:border-[#3c8dbc] transition-all placeholder:text-slate-300"
+                        className="admin-input h-10 font-bold"
                         placeholder="Brief summary of the issue"
                         value={formData.subject}
                         onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -156,64 +174,47 @@ const AddTicketPage = () => {
 
                 {/* Department & Priority Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Department Selection */}
-                    <div className="space-y-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Department <span className="text-red-500">*</span></label>
-                        <div className="space-y-1.5">
+                    <div>
+                        <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400 block mb-1.5">
+                            Department <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            required
+                            className="admin-select h-10 font-bold"
+                            value={formData.category}
+                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        >
                             {departments.map((dept) => (
-                            <button
-                                key={dept.id}
-                                type="button"
-                                onClick={() => setFormData({ ...formData, category: dept.id })}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-all text-left ${
-                                formData.category === dept.id
-                                    ? "border-[#3c8dbc] bg-sky-50/30"
-                                    : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
-                                }`}
-                            >
-                                <div className="flex items-center gap-2.5">
-                                    <span className="text-sm">{dept.icon}</span>
-                                    <span className={`text-[12px] font-semibold ${formData.category === dept.id ? "text-[#3c8dbc]" : "text-slate-600"}`}>
-                                        {dept.label}
-                                    </span>
-                                </div>
-                                {formData.category === dept.id && <div className="w-1.5 h-1.5 rounded-full bg-[#3c8dbc]" />}
-                            </button>
+                                <option key={dept.id} value={dept.id}>{dept.label}</option>
                             ))}
-                        </div>
+                        </select>
                     </div>
 
-                    {/* Priority Selection */}
-                    <div className="space-y-2">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Priority <span className="text-red-500">*</span></label>
-                        <div className="space-y-1.5">
+                    <div>
+                        <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400 block mb-1.5">
+                            Priority <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            required
+                            className="admin-select h-10 font-bold"
+                            value={formData.priority}
+                            onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                        >
                             {priorities.map((prio) => (
-                            <button
-                                key={prio.id}
-                                type="button"
-                                onClick={() => setFormData({ ...formData, priority: prio.id })}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-all text-left ${
-                                formData.priority === prio.id
-                                    ? "border-[#3c8dbc] bg-sky-50/30"
-                                    : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
-                                }`}
-                            >
-                                <span className={`text-[12px] font-semibold ${formData.priority === prio.id ? "text-[#3c8dbc]" : "text-slate-600"}`}>
-                                    {prio.label}
-                                </span>
-                                {formData.priority === prio.id && <div className="w-1.5 h-1.5 rounded-full bg-[#3c8dbc]" />}
-                            </button>
+                                <option key={prio.id} value={prio.id}>{prio.label}</option>
                             ))}
-                        </div>
+                        </select>
                     </div>
                 </div>
 
                 {/* Description */}
-                <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Description <span className="text-red-500">*</span></label>
+                <div>
+                    <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400 block mb-1.5">
+                        Statement of Issue <span className="text-red-500">*</span>
+                    </label>
                     <textarea
                         required
-                        className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-[13px] text-slate-800 focus:outline-none focus:border-[#3c8dbc] transition-all min-h-[120px] resize-none leading-relaxed placeholder:text-slate-300"
+                        className="admin-input min-h-[120px] resize-none py-3 font-medium"
                         placeholder="Describe your issue in detail..."
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -221,33 +222,33 @@ const AddTicketPage = () => {
                 </div>
 
                 {/* Attachments */}
-                <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Attachments</label>
+                <div className="space-y-3">
+                    <label className="admin-label text-[10px] uppercase tracking-widest text-slate-400">Attachments</label>
                     <div
                         onClick={() => fileInputRef.current.click()}
-                        className="border border-dashed border-slate-200 rounded-lg p-6 flex flex-col items-center justify-center bg-slate-50/30 hover:bg-slate-50 hover:border-[#3c8dbc] transition-all cursor-pointer group"
+                        className="border border-dashed border-slate-200 rounded-lg p-8 flex flex-col items-center justify-center bg-slate-50/30 hover:bg-slate-50 hover:border-[#3c8dbc] transition-all cursor-pointer group"
                     >
-                        <FaCloudUploadAlt size={20} className="text-slate-300 group-hover:text-[#3c8dbc] mb-2 transition-colors" />
-                        <p className="text-[12px] font-bold text-slate-600">Upload documents</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">SVG, PNG, JPG or PDF (max. 10MB)</p>
+                        <FaCloudUploadAlt size={24} className="text-slate-300 group-hover:text-[#3c8dbc] mb-2 transition-colors" />
+                        <p className="text-xs font-black text-slate-600 uppercase tracking-widest">Upload documents</p>
+                        <p className="text-[10px] text-slate-400 mt-1 font-medium">SVG, PNG, JPG or PDF (MAX. 10MB)</p>
                     </div>
                     <input type="file" multiple ref={fileInputRef} onChange={handleFileChange} className="hidden" />
 
                     {formData.attachments.length > 0 && (
-                    <div className="space-y-1.5 mt-4">
+                    <div className="grid grid-cols-1 gap-2 mt-4">
                         {formData.attachments.map((file, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-lg shadow-sm">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded bg-sky-50 text-[#3c8dbc] flex items-center justify-center">
-                                    <FaFileAlt size={12} />
+                        <div key={idx} className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded bg-sky-50 text-[#3c8dbc] flex items-center justify-center">
+                                    <FaFileAlt size={14} />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[12px] font-bold text-slate-700 truncate max-w-[200px]">{file.fileName}</span>
-                                    <span className="text-[10px] text-slate-400">{file.fileSize}</span>
+                                    <span className="text-[12px] font-black text-slate-700 truncate max-w-[200px]">{file.fileName}</span>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{file.fileSize}</span>
                                 </div>
                             </div>
-                            <button type="button" onClick={() => removeAttachment(idx)} className="p-1.5 text-slate-300 hover:text-red-500 rounded-md transition-all">
-                                <FaTimes size={12} />
+                            <button type="button" onClick={() => removeAttachment(idx)} className="p-2 text-slate-300 hover:text-red-500 rounded-md transition-all">
+                                <FaTimes size={14} />
                             </button>
                         </div>
                         ))}
@@ -256,18 +257,18 @@ const AddTicketPage = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="pt-6 flex items-center justify-end gap-2.5 border-t border-slate-50">
+                <div className="pt-8 flex items-center justify-end gap-4 border-t border-slate-100">
                     <button
                         type="button"
                         onClick={() => router.push("/admin/helpdesk")}
-                        className="px-4 py-2 rounded-lg text-[13px] font-bold text-slate-500 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all"
+                        className="px-6 py-2 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-6 py-2 bg-[#3c8dbc] text-white rounded-lg text-[13px] font-bold shadow-sm hover:bg-[#367fa9] transition-all active:scale-95 disabled:opacity-50"
+                        className="admin-btn-primary !px-10 !py-2.5 !text-xs !font-black uppercase tracking-widest shadow-lg shadow-sky-100"
                     >
                         {loading ? "Submitting..." : "Submit Ticket"}
                     </button>
@@ -275,17 +276,16 @@ const AddTicketPage = () => {
             </form>
         </div>
       </div>
-
       <style jsx>{`
         .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
+          animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
+          from { opacity: 0; transform: translateY(15px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </section>
   );
 };
 

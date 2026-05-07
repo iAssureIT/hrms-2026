@@ -83,11 +83,14 @@ const Helpdesk = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-100px)] animate-fadeIn">
+    <section className="section admin-box box-primary">
+      <div className="hr-card flex flex-col h-[calc(100vh-120px)] animate-fadeIn">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Helpdesk</h1>
+          <h1 className="text-xl font-bold text-slate-800">
+            Helpdesk <span className="text-[#3c8dbc]">Management</span>
+          </h1>
           <p className="text-slate-400 text-[13px] mt-0.5">
             Manage and resolve employee inquiries regarding payroll, attendance,
             and leaves.
@@ -111,7 +114,7 @@ const Helpdesk = () => {
       <main className="flex flex-1 gap-5 overflow-hidden">
         {/* Left Ticket List Panel (25%) */}
         <div
-          className={`w-full lg:w-[25%] bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col transition-all duration-300 ${
+          className={`w-full lg:w-[28%] bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col transition-all duration-300 ${
             isMobile && selectedTicket ? "hidden" : "flex"
           }`}
         >
@@ -125,7 +128,7 @@ const Helpdesk = () => {
               <input
                 type="text"
                 placeholder="Search tickets, employees..."
-                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-100 focus:border-[#3c8dbc] focus:bg-white rounded-lg text-[12px] text-slate-600 transition-all outline-none"
+                className="w-full pl-8 pr-4 py-2 bg-slate-50 border border-slate-100 focus:border-[#3c8dbc] focus:bg-white rounded-lg text-[11px] text-slate-600 transition-all outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -149,7 +152,7 @@ const Helpdesk = () => {
             </div>
 
             {/* Ticket List */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar -mr-1 pr-1 space-y-1 pb-4">
+            <div className="flex-1 overflow-y-auto custom-scrollbar -mr-1 pr-1 space-y-3 pb-4">
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-3">
                   <div className="w-6 h-6 border-2 border-[#3c8dbc] border-t-transparent rounded-full animate-spin"></div>
@@ -165,7 +168,7 @@ const Helpdesk = () => {
                     className={`w-full text-left p-3 rounded-lg transition-all duration-200 group relative border ${
                       selectedTicket?._id === t._id
                         ? "bg-sky-50/40 border-[#3c8dbc]"
-                        : "bg-white border-transparent hover:bg-slate-50 hover:border-slate-100"
+                        : "bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300"
                     }`}
                   >
                     <div className="flex gap-3">
@@ -278,7 +281,8 @@ const Helpdesk = () => {
           }
         `}</style>
       </main>
-    </div>
+      </div>
+    </section>
   );
 };
 
