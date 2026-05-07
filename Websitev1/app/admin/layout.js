@@ -1163,7 +1163,6 @@ export default function RootLayout({ children }) {
       ],
     },
 
-
     // {
     //   title: "Notification Management",
     //   submenu: true,
@@ -1197,14 +1196,11 @@ export default function RootLayout({ children }) {
     //   ],
     // },
 
-
-
-
-    // {
-    //   title: "Helpdesk",
-    //   icon: <FaHeadset />,
-    //   link: "/admin/helpdesk",
-    // },
+    {
+      title: "Helpdesk",
+      icon: <FaHeadset />,
+      link: "/admin/helpdesk",
+    },
     {
       title: "Master Data",
       submenu: true,
@@ -1236,13 +1232,11 @@ export default function RootLayout({ children }) {
           link: "/admin/master-data/asset-category-subcategory",
         },
 
-
         {
           icon: <FaRegCircle />,
           title: "Asset Inspection Checklist Master",
           link: "/admin/master-data/asset-inspection-checklist",
         },
-
 
         {
           icon: <FaRegCircle />,

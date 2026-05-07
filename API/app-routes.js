@@ -51,6 +51,7 @@ const leaveChatRoutes = require("./api/hrms-2026/leaveManagement/leaveChat/route
 // Helpdesk
 const ticketRoutes = require("./api/hrms-2026/helpdeskManagement/tickets/route.js");
 const ticketMessageRoutes = require("./api/hrms-2026/helpdeskManagement/ticketMessages/route.js");
+const ticketUploadRoutes = require("./api/hrms-2026/helpdeskManagement/upload/route.js");
 
 // Holiday Management
 const holidayRoutes = require("./api/hrms-2026/holidayManagement/route.js");
@@ -106,6 +107,7 @@ const appRoutes = (app) => {
   // helpdesk
   app.use("/api/tickets", ticketRoutes);
   app.use("/api/ticket-messages", ticketMessageRoutes);
+  app.use("/api/ticket-upload", ticketUploadRoutes);
 
   // Holiday
   app.use("/api/holidays", holidayRoutes);

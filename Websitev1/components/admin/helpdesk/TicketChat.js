@@ -1,7 +1,20 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaPaperPlane, FaPaperclip, FaCheckCircle, FaTimes, FaFileAlt, FaEllipsisV } from "react-icons/fa";
+import {
+  FaPaperPlane,
+  FaPaperclip,
+  FaCheckCircle,
+  FaTimes,
+  FaFileAlt,
+  FaEllipsisV,
+  FaRegLightbulb,
+  FaRegCommentDots,
+  FaHistory,
+  FaBolt,
+  FaChevronRight,
+  FaUser,
+} from "react-icons/fa";
 import { HiArrowLeft } from "react-icons/hi2";
 import moment from "moment";
 import ls from "localstorage-slim";
@@ -17,16 +30,16 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const newAttachments = files.map(file => ({
+    const newAttachments = files.map((file) => ({
       fileName: file.name,
       fileSize: (file.size / 1024 / 1024).toFixed(2) + " MB",
-      _file: file
+      _file: file,
     }));
-    setAttachments(prev => [...prev, ...newAttachments]);
+    setAttachments((prev) => [...prev, ...newAttachments]);
   };
 
   const removeAttachment = (index) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -54,27 +67,43 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !ticket) return;
+    if ((!newMessage.trim() && attachments.length === 0) || !ticket) return;
 
     try {
       setLoading(true);
-      const cleanedAttachments = attachments.map(att => ({
-        fileName: att.fileName,
-        fileUrl: "uploads/" + att.fileName
-      }));
+      
+      let uploadedAttachments = [];
+      if (attachments.length > 0) {
+        const uploadFormData = new FormData();
+        attachments.forEach((att) => {
+          if (att._file) {
+            uploadFormData.append("files", att._file);
+          }
+        });
+
+        const uploadRes = await axios.post("/api/ticket-upload", uploadFormData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (uploadRes.data.success) {
+          uploadedAttachments = uploadRes.data.data.map(file => ({
+            fileName: file.fileName,
+            fileUrl: (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3050") + file.fileUrl
+          }));
+        }
+      }
 
       const res = await axios.post("/api/ticket-messages/send", {
         ticketId: ticket._id,
         senderId: currentUser?.user_id,
         message: newMessage,
-        attachments: cleanedAttachments
+        attachments: uploadedAttachments,
       });
       if (res.data.success) {
         setMessages([...messages, { ...res.data.data, senderId: currentUser }]);
         setNewMessage("");
         setAttachments([]);
-        
-        // Auto-move to In Progress if currently Open and replied by admin
+
         if (ticket.status === "Open") {
           await axios.patch(`/api/tickets/update-status/${ticket._id}`, {
             status: "In Progress",
@@ -92,195 +121,243 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
 
   const markResolved = async () => {
     try {
-      const res = await axios.patch(`/api/tickets/update-status/${ticket._id}`, {
-        status: "Resolved",
-        performedBy: currentUser?.user_id,
-      });
+      const res = await axios.patch(
+        `/api/tickets/update-status/${ticket._id}`,
+        {
+          status: "Resolved",
+          performedBy: currentUser?.user_id,
+        },
+      );
       if (res.data.success) {
         onRefresh();
       }
     } catch (err) {
       console.error("Status Update Error:", err.response?.data);
-      alert(err.response?.data?.error || err.response?.data?.message || "Failed to update status");
+      alert(err.response?.data?.error || "Failed to update status");
     }
   };
 
-  if (!ticket) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-slate-50/10 italic font-medium uppercase text-[11px] tracking-widest opacity-60">
-        <div className="p-4 bg-slate-100 rounded-full mb-4 animate-bounce">
-            <FaFileAlt size={24} className="text-slate-300" />
-        </div>
-        Select a ticket to view conversation
-      </div>
-    );
-  }
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Open":
+        return "bg-sky-50 text-[#3c8dbc] border-sky-100";
+      case "In Progress":
+        return "bg-orange-50 text-orange-600 border-orange-100";
+      case "Resolved":
+      case "Closed":
+        return "bg-green-50 text-green-600 border-green-100";
+      default:
+        return "bg-slate-50 text-slate-600 border-slate-100";
+    }
+  };
+
+  if (!ticket) return null;
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-white border-t-[3px] border-[#3c8dbc] shadow-sm z-10">
-      {/* Ticket Header */}
-      <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-20">
+    <div className="flex-1 flex flex-col h-full bg-white relative">
+      {/* Premium Header */}
+      <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-30">
         <div className="flex items-center gap-4">
-          {onBack && (
+          <button
+            onClick={onBack}
+            className="p-1.5 lg:hidden text-slate-400 hover:bg-slate-50 rounded-lg transition-all"
+          >
+            <HiArrowLeft size={18} />
+          </button>
+          <div className="flex gap-3 items-center">
+            <div className="w-10 h-10 rounded-lg bg-[#3c8dbc] text-white flex items-center justify-center text-base font-bold shadow-sm">
+                {ticket.employeeId?.employeeName?.charAt(0) || "E"}
+            </div>
+            <div>
+                <div className="flex items-center gap-2">
+                    <h2 className="text-[15px] font-bold text-slate-800">{ticket.subject}</h2>
+                    <div className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${getStatusBadge(ticket.status)}`}>
+                        {ticket.status}
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5 text-[11px] font-medium text-slate-400">
+                    <span className="font-bold">TKT-{ticket.ticketID?.split("-")[1] || ticket.ticketID}</span>
+                    <span>•</span>
+                    <span>{ticket.employeeId?.employeeName}</span>
+                    <span>•</span>
+                    <span>{ticket.category}</span>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {ticket.status !== "Resolved" && (
             <button 
-              onClick={onBack}
-              className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"
+                onClick={markResolved}
+                className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] font-bold text-slate-700 hover:bg-slate-50 transition-all active:scale-95 shadow-sm"
             >
-              <HiArrowLeft size={20} />
+                <FaCheckCircle className="text-green-500" size={13} />
+                Mark Resolved
             </button>
           )}
-          <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 border-2 border-white shadow-sm">
-            <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-500 font-bold text-lg uppercase">
-                {ticket.employeeId?.employeeName?.charAt(0) || "U"}
-            </div>
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-3">
-              <h3 className="font-bold text-slate-800 text-lg leading-tight truncate max-w-[200px] md:max-w-md">
-                {ticket.subject}
-              </h3>
-              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight text-white ${
-                ticket.status === "Open" ? "bg-[#00a65a]" :
-                ticket.status === "In Progress" ? "bg-[#f39c12]" :
-                "bg-gray-400"
-              }`}>
-                {ticket.status}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-1 font-normal truncate">
-              <span className="font-bold text-[#3c8dbc] uppercase tracking-tight">{ticket.ticketID}</span>
-              <span className="opacity-20">|</span>
-              <span className="truncate">{ticket.employeeId?.employeeName}</span>
-              <span className="opacity-20">|</span>
-              <span className="text-gray-400 font-bold">{ticket.category}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 ml-6">
-            {ticket.status !== "Resolved" && ticket.status !== "Closed" && (
-            <button
-                onClick={markResolved}
-                className="flex items-center gap-2 text-[11px] font-bold text-gray-700 bg-white border border-gray-300 px-4 py-1.5 rounded-sm hover:bg-gray-50 transition-all shadow-sm active:scale-95"
-            >
-                <FaCheckCircle className="text-[#00a65a]" size={12} /> Mark Resolved
-            </button>
-            )}
-            <button className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 transition-colors">
-                <FaEllipsisV size={14} />
-            </button>
+          <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-all">
+            <FaEllipsisV size={12} />
+          </button>
         </div>
       </div>
 
-      {/* Messages Thread */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 bg-slate-50/30">
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[#F8FAFC]/20 space-y-6">
+        {/* Initial Description as first message */}
         <div className="flex gap-4">
-            <div className="w-9 h-9 rounded-full overflow-hidden bg-slate-200 flex-shrink-0 flex items-center justify-center text-xs font-bold text-slate-500">
-                {ticket.employeeId?.employeeName?.charAt(0) || "U"}
+            <div className="w-9 h-9 rounded-lg bg-white border border-slate-100 flex-shrink-0 flex items-center justify-center text-slate-400 shadow-sm overflow-hidden">
+                <FaUser size={12} />
             </div>
-            <div className="space-y-1 py-1 flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-bold text-slate-800">{ticket.employeeId?.employeeName}</span>
-                    <span className="text-[11px] font-medium text-slate-400">{moment(ticket.createdAt).format("h:mm A, Today")}</span>
+            <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-[12px] font-bold text-slate-800">{ticket.employeeId?.employeeName}</span>
+                    <span className="text-[10px] font-medium text-slate-400">{moment(ticket.createdAt).format("h:mm A, dddd")}</span>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-sm p-4 shadow-sm inline-block max-w-2xl">
-                    <p className="text-xs text-gray-700 leading-relaxed font-normal">
-                        {ticket.description}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex gap-4 ${msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "flex-row-reverse" : ""}`}>
-            <div className={`w-9 h-9 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center text-xs font-bold shadow-sm ${
-              msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "bg-green-600 text-white" : "bg-slate-200 text-slate-600"
-            }`}>
-              {msg.senderId?.profile?.firstname?.charAt(0) || msg.senderId?.username?.charAt(0) || "U"}
-            </div>
-            <div className={`flex flex-col space-y-1 ${msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id ? "items-end" : "items-start"}`}>
-              <div className="flex items-center gap-2 px-1">
-                 <span className="text-[11px] font-medium text-slate-400">{moment(msg.createdAt).format("h:mm A")}</span>
-              </div>
-              <div className={`max-w-md p-4 rounded-sm shadow-sm text-xs font-normal ${
-                msg.senderId?._id === currentUser?.user_id || msg.senderId === currentUser?.user_id 
-                ? "bg-[#3c8dbc] text-white" 
-                : "bg-gray-100 border border-gray-200 text-gray-700"
-              }`}>
-                {msg.message}
-              </div>
-            </div>
-          </div>
-        ))}
-        <div ref={chatEndRef} />
-      </div>
-
-      {/* Reply Box */}
-      {ticket.status !== "Closed" && (
-        <div className="p-4 bg-white border-t border-gray-100">
-          <form onSubmit={handleSendMessage} className="bg-gray-50 border border-gray-200 rounded-sm overflow-hidden">
-            <textarea
-              className="w-full bg-transparent p-5 text-sm text-slate-700 placeholder:text-slate-400 outline-none resize-none min-h-[80px] font-medium"
-              placeholder="Type your response here..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage(e);
-                }
-              }}
-            ></textarea>
-            
-            <div className="px-5 pb-4 flex items-center justify-between bg-slate-50">
-                <div className="flex items-center gap-1">
-                    <input 
-                        type="file"
-                        multiple
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        className="hidden"
-                    />
-                    <button 
-                        type="button" 
-                        onClick={() => fileInputRef.current.click()}
-                        className="p-2.5 text-slate-400 hover:text-green-600 hover:bg-white rounded-xl transition-all shadow-none"
-                    >
-                        <FaPaperclip size={18} />
-                    </button>
-                    {attachments.length > 0 && (
-                        <div className="flex items-center gap-2">
-                            {attachments.map((file, idx) => (
-                            <div key={idx} className="flex items-center gap-2 px-2 py-1 bg-white border border-slate-200 rounded-lg shadow-sm">
-                                <FaFileAlt className="text-green-500" size={10} />
-                                <span className="text-[10px] font-bold text-slate-600 truncate max-w-[80px]">{file.fileName}</span>
-                                <button type="button" onClick={() => removeAttachment(idx)} className="text-slate-400 hover:text-red-500">
-                                <FaTimes size={10} />
-                                </button>
-                            </div>
-                            ))}
+                <div className="bg-white border border-slate-100 rounded-lg rounded-tl-none p-4 text-[13px] text-slate-600 leading-relaxed shadow-sm max-w-[70%]">
+                    {ticket.description}
+                    {ticket.attachments && ticket.attachments.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2 pt-3 border-t border-slate-50">
+                            {ticket.attachments.map((file, fIdx) => {
+                                const fullUrl = file.fileUrl?.startsWith("http") 
+                                    ? file.fileUrl 
+                                    : (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3050") + (file.fileUrl?.startsWith("/") ? "" : "/") + file.fileUrl;
+                                return (
+                                    <a 
+                                        key={fIdx} 
+                                        href={fullUrl} 
+                                        target="_blank" 
+                                        download={file.fileName}
+                                        className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-md text-[11px] font-bold text-[#3c8dbc] hover:bg-sky-50 transition-all border border-slate-100"
+                                    >
+                                        <FaFileAlt size={10} />
+                                        {file.fileName}
+                                    </a>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
-                <button
-                    type="submit"
-                    disabled={loading || !newMessage.trim()}
-                    className="flex items-center gap-2 bg-[#3c8dbc] border border-[#367fa9] text-white px-6 py-1.5 rounded-sm text-xs font-normal transition-all disabled:opacity-50 active:scale-95 shadow-sm"
-                >
-                    <FaPaperPlane size={12} /> 
-                    {loading ? "Sending..." : "Send"}
-                </button>
             </div>
-          </form>
-          <div className="flex items-center justify-between mt-3 px-2">
-            <p className="text-[10px] text-slate-400 font-medium">
-                SLA Deadline: <span className="text-slate-600">{moment(ticket.slaDeadline).format("MMM DD, h:mm A")}</span>
-            </p>
-          </div>
         </div>
-      )}
+
+        {messages.map((msg, idx) => {
+          const isMe = msg.senderId?._id === currentUser?.user_id;
+          return (
+            <div key={idx} className={`flex gap-4 ${isMe ? "flex-row-reverse" : ""}`}>
+              <div className={`w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center text-[12px] font-bold shadow-sm ${
+                isMe ? "bg-[#3c8dbc] text-white" : "bg-white border border-slate-100 text-slate-600"
+              }`}>
+                {msg.senderId?.profile?.firstname?.charAt(0) || msg.senderId?.username?.charAt(0) || "U"}
+              </div>
+              <div className={`flex-1 flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+                <div className={`flex items-center gap-2 mb-1.5 ${isMe ? "flex-row-reverse" : ""}`}>
+                  <span className="text-[12px] font-bold text-slate-800">{isMe ? "You" : msg.senderId?.username}</span>
+                  <span className="text-[10px] font-medium text-slate-400">{moment(msg.createdAt).fromNow()}</span>
+                </div>
+                <div className={`p-4 text-[13px] leading-relaxed shadow-sm max-w-[70%] ${
+                    isMe 
+                    ? "bg-[#3c8dbc] text-white rounded-lg rounded-tr-none" 
+                    : "bg-white border border-slate-100 text-slate-600 rounded-lg rounded-tl-none"
+                }`}>
+                  {msg.message}
+                  {msg.attachments && msg.attachments.length > 0 && (
+                    <div className={`mt-2 flex flex-wrap gap-2 pt-2 border-t ${isMe ? "border-sky-500" : "border-slate-50"}`}>
+                      {msg.attachments.map((file, fIdx) => {
+                        const fullUrl = file.fileUrl?.startsWith("http") 
+                            ? file.fileUrl 
+                            : (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3050") + (file.fileUrl?.startsWith("/") ? "" : "/") + file.fileUrl;
+                        return (
+                            <a 
+                                key={fIdx} 
+                                href={fullUrl} 
+                                target="_blank" 
+                                download={file.fileName}
+                                className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold transition-all ${
+                                    isMe ? "bg-sky-500 text-white hover:bg-sky-400" : "bg-slate-50 text-[#3c8dbc] hover:bg-sky-50 border border-slate-100"
+                                }`}
+                            >
+                            <FaFileAlt size={9} />
+                            {file.fileName}
+                            </a>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <div ref={chatEndRef} />
+      </div>
+
+      {/* Sticky Bottom Reply Box */}
+      <div className="px-6 py-4 bg-white border-t border-slate-100 sticky bottom-0">
+        <div className="flex items-center gap-3">
+            <button 
+                onClick={() => fileInputRef.current.click()}
+                className="p-2.5 text-slate-400 hover:text-[#3c8dbc] hover:bg-sky-50 rounded-lg transition-all flex-shrink-0"
+            >
+                <FaPaperclip size={18} />
+            </button>
+            <input type="file" multiple ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+            
+            <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg focus-within:bg-white focus-within:border-[#3c8dbc] transition-all overflow-hidden shadow-sm">
+                {attachments.length > 0 && (
+                  <div className="px-3 py-2 bg-white border-b border-slate-100 flex flex-wrap gap-2">
+                    {attachments.map((file, idx) => (
+                      <div key={idx} className="flex items-center gap-2 bg-sky-50 border border-sky-100 rounded-md px-2 py-1 text-[10px] text-[#3c8dbc] font-bold shadow-sm">
+                        <FaFileAlt size={9} />
+                        <span className="truncate max-w-[120px]">{file.fileName}</span>
+                        <button onClick={() => removeAttachment(idx)} className="text-blue-300 hover:text-red-500 transition-colors ml-1">
+                          <FaTimes size={10} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <textarea
+                    className="w-full px-4 py-3 bg-transparent text-[13px] text-slate-700 placeholder:text-slate-400 border-none focus:border-none focus:ring-0 outline-none resize-none min-h-[48px] max-h-[150px] leading-relaxed"
+                    placeholder="Type your response here..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendMessage(e);
+                        }
+                    }}
+                />
+            </div>
+
+            <button
+                onClick={handleSendMessage}
+                disabled={loading || (!newMessage.trim() && attachments.length === 0)}
+                className="flex items-center justify-center bg-[#3c8dbc] text-white w-[48px] h-[48px] rounded-lg shadow-sm hover:bg-[#367fa9] hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 ml-1"
+            >
+                <FaPaperPlane size={16} />
+            </button>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #e2e8f0;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #cbd5e1;
+        }
+      `}</style>
     </div>
   );
 };
 
 export default TicketChat;
+

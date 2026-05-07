@@ -239,10 +239,18 @@ export default function LoginPage() {
       (event.which >= 33 && event.which <= 57) ||
       (event.which >= 64 && event.which <= 90) ||
       (event.which >= 95 && event.which <= 122) ||
-      event.which === 8 || event.which === 9 ||
-      event.which === 46 || event.which === 189 ||
-      event.which === 190 || event.which === 37 || event.which === 39
-    ) { return true; } else { event.preventDefault(); }
+      event.which === 8 ||
+      event.which === 9 ||
+      event.which === 46 ||
+      event.which === 189 ||
+      event.which === 190 ||
+      event.which === 37 ||
+      event.which === 39
+    ) {
+      return true;
+    } else {
+      event.preventDefault();
+    }
   };
 
   const handleChange = (e) => {
@@ -254,10 +262,20 @@ export default function LoginPage() {
   const validateForm = () => {
     let errs = {};
     let valid = true;
-    if (!email) { errs.email = "This field is mandatory."; valid = false; }
-    else if (!validator.isEmail(email)) { errs.email = "Invalid email address."; valid = false; }
-    if (!password) { errs.password = "This field is mandatory."; valid = false; }
-    else if (!validator.isLength(password, { min: 6, max: 40 })) { errs.password = "Password must be 6–40 characters."; valid = false; }
+    if (!email) {
+      errs.email = "This field is mandatory.";
+      valid = false;
+    } else if (!validator.isEmail(email)) {
+      errs.email = "Invalid email address.";
+      valid = false;
+    }
+    if (!password) {
+      errs.password = "This field is mandatory.";
+      valid = false;
+    } else if (!validator.isLength(password, { min: 6, max: 40 })) {
+      errs.password = "Password must be 6–40 characters.";
+      valid = false;
+    }
     setErrors(errs);
     return valid;
   };
@@ -268,30 +286,56 @@ export default function LoginPage() {
       setBtnLoading(true);
       try {
         const response = await Axios.post("/api/auth/post/login", {
-          email, password,
+          email,
+          password,
           role: [
-            "admin","center-incharge","executive-manager","admin-executive",
-            "senior-manager","ho-person","head-csr","head-livelihood",
-            "account-person","account-incharge","accounts-manager","account-admin",
-            "asset-manager","asset-incharge","asset-admin","fa-accounts",
+            "admin",
+            "center-incharge",
+            "executive-manager",
+            "admin-executive",
+            "senior-manager",
+            "ho-person",
+            "head-csr",
+            "head-livelihood",
+            "account-person",
+            "account-incharge",
+            "accounts-manager",
+            "account-admin",
+            "asset-manager",
+            "asset-incharge",
+            "asset-admin",
+            "fa-accounts",
           ],
         });
         if (response.data.message === "Login Auth Successful") {
           const userDetails = response.data.userDetails || {};
           ls.set("userDetails", userDetails, { encrypt: true });
-          if (userDetails.roles.includes("admin")) { window.location.replace("/admin/dashboard"); }
-          else if (userDetails.roles.includes("center-incharge")) { window.location.replace("/center/dashboard"); }
-          else if (
+          if (userDetails.roles.includes("admin")) {
+            window.location.replace("/admin/dashboard");
+          } else if (userDetails.roles.includes("center-incharge")) {
+            window.location.replace("/center/dashboard");
+          } else if (
             userDetails.roles.includes("asset-incharge") ||
             userDetails.roles.includes("asset-admin") ||
             userDetails.roles.includes("fa-accounts")
-          ) { window.location.replace("/admin/asset-management"); }
-          else if (userDetails.roles.includes("accounts-manager")) { window.location.replace("/account/utilization-management/utilization-list"); }
-          else { window.location.replace("/executive/dashboard"); }
+          ) {
+            window.location.replace("/admin/asset-management");
+          } else if (userDetails.roles.includes("accounts-manager")) {
+            window.location.replace(
+              "/account/utilization-management/utilization-list",
+            );
+          } else {
+            window.location.replace("/executive/dashboard");
+          }
           setLoggedIn(true);
-        } else { handleError(response.data.message); }
-      } catch (error) { handleError(error.message); }
-      finally { setBtnLoading(false); }
+        } else {
+          handleError(response.data.message);
+        }
+      } catch (error) {
+        handleError(error.message);
+      } finally {
+        setBtnLoading(false);
+      }
     }
   };
 
@@ -300,7 +344,8 @@ export default function LoginPage() {
       INVALID_PASSWORD: "Your password is incorrect.",
       NOT_REGISTER: "No account found. Please check your email and try again.",
       USER_UNVERIFIED: "This email is not yet verified.",
-      USER_BLOCK: "Account blocked after 5 failed attempts. Please contact admin.",
+      USER_BLOCK:
+        "Account blocked after 5 failed attempts. Please contact admin.",
     };
     Swal.fire(" ", map[message] || message);
   };
@@ -314,14 +359,15 @@ export default function LoginPage() {
         <div className="lg-orb lg-orb-2"></div>
 
         <div className="lg-wrapper">
-
           {/* ── Logo — exact match to sidebar ── */}
           <div className="lg-brand">
             <div className="lg-brand-icon">
               <span>H</span>
             </div>
             <div className="lg-brand-text">
-              <h1>HRMS<span>.</span></h1>
+              <h1>
+                HRMS<span>.</span>
+              </h1>
               <p>Management Suite</p>
             </div>
           </div>
@@ -355,7 +401,8 @@ export default function LoginPage() {
                 </div>
                 {errors.email && (
                   <p className="lg-err">
-                    <i className="fa fa-circle-exclamation"></i>{errors.email}
+                    <i className="fa fa-circle-exclamation"></i>
+                    {errors.email}
                   </p>
                 )}
               </div>
@@ -382,35 +429,58 @@ export default function LoginPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1}
                   >
-                    <i className={showPassword ? "fa fa-eye" : "fa fa-eye-slash"}></i>
+                    <i
+                      className={showPassword ? "fa fa-eye" : "fa fa-eye-slash"}
+                    ></i>
                   </button>
                 </div>
                 {errors.password && (
                   <p className="lg-err">
-                    <i className="fa fa-circle-exclamation"></i>{errors.password}
+                    <i className="fa fa-circle-exclamation"></i>
+                    {errors.password}
                   </p>
                 )}
               </div>
 
               {/* Forgot */}
               <div className="lg-forgot">
-                <a href="/auth/forgot-password" onClick={() => setLoading(true)}>
-                  {loading
-                    ? <><FaSpinner className="lg-spin" style={{ display: "inline", marginRight: 4 }} /> Loading…</>
-                    : "Forgot Password?"
-                  }
+                <a
+                  href="/auth/forgot-password"
+                  onClick={() => setLoading(true)}
+                >
+                  {loading ? (
+                    <>
+                      <FaSpinner
+                        className="lg-spin"
+                        style={{ display: "inline", marginRight: 4 }}
+                      />{" "}
+                      Loading…
+                    </>
+                  ) : (
+                    "Forgot Password?"
+                  )}
                 </a>
               </div>
 
               {/* Submit */}
-              <button type="submit" disabled={btnLoading || loggedIn} className="lg-btn">
+              <button
+                type="submit"
+                disabled={btnLoading || loggedIn}
+                className="lg-btn"
+              >
                 {btnLoading || loggedIn ? (
                   <>
                     <FaSpinner className="lg-spin" />
                     {loggedIn ? "Redirecting…" : "Signing in…"}
                   </>
                 ) : (
-                  <>Sign In &nbsp;<i className="fa fa-arrow-right-long" style={{ fontSize: "0.8rem" }}></i></>
+                  <>
+                    Sign In &nbsp;
+                    <i
+                      className="fa fa-arrow-right-long"
+                      style={{ fontSize: "0.8rem" }}
+                    ></i>
+                  </>
                 )}
               </button>
             </form>
@@ -419,7 +489,11 @@ export default function LoginPage() {
           {/* Footer */}
           <p className="lg-footer">
             Designed &amp; Developed by{" "}
-            <a href="https://iassureit.com/" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://iassureit.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               iAssure International Technologies
             </a>
           </p>

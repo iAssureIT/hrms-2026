@@ -1,44 +1,30 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaSearch, FaDownload } from "react-icons/fa";
-import { BsPlusSquare } from "react-icons/bs";
+import {
+  FaSearch,
+  FaFilter,
+  FaBook,
+  FaChevronRight,
+  FaEllipsisH,
+  FaPlus,
+} from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { Tooltip } from "flowbite-react";
 import TicketChat from "@/components/admin/helpdesk/TicketChat";
 import moment from "moment";
 import ls from "localstorage-slim";
-import {
-  MdChat,
-  MdAssignment,
-  MdPendingActions,
-  MdCheckCircle,
-} from "react-icons/md";
-import {
-  HiChatBubbleLeftRight,
-  HiDocumentText,
-  HiClock,
-  HiCheckCircle,
-} from "react-icons/hi2";
-
-// MetricCard removed to match Screenshot 2 design
 
 const Helpdesk = () => {
   const router = useRouter();
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeTab, setActiveTab] = useState("All");
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
-
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const details = ls.get("userDetails", { decrypt: true });
-    setCurrentUser(details);
     fetchTickets();
-
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -62,219 +48,237 @@ const Helpdesk = () => {
   const counts = {
     All: tickets.length,
     Open: tickets.filter((t) => t.status === "Open").length,
-    "In Progress": tickets.filter((t) => t.status === "In Progress").length,
-    Resolved: tickets.filter((t) => t.status === "Resolved").length,
+    Resolved: tickets.filter(
+      (t) => t.status === "Resolved" || t.status === "Closed",
+    ).length,
   };
 
   const filteredTickets = tickets.filter((t) => {
     const matchesSearch =
       t.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.ticketID.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = activeFilter === "All" || t.status === activeFilter;
-    return matchesSearch && matchesFilter;
+      t.employeeId?.employeeName
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    const matchesTab =
+      activeTab === "Open"
+        ? t.status === "Open"
+        : activeTab === "Resolved"
+          ? t.status === "Resolved" || t.status === "Closed"
+          : true;
+    return matchesSearch && matchesTab;
   });
 
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Open":
+        return "bg-sky-50 text-[#3c8dbc] border-sky-100";
+      case "In Progress":
+        return "bg-orange-50 text-orange-600 border-orange-100";
+      case "Resolved":
+      case "Closed":
+        return "bg-green-50 text-green-600 border-green-100";
+      default:
+        return "bg-slate-50 text-slate-600 border-slate-100";
+    }
+  };
+
   return (
-    <section className="section admin-box box-primary">
-      <main className="flex flex-col h-full bg-white overflow-hidden">
-        {/* Top Header Section */}
-        {/* Standardized Header */}
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                <span className="text-[#3c8dbc]">Helpdesk Management</span>
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Support{" "}
-                <span className="text-[#3c8dbc] font-black">Tickets</span>
-              </h1>
-            </div>
-            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
-              <Tooltip
-                content="Create Ticket"
-                arrow={false}
-                placement="bottom"
-                className="bg-[#3c8dbc]"
-              >
-                <div className="relative group">
-                  <BsPlusSquare
-                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                    onClick={() => router.push("/admin/helpdesk/add")}
-                  />
-                </div>
-              </Tooltip>
-              <Tooltip
-                content="Export Tickets"
-                arrow={false}
-                placement="bottom"
-                className="bg-[#3c8dbc]"
-              >
-                <div className="relative group">
-                  <FaDownload
-                    className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                    onClick={() => {
-                      /* Export logic */
-                    }}
-                  />
-                </div>
-              </Tooltip>
-            </div>
-          </div>
-          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
-            Manage and track employee support requests, technical issues, and HR
-            inquiries in one centralized dashboard.
+    <div className="flex flex-col h-[calc(100vh-100px)] animate-fadeIn">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-slate-800">Helpdesk</h1>
+          <p className="text-slate-400 text-[13px] mt-0.5">
+            Manage and resolve employee inquiries regarding payroll, attendance,
+            and leaves.
           </p>
         </div>
-
-        {/* Main Content Area */}
-        <div className="flex flex-1 overflow-hidden relative">
-          {/* Left Sidebar - Ticket List Box */}
-          <div
-            className={`flex flex-col bg-white border-t-[3px] border-[#3c8dbc] shadow-sm transition-all duration-300 ${
-              isMobile && selectedTicket
-                ? "absolute -translate-x-full"
-                : "relative w-full lg:w-[400px]"
-            }`}
+        <div className="relative group">
+          <button
+            onClick={() => router.push("/admin/helpdesk/add")}
+            className="w-10 h-10 flex items-center justify-center bg-[#3c8dbc] text-white rounded-lg shadow-sm hover:bg-[#367fa9] transition-all active:scale-95 group"
           >
-            <div className="p-4 border-b border-gray-100 space-y-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search tickets, employees..."
-                  className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded-sm text-sm font-normal text-gray-700 focus:outline-none focus:border-[#3c8dbc] transition-all"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <FaSearch
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={12}
-                />
-              </div>
+            <FaPlus size={14} />
+          </button>
+          {/* Tooltip */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1.5 bg-slate-800 text-white text-[11px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl z-50">
+            Create Ticket
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45" />
+          </div>
+        </div>
+      </div>
 
-              <div className="flex items-center gap-1">
-                {["All", "Open", "Resolved"].map((filter) => (
-                  <button
-                    key={filter}
-                    onClick={() => setActiveFilter(filter)}
-                    className={`px-3 py-1 rounded-sm text-[11px] font-bold uppercase transition-all ${
-                      activeFilter === filter
-                        ? "bg-[#3c8dbc] text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
+      <main className="flex flex-1 gap-5 overflow-hidden">
+        {/* Left Ticket List Panel (25%) */}
+        <div
+          className={`w-full lg:w-[25%] bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col transition-all duration-300 ${
+            isMobile && selectedTicket ? "hidden" : "flex"
+          }`}
+        >
+          <div className="p-4 flex flex-col h-full gap-4">
+            {/* Search Bar */}
+            <div className="relative">
+              <FaSearch
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"
+                size={12}
+              />
+              <input
+                type="text"
+                placeholder="Search tickets, employees..."
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-100 focus:border-[#3c8dbc] focus:bg-white rounded-lg text-[12px] text-slate-600 transition-all outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {/* Tabs */}
+            <div className="flex gap-1">
+              {["All", "Open", "Resolved"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-3 py-1 text-[11px] font-bold rounded-full transition-all ${
+                    activeTab === tab
+                      ? "bg-[#3c8dbc] text-white"
+                      : "bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Ticket List */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar -mr-1 pr-1 space-y-1 pb-4">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-24 space-y-4">
-                  <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    Loading tickets...
-                  </p>
+                <div className="flex flex-col items-center justify-center py-20 gap-3">
+                  <div className="w-6 h-6 border-2 border-[#3c8dbc] border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+                    Loading...
+                  </span>
                 </div>
-              ) : filteredTickets.length === 0 ? (
-                <div className="text-center py-24">
-                  <p className="text-sm font-bold text-slate-400 italic">
+              ) : filteredTickets.length > 0 ? (
+                filteredTickets.map((t) => (
+                  <button
+                    key={t._id}
+                    onClick={() => setSelectedTicket(t)}
+                    className={`w-full text-left p-3 rounded-lg transition-all duration-200 group relative border ${
+                      selectedTicket?._id === t._id
+                        ? "bg-sky-50/40 border-[#3c8dbc]"
+                        : "bg-white border-transparent hover:bg-slate-50 hover:border-slate-100"
+                    }`}
+                  >
+                    <div className="flex gap-3">
+                      <div
+                        className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px] font-bold shadow-sm ${
+                          selectedTicket?._id === t._id
+                            ? "bg-[#3c8dbc] text-white"
+                            : "bg-slate-100 text-slate-500"
+                        }`}
+                      >
+                        {t.employeeId?.employeeName?.charAt(0) || "E"}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start mb-0.5">
+                          <span className="text-[12px] font-bold text-slate-700 truncate">
+                            {t.employeeId?.employeeName}
+                          </span>
+                          <span className="text-[9px] font-medium text-slate-400 whitespace-nowrap ml-2">
+                            {moment(t.createdAt).fromNow()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <span className="text-[9px] font-bold text-slate-400">
+                            TKT-{t.ticketID?.split("-")[1] || t.ticketID}
+                          </span>
+                          <span className="text-[9px] font-medium text-slate-400 truncate tracking-tight">
+                            {t.category}
+                          </span>
+                        </div>
+                        <h3 className="text-[12px] font-medium text-slate-600 mb-2 truncate leading-tight">
+                          {t.subject}
+                        </h3>
+                        <div
+                          className={`inline-flex px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${getStatusBadge(t.status)}`}
+                        >
+                          {t.status}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div className="text-center py-20 flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-200">
+                    <FaBook size={16} />
+                  </div>
+                  <p className="text-[11px] font-bold text-slate-300">
                     No tickets found
                   </p>
                 </div>
-              ) : (
-                filteredTickets.map((t) => (
-                  <div
-                    key={t._id}
-                    onClick={() => setSelectedTicket(t)}
-                    className={`p-4 border-b border-gray-100 transition-all cursor-pointer group flex items-start gap-4 ${
-                      selectedTicket?._id === t._id
-                        ? "bg-[#f5f5f5]"
-                        : "bg-white hover:bg-[#f9f9f9]"
-                    }`}
-                  >
-                    <div
-                      className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold border ${
-                        selectedTicket?._id === t._id
-                          ? "bg-[#3c8dbc] text-white border-[#3c8dbc]"
-                          : "bg-gray-100 text-gray-500 border-gray-200"
-                      }`}
-                    >
-                      {t.employeeId?.employeeName?.charAt(0) || "U"}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="text-xs font-bold text-gray-800 truncate">
-                          {t.employeeId?.employeeName}
-                        </h4>
-                        <span className="text-[10px] font-normal text-gray-400 whitespace-nowrap ml-2">
-                          {moment(t.createdAt).fromNow()}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-[10px] font-normal text-gray-500 mb-1">
-                        <span className="font-bold text-[#3c8dbc]">
-                          {t.ticketID}
-                        </span>
-                        <span className="text-gray-300">|</span>
-                        <span>{t.category}</span>
-                      </div>
-
-                      <p className="text-[11px] text-gray-600 line-clamp-1 mb-2">
-                        {t.subject}
-                      </p>
-
-                      <div
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight text-white ${
-                          t.status === "Open"
-                            ? "bg-[#00a65a]"
-                            : t.status === "In Progress"
-                              ? "bg-[#f39c12]"
-                              : "bg-gray-400"
-                        }`}
-                      >
-                        {t.status}
-                      </div>
-                    </div>
-                  </div>
-                ))
               )}
             </div>
           </div>
+        </div>
 
-          {/* Right Content - Thread / Details */}
-          <div
-            className={`flex-1 transition-all duration-300 ${
-              isMobile && !selectedTicket ? "hidden" : "flex"
-            }`}
-          >
+        {/* Right Ticket Conversation Panel (75%) */}
+        <div
+          className={`flex-1 bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col overflow-hidden transition-all duration-300 ${
+            isMobile && !selectedTicket ? "hidden" : "flex"
+          }`}
+        >
+          {selectedTicket ? (
             <TicketChat
               ticket={selectedTicket}
               onRefresh={fetchTickets}
-              onBack={isMobile ? () => setSelectedTicket(null) : undefined}
+              onBack={() => setSelectedTicket(null)}
             />
-          </div>
-
-          <style jsx>{`
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 5px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background: transparent;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background: #e2e8f0;
-              border-radius: 20px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: #cbd5e1;
-            }
-          `}</style>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-300 bg-slate-50/5">
+              <div className="w-16 h-16 bg-white border border-slate-100 rounded-2xl mb-4 flex items-center justify-center shadow-sm">
+                <FaBook size={24} className="text-slate-100" />
+              </div>
+              <h3 className="text-slate-700 font-bold text-base mb-1">
+                Support Center
+              </h3>
+              <p className="text-slate-400 text-[11px] font-medium">
+                Select a ticket from the list to view details
+              </p>
+            </div>
+          )}
         </div>
+
+        <style jsx>{`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 3px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+          }
+
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+          }
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(5px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
       </main>
-    </section>
+    </div>
   );
 };
 

@@ -1,5 +1,7 @@
+import flowbitePlugin from "flowbite/plugin";
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,21 +12,11 @@ module.exports = {
   theme: {
     screens: {
       xs: "360px",
-      // => @media (min-width: 360px) { ... }
       sm: "640px",
-      // => @media (min-width: 640px) { ... }
-
       md: "768px",
-      // => @media (min-width: 768px) { ... }
-
       lg: "1024px",
-      // => @media (min-width: 1024px) { ... }
-
       xl: "1280px",
-      // => @media (min-width: 1280px) { ... }
-
       "2xl": "1536px",
-      // => @media (min-width: 1536px) { ... }
       "3xl": "1920px",
       "4xl": { max: "2560px" },
     },
@@ -32,12 +24,34 @@ module.exports = {
     extend: {
       animation: {
         ["infinite-slider"]: "infiniteSlider 40s linear infinite",
+        "infinite-scroll": "infinite-scroll 25s linear infinite",
+        rotateblk: "rotateblk 2s linear infinite",
+        "infinite-slider-left-to-right":
+          "infiniteSliderLeftToRight 40s linear infinite",
       },
       keyframes: {
         infiniteSlider: {
           "0%": { transform: "translateX(0)" },
           "100%": {
             transform: "translateX(calc(-250px * 10))",
+          },
+        },
+        "infinite-scroll": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
+        rotateblk: {
+          from: {
+            transform: " rotate(380deg)  translate(-62.5px) rotate(10deg)",
+          },
+          to: { transform: "rotate(20deg) translate(-62.5px) rotate(-40deg)" },
+        },
+        infiniteSliderLeftToRight: {
+          "0%": {
+            transform: "translateX(0)",
+          },
+          "100%": {
+            transform: "translateX(calc(250px * 10))",
           },
         },
       },
@@ -48,14 +62,11 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        // darkBlue: "#133A75",
         site: "#3c8dbc",
         green: "#3c8dbc",
         lightgreen: "#f1f6f9",
         Green: "#367fa9",
         successGreen: "#50c878",
-        // lightBlue: "#d2f2d4",
-
         lightBlue: "#d2f2d4",
         lightPink: "#fa6b84",
         grayZero: "#e0eded",
@@ -109,50 +120,7 @@ module.exports = {
         Montserrat: ["Montserrat", "sans-serif"],
       },
       screens: {
-        // "xxl": "2660px",
         exLG: "2736px",
-        // => @media (min-width: 1920px) { ... }
-      },
-    },
-
-    animation: {
-      "infinite-scroll": "infinite-scroll 25s linear infinite",
-    },
-    keyframes: {
-      "infinite-scroll": {
-        from: { transform: "translateX(0)" },
-        to: { transform: "translateX(-100%)" },
-      },
-    },
-
-    animation: {
-      rotateblk: "rotateblk 2s linear infinite",
-    },
-    keyframes: {
-      // rotateblk: {
-      //   from: { transform: "rotate(0deg)" },
-      //   to: { transform: "rotate(360deg)" },
-      // },
-      rotateblk: {
-        from: {
-          transform: " rotate(380deg)  translate(-62.5px) rotate(10deg)",
-        },
-        to: { transform: "rotate(20deg) translate(-62.5px) rotate(-40deg)" },
-      },
-    },
-
-    animation: {
-      "infinite-slider-left-to-right":
-        "infiniteSliderLeftToRight 40s linear infinite",
-    },
-    keyframes: {
-      infiniteSliderLeftToRight: {
-        "0%": {
-          transform: "translateX(0)",
-        },
-        "100%": {
-          transform: "translateX(calc(250px * 10))",
-        },
       },
     },
   },
@@ -162,10 +130,7 @@ module.exports = {
     },
   },
 
-  plugins: [
-    require("tailwindcss"),
-    require("autoprefixer"),
-    require("flowbite/plugin"),
-    // require("tw-elements-react/dist/plugin.cjs"),
-  ],
+  plugins: [flowbitePlugin],
 };
+
+export default config;

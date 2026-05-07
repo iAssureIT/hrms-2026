@@ -18,7 +18,14 @@ const ticketSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["Attendance Issues", "Payroll Issues", "Leave Issues", "General"],
+      enum: [
+        "Technical Support",
+        "Billing Issues",
+        "Payroll Issues",
+        "Attendance Issues",
+        "Leave Issues",
+        "General",
+      ],
       required: true,
     },
     priority: {

@@ -14,7 +14,7 @@ const ticketMessageSchema = new mongoose.Schema(
     },
     message: {
       type: String,
-      required: true,
+      required: false,
     },
     attachments: [
       {

@@ -31,12 +31,10 @@ exports.applyLeave = async (req, res) => {
     });
 
     if (overlap) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Leave already applied for these dates",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Leave already applied for these dates",
+      });
     }
 
     // 3. Validate Leave Balance
@@ -149,8 +147,17 @@ exports.updateLeaveStatus = async (req, res) => {
     );
 
     // Case A: If status changed to APPROVED
-    if (req.body.status === "APPROVED" && previousApplication.status !== "APPROVED") {
-      const coType = await LeaveType.findOne({ $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }] });
+    if (
+      req.body.status === "APPROVED" &&
+      previousApplication.status !== "APPROVED"
+    ) {
+      const coType = await LeaveType.findOne({
+        $or: [
+          { leaveCode: "CO" },
+          { leaveCode: "COMP OFF" },
+          { leaveTypeName: /Comp Off/i },
+        ],
+      });
 
       // If the applied leave type is CO, treat it as earning
       if (data.leaveTypeId.toString() === coType?._id.toString()) {
@@ -161,8 +168,14 @@ exports.updateLeaveStatus = async (req, res) => {
     }
 
     // Case B: If status changed FROM APPROVED to REJECTED/CANCELLED (Restore Balance)
-    if (previousApplication.status === "APPROVED" && (req.body.status === "REJECTED" || req.body.status === "CANCELLED")) {
-      await restoreLeaveBalance(data, req.body.rejectedBy || req.body.approvedBy);
+    if (
+      previousApplication.status === "APPROVED" &&
+      (req.body.status === "REJECTED" || req.body.status === "CANCELLED")
+    ) {
+      await restoreLeaveBalance(
+        data,
+        req.body.rejectedBy || req.body.approvedBy,
+      );
     }
 
     // 4. Attendance Integration
@@ -175,18 +188,28 @@ exports.updateLeaveStatus = async (req, res) => {
         const currentDate = moment(start).add(i, "days").toDate();
         await Attendance.findOneAndUpdate(
           { employeeId: data.employeeId, date: currentDate },
-          { status: "LEAVE", remarks: `Approved Leave (${data.totalDays} days)` },
-          { upsert: true, new: true }
+          {
+            status: "LEAVE",
+            remarks: `Approved Leave (${data.totalDays} days)`,
+          },
+          { upsert: true, new: true },
         );
       }
-    } else if (req.body.status === "REJECTED" || req.body.status === "CANCELLED") {
+    } else if (
+      req.body.status === "REJECTED" ||
+      req.body.status === "CANCELLED"
+    ) {
       // Clear attendance if it was previously set to LEAVE
       const start = moment(data.fromDate).startOf("day");
       const end = moment(data.toDate).startOf("day");
       const daysCount = end.diff(start, "days") + 1;
       for (let i = 0; i < daysCount; i++) {
         const currentDate = moment(start).add(i, "days").toDate();
-        await Attendance.findOneAndDelete({ employeeId: data.employeeId, date: currentDate, status: "LEAVE" });
+        await Attendance.findOneAndDelete({
+          employeeId: data.employeeId,
+          date: currentDate,
+          status: "LEAVE",
+        });
       }
     }
 
@@ -222,7 +245,11 @@ async function deductLeaveBalance(data, actorId) {
     $or: [{ leaveCode: "EL" }, { leaveTypeName: /Earned Leave/i }],
   });
   const coType = await LeaveType.findOne({
-    $or: [{ leaveCode: "CO" }, { leaveCode: "COMP OFF" }, { leaveTypeName: /Comp Off/i }],
+    $or: [
+      { leaveCode: "CO" },
+      { leaveCode: "COMP OFF" },
+      { leaveTypeName: /Comp Off/i },
+    ],
   });
   const lopType = await LeaveType.findOne({ leaveCode: "LOP" });
 
@@ -267,7 +294,9 @@ async function deductLeaveBalance(data, actorId) {
             ? `LOP adjusted using ${type.leaveCode}`
             : `Leave approved (Partially/Fully from ${type.leaveCode})`,
         adjustedWith:
-          data.leaveTypeId.toString() === lopType?._id.toString() ? "LOP" : null,
+          data.leaveTypeId.toString() === lopType?._id.toString()
+            ? "LOP"
+            : null,
         createdBy: actorId,
       });
 
@@ -360,7 +389,8 @@ async function deductLeaveBalance(data, actorId) {
     {
       $set: {
         leaveBreakdown: breakdown,
-        adjustedWith: adjustedTypes.length > 0 ? adjustedTypes.join(", ") : null,
+        adjustedWith:
+          adjustedTypes.length > 0 ? adjustedTypes.join(", ") : null,
       },
     },
   );
@@ -370,7 +400,11 @@ async function creditLeaveBalance(data, actorId) {
   const year = moment(data.fromDate).year();
   const days = data.totalDays;
 
-  let bal = await LeaveBalance.findOne({ employeeId: data.employeeId, leaveTypeId: data.leaveTypeId, year: year });
+  let bal = await LeaveBalance.findOne({
+    employeeId: data.employeeId,
+    leaveTypeId: data.leaveTypeId,
+    year: year,
+  });
   if (!bal) {
     bal = await LeaveBalance.create({
       employeeId: data.employeeId,
@@ -379,14 +413,14 @@ async function creditLeaveBalance(data, actorId) {
       openingBalance: 0,
       remainingBalance: 0,
       earnedDays: 0,
-      usedDays: 0
+      usedDays: 0,
     });
   }
 
   const updatedBal = await LeaveBalance.findOneAndUpdate(
     { _id: bal._id },
     { $inc: { earnedDays: days, remainingBalance: days } },
-    { new: true }
+    { new: true },
   );
 
   await LeaveLedger.create({
@@ -405,15 +439,27 @@ async function creditLeaveBalance(data, actorId) {
 
 async function restoreLeaveBalance(data, actorId) {
   const year = moment(data.fromDate).year();
-  const entries = await LeaveLedger.find({ referenceId: data._id, referenceType: "LEAVE_APPLICATION" });
+  const entries = await LeaveLedger.find({
+    referenceId: data._id,
+    referenceType: "LEAVE_APPLICATION",
+  });
 
   for (let entry of entries) {
     if (entry.transactionType === "USED") {
       const amountToRestore = Math.abs(entry.days);
       const updatedBal = await LeaveBalance.findOneAndUpdate(
-        { employeeId: data.employeeId, leaveTypeId: entry.leaveTypeId, year: year },
-        { $inc: { usedDays: -amountToRestore, remainingBalance: amountToRestore } },
-        { new: true }
+        {
+          employeeId: data.employeeId,
+          leaveTypeId: entry.leaveTypeId,
+          year: year,
+        },
+        {
+          $inc: {
+            usedDays: -amountToRestore,
+            remainingBalance: amountToRestore,
+          },
+        },
+        { new: true },
       );
 
       await LeaveLedger.create({
@@ -431,9 +477,18 @@ async function restoreLeaveBalance(data, actorId) {
     } else if (entry.transactionType === "EARNED") {
       const amountToReverse = Math.abs(entry.days);
       const updatedBal = await LeaveBalance.findOneAndUpdate(
-        { employeeId: data.employeeId, leaveTypeId: entry.leaveTypeId, year: year },
-        { $inc: { earnedDays: -amountToReverse, remainingBalance: -amountToReverse } },
-        { new: true }
+        {
+          employeeId: data.employeeId,
+          leaveTypeId: entry.leaveTypeId,
+          year: year,
+        },
+        {
+          $inc: {
+            earnedDays: -amountToReverse,
+            remainingBalance: -amountToReverse,
+          },
+        },
+        { new: true },
       );
 
       await LeaveLedger.create({

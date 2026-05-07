@@ -1,26 +1,16 @@
 "use client";
-
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import ls from "localstorage-slim";
-import moment from "moment";
+import { FaTimes, FaCloudUploadAlt, FaFileAlt, FaChevronLeft, FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
-import {
-  FaHome,
-  FaArrowLeft,
-  FaSave,
-  FaCloudUploadAlt,
-  FaFileAlt,
-  FaTimes,
-} from "react-icons/fa";
+import ls from "localstorage-slim";
+import { useRouter } from "next/navigation";
 
 const AddTicketPage = () => {
   const router = useRouter();
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-
   const [formData, setFormData] = useState({
     subject: "",
     category: "General",
@@ -57,16 +47,37 @@ const AddTicketPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.subject || !formData.description) {
+        Swal.fire("Warning", "Please fill in all required fields", "warning");
+        return;
+    }
     try {
       setLoading(true);
-      const cleanedAttachments = formData.attachments.map((att) => ({
-        fileName: att.fileName,
-        fileUrl: "uploads/" + att.fileName,
-      }));
+      
+      let uploadedAttachments = [];
+      if (formData.attachments.length > 0) {
+        const uploadFormData = new FormData();
+        formData.attachments.forEach((att) => {
+          if (att._file) {
+            uploadFormData.append("files", att._file);
+          }
+        });
+
+        const uploadRes = await axios.post("/api/ticket-upload", uploadFormData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (uploadRes.data.success) {
+          uploadedAttachments = uploadRes.data.data.map(file => ({
+            fileName: file.fileName,
+            fileUrl: (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3050") + file.fileUrl
+          }));
+        }
+      }
 
       const res = await axios.post("/api/tickets/create", {
         ...formData,
-        attachments: cleanedAttachments,
+        attachments: uploadedAttachments,
         employeeId: currentUser?.employeeId || currentUser?.user_id,
         createdBy: currentUser?.user_id,
       });
@@ -87,229 +98,194 @@ const AddTicketPage = () => {
       console.error("Submission Error:", err.response?.data);
       Swal.fire(
         "Error",
-        err.response?.data?.error ||
-          err.response?.data?.message ||
-          "Error creating ticket",
-        "error",
+        err.response?.data?.error || err.response?.data?.message || "Error creating ticket",
+        "error"
       );
     } finally {
       setLoading(false);
     }
   };
 
+  const departments = [
+    { id: "Technical Support", label: "Technical Support", icon: "🛠️" },
+    { id: "Billing Issues", label: "Billing & Payments", icon: "💳" },
+    { id: "Payroll Issues", label: "Payroll Inquiries", icon: "💰" },
+    { id: "Attendance Issues", label: "Attendance Issues", icon: "📅" },
+    { id: "Leave Issues", label: "Leave Inquiries", icon: "🏖️" },
+    { id: "General", label: "General Feedback", icon: "📝" },
+  ];
+
+  const priorities = [
+    { id: "Low", label: "Low" },
+    { id: "Medium", label: "Medium" },
+    { id: "High", label: "High" },
+    { id: "Urgent", label: "Urgent" },
+  ];
+
   return (
-    <section className="section">
-      <div className="min-h-screen">
-        <div className="mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl font-normal text-gray-800 tracking-tight">
-                Create Ticket
-              </h1>
-              <span className="text-sm font-light text-gray-500">
-                Support center
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-normal text-gray-700 mt-4 md:mt-0">
-              <FaHome className="text-gray-400" />
-              <span>Home</span>
-              <span className="text-gray-400">&gt;</span>
-              <span>Helpdesk</span>
-              <span className="text-gray-400">&gt;</span>
-              <span className="text-gray-400">Add</span>
-            </div>
-          </div>
-
-          <div className="bg-white border-t-[3px] border-[#00a65a] shadow-sm mb-6 rounded-sm">
-            <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tight">
-                New Inquiry Registration
-              </h3>
-              <button
+    <div className="min-h-screen bg-slate-50/30 p-4 lg:p-6 animate-fadeIn flex flex-col items-center">
+      <div className="w-full max-w-[640px]">
+        {/* Header Section */}
+        <div className="mb-6">
+            <button 
                 onClick={() => router.push("/admin/helpdesk")}
-                className="text-xs text-gray-500 hover:text-gray-700 font-bold flex items-center gap-1"
-              >
-                <FaArrowLeft size={10} /> Back
-              </button>
-            </div>
+                className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors mb-3 text-[12px] font-bold group uppercase tracking-wider"
+            >
+                <FaChevronLeft size={9} className="group-hover:-translate-x-0.5 transition-transform" />
+                Back to List
+            </button>
+            <h1 className="text-xl font-bold text-slate-800">Create New Ticket</h1>
+            <p className="text-slate-400 text-[13px] mt-0.5 font-medium">Fill in the details below to raise a support request.</p>
+        </div>
 
-            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div>
-                    <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">
-                      Subject <span className="text-red-500">*</span>
-                    </label>
+        {/* Main Form Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <form onSubmit={handleSubmit} className="p-6 lg:p-8 space-y-6">
+                {/* Subject */}
+                <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Subject <span className="text-red-500">*</span></label>
                     <input
-                      type="text"
-                      required
-                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all"
-                      placeholder="e.g. Cannot access payroll dashboard..."
-                      value={formData.subject}
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject: e.target.value })
-                      }
+                        type="text"
+                        required
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-[13px] text-slate-800 focus:outline-none focus:border-[#3c8dbc] transition-all placeholder:text-slate-300"
+                        placeholder="Brief summary of the issue"
+                        value={formData.subject}
+                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">
-                        Category <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        required
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all appearance-none cursor-pointer"
-                        value={formData.category}
-                        onChange={(e) =>
-                          setFormData({ ...formData, category: e.target.value })
-                        }
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                          backgroundPosition: "right 0.8rem center",
-                          backgroundSize: "0.8em 0.8em",
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      >
-                        <option value="Attendance Issues">
-                          Attendance Issues
-                        </option>
-                        <option value="Payroll Issues">Payroll Issues</option>
-                        <option value="Leave Issues">Leave Issues</option>
-                        <option value="General">General</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">
-                        Priority <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        required
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all appearance-none cursor-pointer"
-                        value={formData.priority}
-                        onChange={(e) =>
-                          setFormData({ ...formData, priority: e.target.value })
-                        }
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                          backgroundPosition: "right 0.8rem center",
-                          backgroundSize: "0.8em 0.8em",
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      >
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Urgent">Urgent</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      required
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#3c8dbc] transition-all min-h-[150px] resize-none"
-                      placeholder="Please provide details regarding your inquiry..."
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
-                      }
-                    ></textarea>
-                  </div>
                 </div>
 
-                <div className="space-y-6 text-center md:text-left">
-                  <label className="text-xs font-bold text-gray-700 mb-2 block uppercase tracking-tight">
-                    Supporting Documents
-                  </label>
-                  <div
-                    onClick={() => fileInputRef.current.click()}
-                    className="border border-dashed border-gray-300 rounded-sm p-10 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group"
-                  >
-                    <FaCloudUploadAlt
-                      size={32}
-                      className="text-gray-400 group-hover:text-[#3c8dbc] mb-4"
-                    />
-                    <p className="text-sm font-bold text-gray-700">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-[11px] text-gray-500 mt-1">
-                      SVG, PNG, JPG or PDF (max. 10MB)
-                    </p>
-                  </div>
-                  <input
-                    type="file"
-                    multiple
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-
-                  {formData.attachments.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left">
-                        Attached Files
-                      </p>
-                      {formData.attachments.map((file, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-sm"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-sm bg-gray-100 text-[#3c8dbc] flex items-center justify-center">
-                              <FaFileAlt size={14} />
-                            </div>
-                            <div className="text-left">
-                              <p className="text-xs font-bold text-gray-700">
-                                {file.fileName}
-                              </p>
-                              <p className="text-[10px] text-gray-400">
-                                {file.fileSize}
-                              </p>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeAttachment(idx)}
-                            className="text-gray-400 hover:text-red-500 transition-colors"
-                          >
-                            <FaTimes size={12} />
-                          </button>
+                {/* Department & Priority Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Department Selection */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Department <span className="text-red-500">*</span></label>
+                        <div className="space-y-1.5">
+                            {departments.map((dept) => (
+                            <button
+                                key={dept.id}
+                                type="button"
+                                onClick={() => setFormData({ ...formData, category: dept.id })}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-all text-left ${
+                                formData.category === dept.id
+                                    ? "border-[#3c8dbc] bg-sky-50/30"
+                                    : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
+                                }`}
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <span className="text-sm">{dept.icon}</span>
+                                    <span className={`text-[12px] font-semibold ${formData.category === dept.id ? "text-[#3c8dbc]" : "text-slate-600"}`}>
+                                        {dept.label}
+                                    </span>
+                                </div>
+                                {formData.category === dept.id && <div className="w-1.5 h-1.5 rounded-full bg-[#3c8dbc]" />}
+                            </button>
+                            ))}
                         </div>
-                      ))}
                     </div>
-                  )}
-                </div>
-              </div>
 
-              <div className="pt-8 flex gap-3 border-t border-gray-100 justify-end md:justify-start">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-[#00a65a] border border-[#008d4c] text-white px-10 py-2 rounded-sm font-bold text-xs hover:bg-[#008d4c] shadow-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
-                >
-                  <FaSave size={14} />
-                  {loading ? "Processing..." : "Create Ticket"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/admin/helpdesk")}
-                  className="bg-white border border-gray-300 text-gray-700 px-10 py-2 rounded-sm font-bold text-xs hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
-                >
-                  Cancel
-                </button>
-              </div>
+                    {/* Priority Selection */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Priority <span className="text-red-500">*</span></label>
+                        <div className="space-y-1.5">
+                            {priorities.map((prio) => (
+                            <button
+                                key={prio.id}
+                                type="button"
+                                onClick={() => setFormData({ ...formData, priority: prio.id })}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-all text-left ${
+                                formData.priority === prio.id
+                                    ? "border-[#3c8dbc] bg-sky-50/30"
+                                    : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
+                                }`}
+                            >
+                                <span className={`text-[12px] font-semibold ${formData.priority === prio.id ? "text-[#3c8dbc]" : "text-slate-600"}`}>
+                                    {prio.label}
+                                </span>
+                                {formData.priority === prio.id && <div className="w-1.5 h-1.5 rounded-full bg-[#3c8dbc]" />}
+                            </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Description <span className="text-red-500">*</span></label>
+                    <textarea
+                        required
+                        className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-[13px] text-slate-800 focus:outline-none focus:border-[#3c8dbc] transition-all min-h-[120px] resize-none leading-relaxed placeholder:text-slate-300"
+                        placeholder="Describe your issue in detail..."
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    />
+                </div>
+
+                {/* Attachments */}
+                <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Attachments</label>
+                    <div
+                        onClick={() => fileInputRef.current.click()}
+                        className="border border-dashed border-slate-200 rounded-lg p-6 flex flex-col items-center justify-center bg-slate-50/30 hover:bg-slate-50 hover:border-[#3c8dbc] transition-all cursor-pointer group"
+                    >
+                        <FaCloudUploadAlt size={20} className="text-slate-300 group-hover:text-[#3c8dbc] mb-2 transition-colors" />
+                        <p className="text-[12px] font-bold text-slate-600">Upload documents</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">SVG, PNG, JPG or PDF (max. 10MB)</p>
+                    </div>
+                    <input type="file" multiple ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+
+                    {formData.attachments.length > 0 && (
+                    <div className="space-y-1.5 mt-4">
+                        {formData.attachments.map((file, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded bg-sky-50 text-[#3c8dbc] flex items-center justify-center">
+                                    <FaFileAlt size={12} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[12px] font-bold text-slate-700 truncate max-w-[200px]">{file.fileName}</span>
+                                    <span className="text-[10px] text-slate-400">{file.fileSize}</span>
+                                </div>
+                            </div>
+                            <button type="button" onClick={() => removeAttachment(idx)} className="p-1.5 text-slate-300 hover:text-red-500 rounded-md transition-all">
+                                <FaTimes size={12} />
+                            </button>
+                        </div>
+                        ))}
+                    </div>
+                    )}
+                </div>
+
+                {/* Footer Actions */}
+                <div className="pt-6 flex items-center justify-end gap-2.5 border-t border-slate-50">
+                    <button
+                        type="button"
+                        onClick={() => router.push("/admin/helpdesk")}
+                        className="px-4 py-2 rounded-lg text-[13px] font-bold text-slate-500 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="px-6 py-2 bg-[#3c8dbc] text-white rounded-lg text-[13px] font-bold shadow-sm hover:bg-[#367fa9] transition-all active:scale-95 disabled:opacity-50"
+                    >
+                        {loading ? "Submitting..." : "Submit Ticket"}
+                    </button>
+                </div>
             </form>
-          </div>
         </div>
       </div>
-    </section>
+
+      <style jsx>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
   );
 };
 

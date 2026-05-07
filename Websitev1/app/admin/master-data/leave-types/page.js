@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaSpinner } from "react-icons/fa";
+import { FaPlus, FaTimes, FaSpinner } from "react-icons/fa";
+import GenericTable from "@/widgets/GenericTable/FilterTable";
+import Swal from "sweetalert2";
 
 const LeaveTypesManagement = () => {
   const [leaveTypes, setLeaveTypes] = useState([]);
@@ -19,16 +21,46 @@ const LeaveTypesManagement = () => {
     status: "ACTIVE",
   });
 
-  useEffect(() => {
-    fetchLeaveTypes();
-  }, []);
+  const [tableData, setTableData] = useState([]);
+  const [recsPerPage, setRecsPerPage] = useState(10);
+  const [numOfPages, setNumOfPages] = useState([1]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [searchText, setSearchText] = useState("-");
+  const [totalRecs, setTotalRecs] = useState(0);
+  const [runCount, setRunCount] = useState(0);
 
-  const fetchLeaveTypes = async () => {
+  const tableHeading = {
+    leaveTypeName: "Name",
+    leaveCode: "Code",
+    isPaid: "Paid",
+    carryForward: "Carry Forward",
+    actions: "Actions",
+  };
+
+  const tableObjects = {
+    apiURL: "/api/leave-types",
+    deleteMethod: "delete",
+    getListMethod: "post",
+    editURL: "",
+    downloadApply: true,
+    searchApply: true,
+    showButton: false,
+    titleMsg: "Leave Type",
+    tableName: "Leave Types List",
+  };
+
+  const getData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/api/leave-types");
+      const formValues = {
+        recsPerPage,
+        pageNumber,
+        searchText,
+      };
+      const res = await axios.post("/api/leave-types/post/list", formValues);
       if (res.data.success) {
-        setLeaveTypes(res.data.data);
+        setTableData(res.data.tableData);
+        setTotalRecs(res.data.totalRecs);
       }
     } catch (err) {
       console.error("Error fetching leave types:", err);
@@ -37,45 +69,55 @@ const LeaveTypesManagement = () => {
     }
   };
 
+  useEffect(() => {
+    getData();
+  }, [pageNumber, recsPerPage, searchText, runCount]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingId) {
         await axios.patch(`/api/leave-types/${editingId}`, formData);
+        Swal.fire("Success", "Leave type updated successfully", "success");
       } else {
         await axios.post("/api/leave-types", formData);
+        Swal.fire("Success", "Leave type added successfully", "success");
       }
       setShowModal(false);
-      fetchLeaveTypes();
+      setRunCount(runCount + 1);
       resetForm();
     } catch (err) {
-      alert("Error saving leave type");
+      Swal.fire("Error", "Error saving leave type", "error");
     }
   };
 
-  const handleEdit = (type) => {
-    setEditingId(type._id);
-    setFormData({
-      leaveTypeName: type.leaveTypeName,
-      leaveCode: type.leaveCode,
-      maxDaysPerYear: type.maxDaysPerYear,
-      isPaid: type.isPaid,
-      carryForward: type.carryForward,
-      carryForwardLimit: type.carryForwardLimit,
-      applicableGender: type.applicableGender || "ALL",
-      status: type.status || "ACTIVE",
-    });
-    setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this leave type?")) {
+  const handleAction = async (action, id) => {
+    if (action === "edit") {
       try {
-        await axios.delete(`/api/leave-types/${id}`);
-        fetchLeaveTypes();
+        const res = await axios.get(`/api/leave-types/${id}`);
+        if (res.data) {
+          const type = res.data;
+          setEditingId(type._id);
+          setFormData({
+            leaveTypeName: type.leaveTypeName,
+            leaveCode: type.leaveCode,
+            maxDaysPerYear: type.maxDaysPerYear,
+            isPaid: type.isPaid,
+            carryForward: type.carryForward,
+            carryForwardLimit: type.carryForwardLimit,
+            applicableGender: type.applicableGender || "ALL",
+            status: type.status || "ACTIVE",
+          });
+          setShowModal(true);
+        }
       } catch (err) {
-        alert("Error deleting leave type");
+        Swal.fire("Error", "Error fetching leave type details", "error");
       }
+    }
+    if (action === "delete") {
+      // GenericTable handles delete confirmation and API call if handled by built-in logic.
+      // But we need to refresh the local runCount if GenericTable doesn't do it automatically.
+      // Actually FilterTable.js calls getData() which we've mapped.
     }
   };
 
@@ -104,7 +146,8 @@ const LeaveTypesManagement = () => {
                 <span className="text-[#3c8dbc]">Human Resources</span>
               </div>
               <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Leave Type <span className="text-[#3c8dbc] font-black">Master</span>
+                Leave Type{" "}
+                <span className="text-[#3c8dbc] font-black">Master</span>
               </h1>
             </div>
             <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
@@ -120,99 +163,33 @@ const LeaveTypesManagement = () => {
             </div>
           </div>
           <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
-            Configure different types of leaves available for employees, including paid/unpaid status and carry-forward policies.
+            Configure different types of leaves available for employees,
+            including paid/unpaid status and carry-forward policies.
           </p>
         </div>
 
-        <div className="admin-box box-primary mt-6 !border-none !shadow-none">
-          <div className="admin-box-header border-b border-gray-100 !px-0">
-            <h3 className="admin-box-title uppercase">Leave Types List</h3>
-          </div>
-
-          <div className="py-6 px-0 overflow-x-auto">
-            <table className="admin-table">
-              <thead className="admin-table-thead">
-                <tr>
-                  <th className="admin-table-th">Name</th>
-                  <th className="admin-table-th">Code</th>
-                  <th className="admin-table-th text-center">Paid</th>
-                  <th className="admin-table-th">Carry Forward</th>
-                  <th className="admin-table-th w-32 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="5" className="admin-table-td text-center py-10 text-[#3c8dbc]">
-                      <FaSpinner className="animate-spin text-3xl inline-block" />
-                    </td>
-                  </tr>
-                ) : leaveTypes.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="admin-table-td text-center py-10 text-gray-400 font-bold italic">
-                      No leave types configured
-                    </td>
-                  </tr>
-                ) : (
-                  leaveTypes.map((type) => (
-                    <tr key={type._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="admin-table-td font-bold text-gray-900">
-                        {type.leaveTypeName}
-                      </td>
-                      <td className="admin-table-td">
-                        <span className="bg-blue-50 text-[#3c8dbc] text-[10px] font-bold px-2 py-0.5 rounded border border-blue-100">
-                          {type.leaveCode}
-                        </span>
-                      </td>
-                      <td className="admin-table-td text-center">
-                        {type.isPaid ? (
-                          <span className="text-green-600 font-bold text-xs uppercase flex items-center justify-center gap-1">
-                            <FaCheck size={10} /> Paid
-                          </span>
-                        ) : (
-                          <span className="text-red-500 font-bold text-xs uppercase flex items-center justify-center gap-1">
-                            <FaTimes size={10} /> Unpaid
-                          </span>
-                        )}
-                      </td>
-                      <td className="admin-table-td">
-                        {type.carryForward ? (
-                          <div>
-                            <span className="text-green-600 font-bold text-xs uppercase">Yes</span>
-                            {type.carryForwardLimit > 0 && (
-                              <div className="text-[10px] text-gray-400 font-bold">
-                                Limit: {type.carryForwardLimit}
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-gray-400 font-bold text-xs uppercase">No</span>
-                        )}
-                      </td>
-                      <td className="admin-table-td">
-                        <div className="flex gap-2 justify-center">
-                          <button
-                            onClick={() => handleEdit(type)}
-                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                            title="Edit"
-                          >
-                            <FaEdit size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(type._id)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                            title="Delete"
-                          >
-                            <FaTrash size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+        <div className="mt-6">
+          <GenericTable
+            tableHeading={tableHeading}
+            tableObjects={tableObjects}
+            tableData={tableData}
+            setTableData={setTableData}
+            recsPerPage={recsPerPage}
+            setRecsPerPage={setRecsPerPage}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            totalRecs={totalRecs}
+            setTotalRecs={setTotalRecs}
+            numOfPages={numOfPages}
+            setNumOfPages={setNumOfPages}
+            runCount={runCount}
+            setRunCount={setRunCount}
+            getData={getData}
+            handleAction={handleAction}
+            loading={loading}
+          />
         </div>
       </div>
 

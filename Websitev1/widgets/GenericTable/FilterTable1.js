@@ -129,7 +129,9 @@ const GenericTable = ({
 
       if (totalPages <= 5) {
         const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-        setNumOfPages(pages);
+        if (typeof setNumOfPages === "function") {
+          setNumOfPages(pages);
+        }
       } else {
         let pages = [];
 
@@ -149,7 +151,9 @@ const GenericTable = ({
           ];
         }
         console.log("numOfPages before", numOfPages);
-        setNumOfPages([...new Set(pages)]);
+        if (typeof setNumOfPages === "function") {
+          setNumOfPages([...new Set(pages)]);
+        }
       }
     }
   }, [totalRecs, recsPerPage, pageNumber]);
@@ -573,7 +577,11 @@ const GenericTable = ({
                       return (
                         <th
                           key={i}
-                          className="px-4 py-3 border border-grayTwo border-l-0"
+                          className={`px-4 py-3 border border-grayTwo border-l-0 ${
+                            i === Object.entries(tableHeading).length - 1
+                              ? "border-r-1"
+                              : "border-r-0"
+                          }`}
                           id="ActionContent"
                         >
                           {value}
@@ -689,9 +697,17 @@ const GenericTable = ({
                         }
                       })}
 
-                      {tableHeading && tableHeading.actions ?
-                        (
-                          <td className="border border-grayTwo  border-l-0">
+                      {tableHeading && tableHeading.actions ? (
+                        <td
+                          className={`border border-grayTwo border-l-0 ${
+                            Object.entries(tableHeading).length - 1 ===
+                            Object.entries(tableHeading).findIndex(
+                              ([k]) => k === "actions"
+                            )
+                              ? "border-r-1"
+                              : "border-r-0"
+                          }`}
+                        >
                             {value.centerName !== "Total" ?
                               <div className="flex mx-3  gap-1 items-center">
                                 {loggedInRole === "admin" &&
