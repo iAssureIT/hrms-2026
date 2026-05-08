@@ -82,6 +82,36 @@ const Helpdesk = () => {
     }
   };
 
+  const getPriorityStyles = (priority) => {
+    switch (priority) {
+      case "Urgent":
+      case "High":
+        return {
+          strip: "bg-[#EF4444]",
+          badge: "bg-red-50/50 text-[#EF4444] border-red-100",
+          label: "Urgent",
+        };
+      case "Medium":
+        return {
+          strip: "bg-[#EC4899]",
+          badge: "bg-rose-50/50 text-[#EC4899] border-rose-100",
+          label: "Medium",
+        };
+      case "Low":
+        return {
+          strip: "bg-[#06B6D4]",
+          badge: "bg-cyan-50/50 text-[#06B6D4] border-cyan-100",
+          label: "Low",
+        };
+      default:
+        return {
+          strip: "bg-slate-200",
+          badge: "bg-slate-50 text-slate-400 border-slate-100",
+          label: priority || "Low",
+        };
+    }
+  };
+
   return (
     <section className="section admin-box box-primary">
       <div className="hr-card flex flex-col h-[calc(100vh-120px)] animate-fadeIn">
@@ -165,18 +195,25 @@ const Helpdesk = () => {
                   <button
                     key={t._id}
                     onClick={() => setSelectedTicket(t)}
-                    className={`w-full text-left p-3 rounded-lg transition-all duration-200 group relative border ${
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-300 group relative border overflow-hidden ${
                       selectedTicket?._id === t._id
-                        ? "bg-sky-50/40 border-[#3c8dbc]"
-                        : "bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+                        ? "bg-sky-50/40 border-[#3c8dbc] shadow-md ring-1 ring-[#3c8dbc]/10"
+                        : "bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200 hover:shadow-sm"
                     }`}
                   >
-                    <div className="flex gap-3">
+                    {/* Priority Strip */}
+                    <div 
+                      className={`absolute left-0 top-0 bottom-0 w-[3.5px] rounded-r-full transition-all duration-300 ${getPriorityStyles(t.priority).strip} ${
+                        selectedTicket?._id === t._id ? "opacity-100" : "opacity-60 group-hover:opacity-100"
+                      }`}
+                    />
+
+                    <div className="flex gap-3 ml-2.5">
                       <div
-                        className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px] font-bold shadow-sm ${
+                        className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-[11px] font-bold shadow-sm transition-colors ${
                           selectedTicket?._id === t._id
                             ? "bg-[#3c8dbc] text-white"
-                            : "bg-slate-100 text-slate-500"
+                            : "bg-slate-50 text-slate-400 group-hover:bg-white"
                         }`}
                       >
                         {t.employeeId?.employeeName?.charAt(0) || "E"}
@@ -190,21 +227,29 @@ const Helpdesk = () => {
                             {moment(t.createdAt).fromNow()}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <span className="text-[9px] font-bold text-slate-400">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <span className="text-[9px] font-bold text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
                             TKT-{t.ticketID?.split("-")[1] || t.ticketID}
                           </span>
-                          <span className="text-[9px] font-medium text-slate-400 truncate tracking-tight">
+                          <span className="text-[9px] font-medium text-slate-400 truncate tracking-tight uppercase">
                             {t.category}
                           </span>
                         </div>
-                        <h3 className="text-[12px] font-medium text-slate-600 mb-2 truncate leading-tight">
+                        <h3 className="text-[12px] font-medium text-slate-600 mb-2.5 truncate leading-tight">
                           {t.subject}
                         </h3>
-                        <div
-                          className={`inline-flex px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${getStatusBadge(t.status)}`}
-                        >
-                          {t.status}
+                        <div className="flex items-center gap-2">
+                          <div
+                            className={`inline-flex px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${getStatusBadge(t.status)}`}
+                          >
+                            {t.status}
+                          </div>
+                          <div
+                            className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border transition-all ${getPriorityStyles(t.priority).badge}`}
+                          >
+                            <div className={`w-1 h-1 rounded-full ${getPriorityStyles(t.priority).strip}`} />
+                            {getPriorityStyles(t.priority).label}
+                          </div>
                         </div>
                       </div>
                     </div>

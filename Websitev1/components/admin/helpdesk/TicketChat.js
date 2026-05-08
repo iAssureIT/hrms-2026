@@ -151,12 +151,45 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
     }
   };
 
+  const getPriorityStyles = (priority) => {
+    switch (priority) {
+      case "Urgent":
+      case "High":
+        return {
+          strip: "bg-[#EF4444]",
+          badge: "bg-red-50/50 text-[#EF4444] border-red-100",
+          label: "Urgent",
+        };
+      case "Medium":
+        return {
+          strip: "bg-[#EC4899]",
+          badge: "bg-rose-50/50 text-[#EC4899] border-rose-100",
+          label: "Medium",
+        };
+      case "Low":
+        return {
+          strip: "bg-[#06B6D4]",
+          badge: "bg-cyan-50/50 text-[#06B6D4] border-cyan-100",
+          label: "Low",
+        };
+      default:
+        return {
+          strip: "bg-slate-200",
+          badge: "bg-slate-50 text-slate-400 border-slate-100",
+          label: priority || "Low",
+        };
+    }
+  };
+
   if (!ticket) return null;
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-white relative">
+    <div className="flex-1 flex flex-col h-full bg-white relative overflow-hidden">
+      {/* Priority Strip */}
+      <div className={`absolute left-0 top-0 bottom-0 w-[3.5px] z-40 ${getPriorityStyles(ticket.priority).strip} opacity-90`} />
+
       {/* Premium Header */}
-      <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-30">
+      <div className="pl-7 pr-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-30">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
@@ -173,6 +206,10 @@ const TicketChat = ({ ticket, onRefresh, onBack }) => {
                     <h2 className="text-[15px] font-bold text-slate-800">{ticket.subject}</h2>
                     <div className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${getStatusBadge(ticket.status)}`}>
                         {ticket.status}
+                    </div>
+                    <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-bold border transition-all ${getPriorityStyles(ticket.priority).badge}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${getPriorityStyles(ticket.priority).strip} shadow-sm`} />
+                        {getPriorityStyles(ticket.priority).label}
                     </div>
                 </div>
                 <div className="flex items-center gap-2 mt-0.5 text-[11px] font-medium text-slate-400">
