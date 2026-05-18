@@ -1118,7 +1118,11 @@ export default function RootLayout({ children }) {
       icon: <FaMoneyCheckAlt />,
       link: "/admin/payroll-management",
     },
-
+    {
+      title: "Payroll",
+      icon: <FaMoneyCheckAlt />,
+      link: "/admin/payroll/process",
+    },
     {
       title: "Asset Management",
       submenu: true,
@@ -1206,6 +1210,11 @@ export default function RootLayout({ children }) {
       submenu: true,
       icon: <BsClipboardDataFill />,
       submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Salary Components Master",
+          link: "/admin/payroll/salary/components",
+        },        
         {
           icon: <FaRegCircle />,
           title: "Location",

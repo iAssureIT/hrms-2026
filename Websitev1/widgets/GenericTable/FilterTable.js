@@ -1350,7 +1350,6 @@ const GenericTable = ({
       }
       if (action === "delete") {
         // setDeleteModal(true);
-
         Swal.fire({
           title: " ",
           text: `Are you sure you want to delete this ${tableObjects?.titleMsg}?`,
@@ -1388,6 +1387,12 @@ const GenericTable = ({
           }
         });
       }
+
+
+      if (action === "salstr") {
+        window.location.href = "/" + loggedInRole + tableObjects?.salstr + uid;
+      }
+
     }
   };
   const sortNumber = (key, tableData) => {
@@ -2013,6 +2018,21 @@ const GenericTable = ({
                                               }}
                                             />
                                           </Tooltip>
+                                          <Tooltip
+                                            content="Salary Structure"
+                                            placement="bottom"
+                                            className="bg-blue-500"
+                                            arrow={false}
+                                          >
+                                            <RiDeleteBin6Line
+                                              className="border border-blue-500 text-blue-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-blue-400 hover:text-blue-400"
+                                              size={"1.3rem"}
+                                              onClick={() => {
+                                                redirect("salstr", value.employeeID);
+                                                setDeleteId(value.employeeID);
+                                              }}
+                                            />
+                                          </Tooltip>                                          
                                         </>
                                       ) : null}
                                       {pathname ===

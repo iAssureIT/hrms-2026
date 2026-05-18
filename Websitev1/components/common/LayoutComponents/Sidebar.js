@@ -140,6 +140,7 @@ const Sidebar = ({ sidebarData, onItemClick, open, setOpen }) => {
 
               {menu.submenu && submenuOpenIndex === index && (
                 <ul className={`pt-0 ${!open && "px-0"}`}>
+                  
                   {menu.submenuItems.map((submenuItem, index) => (
                     <li
                       key={index}

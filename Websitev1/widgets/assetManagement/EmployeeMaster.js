@@ -9,6 +9,7 @@ import { FaUserTie, FaFileUpload, FaListUl, FaUserPlus, FaUsers, FaBuilding, FaV
 import { BsPlusSquare } from "react-icons/bs";
 import ls from "localstorage-slim";
 import FilterTable from "@/widgets/GenericTable/FilterTable";
+import Link from "next/link";
 
 const getStatusColor = (colorClass) => {
   const colors = {
@@ -115,12 +116,12 @@ const EmployeeMaster = () => {
   };
 
   const tableObjects = {
-
     apiURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees`,
     getListMethod: "post",
     deleteMethod: "delete",
     editURL: `/asset-management/add-employee?id=`,
     viewURL: `/asset-management/employee-profile-view?id=`,
+    salstr: `/payroll/salary/structure?empId=`,
     searchApply: true,
     downloadApply: true,
     titleMsg: "Employee List",
@@ -142,8 +143,9 @@ const EmployeeMaster = () => {
         formValues
       );
       if (response.data) {
-        setTableData(response.data.tableData || []);
-        setTotalRecs(response.data.totalRecs || 0);
+
+          setTableData(response.data.tableData || []);
+          setTotalRecs(response.data.totalRecs || 0);
       }
     } catch (error) {
       console.error("Error fetching employees:", error);
