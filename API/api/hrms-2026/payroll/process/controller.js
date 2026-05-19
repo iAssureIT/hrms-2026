@@ -1,6 +1,8 @@
+const mongoose = require("mongoose");
 const DepartmentMaster = require(
   "./model"
 );
+const Employees = require("../../employeeManagement/model");
 
 // GET ALL DEPARTMENTS
 exports.getPayrollDepartments = async (req, res) => {
@@ -24,18 +26,21 @@ exports.getPayrollDepartments = async (req, res) => {
 // GET EMPLOYEES BY DEPARTMENTS
 exports.getEmployeesByDepartments =
   async (req, res) => {
-console.log('controller departments', req.body);
+
     try {
 
-      const { departments } =
-        req.body;
+      console.log(
+        "controller departments:",
+        req.body
+      );
+
+      const { departments } = req.body;
 
       // VALIDATION
       if (
         !departments ||
         !Array.isArray(departments)
       ) {
-
         return res.status(400).json({
           success: false,
           message:
@@ -46,12 +51,17 @@ console.log('controller departments', req.body);
       // FIND EMPLOYEES
       const employees =
         await Employees.find({
-          departmentName: {
+          department_id: {
             $in: departments,
           },
         }).sort({
-          name: 1,
+          employeeName: 1,
         });
+
+      console.log(
+        "employees:",
+        employees
+      );
 
       res.status(200).json({
         success: true,
@@ -62,11 +72,11 @@ console.log('controller departments', req.body);
     } catch (error) {
 
       console.log(error);
-      console.log('abcd : ', departments);
+
       res.status(500).json({
         success: false,
-        message:
-          error.message,
+        message: error.message,
       });
+
     }
   };

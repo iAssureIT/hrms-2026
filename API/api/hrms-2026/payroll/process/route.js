@@ -9,6 +9,7 @@ const controller = require(
 // GET ALL DEPARTMENTS
 router.get("/", controller.getPayrollDepartments);
 
-router.get("/premp", controller.getEmployeesByDepartments);
+router.post("/premp", controller.getEmployeesByDepartments);
+
 
 module.exports = router;

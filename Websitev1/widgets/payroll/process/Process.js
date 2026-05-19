@@ -16,11 +16,15 @@ export default function PayrollMultiStepForm() {
     useState([]);
 
   // SELECTED DATA
-  const [selectedDepartments, setSelectedDepartments] =
-    useState([]);
+  const [
+    selectedDepartments,
+    setSelectedDepartments,
+  ] = useState([]);
 
-  const [selectedEmployees, setSelectedEmployees] =
-    useState([]);
+  const [
+    selectedEmployees,
+    setSelectedEmployees,
+  ] = useState([]);
 
   // PAYROLL DATA
   const [payrollData, setPayrollData] =
@@ -29,9 +33,10 @@ export default function PayrollMultiStepForm() {
     });
 
   // EMPLOYEE PAYROLL DETAILS
-  const [employeePayrollDetails,
-    setEmployeePayrollDetails] =
-    useState([]);
+  const [
+    employeePayrollDetails,
+    setEmployeePayrollDetails,
+  ] = useState([]);
 
   // FETCH DEPARTMENTS
   const fetchDepartments = async () => {
@@ -41,6 +46,7 @@ export default function PayrollMultiStepForm() {
       const response = await axios.get(
         "http://localhost:3050/api/payroll/prdept"
       );
+      console.log(response.data);
       setDepartments(response.data);
 
     } catch (error) {
@@ -52,19 +58,20 @@ export default function PayrollMultiStepForm() {
     fetchDepartments();
   }, []);
 
-  // FETCH EMPLOYEES BASED ON DEPARTMENT
+  // FETCH EMPLOYEES
   const fetchEmployees = async () => {
 
     try {
 
       const response = await axios.post(
         "http://localhost:3050/api/payroll/prdept/premp",
-          {
-            departments: selectedDepartments,
-          }
+        {
+          departments: selectedDepartments.map((item) => item.id),
+        }
       );
-      console.log("employees response", selectedDepartments);
-      setEmployees(response.data);
+      console.log(selectedDepartments);
+      console.log("Employees by Departments:", response);
+      setEmployees(response.data.data);
 
     } catch (error) {
       console.log(error);
@@ -81,25 +88,59 @@ export default function PayrollMultiStepForm() {
 
   }, [selectedDepartments]);
 
-  // HANDLE DEPARTMENT CHECKBOX
+  // HANDLE DEPARTMENT
+  //   const handleDepartmentChange = (
+  //     department,id
+  //   ) => {
+  // //console.log("handleDepartmentChange:", department, id);
+  //     setSelectedDepartments((prev) => {
+
+  //       if (
+  //         prev.includes(department)
+  //       ) {
+
+  //         return prev.filter(
+  //           (item) =>
+  //             item !== department
+  //         );
+  //       }
+
+  //       return [...prev, department];
+  //     });
+  //   };
+
   const handleDepartmentChange = (
-    department
+    department,
+    id
   ) => {
 
     setSelectedDepartments((prev) => {
 
-      if (prev.includes(department)) {
+      const alreadyExists =
+        prev.find(
+          (item) => item.id === id
+        );
+
+      // REMOVE
+      if (alreadyExists) {
 
         return prev.filter(
-          (item) => item !== department
+          (item) => item.id !== id
         );
       }
 
-      return [...prev, department];
+      // ADD
+      return [
+        ...prev,
+        {
+          id,
+          department,
+        },
+      ];
     });
   };
 
-  // HANDLE EMPLOYEE CHECKBOX
+  // HANDLE EMPLOYEE
   const handleEmployeeChange = (
     employee
   ) => {
@@ -109,7 +150,8 @@ export default function PayrollMultiStepForm() {
       if (prev.includes(employee)) {
 
         return prev.filter(
-          (item) => item !== employee
+          (item) =>
+            item !== employee
         );
       }
 
@@ -117,12 +159,13 @@ export default function PayrollMultiStepForm() {
     });
   };
 
-  // NEXT STEP
+  // NEXT
   const nextStep = () => {
     setStep((prev) => prev + 1);
+    fetchEmployees();
   };
 
-  // PREVIOUS STEP
+  // PREVIOUS
   const prevStep = () => {
     setStep((prev) => prev - 1);
   };
@@ -131,12 +174,14 @@ export default function PayrollMultiStepForm() {
   const runPayroll = () => {
 
     const payrollEmployees =
-      selectedEmployees.map((emp) => ({
-        employee: emp,
-        attendance: "",
-        leave: "",
-        otHours: "",
-      }));
+      selectedEmployees.map(
+        (emp) => ({
+          employee: emp,
+          attendance: "",
+          leave: "",
+          otHours: "",
+        })
+      );
 
     setEmployeePayrollDetails(
       payrollEmployees
@@ -145,34 +190,40 @@ export default function PayrollMultiStepForm() {
     nextStep();
   };
 
-  // HANDLE PAYROLL DETAIL CHANGE
+  // HANDLE DETAILS
   const handlePayrollDetailChange = (
     index,
     field,
     value
   ) => {
 
-    const updated =
-      [...employeePayrollDetails];
+    const updated = [
+      ...employeePayrollDetails,
+    ];
 
     updated[index][field] = value;
 
-    setEmployeePayrollDetails(updated);
+    setEmployeePayrollDetails(
+      updated
+    );
   };
 
   // SUBMIT
   const handleSubmit = async () => {
 
     const payload = {
-      departments: selectedDepartments,
-      employees: selectedEmployees,
+      // departments:
+      //   selectedDepartments,
+      departments: selectedDepartments.map(
+        (item) => item.id
+      ),
+      employees:
+        selectedEmployees,
       payrollDate:
         payrollData.payrollDate,
       payrollDetails:
         employeePayrollDetails,
     };
-
-    console.log(payload);
 
     try {
 
@@ -181,7 +232,9 @@ export default function PayrollMultiStepForm() {
         payload
       );
 
-      alert("Payroll Run Successfully");
+      alert(
+        "Payroll Run Successfully"
+      );
 
     } catch (error) {
       console.log(error);
@@ -189,361 +242,554 @@ export default function PayrollMultiStepForm() {
   };
 
   return (
+
     <div className="min-h-screen bg-gray-100 p-6">
 
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+      <div className="max-w-7xl mx-auto">
 
-        {/* HEADER */}
-        <div className="bg-black text-white p-6">
+        {/* PAGE HEADER */}
+        <div className="bg-white border border-gray-200 rounded-xl px-6 py-5 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
 
-          <h1 className="text-3xl font-bold">
-            Payroll Process
-          </h1>
+              <h1 className="text-2xl font-semibold text-gray-800">
+                Payroll Processing
+              </h1>
 
-          <p className="mt-2 text-gray-300">
-            Step {step} of 4
-          </p>
+              <p className="text-sm text-gray-500 mt-1">
+                Execute monthly payroll process
+              </p>
 
-          {/* STEP BAR */}
-          <div className="flex gap-3 mt-5">
+            </div>
 
-            {[1, 2, 3, 4].map((item) => (
+            <div className="flex gap-3">
 
-              <div
-                key={item}
-                className={`h-2 flex-1 rounded-full
-                ${
-                  step >= item
-                    ? "bg-green-400"
-                    : "bg-gray-600"
-                }`}
-              />
-            ))}
+              {[1, 2, 3, 4].map(
+                (item) => (
+
+                  <div
+                    key={item}
+                    className={`w-10 h-10 rounded-lg border flex items-center justify-center text-sm font-medium
+                    ${step >= item
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-500 border-gray-300"
+                      }`}
+                  >
+
+                    {item}
+
+                  </div>
+                )
+              )}
+
+            </div>
           </div>
         </div>
 
-        {/* BODY */}
-        <div className="p-8">
+        {/* MAIN CARD */}
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
 
-          {/* STEP 1 */}
-          {step === 1 && (
+          {/* TOP BAR */}
+          <div className="border-b border-gray-200 px-6 py-4 bg-gray-50">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
 
-            <div>
+                <h2 className="text-lg font-semibold text-gray-800">
 
-              <h2 className="text-2xl font-bold mb-6">
-                Select Departments
-              </h2>
+                  {step === 1 &&
+                    "Department Selection"}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {step === 2 &&
+                    "Employee Selection"}
 
-                {departments.map(
-                  (item, index) => {
+                  {step === 3 &&
+                    "Payroll Run"}
 
-                    const department = item.fieldValue;
+                  {step === 4 &&
+                    "Attendance Details"}
 
-                    const checked = selectedDepartments.includes(
-                        department
-                      );
+                </h2>
 
-                    return (
-                      <label
-                        key={index}
-                        className={`border rounded-2xl p-5 flex items-center gap-4 cursor-pointer transition
-                        ${
-                          checked
-                            ? "bg-indigo-50 border-indigo-500"
-                            : "border-gray-200"
-                        }`}
-                      >
-
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() =>
-                            handleDepartmentChange(
-                              department
-                            )
-                          }
-                          className="w-5 h-5"
-                        />
-
-                        <div>
-
-                          <h3 className="font-bold text-lg">
-                            {department}
-                          </h3>
-
-                          <p className="text-sm text-gray-500">
-                            Department Selection
-                          </p>
-                        </div>
-                      </label>
-                    );
-                  }
-                )}
               </div>
-            </div>
-          )}
 
-          {/* STEP 2 */}
-          {step === 2 && (
+              <div className="text-sm text-gray-500">
 
-            <div>
+                Step {step} of 4
 
-              <h2 className="text-2xl font-bold mb-2">
-                Select Employees
-              </h2>
-
-              <p className="text-gray-500 mb-6">
-                Selected Departments :
-                {" "}
-                {selectedDepartments.join(", ")}
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                {employees.map(
-                  (item, index) => {
-
-                    const employeeName =
-                      item.employeeName;
-
-                    const checked =
-                      selectedEmployees.includes(
-                        employeeName
-                      );
-
-                    return (
-
-                      <label
-                        key={index}
-                        className={`border rounded-2xl p-5 flex items-center gap-4 cursor-pointer transition
-                        ${
-                          checked
-                            ? "bg-green-50 border-green-500"
-                            : "border-gray-200"
-                        }`}
-                      >
-
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() =>
-                            handleEmployeeChange(
-                              employeeName
-                            )
-                          }
-                          className="w-5 h-5"
-                        />
-
-                        <div>
-
-                          <h3 className="font-bold">
-                            {employeeName}
-                          </h3>
-
-                          <p className="text-sm text-gray-500">
-                            {item.department}
-                          </p>
-                        </div>
-                      </label>
-                    );
-                  }
-                )}
               </div>
+
             </div>
-          )}
 
-          {/* STEP 3 */}
-          {step === 3 && (
+          </div>
 
-            <div>
+          {/* BODY */}
+          <div className="p-6">
 
-              <h2 className="text-2xl font-bold mb-6">
-                Payroll Run
-              </h2>
+            {/* STEP 1 */}
+            {step === 1 && (
 
-              <div className="bg-gray-50 rounded-3xl p-6 border">
+              <div>
 
-                <div className="mb-6">
+                <div className="overflow-x-auto border border-gray-200 rounded-xl">
 
-                  <label className="block font-medium mb-2">
-                    Payroll Date
-                  </label>
+                  <table className="w-full">
 
-                  <input
-                    type="date"
-                    value={
-                      payrollData.payrollDate
-                    }
-                    onChange={(e) =>
-                      setPayrollData({
-                        ...payrollData,
-                        payrollDate:
-                          e.target.value,
-                      })
-                    }
-                    className="border rounded-xl px-4 py-3 w-72"
-                  />
+                    <thead className="bg-gray-50">
+
+                      <tr>
+
+                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
+                          Select
+                        </th>
+
+                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
+                          Department Name
+                        </th>
+
+                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
+                          Status
+                        </th>
+
+                      </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                      {departments.map(
+                        (
+                          item,
+                          index
+                        ) => {
+
+                          const department =
+                            item.fieldValue;
+
+                          // const checked =
+                          //   selectedDepartments.includes(
+                          //     department
+                          //   );
+                          const checked =
+                            selectedDepartments.some(
+                              (dept) => dept.id === item._id
+                            );
+
+                          return (
+
+                            <tr
+                              key={index}
+                              className="hover:bg-gray-50"
+                            >
+
+                              <td className="px-4 py-3 border-b">
+
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    checked
+                                  }
+                                  onChange={() =>
+                                    handleDepartmentChange(
+                                      department, item._id
+                                    )
+                                  }
+                                />
+
+                              </td>
+
+                              <td className="px-4 py-3 border-b">
+
+                                {
+                                  department
+                                }
+
+                              </td>
+
+                              <td className="px-4 py-3 border-b">
+
+                                <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+
+                                  Active
+
+                                </span>
+
+                              </td>
+
+                            </tr>
+                          );
+                        }
+                      )}
+
+                    </tbody>
+
+                  </table>
+
                 </div>
 
-                <div>
+              </div>
+            )}
 
-                  <h3 className="font-bold mb-3">
-                    Selected Employees
-                  </h3>
+            {/* STEP 2 */}
+            {step === 2 && (
 
-                  <div className="flex flex-wrap gap-3">
+              <div>
 
-                    {selectedEmployees.map(
-                      (emp, index) => (
+                <div className="mb-5">
 
-                        <div
-                          key={index}
-                          className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full"
-                        >
-                          {emp}
-                        </div>
-                      )
-                    )}
+                  <p className="text-sm text-gray-500">
+
+                    Selected Departments :
+
+                    {" "}
+
+                    {/* {selectedDepartments.join(
+                      ", "
+                    )} */}
+                    {
+                      selectedDepartments
+                        .map((item) => item.department)
+                        .join(", ")
+                    }
+
+                  </p>
+
+                </div>
+
+                <div className="overflow-x-auto border border-gray-200 rounded-xl">
+
+                  <table className="w-full">
+
+                    <thead className="bg-gray-50">
+
+                      <tr>
+
+                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
+                          Select
+                        </th>
+
+                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
+                          Employee Name
+                        </th>
+
+                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
+                          Department
+                        </th>
+
+                      </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                      {employees.map(
+                        (
+                          item,
+                          index
+                        ) => {
+
+                          const employeeName =
+                            item.employeeName;
+
+                          const checked =
+                            selectedEmployees.includes(
+                              employeeName
+                            );
+
+                          return (
+
+                            <tr
+                              key={index}
+                              className="hover:bg-gray-50"
+                            >
+
+                              <td className="px-4 py-3 border-b">
+
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    checked
+                                  }
+                                  onChange={() =>
+                                    handleEmployeeChange(
+                                      employeeName
+                                    )
+                                  }
+                                />
+
+                              </td>
+
+                              <td className="px-4 py-3 border-b">
+
+                                {
+                                  employeeName
+                                }
+
+                              </td>
+
+                              <td className="px-4 py-3 border-b">
+
+                                {
+                                  item.department
+                                }
+
+                              </td>
+
+                            </tr>
+                          );
+                        }
+                      )}
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </div>
+            )}
+
+            {/* STEP 3 */}
+            {step === 3 && (
+
+              <div>
+
+                {/* FORM */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+
+                  <div>
+
+                    <label className="block text-sm font-medium mb-2">
+                      Payroll Date
+                    </label>
+
+                    <input
+                      type="date"
+                      value={
+                        payrollData.payrollDate
+                      }
+                      onChange={(e) =>
+                        setPayrollData({
+                          ...payrollData,
+                          payrollDate:
+                            e.target.value,
+                        })
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                    />
+
                   </div>
+
+                </div>
+
+                {/* SELECTED EMPLOYEES */}
+                <div className="border border-gray-200 rounded-xl overflow-hidden">
+
+                  <div className="bg-gray-50 px-4 py-3 border-b">
+
+                    <h3 className="font-semibold">
+                      Selected Employees
+                    </h3>
+
+                  </div>
+
+                  <div className="p-4">
+
+                    <div className="flex flex-wrap gap-2">
+
+                      {selectedEmployees.map(
+                        (
+                          emp,
+                          index
+                        ) => (
+
+                          <div
+                            key={index}
+                            className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-sm"
+                          >
+
+                            {emp}
+
+                          </div>
+                        )
+                      )}
+
+                    </div>
+
+                  </div>
+
                 </div>
 
                 <button
                   onClick={runPayroll}
                   type="button"
-                  className="mt-8 bg-black text-white px-8 py-3 rounded-2xl"
+                  className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
                 >
                   Run Payroll
                 </button>
+
               </div>
-            </div>
-          )}
+            )}
 
-          {/* STEP 4 */}
-          {step === 4 && (
+            {/* STEP 4 */}
+            {step === 4 && (
 
-            <div>
+              <div>
 
-              <h2 className="text-2xl font-bold mb-6">
-                Attendance / Leave / OT
-              </h2>
+                <div className="overflow-x-auto border border-gray-200 rounded-xl">
 
-              <div className="space-y-5">
+                  <table className="w-full">
 
-                {employeePayrollDetails.map(
-                  (item, index) => (
+                    <thead className="bg-gray-50">
 
-                    <div
-                      key={index}
-                      className="bg-gray-50 border rounded-3xl p-6"
-                    >
+                      <tr>
 
-                      <h3 className="text-xl font-bold mb-5">
-                        {item.employee}
-                      </h3>
+                        <th className="px-4 py-3 text-left border-b">
+                          Employee
+                        </th>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <th className="px-4 py-3 text-left border-b">
+                          Attendance
+                        </th>
 
-                        {/* ATTENDANCE */}
-                        <div>
+                        <th className="px-4 py-3 text-left border-b">
+                          Leave
+                        </th>
 
-                          <label className="block mb-2 font-medium">
-                            Attendance Days
-                          </label>
+                        <th className="px-4 py-3 text-left border-b">
+                          OT Hours
+                        </th>
 
-                          <input
-                            type="number"
-                            value={
-                              item.attendance
-                            }
-                            onChange={(e) =>
-                              handlePayrollDetailChange(
-                                index,
-                                "attendance",
-                                e.target.value
-                              )
-                            }
-                            className="w-full border rounded-xl px-4 py-3"
-                          />
-                        </div>
+                      </tr>
 
-                        {/* LEAVE */}
-                        <div>
+                    </thead>
 
-                          <label className="block mb-2 font-medium">
-                            Leave Days
-                          </label>
+                    <tbody>
 
-                          <input
-                            type="number"
-                            value={
-                              item.leave
-                            }
-                            onChange={(e) =>
-                              handlePayrollDetailChange(
-                                index,
-                                "leave",
-                                e.target.value
-                              )
-                            }
-                            className="w-full border rounded-xl px-4 py-3"
-                          />
-                        </div>
+                      {employeePayrollDetails.map(
+                        (
+                          item,
+                          index
+                        ) => (
 
-                        {/* OT */}
-                        <div>
+                          <tr
+                            key={index}
+                            className="hover:bg-gray-50"
+                          >
 
-                          <label className="block mb-2 font-medium">
-                            OT Hours
-                          </label>
+                            <td className="px-4 py-3 border-b font-medium">
 
-                          <input
-                            type="number"
-                            value={
-                              item.otHours
-                            }
-                            onChange={(e) =>
-                              handlePayrollDetailChange(
-                                index,
-                                "otHours",
-                                e.target.value
-                              )
-                            }
-                            className="w-full border rounded-xl px-4 py-3"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )
-                )}
+                              {
+                                item.employee
+                              }
+
+                            </td>
+
+                            <td className="px-4 py-3 border-b">
+
+                              <input
+                                type="number"
+                                value={
+                                  item.attendance
+                                }
+                                onChange={(
+                                  e
+                                ) =>
+                                  handlePayrollDetailChange(
+                                    index,
+                                    "attendance",
+                                    e.target
+                                      .value
+                                  )
+                                }
+                                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                              />
+
+                            </td>
+
+                            <td className="px-4 py-3 border-b">
+
+                              <input
+                                type="number"
+                                value={
+                                  item.leave
+                                }
+                                onChange={(
+                                  e
+                                ) =>
+                                  handlePayrollDetailChange(
+                                    index,
+                                    "leave",
+                                    e.target
+                                      .value
+                                  )
+                                }
+                                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                              />
+
+                            </td>
+
+                            <td className="px-4 py-3 border-b">
+
+                              <input
+                                type="number"
+                                value={
+                                  item.otHours
+                                }
+                                onChange={(
+                                  e
+                                ) =>
+                                  handlePayrollDetailChange(
+                                    index,
+                                    "otHours",
+                                    e.target
+                                      .value
+                                  )
+                                }
+                                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                              />
+
+                            </td>
+
+                          </tr>
+                        )
+                      )}
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+                {/* FINAL BUTTON */}
+                <div className="mt-6 flex justify-end">
+
+                  <button
+                    onClick={
+                      handleSubmit
+                    }
+                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg"
+                  >
+                    Final Submit Payroll
+                  </button>
+
+                </div>
+
               </div>
+            )}
 
-              {/* FINAL SUBMIT */}
-              <div className="mt-8 flex justify-end">
+          </div>
 
-                <button
-                  onClick={handleSubmit}
-                  className="bg-green-600 text-white px-10 py-4 rounded-2xl text-lg font-semibold"
-                >
-                  Final Submit Payroll
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* BUTTONS */}
-          <div className="flex justify-between mt-10">
+          {/* FOOTER BUTTONS */}
+          <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-between">
 
             <button
               onClick={prevStep}
               disabled={step === 1}
-              className={`px-6 py-3 rounded-xl
-              ${
-                step === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-gray-800 text-white"
-              }`}
+              className={`px-5 py-2 rounded-lg border
+              ${step === 1
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white hover:bg-gray-100"
+                }`}
             >
               Previous
             </button>
@@ -552,14 +798,18 @@ export default function PayrollMultiStepForm() {
 
               <button
                 onClick={nextStep}
-                className="bg-black text-white px-8 py-3 rounded-xl"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
               >
                 Next
               </button>
             )}
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }
