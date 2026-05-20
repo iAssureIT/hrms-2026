@@ -45,7 +45,9 @@ const AttendanceDataEntry = () => {
         const details = ls.get("userDetails", { decrypt: true });
         setUserDetails(details);
         fetchFilters();
-        if (details) fetchSavedMappings(details._id);
+        console.log("details of user --> ",details);
+        
+        if (details) fetchSavedMappings(details?.user_id);
     }, []);
 
     useEffect(() => {
@@ -90,6 +92,7 @@ const AttendanceDataEntry = () => {
                 center_id,
                 department_id
             });
+            console.log("response of attendance matrix api -->",res.data);
             if (res.data.success) {
                 const day = moment(selectedDate).date();
                 const initialManualData = {};
@@ -191,6 +194,9 @@ const AttendanceDataEntry = () => {
                 const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
                 const dataToImport = [];
 
+                console.log("rows -> ",rows);
+                
+
                 rows.forEach(row => {
                     const logDateRaw = row[mappings.logDate];
                     if (logDateRaw && row[mappings.employeeID]) {
@@ -204,6 +210,7 @@ const AttendanceDataEntry = () => {
                         });
                     }
                 });
+                console.log("dataToImport -> ",dataToImport);
 
                 if (dataToImport.length > 0) {
                     await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/attendance/post/save`, {

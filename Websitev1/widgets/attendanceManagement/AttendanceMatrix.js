@@ -59,6 +59,8 @@ const AttendanceMatrix = () => {
                 center_id,
                 department_id
             });
+            console.log("fetcmatrix list -->",res.data);
+            
             if (res.data.success) {
                 setMatrixData(res.data.data);
             }

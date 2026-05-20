@@ -209,6 +209,8 @@ exports.saveAttendance = async (req, res) => {
 
 // SAVE/UPDATE COLUMN MAPPING
 exports.saveColumnMapping = async (req, res) => {
+    // console.log("inside save column mapping ");
+    
     try {
         const { mappingName, mappings, user_id } = req.body;
         const result = await ColumnMappings.findOneAndUpdate(
