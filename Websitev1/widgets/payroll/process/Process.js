@@ -297,9 +297,7 @@ export default function PayrollProcessPage() {
               emp.departmentName,
 
             attendance: 28,
-
             leave: 2,
-
             otHours: 10,
           })
         );
@@ -357,17 +355,25 @@ export default function PayrollProcessPage() {
           salaryData:
             (
               res.data.salaryData || []
-            ).map(
-              (item) => ({
-                ...item,
+            )
+              .filter(
+                (item) =>
+                  item.components?.toLowerCase() !==
+                    "ctc" &&
+                  item.components?.toLowerCase() !==
+                    "total"
+              )
+              .map(
+                (item) => ({
+                  ...item,
 
-                amount: Math.round(
-                  Number(
-                    item.amount
-                  ) / 12
-                ),
-              })
-            ),
+                  amount: Math.round(
+                    Number(
+                      item.amount
+                    ) / 12
+                  ),
+                })
+              ),
         };
 
         setPopupSalaryData(
@@ -441,17 +447,25 @@ export default function PayrollProcessPage() {
               salaryData:
                 (
                   salaryResponse.data.salaryData || []
-                ).map(
-                  (item) => ({
-                    ...item,
+                )
+                  .filter(
+                    (item) =>
+                      item.components?.toLowerCase() !==
+                        "ctc" &&
+                      item.components?.toLowerCase() !==
+                        "total"
+                  )
+                  .map(
+                    (item) => ({
+                      ...item,
 
-                    amount: Math.round(
-                      Number(
-                        item.amount
-                      ) / 12
-                    ),
-                  })
-                ),
+                      amount: Math.round(
+                        Number(
+                          item.amount
+                        ) / 12
+                      ),
+                    })
+                  ),
             };
 
             const totalEarnings =
@@ -659,7 +673,9 @@ export default function PayrollProcessPage() {
           {/* STEP 1 */}
           {step === 1 && (
             <div>
+
               <div className="flex items-center justify-between mb-5">
+
                 <h2 className="text-sm font-medium">
                   Select Departments
                 </h2>
@@ -696,10 +712,45 @@ export default function PayrollProcessPage() {
                       : "Select All"
                   }
                 </button>
+
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+{/* SEARCH + SUMMARY */}
+<div className="flex items-center justify-between mb-4">
 
+  <div className="flex items-center gap-3">
+
+    <input
+      type="text"
+      placeholder="Search Department"
+      className="border rounded-md px-3 py-2 text-sm w-[260px]"
+    />
+
+    <p className="text-sm text-blue-600 font-medium">
+
+      Selected :
+      {" "}
+      {
+        selectedDepartments.length
+      }
+
+    </p>
+
+  </div>
+
+  <div className="text-sm text-gray-500">
+
+    Total Departments :
+    {" "}
+    {
+      departments.length
+    }
+
+  </div>
+
+</div>
+
+              <div className="grid grid-cols-3 gap-3">
                 {departments.map(
                   (
                     item,
@@ -714,42 +765,120 @@ export default function PayrollProcessPage() {
 
                     return (
 
-                      <div
-                        key={index}
-                        onClick={() =>
-                          handleDepartmentChange(
-                            item
-                          )
-                        }
-                        className={`border rounded-md p-4 cursor-pointer
-                        ${checked
-                            ? "border-blue-600 bg-blue-50"
-                            : ""
-                          }`}
-                      >
+<div
+  key={index}
+  onClick={() =>
+    handleDepartmentChange(
+      item
+    )
+  }
+  className={`border rounded-md p-4 cursor-pointer transition hover:border-blue-500
+  ${
+    checked
+      ? "border-blue-600 bg-blue-50"
+      : "bg-white"
+  }`}
+>
 
-                        <div className="flex items-center gap-3">
+  {/* TOP */}
+  <div className="flex items-start justify-between">
 
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            readOnly
-                          />
+    <div>
 
-                          <span className="text-sm">
-                            {
-                              item.fieldValue
-                            }
-                          </span>
+      <h3 className="text-sm font-semibold">
+        {
+          item.fieldValue
+        }
+      </h3>
 
-                        </div>
+      <p className="text-xs text-gray-500 mt-1">
 
-                      </div>
+        Employee Count :
+        {" "}
+        {
+          employees.filter(
+            (emp) =>
+              emp.departmentName ===
+              item.fieldValue
+          ).length
+        }
+
+      </p>
+
+    </div>
+
+    <input
+      type="checkbox"
+      checked={checked}
+      readOnly
+    />
+
+  </div>
+
+  {/* BODY */}
+  <div className="mt-4 space-y-2">
+
+    {/* PAYROLL ESTIMATE */}
+    <div className="flex items-center justify-between text-xs">
+
+      <span className="text-gray-500">
+        Estimated Payroll
+      </span>
+
+      <span className="font-medium text-green-600">
+
+        ₹
+        {
+          (
+            employees.filter(
+              (emp) =>
+                emp.departmentName ===
+                item.fieldValue
+            ).length * 45000
+          ).toLocaleString()
+        }
+
+      </span>
+
+    </div>
+
+    {/* ATTENDANCE */}
+    <div className="flex items-center justify-between text-xs">
+
+      <span className="text-gray-500">
+        Attendance Status
+      </span>
+
+      <span className="text-blue-600 font-medium">
+        92%
+      </span>
+
+    </div>
+
+    {/* PAYROLL STATUS */}
+    <div className="flex items-center justify-between text-xs">
+
+      <span className="text-gray-500">
+        Payroll Status
+      </span>
+
+      <span className="bg-green-100 text-green-700 px-2 py-[2px] rounded">
+
+        Ready
+
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
                     );
                   }
                 )}
 
               </div>
+
             </div>
           )}
 
@@ -1110,9 +1239,14 @@ export default function PayrollProcessPage() {
                   </p>
 
                   <h2 className="text-3xl font-semibold mt-2">
+
                     {
-                      generatedSlips.length
+                      generatedSlips.filter(
+                        (item) =>
+                          item.status === "success"
+                      ).length
                     }
+
                   </h2>
 
                 </div>
@@ -1128,6 +1262,10 @@ export default function PayrollProcessPage() {
                     ₹
                     {
                       generatedSlips
+                        .filter(
+                          (item) =>
+                            item.status === "success"
+                        )
                         .reduce(
                           (
                             acc,
@@ -1193,7 +1331,7 @@ export default function PayrollProcessPage() {
                         {item.employeeID}
                       </div>
 
-                      <div className="p-3 text-sm">
+                      <div className="p-3 text-sm font-medium">
 
                         ₹
                         {
@@ -1222,16 +1360,26 @@ export default function PayrollProcessPage() {
 
                       <div className="p-3">
 
-                        <button
-                          onClick={() =>
-                            handleViewSlip(
-                              item.employeeID
-                            )
-                          }
-                          className="text-xs text-blue-600 hover:underline"
-                        >
-                          View Slip
-                        </button>
+                        {item.status === "success" ? (
+
+                          <button
+                            onClick={() =>
+                              handleViewSlip(
+                                item.employeeID
+                              )
+                            }
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            View Slip
+                          </button>
+
+                        ) : (
+
+                          <span className="text-xs text-gray-400">
+                            Not Available
+                          </span>
+
+                        )}
 
                       </div>
 
@@ -1277,165 +1425,362 @@ export default function PayrollProcessPage() {
           </div>
 
         </div>
+{/* POPUP */}
+{showSlipPopup &&
+  popupSalaryData && (
 
-        {/* POPUP */}
-        {showSlipPopup &&
-          popupSalaryData && (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5 overflow-auto">
 
-            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5 overflow-auto">
+      <div className="bg-white w-full max-w-4xl rounded-md shadow-lg text-[11px]">
 
-              <div className="bg-white w-full max-w-5xl rounded-md shadow-lg">
+        {/* HEADER */}
+        <div className="flex items-center justify-between border-b p-3">
 
-                <div className="flex items-center justify-between border-b p-4">
+          <h2 className="text-sm font-semibold">
+            Salary Slip
+          </h2>
 
-                  <h2 className="text-lg font-semibold">
-                    Salary Slip
-                  </h2>
+          <button
+            onClick={() =>
+              setShowSlipPopup(
+                false
+              )
+            }
+            className="text-red-600 text-xs"
+          >
+            Close
+          </button>
 
-                  <button
-                    onClick={() =>
-                      setShowSlipPopup(
-                        false
-                      )
-                    }
-                    className="text-red-600 text-sm"
-                  >
-                    Close
-                  </button>
+        </div>
 
+        {/* BODY */}
+        <div className="p-4">
+
+          {/* COMPANY */}
+          <div className="text-center border-b pb-3">
+
+            <h1 className="text-xl font-semibold">
+              Company Name
+            </h1>
+
+            <h2 className="text-sm mt-1">
+              Salary Slip for{" "}
+              {
+                popupSalaryMonth
+              }
+            </h2>
+
+          </div>
+
+          {/* EMPLOYEE INFO */}
+          <div className="grid grid-cols-2 border border-t-0">
+
+            <div className="border-r p-2">
+
+              <p className="py-1 border-b">
+
+                <span className="font-semibold">
+                  Employee ID:
+                </span>{" "}
+
+                {
+                  popupEmployeeId
+                }
+
+              </p>
+
+            </div>
+
+            <div className="p-2">
+
+              <p className="py-1">
+
+                <span className="font-semibold">
+                  Salary Month:
+                </span>{" "}
+
+                {
+                  popupSalaryMonth
+                }
+
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* SALARY TABLE */}
+          <div className="grid grid-cols-2 border border-t-0">
+
+            {/* EARNINGS */}
+            <div className="border-r">
+
+              <div className="grid grid-cols-2 bg-gray-100 font-semibold border-b">
+
+                <div className="p-2 border-r">
+                  Earnings
                 </div>
 
-                <div className="p-6">
-
-                  <div className="text-center border-b pb-4">
-
-                    <h1 className="text-3xl font-bold">
-                      Company Name
-                    </h1>
-
-                    <h2 className="text-xl mt-2">
-                      Salary Slip for{" "}
-                      {
-                        popupSalaryMonth
-                      }
-                    </h2>
-
-                  </div>
-
-                  <div className="grid grid-cols-2 border border-t-0">
-
-                    {/* EARNINGS */}
-                    <div className="border-r">
-
-                      <div className="grid grid-cols-2 bg-gray-100 font-bold border-b">
-
-                        <div className="p-3 border-r">
-                          Earnings
-                        </div>
-
-                        <div className="p-3">
-                          Amount
-                        </div>
-
-                      </div>
-
-                      {(popupSalaryData?.salaryData || [])
-                        .filter(
-                          (item) =>
-                            item.amount > 0
-                        )
-                        .map(
-                          (
-                            item,
-                            index
-                          ) => (
-
-                            <div
-                              key={index}
-                              className="grid grid-cols-2 border-b"
-                            >
-
-                              <div className="p-3 border-r">
-                                {
-                                  item.components
-                                }
-                              </div>
-
-                              <div className="p-3">
-
-                                ₹
-                                {
-                                  item.amount.toLocaleString()
-                                }
-
-                              </div>
-
-                            </div>
-                          )
-                        )}
-
-                    </div>
-
-                    {/* DEDUCTIONS */}
-                    <div>
-
-                      <div className="grid grid-cols-2 bg-gray-100 font-bold border-b">
-
-                        <div className="p-3 border-r">
-                          Deductions
-                        </div>
-
-                        <div className="p-3">
-                          Amount
-                        </div>
-
-                      </div>
-
-                      {(popupSalaryData?.salaryData || [])
-                        .filter(
-                          (item) =>
-                            item.amount < 0
-                        )
-                        .map(
-                          (
-                            item,
-                            index
-                          ) => (
-
-                            <div
-                              key={index}
-                              className="grid grid-cols-2 border-b"
-                            >
-
-                              <div className="p-3 border-r">
-                                {
-                                  item.components
-                                }
-                              </div>
-
-                              <div className="p-3">
-
-                                ₹
-                                {Math.abs(
-                                  item.amount
-                                ).toLocaleString()}
-
-                              </div>
-
-                            </div>
-                          )
-                        )}
-
-                    </div>
-
-                  </div>
-
+                <div className="p-2">
+                  Amount
                 </div>
 
               </div>
 
+              {(popupSalaryData?.salaryData || [])
+                .filter(
+                  (item) =>
+                    item.amount > 0 &&
+                    item.components?.toLowerCase() !==
+                      "ctc" &&
+                    item.components?.toLowerCase() !==
+                      "total"
+                )
+                .map(
+                  (
+                    item,
+                    index
+                  ) => (
+
+                    <div
+                      key={index}
+                      className="grid grid-cols-2 border-b"
+                    >
+
+                      <div className="p-2 border-r">
+
+                        {
+                          item.components
+                        }
+
+                      </div>
+
+                      <div className="p-2">
+
+                        ₹
+                        {
+                          Number(
+                            item.amount
+                          ).toLocaleString()
+                        }
+
+                      </div>
+
+                    </div>
+                  )
+                )}
+
             </div>
-          )}
+
+            {/* DEDUCTIONS */}
+            <div>
+
+              <div className="grid grid-cols-2 bg-gray-100 font-semibold border-b">
+
+                <div className="p-2 border-r">
+                  Deductions
+                </div>
+
+                <div className="p-2">
+                  Amount
+                </div>
+
+              </div>
+
+              {(popupSalaryData?.salaryData || [])
+                .filter(
+                  (item) =>
+                    item.amount < 0 &&
+                    item.components?.toLowerCase() !==
+                      "ctc" &&
+                    item.components?.toLowerCase() !==
+                      "total"
+                )
+                .map(
+                  (
+                    item,
+                    index
+                  ) => (
+
+                    <div
+                      key={index}
+                      className="grid grid-cols-2 border-b"
+                    >
+
+                      <div className="p-2 border-r">
+
+                        {
+                          item.components
+                        }
+
+                      </div>
+
+                      <div className="p-2">
+
+                        ₹
+                        {Math.abs(
+                          item.amount
+                        ).toLocaleString()}
+
+                      </div>
+
+                    </div>
+                  )
+                )}
+
+            </div>
+
+          </div>
+
+          {/* TOTAL ROW */}
+          <div className="grid grid-cols-4 border border-t-0 font-semibold text-[11px]">
+
+            {/* EARNING LABEL */}
+            <div className="p-2 border-r bg-green-50">
+              Total Earnings
+            </div>
+
+            {/* EARNING VALUE */}
+            <div className="p-2 border-r bg-green-50">
+
+              ₹
+              {
+                (popupSalaryData?.salaryData || [])
+                  .filter(
+                    (item) =>
+                      item.amount > 0 &&
+                      item.components?.toLowerCase() !==
+                        "ctc" &&
+                      item.components?.toLowerCase() !==
+                        "total"
+                  )
+                  .reduce(
+                    (
+                      acc,
+                      item
+                    ) =>
+                      acc +
+                      Number(
+                        item.amount
+                      ),
+                    0
+                  )
+                  .toLocaleString()
+              }
+
+            </div>
+
+            {/* DEDUCTION LABEL */}
+            <div className="p-2 border-r bg-red-50">
+              Total Deductions
+            </div>
+
+            {/* DEDUCTION VALUE */}
+            <div className="p-2 bg-red-50">
+
+              ₹
+              {
+                (popupSalaryData?.salaryData || [])
+                  .filter(
+                    (item) =>
+                      item.amount < 0 &&
+                      item.components?.toLowerCase() !==
+                        "ctc" &&
+                      item.components?.toLowerCase() !==
+                        "total"
+                  )
+                  .reduce(
+                    (
+                      acc,
+                      item
+                    ) =>
+                      acc +
+                      Math.abs(
+                        Number(
+                          item.amount
+                        )
+                      ),
+                    0
+                  )
+                  .toLocaleString()
+              }
+
+            </div>
+
+          </div>
+
+          {/* NET SALARY */}
+          <div className="border border-t-0 bg-blue-50">
+
+            <div className="flex items-center justify-between p-3">
+
+              <h2 className="text-sm font-semibold">
+                Net Salary
+              </h2>
+
+              <h2 className="text-lg font-semibold text-blue-700">
+
+                ₹
+                {
+                  (
+                    (popupSalaryData?.salaryData || [])
+                      .filter(
+                        (item) =>
+                          item.amount > 0 &&
+                          item.components?.toLowerCase() !==
+                            "ctc" &&
+                          item.components?.toLowerCase() !==
+                            "total"
+                      )
+                      .reduce(
+                        (
+                          acc,
+                          item
+                        ) =>
+                          acc +
+                          Number(
+                            item.amount
+                          ),
+                        0
+                      ) -
+
+                    (popupSalaryData?.salaryData || [])
+                      .filter(
+                        (item) =>
+                          item.amount < 0 &&
+                          item.components?.toLowerCase() !==
+                            "ctc" &&
+                          item.components?.toLowerCase() !==
+                            "total"
+                      )
+                      .reduce(
+                        (
+                          acc,
+                          item
+                        ) =>
+                          acc +
+                          Math.abs(
+                            Number(
+                              item.amount
+                            )
+                          ),
+                        0
+                      )
+                  ).toLocaleString()
+                }
+
+              </h2>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+)}
 
       </div>
 
