@@ -8,6 +8,7 @@ import { MdLayers, MdBusiness, MdPersonOutline, MdPersonAddAlt1 } from "react-ic
 import { FaPhoneAlt, FaUserTie, FaFileUpload, FaUsers, FaChevronRight, FaChevronLeft, FaSpinner, FaTimes } from "react-icons/fa";
 import { BsPersonVcard } from "react-icons/bs";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 const AddEmployee = () => {
     const router = useRouter();
