@@ -145,14 +145,9 @@ const EmployeeMaster = () => {
     apiURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees`,
     getListMethod: "post",
     deleteMethod: "delete",
-<<<<<<< Updated upstream
     editURL: `/asset-management/add-employee?id=`,
     viewURL: `/asset-management/employee-profile-view?id=`,
     salstr: `/payroll/salary/structure?empId=`,
-=======
-    editURL: `/add-employee?id=`,
-    viewURL: `/employee-profile-view?id=`,
->>>>>>> Stashed changes
     searchApply: true,
     downloadApply: true,
     titleMsg: "Employee List",
@@ -175,8 +170,8 @@ const EmployeeMaster = () => {
       );
       if (response.data) {
 
-          setTableData(response.data.tableData || []);
-          setTotalRecs(response.data.totalRecs || 0);
+        setTableData(response.data.tableData || []);
+        setTotalRecs(response.data.totalRecs || 0);
       }
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -203,137 +198,136 @@ const EmployeeMaster = () => {
 
   return (
     <section className="section admin-box box-primary">
-        {/* Theme-aligned Header */}
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
-                <span className="text-[#3c8dbc]">Human Resources</span>
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
-                Employee <span className="text-[#3c8dbc] font-black">Management</span>
-              </h1>
+      {/* Theme-aligned Header */}
+      <div className="mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end pb-1 border-b border-slate-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pl-1 mb-1">
+              <span className="text-[#3c8dbc]">Human Resources</span>
             </div>
-            <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
-              <Tooltip content="Add Employee" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-
-                <BsPlusSquare
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={() => router.push(`/${loggedInRole}/add-employee`)}
-                />
-              </Tooltip>
-              <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
-                <FaFileUpload
-                  className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={() => {
-                    router.push(`/${loggedInRole}/employee-bulk-upload`);
-                  }}
-                />
-              </Tooltip>
-
-            </div>
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight pl-1">
+              Employee <span className="text-[#3c8dbc] font-black">Management</span>
+            </h1>
           </div>
-          <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
-            Maintain accurate personnel records, manage designations, and track organizational hierarchies for seamless resource allocation.
-          </p>
-        </div>
+          <div className="flex flex-wrap gap-4 pt-4 md:pt-0 mb-1">
+            <Tooltip content="Add Employee" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
 
-        {/* Dashboard Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <StatusCard
-            label="Total Workforce"
-            value={counts.totalWorkforce}
-            icon={FaUsers}
-            colorClass="bg-aqua"
-            onClick={() => handleFilterChange(null, 0)}
-            isActive={activeStatusFilter === null}
-          />
-          <StatusCard
-            label="Active Employees"
-            value={counts.activeEmployees}
-            icon={FaUserTie}
-            colorClass="bg-green"
-            onClick={() => handleFilterChange("Active", 1)}
-            isActive={activeStatusFilter === "Active"}
-          />
-          <StatusCard
-            label="Total Departments"
-            value={counts.totalDepartments}
-            icon={FaBuilding}
-            colorClass="bg-yellow"
-            isActive={false}
-          />
-          <StatusCard
-            label="Female Employee"
-            value={`${counts.genderRatio?.Female || 0} `}
-            icon={FaVenusMars}
-            colorClass="bg-red"
-            isActive={false}
-          />
-        </div>
+              <BsPlusSquare
+                className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                onClick={() => router.push(`/${loggedInRole}/add-employee`)}
+              />
+            </Tooltip>
+            <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
+              <FaFileUpload
+                className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
+                onClick={() => {
+                  router.push(`/${loggedInRole}/employee-bulk-upload`);
+                }}
+              />
+            </Tooltip>
 
-        {/* Refined Equal-Width Status Toggle */}
-        <div className="flex justify-center mb-10">
-          <div className="inline-flex items-center bg-gray-100/80 p-1.5 rounded-xl shadow-inner border border-gray-200/50 backdrop-blur-sm w-full max-w-2xl">
-            {[
-              { id: null, label: "All Employees", icon: <FaUsers /> },
-              { id: "Active", label: "Active", icon: <FaCheckCircle /> },
-              { id: "Inactive", label: "Inactive", icon: <FaTimesCircle /> }
-            ].map((option, index) => (
-              <button
-                key={option.label}
-                onClick={() => handleFilterChange(option.id, index)}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-widest transition-all duration-500 rounded-lg ${
-                  activeStatusFilter === option.id
-                    ? "bg-white text-[#3c8dbc] shadow-md ring-1 ring-black/5 transform scale-[1.02]"
-                    : "text-gray-400 hover:text-gray-600"
+          </div>
+        </div>
+        <p className="text-slate-500 font-medium max-w-xl text-xs leading-relaxed mt-2 pl-1">
+          Maintain accurate personnel records, manage designations, and track organizational hierarchies for seamless resource allocation.
+        </p>
+      </div>
+
+      {/* Dashboard Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <StatusCard
+          label="Total Workforce"
+          value={counts.totalWorkforce}
+          icon={FaUsers}
+          colorClass="bg-aqua"
+          onClick={() => handleFilterChange(null, 0)}
+          isActive={activeStatusFilter === null}
+        />
+        <StatusCard
+          label="Active Employees"
+          value={counts.activeEmployees}
+          icon={FaUserTie}
+          colorClass="bg-green"
+          onClick={() => handleFilterChange("Active", 1)}
+          isActive={activeStatusFilter === "Active"}
+        />
+        <StatusCard
+          label="Total Departments"
+          value={counts.totalDepartments}
+          icon={FaBuilding}
+          colorClass="bg-yellow"
+          isActive={false}
+        />
+        <StatusCard
+          label="Female Employee"
+          value={`${counts.genderRatio?.Female || 0} `}
+          icon={FaVenusMars}
+          colorClass="bg-red"
+          isActive={false}
+        />
+      </div>
+
+      {/* Refined Equal-Width Status Toggle */}
+      <div className="flex justify-center mb-10">
+        <div className="inline-flex items-center bg-gray-100/80 p-1.5 rounded-xl shadow-inner border border-gray-200/50 backdrop-blur-sm w-full max-w-2xl">
+          {[
+            { id: null, label: "All Employees", icon: <FaUsers /> },
+            { id: "Active", label: "Active", icon: <FaCheckCircle /> },
+            { id: "Inactive", label: "Inactive", icon: <FaTimesCircle /> }
+          ].map((option, index) => (
+            <button
+              key={option.label}
+              onClick={() => handleFilterChange(option.id, index)}
+              className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-widest transition-all duration-500 rounded-lg ${activeStatusFilter === option.id
+                  ? "bg-white text-[#3c8dbc] shadow-md ring-1 ring-black/5 transform scale-[1.02]"
+                  : "text-gray-400 hover:text-gray-600"
                 }`}
-              >
-                <span className={`text-[14px] ${activeStatusFilter === option.id ? 'text-[#3c8dbc]' : 'text-gray-300'}`}>
-                  {option.icon}
-                </span>
-                {option.label}
-              </button>
-            ))}
-          </div>
+            >
+              <span className={`text-[14px] ${activeStatusFilter === option.id ? 'text-[#3c8dbc]' : 'text-gray-300'}`}>
+                {option.icon}
+              </span>
+              {option.label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        <div 
-          className="bg-white transition-all duration-[1200ms] ease-[cubic-bezier(0.16, 1, 0.3, 1)] transform"
-          style={{
-            transform: animateTable 
-              ? 'translateX(0) scale(1)' 
-              : slideDirection === 'left' 
-                ? 'translateX(-150px) scale(0.97)' 
-                : slideDirection === 'right'
-                  ? 'translateX(150px) scale(0.97)'
-                  : 'translateY(50px) scale(0.97)'
-          }}
-        >
+      <div
+        className="bg-white transition-all duration-[1200ms] ease-[cubic-bezier(0.16, 1, 0.3, 1)] transform"
+        style={{
+          transform: animateTable
+            ? 'translateX(0) scale(1)'
+            : slideDirection === 'left'
+              ? 'translateX(-150px) scale(0.97)'
+              : slideDirection === 'right'
+                ? 'translateX(150px) scale(0.97)'
+                : 'translateY(50px) scale(0.97)'
+        }}
+      >
 
-          <FilterTable
-            tableHeading={tableHeading}
-            excelHeading={excelHeading}
-            tableObjects={tableObjects}
-            getData={getData}
-            tableData={tableData}
-            setTableData={setTableData}
-            recsPerPage={recsPerPage}
-            setRecsPerPage={setRecsPerPage}
-            pageNumber={pageNumber}
-            setPageNumber={setPageNumber}
-            searchText={searchText}
-            setSearchText={setSearchText}
-            totalRecs={totalRecs}
-            setTotalRecs={setTotalRecs}
-            numOfPages={numOfPages}
-            setNumOfPages={setNumOfPages}
-            runCount={runCount}
-            setRunCount={setRunCount}
-            filterData={filterData}
-            loading={loading}
-          />
-        </div>
+        <FilterTable
+          tableHeading={tableHeading}
+          excelHeading={excelHeading}
+          tableObjects={tableObjects}
+          getData={getData}
+          tableData={tableData}
+          setTableData={setTableData}
+          recsPerPage={recsPerPage}
+          setRecsPerPage={setRecsPerPage}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          searchText={searchText}
+          setSearchText={setSearchText}
+          totalRecs={totalRecs}
+          setTotalRecs={setTotalRecs}
+          numOfPages={numOfPages}
+          setNumOfPages={setNumOfPages}
+          runCount={runCount}
+          setRunCount={setRunCount}
+          filterData={filterData}
+          loading={loading}
+        />
+      </div>
     </section>
   );
 };

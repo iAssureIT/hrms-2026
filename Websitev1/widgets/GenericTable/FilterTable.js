@@ -1748,9 +1748,8 @@ const GenericTable = ({
             <div className="table-responsive table-container overflow-x-auto">
               <table className="min-w-full table-fixed border-collapse text-base bottom  border-separate border-spacing-y-1 w-full dark:w-full leading-tight">
                 <thead
-                  className={`${pdfMode ? "text-xs" : "text-[13px]"} uppercase ${
-                    pdfMode ? "text-wrap" : "text-wrap"
-                  } bg-white dark:bg-white`}
+                  className={`${pdfMode ? "text-xs" : "text-[13px]"} uppercase ${pdfMode ? "text-wrap" : "text-wrap"
+                    } bg-white dark:bg-white`}
                 >
                   <tr className="text-left">
                     <th className="text-center px-2 md:px-4 py-2 border border-grayTwo border-r-0">
@@ -1762,11 +1761,10 @@ const GenericTable = ({
                           return (
                             <th
                               key={i}
-                              className={`px-2 md:px-4 py-2 border border-grayTwo border-l-0 ${
-                                i === Object.entries(tableHeading).length - 1
+                              className={`px-2 md:px-4 py-2 border border-grayTwo border-l-0 ${i === Object.entries(tableHeading).length - 1
                                   ? "border-r-1"
                                   : "border-r-0"
-                              }`}
+                                }`}
                               id="ActionContent"
                             >
                               {value}
@@ -1776,12 +1774,11 @@ const GenericTable = ({
                           return (
                             <th
                               key={i}
-                              className={`px-2 py-2 border border-grayTwo border-l-0 break-words max-w-xs ${
-                                key !== "actions" &&
-                                i === Object.entries(tableHeading).length - 1
+                              className={`px-2 py-2 border border-grayTwo border-l-0 break-words max-w-xs ${key !== "actions" &&
+                                  i === Object.entries(tableHeading).length - 1
                                   ? "border-r-1"
                                   : "border-r-0"
-                              }`}
+                                }`}
                             >
                               {value}{" "}
                               <span
@@ -1799,9 +1796,8 @@ const GenericTable = ({
                   </tr>
                 </thead>
                 <tbody
-                  className={`border border-grayTwo ${
-                    pdfMode ? "text-wrap text-xs" : "text-wrap text-[13px]"
-                  } `}
+                  className={`border border-grayTwo ${pdfMode ? "text-wrap text-xs" : "text-wrap text-[13px]"
+                    } `}
                 >
                   {tableData && tableData.length > 0 ? (
                     tableData.map((value, i) => {
@@ -1818,26 +1814,18 @@ const GenericTable = ({
                         >
                           <td className="text-center px-1 md:px-4 py-2 font-normal border border-grayTwo border-r-0">
                             {value.centerName === "Total" ||
-                            value.vNo === "Total"
+                              value.vNo === "Total"
                               ? ""
                               : serialNumber}
                           </td>
                           {Object.keys(tableHeading).map((key, index) => {
                             if (key === "employeeName") {
                               return (
-<<<<<<< Updated upstream
-                                <td
-                                  key={index}
-                                  className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0"
-                                >
-                                  <div className="flex items-center gap-3">
-=======
                                 <td key={index} className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0">
-                                  <div 
+                                  <div
                                     className={`flex items-center gap-3 ${tableObjects?.viewURL ? "cursor-pointer group" : ""}`}
                                     onClick={() => tableObjects?.viewURL && redirect("view", value._id)}
                                   >
->>>>>>> Stashed changes
                                     <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-300 bg-gray-50 flex items-center justify-center shrink-0 shadow-sm">
                                       {value.profilePhoto ? (
                                         <img
@@ -1850,11 +1838,7 @@ const GenericTable = ({
                                         </div>
                                       )}
                                     </div>
-<<<<<<< Updated upstream
-                                    <span className="font-bold text-slate-700 whitespace-nowrap">
-=======
                                     <span className={`font-bold text-slate-700 whitespace-nowrap transition-colors duration-200 ${tableObjects?.viewURL ? "group-hover:text-[#3c8dbc]" : ""}`}>
->>>>>>> Stashed changes
                                       {value.employeeName}
                                     </span>
                                   </div>
@@ -1865,18 +1849,17 @@ const GenericTable = ({
                               return (
                                 <td
                                   key={index}
-                                  className={`border border-grayTwo border-l-0 ${
-                                    index ===
-                                    Object.entries(tableHeading).length - 1
+                                  className={`border border-grayTwo border-l-0 ${index ===
+                                      Object.entries(tableHeading).length - 1
                                       ? "border-r-1"
                                       : "border-r-0"
-                                  }`}
+                                    }`}
                                 >
                                   {value.centerName !== "Total" ? (
                                     <div className="flex flex-wrap md:flex-nowrap mx-3 gap-2 items-center justify-center">
                                       {loggedInRole === "admin" &&
                                         tableObjects.formURL ===
-                                          "Add Center Incharge" && (
+                                        "Add Center Incharge" && (
                                           <Tooltip
                                             placement="bottom"
                                             className="bg-green"
@@ -1888,9 +1871,9 @@ const GenericTable = ({
                                               onClick={() => {
                                                 window.open(
                                                   "/" +
-                                                    loggedInRole +
-                                                    "/master-data/center-details/add-center-incharge/" +
-                                                    value._id,
+                                                  loggedInRole +
+                                                  "/master-data/center-details/add-center-incharge/" +
+                                                  value._id,
                                                 );
                                               }}
                                             />
@@ -1904,9 +1887,9 @@ const GenericTable = ({
                                       >
                                         {tableObjects.formText ===
                                           "Approval Form" ||
-                                        tableObjects.formText ===
+                                          tableObjects.formText ===
                                           "Utilization Form" ||
-                                        tableObjects.formText ===
+                                          tableObjects.formText ===
                                           "Add Center Details" ? (
                                           <FaEye
                                             className="border me-2 border-gray-500 text-gray-500 p-1 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
@@ -1953,27 +1936,27 @@ const GenericTable = ({
                                       </Tooltip>
                                       {tableObjects.formText ===
                                         "Add CC Form" && (
-                                        <Tooltip
-                                          content="Contribution Details"
-                                          placement="bottom"
-                                          className="bg-green"
-                                          arrow={false}
-                                        >
-                                          <FaEye
-                                            className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
-                                            size={"1.3rem"}
-                                            onClick={() => {
-                                              const url = `/${loggedInRole}/fund-management/contribution-details/${value._id}`;
-                                              window.open(url, "_self");
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      )}
+                                          <Tooltip
+                                            content="Contribution Details"
+                                            placement="bottom"
+                                            className="bg-green"
+                                            arrow={false}
+                                          >
+                                            <FaEye
+                                              className="border me-2 border-gray-500 text-gray-500 px-1 py-0.5 cursor-pointer rounded-sm hover:border-gray-400 hover:text-gray-400"
+                                              size={"1.3rem"}
+                                              onClick={() => {
+                                                const url = `/${loggedInRole}/fund-management/contribution-details/${value._id}`;
+                                                window.open(url, "_self");
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        )}
                                       {loggedInRole === "admin" ||
-                                      loggedInRole === "center" ||
-                                      loggedInRole === "executive" ||
-                                      loggedInRole === "asset" ||
-                                      loggedInRole === "account" ? (
+                                        loggedInRole === "center" ||
+                                        loggedInRole === "executive" ||
+                                        loggedInRole === "asset" ||
+                                        loggedInRole === "account" ? (
                                         <>
                                           {tableObjects.viewURL && (
                                             <Tooltip
@@ -1997,9 +1980,9 @@ const GenericTable = ({
                                       {(loggedInRole === "admin" ||
                                         loggedInRole === "center" ||
                                         loggedInRole === "asset") &&
-                                      !userDetails?.roles?.includes(
-                                        "fa-accounts",
-                                      ) ? (
+                                        !userDetails?.roles?.includes(
+                                          "fa-accounts",
+                                        ) ? (
                                         <>
                                           <Tooltip
                                             content="Edit"
@@ -2044,14 +2027,14 @@ const GenericTable = ({
                                                 setDeleteId(value.employeeID);
                                               }}
                                             />
-                                          </Tooltip>                                          
+                                          </Tooltip>
                                         </>
                                       ) : null}
                                       {pathname ===
                                         "/" +
-                                          loggedInRole +
-                                          "/annual-plan-management/annual-list" &&
-                                      loggedInRole !== "executive" ? (
+                                        loggedInRole +
+                                        "/annual-plan-management/annual-list" &&
+                                        loggedInRole !== "executive" ? (
                                         <button
                                           className={`formButtons text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                           onClick={() => {
@@ -2063,21 +2046,20 @@ const GenericTable = ({
                                       ) : null}
                                       {pathname ===
                                         "/" +
-                                          loggedInRole +
-                                          "/approval-management/approval-list" &&
-                                      value.finalStatus === "approved" &&
-                                      loggedInRole !== "executive" &&
-                                      value.hideUtilizationButton === false ? (
+                                        loggedInRole +
+                                        "/approval-management/approval-list" &&
+                                        value.finalStatus === "approved" &&
+                                        loggedInRole !== "executive" &&
+                                        value.hideUtilizationButton === false ? (
                                         <div>
                                           <button
-                                            className={`formButtons ${
-                                              value.finalStatus ===
+                                            className={`formButtons ${value.finalStatus ===
                                                 "approved" &&
-                                              value.utilizationStatus !==
+                                                value.utilizationStatus !==
                                                 "Completed"
                                                 ? "block"
                                                 : "hidden"
-                                            }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
+                                              }  text-[10px] flex justify-center items-center leading-3 rounded-none`}
                                             onClick={() => {
                                               redirect("redirect", value._id);
                                             }}
@@ -2086,12 +2068,11 @@ const GenericTable = ({
                                           </button>
                                           {value.utilizationStatus ? (
                                             <div
-                                              className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${
-                                                value.utilizationStatus ==
-                                                "Completed"
+                                              className={`font-normal text-wrap border bg-green rounded-lg text-xs text-center py-0.5 w-24 p-2 text-white ${value.utilizationStatus ==
+                                                  "Completed"
                                                   ? "block"
                                                   : "hidden"
-                                              } text-[10px] flex justify-center items-center leading-3`}
+                                                } text-[10px] flex justify-center items-center leading-3`}
                                             >
                                               Activity Completed
                                             </div>
@@ -2129,11 +2110,10 @@ const GenericTable = ({
                               key === "remarks" ||
                               key === "convergenceNote"
                             ) {
-                              heightOfPara = `h-24 max-h-24 block ${
-                                valueStr.length < 40
+                              heightOfPara = `h-24 max-h-24 block ${valueStr.length < 40
                                   ? "overflow-y-hidden"
                                   : "overflow-y-scroll"
-                              }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
+                                }  overflow-x-hidden whitespace-pre-wrap break-all w-80 pe-2`;
                               remarksStyle = {
                                 display: "block",
                                 whiteSpace: "pre-wrap",
@@ -2210,15 +2190,13 @@ const GenericTable = ({
 
                             return (
                               <td
-                                className={`px-2 py-2 border border-grayTwo text-wrap border-l-0 whitespace-normal break-words max-w-xs overflow-hidden ${
-                                  amountArr.includes(key)
+                                className={`px-2 py-2 border border-grayTwo text-wrap border-l-0 whitespace-normal break-words max-w-xs overflow-hidden ${amountArr.includes(key)
                                     ? "text-right text-nowrap whitespace-nowrap"
                                     : ""
-                                } ${
-                                  index === Object.keys(tableHeading).length - 1
+                                  } ${index === Object.keys(tableHeading).length - 1
                                     ? "border-r-1"
                                     : "border-r-0"
-                                } text-black`}
+                                  } text-black`}
                                 key={index}
                               >
                                 <div
@@ -2270,8 +2248,8 @@ const GenericTable = ({
                     "recsPerPage:",
                     recsPerPage,"pageNumber",pageNumber)} */}
                   {numOfPages &&
-                  numOfPages.length > 1 &&
-                  totalRecs > recsPerPage ? (
+                    numOfPages.length > 1 &&
+                    totalRecs > recsPerPage ? (
                     <ul className="pagination mx-auto flex flex-nowrap justify-center ps-0 overflow-x-auto no-scrollbar whitespace-nowrap">
                       {pageNumber !== 1 ? (
                         <li
