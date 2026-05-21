@@ -98,8 +98,8 @@ const EmployeeBulkUpload = () => {
     const getFileDetails = (fileName) => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/filedetails/${fileName}`)
             .then((response) => {
-                // console.log("response getfiledetails bulkupload -->",response.data);
-                g
+                console.log("response getfiledetails bulkupload -->",response.data);
+                
                 if (response.data) {
                     setFileDetails(response.data);
                     setGoodDataCount(response.data.goodrecords.length);
