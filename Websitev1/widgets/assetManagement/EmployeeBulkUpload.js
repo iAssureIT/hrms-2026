@@ -98,12 +98,8 @@ const EmployeeBulkUpload = () => {
     const getFileDetails = (fileName) => {
         axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/filedetails/${fileName}`)
             .then((response) => {
-<<<<<<< Updated upstream
-                console.log("response getfiledetails bulkupload -->",response.data);
-                
-=======
-                // console.log("response getfiledetails bulkupload -->",response.data);
->>>>>>> Stashed changes
+                console.log("response getfiledetails bulkupload -->", response.data);
+
                 if (response.data) {
                     setFileDetails(response.data);
                     setGoodDataCount(response.data.goodrecords.length);
@@ -171,15 +167,15 @@ const EmployeeBulkUpload = () => {
             [
                 "Full Name*", "Employee ID*", "Gender*", "Email*", "Mobile*", "Current Address*",
                 "Department*", "Designation*", "System Role*", "Date of Joining*", "Employment Type",
-                "Center", "Sub-Location", "Sub-Department", 
-                "Marital Status", "Blood Group", "Nationality", 
+                "Center", "Sub-Location", "Sub-Department",
+                "Marital Status", "Blood Group", "Nationality",
                 "PAN Number", "Aadhaar Number", "Passport Number"
             ],
             [
                 "John Doe", "EMP001", "Male", "john.doe@example.com", "9876543210", "123 Main St, Mumbai",
                 "Operations", "Process Manager", "employee", "2024-01-15", "Full-Time",
-                "Mumbai", "Andheri", "Production", 
-                "Single", "O+", "Indian", 
+                "Mumbai", "Andheri", "Production",
+                "Single", "O+", "Indian",
                 "ABCDE1234F", "123456789012", "A1234567"
             ]
         ];
