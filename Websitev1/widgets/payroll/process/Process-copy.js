@@ -611,107 +611,217 @@ export default function PayrollProcessPage() {
 
           <div className="p-5">
 
-            {/* STEP 1 */}
-            {step === 1 && (
+          {/* STEP 1 */}
+          {step === 1 && (
+            <div>
 
-              <div>
+              <div className="flex items-center justify-between mb-5">
 
-                <div className="flex items-center justify-between mb-5">
+                <h2 className="text-sm font-medium">
+                  Select Departments
+                </h2>
 
-                  <h2 className="text-sm font-medium">
-                    Select Departments
-                  </h2>
+                <button
+                  onClick={() => {
 
-                  <button
-                    onClick={() => {
+                    if (
+                      selectedDepartments.length ===
+                      departments.length
+                    ) {
 
-                      if (
-                        selectedDepartments.length ===
-                        departments.length
-                      ) {
+                      setSelectedDepartments([]);
 
-                        setSelectedDepartments(
-                          []
-                        );
+                    } else {
 
-                      } else {
-
-                        setSelectedDepartments(
-                          departments.map(
-                            (item) => ({
-                              id: item._id,
-                              department:
-                                item.fieldValue,
-                            })
-                          )
-                        );
-                      }
-                    }}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
-                  >
-                    Select All
-                  </button>
-
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-
-                  {departments.map(
-                    (
-                      item,
-                      index
-                    ) => {
-
-                      const checked =
-                        selectedDepartments.find(
-                          (dept) =>
-                            dept.id ===
-                            item._id
-                        );
-
-                      return (
-
-                        <div
-                          key={index}
-                          onClick={() =>
-                            handleDepartmentChange(
-                              item
-                            )
-                          }
-                          className={`border rounded-md p-4 cursor-pointer
-                          ${checked
-                              ? "border-blue-600 bg-blue-50"
-                              : "border-gray-200"
-                            }`}
-                        >
-
-                          <div className="flex items-center gap-3">
-
-                            <input
-                              type="checkbox"
-                              checked={
-                                checked
-                              }
-                              readOnly
-                            />
-
-                            <span className="text-sm">
-                              {
-                                item.fieldValue
-                              }
-                            </span>
-
-                          </div>
-
-                        </div>
+                      setSelectedDepartments(
+                        departments.map(
+                          (item) => ({
+                            id: item._id,
+                            department:
+                              item.fieldValue,
+                          })
+                        )
                       );
                     }
-                  )}
-
-                </div>
+                  }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  {
+                    selectedDepartments.length ===
+                    departments.length
+                      ? "Unselect All"
+                      : "Select All"
+                  }
+                </button>
 
               </div>
-            )}
+
+          {/* SEARCH + SUMMARY */}
+          <div className="flex items-center justify-between mb-4">
+
+            <div className="flex items-center gap-3">
+
+              <input
+                type="text"
+                placeholder="Search Department"
+                className="border rounded-md px-3 py-2 text-sm w-[260px]"
+              />
+
+              <p className="text-sm text-blue-600 font-medium">
+
+                Selected :
+                {" "}
+                {
+                  selectedDepartments.length
+                }
+
+              </p>
+
+            </div>
+
+            <div className="text-sm text-gray-500">
+
+              Total Departments :
+              {" "}
+              {
+                departments.length
+              }
+
+            </div>
+
+          </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {departments.map(
+                  (
+                    item,
+                    index
+                  ) => {
+
+                    const checked =
+                      selectedDepartments.find(
+                        (dept) =>
+                          dept.id === item._id
+                      );
+
+                    return (
+
+<div
+  key={index}
+  onClick={() =>
+    handleDepartmentChange(
+      item
+    )
+  }
+  className={`border rounded-md p-4 cursor-pointer transition hover:border-blue-500
+  ${
+    checked
+      ? "border-blue-600 bg-blue-50"
+      : "bg-white"
+  }`}
+>
+
+  {/* TOP */}
+  <div className="flex items-start justify-between">
+
+    <div>
+
+      <h3 className="text-sm font-semibold">
+        {
+          item.fieldValue
+        }
+      </h3>
+
+      <p className="text-xs text-gray-500 mt-1">
+
+        Employee Count :
+        {" "}
+        {
+          employees.filter(
+            (emp) =>
+              emp.departmentName ===
+              item.fieldValue
+          ).length
+        }
+
+      </p>
+
+    </div>
+
+    <input
+      type="checkbox"
+      checked={checked}
+      readOnly
+    />
+
+  </div>
+
+  {/* BODY */}
+  <div className="mt-4 space-y-2">
+
+    {/* PAYROLL ESTIMATE */}
+    <div className="flex items-center justify-between text-xs">
+
+      <span className="text-gray-500">
+        Estimated Payroll
+      </span>
+
+      <span className="font-medium text-green-600">
+
+        ₹
+        {
+          (
+            employees.filter(
+              (emp) =>
+                emp.departmentName ===
+                item.fieldValue
+            ).length * 45000
+          ).toLocaleString()
+        }
+
+      </span>
+
+    </div>
+
+    {/* ATTENDANCE */}
+    <div className="flex items-center justify-between text-xs">
+
+      <span className="text-gray-500">
+        Attendance Status
+      </span>
+
+      <span className="text-blue-600 font-medium">
+        92%
+      </span>
+
+    </div>
+
+    {/* PAYROLL STATUS */}
+    <div className="flex items-center justify-between text-xs">
+
+      <span className="text-gray-500">
+        Payroll Status
+      </span>
+
+      <span className="bg-green-100 text-green-700 px-2 py-[2px] rounded">
+
+        Ready
+
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+                    );
+                  }
+                )}
+
+              </div>
+
+            </div>
+          )}
 
             {/* STEP 2 */}
             {step === 2 && (

@@ -502,30 +502,75 @@ export default function PayrollProcessPage() {
                   0
                 );
 
-            const netSalary =
-              totalEarnings -
-              totalDeductions;
+      const netSalary =
+        totalEarnings -
+        totalDeductions;
 
-            setGeneratedSlips(
-              (prev) => [
-                ...prev,
-                {
-                  employee:
-                    emp.employeeName,
+      // SAVE SALARY SLIP
+      await axios.post(
+        "http://localhost:3050/api/salary-slips",
+        {
+          employeeId:
+            emp.employeeID,
 
-                  employeeID:
-                    emp.employeeID,
+          employeeName:
+            emp.employeeName,
 
-                  department:
-                    emp.department,
+          department:
+            emp.department,
 
-                  netSalary,
+          salaryMonth:
+            formatSalaryMonth(
+              payrollMonth
+            ),
 
-                  status:
-                    "success",
-                },
-              ]
-            );
+          payrollDate,
+
+          earnings:
+            totalEarnings,
+
+          deductions:
+            totalDeductions,
+
+          netSalary,
+
+          salaryData:
+            monthlyData.salaryData,
+
+          attendance:
+            emp.attendance,
+
+          leave:
+            emp.leave,
+
+          otHours:
+            emp.otHours,
+
+          payrollStatus:
+            "Processed",
+        }
+      );
+
+      setGeneratedSlips(
+        (prev) => [
+          ...prev,
+          {
+            employee:
+              emp.employeeName,
+
+            employeeID:
+              emp.employeeID,
+
+            department:
+              emp.department,
+
+            netSalary,
+
+            status:
+              "success",
+          },
+        ]
+      );
 
           } catch (error) {
 
@@ -715,40 +760,40 @@ export default function PayrollProcessPage() {
 
               </div>
 
-{/* SEARCH + SUMMARY */}
-<div className="flex items-center justify-between mb-4">
+          {/* SEARCH + SUMMARY */}
+          <div className="flex items-center justify-between mb-4">
 
-  <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
 
-    <input
-      type="text"
-      placeholder="Search Department"
-      className="border rounded-md px-3 py-2 text-sm w-[260px]"
-    />
+              <input
+                type="text"
+                placeholder="Search Department"
+                className="border rounded-md px-3 py-2 text-sm w-[260px]"
+              />
 
-    <p className="text-sm text-blue-600 font-medium">
+              <p className="text-sm text-blue-600 font-medium">
 
-      Selected :
-      {" "}
-      {
-        selectedDepartments.length
-      }
+                Selected :
+                {" "}
+                {
+                  selectedDepartments.length
+                }
 
-    </p>
+              </p>
 
-  </div>
+            </div>
 
-  <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500">
 
-    Total Departments :
-    {" "}
-    {
-      departments.length
-    }
+              Total Departments :
+              {" "}
+              {
+                departments.length
+              }
 
-  </div>
+            </div>
 
-</div>
+          </div>
 
               <div className="grid grid-cols-3 gap-3">
                 {departments.map(
