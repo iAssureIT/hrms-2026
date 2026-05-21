@@ -429,7 +429,7 @@
 //     {
 //       title: "Employee Master",
 //       icon: <FaUser />,
-//       link: "/admin/asset-management/employee-master",
+//       link: "/admin/employee-master",
 //     },
 //     {
 //       title: "Leaves",
@@ -586,7 +586,7 @@
 //     {
 //       title: "Employee Master",
 //       icon: <FaUser />,
-//       link: "/admin/asset-management/employee-master",
+//       link: "/admin/employee-master",
 //     },
 //     {
 //       title: "Vendor Master",
@@ -1101,7 +1101,7 @@ export default function RootLayout({ children }) {
     {
       icon: <FaUser />,
       title: "Employee Management",
-      link: "/admin/asset-management/employee-master",
+      link: "/admin/employee-master",
     },
     {
       title: "Attendance Matrix",
@@ -1259,6 +1259,24 @@ export default function RootLayout({ children }) {
       title: "User Management",
       icon: <FaUser />,
       link: "/admin/user-management",
+    },
+    {
+      title: "Access Management",
+      submenu: true,
+      icon: <FaUserTie />,
+      submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Access List",
+          link: "/admin/access-management/access-list",
+        },
+
+        {
+          icon: <FaRegCircle />,
+          title: "Access Allocation",
+          link: "/admin/access-management/access-allocation",
+        },
+      ],
     },
 
     // {

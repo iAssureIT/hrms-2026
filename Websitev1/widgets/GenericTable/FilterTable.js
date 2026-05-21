@@ -1825,11 +1825,19 @@ const GenericTable = ({
                           {Object.keys(tableHeading).map((key, index) => {
                             if (key === "employeeName") {
                               return (
+<<<<<<< Updated upstream
                                 <td
                                   key={index}
                                   className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0"
                                 >
                                   <div className="flex items-center gap-3">
+=======
+                                <td key={index} className="px-2 md:px-4 py-2 border border-grayTwo border-l-0 border-r-0">
+                                  <div 
+                                    className={`flex items-center gap-3 ${tableObjects?.viewURL ? "cursor-pointer group" : ""}`}
+                                    onClick={() => tableObjects?.viewURL && redirect("view", value._id)}
+                                  >
+>>>>>>> Stashed changes
                                     <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-300 bg-gray-50 flex items-center justify-center shrink-0 shadow-sm">
                                       {value.profilePhoto ? (
                                         <img
@@ -1842,7 +1850,11 @@ const GenericTable = ({
                                         </div>
                                       )}
                                     </div>
+<<<<<<< Updated upstream
                                     <span className="font-bold text-slate-700 whitespace-nowrap">
+=======
+                                    <span className={`font-bold text-slate-700 whitespace-nowrap transition-colors duration-200 ${tableObjects?.viewURL ? "group-hover:text-[#3c8dbc]" : ""}`}>
+>>>>>>> Stashed changes
                                       {value.employeeName}
                                     </span>
                                   </div>

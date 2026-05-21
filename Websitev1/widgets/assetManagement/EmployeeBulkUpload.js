@@ -203,7 +203,7 @@ const EmployeeBulkUpload = () => {
                             <div
                                 className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-2 rounded transition-all active:scale-95 shadow-sm"
                                 onClick={() => {
-                                    router.push(`/${loggedInRole}/asset-management/employee-master`);
+                                    router.push(`/${loggedInRole}/employee-master`);
                                 }}
                             >
                                 <FaUsers className="text-lg" />
@@ -213,7 +213,7 @@ const EmployeeBulkUpload = () => {
                             <div
                                 className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-2 rounded transition-all active:scale-95 shadow-sm"
                                 onClick={() => {
-                                    router.push(`/${loggedInRole}/asset-management/add-employee`);
+                                    router.push(`/${loggedInRole}/add-employee`);
                                 }}
                             >
                                 <FaUserPlus className="text-lg" />

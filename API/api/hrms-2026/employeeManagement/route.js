@@ -11,5 +11,6 @@ router.get('/filedetails/:fileName', employeeController.filedetails);
 router.post('/list/:recsPerPage/:pageNumber', employeeController.getEmployeeList);
 router.post('/post/list', employeeController.getEmployeeList);
 router.post('/get/metrics', employeeController.getMetrics);
+router.patch('/patch/status', employeeController.patchStatus);
 
 module.exports = router;

@@ -18,6 +18,9 @@ const AttendanceDataEntry = () => {
 
     // Upload Wizard State
     const [step, setStep] = useState(1);
+    const [uploadMode, setUploadMode] = useState("standard"); // standard or matrix
+    const [matrixMonth, setMatrixMonth] = useState(moment().month() + 1);
+    const [matrixYear, setMatrixYear] = useState(moment().year());
     const [file, setFile] = useState(null);
     const [excelHeaders, setExcelHeaders] = useState([]);
     const [mappings, setMappings] = useState({});
@@ -159,18 +162,65 @@ const AttendanceDataEntry = () => {
             const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
             if (data.length > 0) {
                 setExcelHeaders(data[0]);
-                setStep(2);
-                const autoMap = {};
-                data[0].forEach(h => {
-                    const header = String(h).toLowerCase().trim();
-                    systemFields.forEach(f => {
-                        if (header.includes(f.key.toLowerCase()) || header.includes(f.label.toLowerCase())) autoMap[f.key] = h;
+                if (uploadMode === "matrix") {
+                    // For matrix, we just need to verify headers exist
+                    setStep(2);
+                } else {
+                    setStep(2);
+                    const autoMap = {};
+                    data[0].forEach(h => {
+                        const header = String(h).toLowerCase().trim();
+                        systemFields.forEach(f => {
+                            if (header.includes(f.key.toLowerCase()) || header.includes(f.label.toLowerCase())) autoMap[f.key] = h;
+                        });
                     });
-                });
-                setMappings(autoMap);
+                    setMappings(autoMap);
+                }
             }
         };
         reader.readAsBinaryString(f);
+    };
+
+    const processMatrixImport = async () => {
+        try {
+            setLoading(true);
+            const reader = new FileReader();
+            reader.onload = async (evt) => {
+                const wb = XLSX.read(evt.target.result, { type: "binary" });
+                const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                
+                // Matrix processing: each row is an employee, columns are days
+                // We expect columns like "Emp Id" and 1, 2, 3... 31
+                const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/attendance/post/bulk-matrix`, {
+                    matrixData: rows,
+                    month: matrixMonth,
+                    year: matrixYear,
+                    user_id: userDetails._id
+                });
+
+                if (res.data.success) {
+                    if (res.data.failedCount > 0) {
+                        Swal.fire({
+                            title: "Import Partial Success",
+                            text: `${res.data.message} ${res.data.failedCount} employees were not found in the system.`,
+                            icon: "warning",
+                            footer: `<div style="max-height: 100px; overflow: auto; font-size: 10px;">Missing IDs: ${res.data.errors.map(e => e.employeeID).join(", ")}</div>`
+                        });
+                    } else {
+                        Swal.fire("Success", res.data.message, "success");
+                    }
+                    setStep(3);
+                } else {
+                    Swal.fire("Error", res.data.message, "error");
+                }
+                setLoading(false);
+            };
+            reader.readAsBinaryString(file);
+        } catch (err) {
+            console.error(err);
+            Swal.fire("Error", "Matrix import failed", "error");
+            setLoading(false);
+        }
     };
 
     const saveAndImport = async () => {
@@ -307,10 +357,52 @@ const AttendanceDataEntry = () => {
 
                             {step === 1 && (
                                 <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-gray-200 bg-gray-50/30">
+                                    <div className="flex gap-4 mb-8">
+                                        <button 
+                                            onClick={() => setUploadMode("standard")}
+                                            className={`px-4 py-2 text-xs font-bold rounded-sm border ${uploadMode === "standard" ? 'bg-[#3c8dbc] text-white border-[#3c8dbc]' : 'bg-white text-gray-500 border-gray-200'}`}
+                                        >
+                                            Standard (In/Out)
+                                        </button>
+                                        <button 
+                                            onClick={() => setUploadMode("matrix")}
+                                            className={`px-4 py-2 text-xs font-bold rounded-sm border ${uploadMode === "matrix" ? 'bg-[#3c8dbc] text-white border-[#3c8dbc]' : 'bg-white text-gray-500 border-gray-200'}`}
+                                        >
+                                            Monthly Matrix
+                                        </button>
+                                    </div>
+
+                                    {uploadMode === "matrix" && (
+                                        <div className="flex gap-4 mb-8 w-full max-w-md">
+                                            <div className="flex-1">
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Month</label>
+                                                <select 
+                                                    className="admin-select"
+                                                    value={matrixMonth}
+                                                    onChange={(e) => setMatrixMonth(parseInt(e.target.value))}
+                                                >
+                                                    {moment.months().map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+                                                </select>
+                                            </div>
+                                            <div className="flex-1">
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Year</label>
+                                                <select 
+                                                    className="admin-select"
+                                                    value={matrixYear}
+                                                    onChange={(e) => setMatrixYear(parseInt(e.target.value))}
+                                                >
+                                                    {[0, 1, 2].map(i => <option key={i} value={moment().year() - i}>{moment().year() - i}</option>)}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <div className="w-20 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center text-[#3c8dbc] mb-6 border border-gray-100">
                                         <FaCloudUploadAlt size={40} />
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2">Upload Biometric Source</h3>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                                        {uploadMode === "matrix" ? "Upload Monthly Matrix" : "Upload Biometric Source"}
+                                    </h3>
                                     <p className="text-gray-500 text-xs mb-8">Click below to browse for your Attendance Excel file</p>
                                     <label className="admin-btn-primary px-10 cursor-pointer">
                                         Browse Files
@@ -319,7 +411,37 @@ const AttendanceDataEntry = () => {
                                 </div>
                             )}
 
-                            {step === 2 && (
+                            {step === 2 && uploadMode === "matrix" && (
+                                <div className="space-y-6">
+                                    <div className="bg-[#3c8dbc] p-6 text-white flex items-center justify-between shadow-sm">
+                                        <div>
+                                            <h4 className="font-bold text-lg">Confirm Matrix Import</h4>
+                                            <p className="text-xs opacity-90 mt-1">File: {file?.name}</p>
+                                            <p className="text-xs opacity-90 mt-1">Period: {moment.months()[matrixMonth - 1]} {matrixYear}</p>
+                                        </div>
+                                        <FaCheck size={32} className="opacity-40" />
+                                    </div>
+                                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-sm">
+                                        <p className="text-blue-800 text-xs font-medium">
+                                            The system will process each row as an employee and update attendance statuses for days 1 through 31.
+                                            Summary columns like "Working Days" and "Compo Off" will be calculated automatically based on Leave Management.
+                                        </p>
+                                    </div>
+                                    <div className="flex justify-between pt-6 border-t border-gray-100">
+                                        <button onClick={() => setStep(1)} className="admin-btn-default px-6">Back</button>
+                                        <button 
+                                            disabled={loading}
+                                            onClick={processMatrixImport} 
+                                            className="admin-btn-success px-10 flex items-center gap-2"
+                                        >
+                                            {loading && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
+                                            Process & Import Matrix
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 2 && uploadMode === "standard" && (
                                 <div className="space-y-6">
                                     <div className="bg-[#3c8dbc] p-4 text-white flex items-center justify-between shadow-sm">
                                         <div>

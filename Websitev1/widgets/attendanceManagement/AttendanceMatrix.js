@@ -74,18 +74,37 @@ const AttendanceMatrix = () => {
     const exportToExcel = () => {
         const workbook = XLSX.utils.book_new();
         const header = ["Employee Name", "Employee ID", "Department"];
-        daysArray.forEach(day => header.push(day.toString()));
-        header.push("P/A/L/E", "Total Hours");
+        daysArray.forEach(dayObj => header.push(dayObj.day.toString()));
+        header.push(
+            "Cal Days", "Wkends", "Holidays", "Work Days", 
+            "Present", "Absent", "CO", 
+            "CO Bal (Prev)", "CO Bal (Curr)", 
+            "Lv Bal (Prev)", "Lv Bal (Curr)", "Lv Avail", 
+            "Payable Days"
+        );
 
         const worksheetData = [header];
 
         matrixData.forEach(emp => {
             const row = [emp.employeeName, emp.employeeID, emp.departmentName];
-            daysArray.forEach(day => {
-                row.push(emp.attendance[day] || "-");
+            daysArray.forEach(dayObj => {
+                row.push(emp.attendance[dayObj.uniqueKey] || "-");
             });
-            row.push(`${emp.monthlyStats.P}/${emp.monthlyStats.A}/${emp.monthlyStats.L}/${emp.monthlyStats.E}`);
-            row.push((emp.monthlyStats.totalHours / 60).toFixed(1));
+            row.push(
+                emp.leaveStats.calendarDays,
+                emp.leaveStats.weekends,
+                emp.leaveStats.holidays,
+                emp.leaveStats.workingDays,
+                emp.leaveStats.present,
+                emp.leaveStats.absent,
+                emp.leaveStats.compoOff,
+                emp.leaveStats.balancedCompOffTillLast,
+                emp.leaveStats.balancedCompOffFromThis,
+                emp.leaveStats.totalLeavesAvailableTillLast,
+                emp.leaveStats.totalAvailableLeavesTillThis,
+                emp.leaveStats.availableLeavesFromThis,
+                emp.leaveStats.payableDays
+            );
             worksheetData.push(row);
         });
 
@@ -94,11 +113,26 @@ const AttendanceMatrix = () => {
         XLSX.writeFile(workbook, `Attendance_Matrix_${months.find(m => m.value === selectedMonth).label}_${selectedYear}.xlsx`);
     };
 
-    const daysInMonth = moment([selectedYear, selectedMonth - 1]).daysInMonth();
-    const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    const getCycleDays = () => {
+        const start = moment([selectedYear, selectedMonth - 1]).subtract(1, 'month').set('date', 21);
+        const end = moment([selectedYear, selectedMonth - 1]).set('date', 20);
+        const days = [];
+        let curr = moment(start);
+        while (curr.isSameOrBefore(end)) {
+            days.push({
+                day: curr.date(),
+                month: curr.month() + 1,
+                uniqueKey: `${curr.month() + 1}-${curr.date()}`,
+                fullDate: curr.clone()
+            });
+            curr.add(1, 'day');
+        }
+        return days;
+    };
+    const daysArray = getCycleDays();
 
-    const isWeekend = (day) => {
-        const d = moment([selectedYear, selectedMonth - 1, day]).day();
+    const isWeekend = (date) => {
+        const d = date.day();
         return d === 0 || d === 6; // 0 for Sunday, 6 for Saturday
     };
 
@@ -309,19 +343,19 @@ const AttendanceMatrix = () => {
                             </th>
                             {(() => {
                                 let weekCounter = 0;
-                                return daysArray.map(day => {
-                                    const isSun = moment([selectedYear, selectedMonth - 1, day]).day() === 0;
-                                    const isLastDay = day === daysInMonth;
+                                return daysArray.map(dayObj => {
+                                    const isSun = dayObj.fullDate.day() === 0;
+                                    const isLastDay = dayObj.uniqueKey === daysArray[daysArray.length - 1].uniqueKey;
                                     const showWeekly = isSun || (isLastDay && !isSun);
 
                                     return (
-                                        <React.Fragment key={day}>
-                                            <th className={`admin-table-th text-center min-w-[42px] py-1 border-r border-gray-100 ${isWeekend(day) ? 'bg-gray-100 text-gray-500' : ''}`}>
+                                        <React.Fragment key={dayObj.uniqueKey}>
+                                            <th className={`admin-table-th text-center min-w-[42px] py-1 border-r border-gray-100 ${isWeekend(dayObj.fullDate) ? 'bg-gray-100 text-gray-500' : ''}`}>
                                                 <div className="text-[9px] font-black uppercase opacity-60 leading-none mb-1">
-                                                    {moment([selectedYear, selectedMonth - 1, day]).format("ddd")}
+                                                    {dayObj.fullDate.format("ddd")}
                                                 </div>
                                                 <div className="text-[12px]">
-                                                    {day}
+                                                    {dayObj.day}
                                                 </div>
                                             </th>
                                             {showWeekly && (
@@ -333,14 +367,25 @@ const AttendanceMatrix = () => {
                                     );
                                 });
                             })()}
-                            <th className="admin-table-th text-center min-w-[70px] !text-[12px] uppercase">P/A/L/E</th>
-                            <th className="admin-table-th text-center min-w-[70px] !text-[11px] uppercase">Total Hrs</th>
+                            <th className="admin-table-th text-center min-w-[50px] !text-[10px] uppercase bg-gray-50">Cal Days</th>
+                            <th className="admin-table-th text-center min-w-[50px] !text-[10px] uppercase bg-gray-50">Wkends</th>
+                            <th className="admin-table-th text-center min-w-[50px] !text-[10px] uppercase bg-gray-50">Holidays</th>
+                            <th className="admin-table-th text-center min-w-[50px] !text-[10px] uppercase bg-gray-50">Work Days</th>
+                            <th className="admin-table-th text-center min-w-[40px] !text-[10px] uppercase bg-green-50 text-green-700">P</th>
+                            <th className="admin-table-th text-center min-w-[40px] !text-[10px] uppercase bg-red-50 text-red-700">A</th>
+                            <th className="admin-table-th text-center min-w-[40px] !text-[10px] uppercase bg-purple-50 text-purple-700">CO</th>
+                            <th className="admin-table-th text-center min-w-[60px] !text-[9px] uppercase bg-blue-50 text-blue-700">CO Bal (Prev)</th>
+                            <th className="admin-table-th text-center min-w-[60px] !text-[9px] uppercase bg-blue-50 text-blue-700">CO Bal (Curr)</th>
+                            <th className="admin-table-th text-center min-w-[60px] !text-[9px] uppercase bg-emerald-50 text-emerald-700">Lv Bal (Prev)</th>
+                            <th className="admin-table-th text-center min-w-[60px] !text-[9px] uppercase bg-emerald-50 text-emerald-700">Lv Bal (Curr)</th>
+                            <th className="admin-table-th text-center min-w-[60px] !text-[9px] uppercase bg-emerald-50 text-emerald-700">Lv Avail</th>
+                            <th className="admin-table-th text-center min-w-[60px] !text-[11px] uppercase bg-orange-50 text-orange-700">Payable Days</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={daysInMonth + 10} className="py-20 text-center">
+                                <td colSpan={daysArray.length + 15} className="py-20 text-center">
                                     <div className="flex flex-col items-center gap-4">
                                         <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
                                         <p className="text-slate-400 font-bold text-sm tracking-tight">Syncing attendance data...</p>
@@ -349,7 +394,7 @@ const AttendanceMatrix = () => {
                             </tr>
                         ) : matrixData.length === 0 ? (
                             <tr>
-                                <td colSpan={daysInMonth + 10} className="py-20 text-center">
+                                <td colSpan={daysArray.length + 15} className="py-20 text-center">
                                     <p className="text-slate-400 font-bold text-sm tracking-tight text-center">No records found for this criteria</p>
                                 </td>
                             </tr>
@@ -363,42 +408,35 @@ const AttendanceMatrix = () => {
                                 </td>
                                 {(() => {
                                     let weekCounter = 0;
-                                    return daysArray.map(day => {
-                                        const isSun = moment([selectedYear, selectedMonth - 1, day]).day() === 0;
-                                        const isLastDay = day === daysInMonth;
+                                    return daysArray.map(dayObj => {
+                                        const isSun = dayObj.fullDate.day() === 0;
+                                        const isLastDay = dayObj.uniqueKey === daysArray[daysArray.length - 1].uniqueKey;
                                         const showWeekly = isSun || (isLastDay && !isSun);
                                         const currentWeekKey = `W${weekCounter + 1}`;
 
                                         return (
-                                            <React.Fragment key={day}>
-                                                <td className={`admin-table-td text-center p-1 border-r border-gray-50 ${isWeekend(day) ? 'bg-gray-50/80' : ''}`}>
+                                            <React.Fragment key={dayObj.uniqueKey}>
+                                                <td className={`admin-table-td text-center p-0 border-r border-gray-100 ${isWeekend(dayObj.fullDate) ? 'bg-gray-50/50' : ''}`}>
                                                     <Tooltip
-                                                        content={emp.timings[day] ? (
+                                                        content={emp.timings[dayObj.uniqueKey] ? (
                                                             <div className="p-2 space-y-1 text-xs">
-                                                                <p className="font-bold border-b border-gray-600 pb-1 mb-1">{moment([selectedYear, selectedMonth - 1, day]).format("DD MMM (ddd)")}</p>
-                                                                <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[day].in}</b></p>
-                                                                <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[day].out}</b></p>
-                                                                <p className="flex justify-between gap-4 pt-1 border-t border-gray-600"><span>Total:</span><b>{(emp.timings[day].total / 60).toFixed(1)} hrs</b></p>
-                                                                {emp.timings[day].overtime > 0 && <p className="flex justify-between gap-4 text-blue-400"><span>Overtime:</span><b>{(emp.timings[day].overtime / 60).toFixed(1)} hrs</b></p>}
-                                                                {emp.timings[day].earlyHours > 0 && <p className="flex justify-between gap-4 text-indigo-400"><span>Early Hours:</span><b>{(emp.timings[day].earlyHours / 60).toFixed(1)} hrs</b></p>}
+                                                                <p className="font-bold border-b border-gray-600 pb-1 mb-1">{dayObj.fullDate.format("DD MMM (ddd)")}</p>
+                                                                <p className="flex justify-between gap-4"><span>In:</span><b>{emp.timings[dayObj.uniqueKey].in}</b></p>
+                                                                <p className="flex justify-between gap-4"><span>Out:</span><b>{emp.timings[dayObj.uniqueKey].out}</b></p>
+                                                                <p className="flex justify-between gap-4 pt-1 border-t border-gray-600"><span>Total:</span><b>{(emp.timings[dayObj.uniqueKey].total / 60).toFixed(1)} hrs</b></p>
                                                             </div>
-                                                        ) : moment([selectedYear, selectedMonth - 1, day]).format("DD MMM (ddd)")}
+                                                        ) : dayObj.fullDate.format("DD MMM (ddd)")}
                                                         arrow={false}
                                                     >
                                                         <div className="relative mx-auto w-7 h-7">
-                                                            {(emp.attendance[day] || !isWeekend(day)) && (
-                                                                <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default ${getStatusColorTable(emp.attendance[day])}`}>
-                                                                    {emp.attendance[day]}
+                                                            {(emp.attendance[dayObj.uniqueKey] || !isWeekend(dayObj.fullDate)) && (
+                                                                <div className={`w-7 h-7 rounded-none flex items-center justify-center text-[10px] font-bold border transition-all cursor-default ${getStatusColorTable(emp.attendance[dayObj.uniqueKey])}`}>
+                                                                    {emp.attendance[dayObj.uniqueKey]}
                                                                 </div>
                                                             )}
-                                                            {emp.timings[day]?.overtime > 0 && (
+                                                            {emp.timings[dayObj.uniqueKey]?.overtime > 0 && (
                                                                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 border border-white flex items-center justify-center rounded-full" title="Overtime">
                                                                     <span className="text-[6px] text-white">O</span>
-                                                                </div>
-                                                            )}
-                                                            {emp.timings[day]?.earlyHours > 0 && (
-                                                                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-indigo-600 border border-white flex items-center justify-center rounded-full" title="Early Hours">
-                                                                    <span className="text-[6px] text-white">E</span>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -408,7 +446,7 @@ const AttendanceMatrix = () => {
                                                     <td className="admin-table-td text-center bg-blue-50/30 font-bold text-[10px] text-[#3c8dbc] border-r border-gray-100">
                                                         {(() => {
                                                             const val = emp.weeklyHours[currentWeekKey];
-                                                            weekCounter++; // Increment after using the key
+                                                            weekCounter++;
                                                             return val ? (val / 60).toFixed(1) + 'h' : '0.0h';
                                                         })()}
                                                     </td>
@@ -417,12 +455,19 @@ const AttendanceMatrix = () => {
                                         );
                                     });
                                 })()}
-                                <td className="admin-table-td text-center font-bold text-[10px] text-gray-600 bg-gray-50/50">
-                                    {emp.monthlyStats.P}/{emp.monthlyStats.A}/{emp.monthlyStats.L}/{emp.monthlyStats.E}
-                                </td>
-                                <td className="admin-table-td text-center font-bold text-[10px] text-blue-700 bg-gray-50/50">
-                                    {(emp.monthlyStats.totalHours / 60).toFixed(1)}h
-                                </td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-gray-600 bg-gray-50/30">{emp.leaveStats.calendarDays}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-gray-600 bg-gray-50/30">{emp.leaveStats.weekends}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-gray-600 bg-gray-50/30">{emp.leaveStats.holidays}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-gray-600 bg-gray-50/30">{emp.leaveStats.workingDays}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-green-700 bg-green-50/30">{emp.leaveStats.present}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-red-700 bg-red-50/30">{emp.leaveStats.absent}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-purple-700 bg-purple-50/30">{emp.leaveStats.compoOff}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-blue-700 bg-blue-50/30">{emp.leaveStats.balancedCompOffTillLast}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-blue-700 bg-blue-50/30">{emp.leaveStats.balancedCompOffFromThis}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-emerald-700 bg-emerald-50/30">{emp.leaveStats.totalLeavesAvailableTillLast}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-emerald-700 bg-emerald-50/30">{emp.leaveStats.totalAvailableLeavesTillThis}</td>
+                                <td className="admin-table-td text-center font-bold text-[11px] text-emerald-700 bg-emerald-50/30">{emp.leaveStats.availableLeavesFromThis}</td>
+                                <td className="admin-table-td text-center font-black text-[13px] text-orange-700 bg-orange-50/50">{emp.leaveStats.payableDays}</td>
                             </tr>
                         ))}
                     </tbody>

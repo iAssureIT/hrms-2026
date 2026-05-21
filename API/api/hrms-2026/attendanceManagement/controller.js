@@ -3,6 +3,9 @@ const AttendanceLogs = require("./model.js");
 const AttendanceSettings = require("./settingsModel.js");
 const ColumnMappings = require("./mappingModel.js");
 const Employees = require("../employeeManagement/model.js");
+const LeaveBalance = require("../leaveManagement/leaveBalance/model.js");
+const LeaveApplications = require("../leaveManagement/leaveApplications/model.js");
+const LeaveTypes = require("../leaveManagement/leaveTypes/model.js");
 const moment = require("moment");
 
 // Helper: Calculate Attendance Status
@@ -78,8 +81,10 @@ const calculateStatus = (inTime, outTime, settings) => {
 exports.getAttendanceMatrix = async (req, res) => {
     try {
         const { year, month, center_id, department_id } = req.body;
-        const startDate = moment([year, month - 1]).startOf('month').toDate();
-        const endDate = moment([year, month - 1]).endOf('month').toDate();
+        
+        // Custom Cycle: 21st of prev month to 20th of current month
+        const startDate = moment([year, month - 1]).subtract(1, 'month').set('date', 21).startOf('day').toDate();
+        const endDate = moment([year, month - 1]).set('date', 20).endOf('day').toDate();
 
         // 1. Get Employees based on filters
         let employeeQuery = {};
@@ -89,58 +94,105 @@ exports.getAttendanceMatrix = async (req, res) => {
         const employees = await Employees.find(employeeQuery).lean();
         const settings = await AttendanceSettings.findOne().lean(); // Fetch settings for holiday/weekly-off logic
 
-        // 2. Get Attendance Logs for the month
+        // 3. Get Leave Balances for these employees
+        const leaveBalances = await LeaveBalance.find({
+            employeeId: { $in: employees.map(e => e._id) },
+            year: year
+        }).populate('leaveTypeId').lean();
+
+        // 4. Get Attendance Logs for the month
         const logs = await AttendanceLogs.find({
             date: { $gte: startDate, $lte: endDate }
         }).lean();
 
-        // 3. Map logs to employees
+        // 5. Map logs and leave data to employees
         const matrix = employees.map(emp => {
             const empLogs = logs.filter(log => log.employee_id.toString() === emp._id.toString());
+            const empLeaves = leaveBalances.filter(lb => lb.employeeId.toString() === emp._id.toString());
+            
             const daysData = {};
             const detailedTimings = {};
             
-            let monthlyStats = { P: 0, A: 0, L: 0, E: 0, F: 0, H: 0, W: 0, totalHours: 0 };
+            let monthlyStats = { P: 0, A: 0, L: 0, E: 0, F: 0, H: 0, W: 0, C: 0, totalHours: 0 };
             let weeklyHours = { W1: 0, W2: 0, W3: 0, W4: 0, W5: 0 };
+            
+            let holidayCount = 0;
+            let weekendCount = 0;
 
-            for (let d = 1; d <= moment(endDate).date(); d++) {
-                const dayDate = moment([year, month - 1, d]).format("YYYY-MM-DD");
-                const log = empLogs.find(l => moment(l.date).format("YYYY-MM-DD") === dayDate);
+            let current = moment(startDate);
+            let dayIndex = 1;
+
+            while (current.isSameOrBefore(endDate)) {
+                const dayDate = current.format("YYYY-MM-DD");
+                const dayName = current.format("ddd");
+                const isHoliday = settings?.holidays?.some(h => moment(h.date).isSame(current, 'day'));
                 
+                const weeklyOffs = settings?.shifts?.[0]?.weeklyOffs || ['Sat', 'Sun'];
+                const isWeeklyOff = weeklyOffs.includes(dayName);
+
+                if (isHoliday) holidayCount++;
+                if (isWeeklyOff && !isHoliday) weekendCount++;
+
+                const log = empLogs.find(l => moment(l.date).format("YYYY-MM-DD") === dayDate);
+                const d = current.date(); // Day number for the grid
+                const uniqueKey = `${current.month() + 1}-${d}`; // Use month-day as key to avoid overlap
+
                 if (log) {
-                    daysData[d] = log.status;
-                    detailedTimings[d] = {
+                    daysData[uniqueKey] = log.status;
+                    detailedTimings[uniqueKey] = {
                         in: log.inTime ? moment(log.inTime).format("HH:mm") : "-",
                         out: log.outTime ? moment(log.outTime).format("HH:mm") : "-",
                         total: log.totalHours || 0,
-                        overtime: log.overtime || 0,
-                        earlyHours: log.earlyHours || 0
                     };
                     
                     if (monthlyStats[log.status] !== undefined) monthlyStats[log.status]++;
                     monthlyStats.totalHours += (log.totalHours || 0);
-
-                    const weekNum = Math.ceil(d / 7);
-                    if (weekNum <= 5) weeklyHours[`W${weekNum}`] += (log.totalHours || 0);
                 } else {
-                    // Check for Weekly Off or Holiday
-                    const checkDate = moment([year, month - 1, d]);
-                    const dayName = checkDate.format("ddd");
-                    const isHoliday = settings?.holidays?.some(h => moment(h.date).isSame(checkDate, 'day'));
-                    const isWeeklyOff = settings?.shifts?.[0]?.weeklyOffs?.includes(dayName);
-
                     if (isHoliday) {
-                        daysData[d] = 'H';
+                        daysData[uniqueKey] = 'H';
                         if (monthlyStats['H'] !== undefined) monthlyStats['H']++;
                     } else if (isWeeklyOff) {
-                        daysData[d] = 'W';
+                        daysData[uniqueKey] = 'W';
                         if (monthlyStats['W'] !== undefined) monthlyStats['W']++;
                     } else {
-                        daysData[d] = 'X'; // No data / Potential Absent
+                        daysData[uniqueKey] = 'X'; 
                     }
-                    detailedTimings[d] = null;
+                    detailedTimings[uniqueKey] = null;
                 }
+                
+                current.add(1, 'day');
+                dayIndex++;
             }
+
+            const numDays = moment(endDate).diff(startDate, 'days') + 1;
+
+            // Leave & Summary Stats
+            const coBalance = empLeaves.find(l => l.leaveTypeId?.leaveCode === 'CO');
+            const otherLeaves = empLeaves.filter(l => l.leaveTypeId?.leaveCode !== 'CO');
+            
+            const totalOtherLeavesBalance = otherLeaves.reduce((acc, curr) => acc + curr.remainingBalance, 0);
+            const lastMonthOtherBalance = otherLeaves.reduce((acc, curr) => acc + (curr.remainingBalance - curr.earnedDays + curr.usedDays), 0);
+
+            const leaveStats = {
+                calendarDays: numDays,
+                weekends: weekendCount,
+                holidays: holidayCount,
+                workingDays: numDays - weekendCount - holidayCount,
+                present: monthlyStats.P,
+                absent: monthlyStats.A,
+                compoOff: monthlyStats.C,
+                
+                // Compo Off Details
+                balancedCompOffTillLast: coBalance ? (coBalance.remainingBalance - coBalance.earnedDays + coBalance.usedDays) : 0,
+                balancedCompOffFromThis: coBalance ? coBalance.remainingBalance : 0,
+                
+                // General Leaves Details
+                totalLeavesAvailableTillLast: lastMonthOtherBalance,
+                totalAvailableLeavesTillThis: totalOtherLeavesBalance, // includes current month credits if earnedDays includes them
+                availableLeavesFromThis: totalOtherLeavesBalance,
+                
+                payableDays: monthlyStats.P + holidayCount + weekendCount + (coBalance ? coBalance.usedDays : 0) // Basic formula
+            };
 
             return {
                 employee_id: emp._id,
@@ -150,7 +202,8 @@ exports.getAttendanceMatrix = async (req, res) => {
                 attendance: daysData,
                 timings: detailedTimings,
                 weeklyHours,
-                monthlyStats
+                monthlyStats,
+                leaveStats
             };
         });
 
@@ -203,6 +256,106 @@ exports.saveAttendance = async (req, res) => {
 
         res.status(200).json({ success: true, message: `Processed ${results.length} records`, data: results });
     } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// BULK UPLOAD MATRIX FORMAT
+exports.bulkUploadMatrix = async (req, res) => {
+    try {
+        const { matrixData, month, year, user_id } = req.body;
+        if (!matrixData || !Array.isArray(matrixData)) {
+            return res.status(400).json({ success: false, message: "Invalid matrix data" });
+        }
+
+        const settings = await AttendanceSettings.findOne();
+        const results = [];
+        const errors = [];
+
+        // Fetch CO Leave Type ID
+        const coLeaveType = await LeaveTypes.findOne({ leaveCode: 'CO' });
+
+        for (const row of matrixData) {
+            let employeeID = row.employeeID || row["Emp Id"] || row["Employee ID"];
+            if (employeeID) employeeID = String(employeeID).trim();
+
+            if (!employeeID) {
+                errors.push({ row, remark: "Employee ID missing" });
+                continue;
+            }
+
+            const employee = await Employees.findOne({ 
+                $or: [
+                    { employeeID: employeeID },
+                    { employeeID: new RegExp(`^${employeeID}$`, "i") }
+                ]
+            });
+
+            if (!employee) {
+                errors.push({ employeeID, remark: `Employee not found in Master Data` });
+                continue;
+            }
+
+            const startDate = moment([year, month - 1]).subtract(1, 'month').set('date', 21).startOf('day');
+            const endDate = moment([year, month - 1]).set('date', 20).endOf('day');
+            
+            let current = moment(startDate);
+            while (current.isSameOrBefore(endDate)) {
+                const d = current.date();
+                const status = row[d] || row[`Day ${d}`] || row[String(d)];
+                
+                if (status && status !== "-") {
+                    const date = current.toDate();
+                    
+                    let inTime = null;
+                    let outTime = null;
+
+                    if (status === 'P' || status === 'Present') {
+                        const shift = settings?.shifts?.[0];
+                        if (shift) {
+                            inTime = moment(date).set({ 
+                                hour: shift.inTime.split(":")[0], 
+                                minute: shift.inTime.split(":")[1] 
+                            }).toDate();
+                            outTime = moment(date).set({ 
+                                hour: shift.outTime.split(":")[0], 
+                                minute: shift.outTime.split(":")[1] 
+                            }).toDate();
+                        }
+                    }
+
+                    const attendanceRecord = {
+                        employee_id: employee._id,
+                        employeeID: employee.employeeID,
+                        date: date,
+                        status: status.length > 1 ? status.charAt(0).toUpperCase() : status.toUpperCase(),
+                        inTime,
+                        outTime,
+                        source: 'Excel_Biometric',
+                        createdBy: user_id,
+                        updatedAt: new Date()
+                    };
+
+                    const result = await AttendanceLogs.findOneAndUpdate(
+                        { employee_id: employee._id, date: date },
+                        { $set: attendanceRecord },
+                        { upsert: true, new: true, setDefaultsOnInsert: true }
+                    );
+                    results.push(result);
+                }
+                current.add(1, 'day');
+            }
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: `Processed ${matrixData.length - errors.length} employees. Total ${results.length} daily logs updated.`,
+            failedCount: errors.length,
+            errors: errors.length > 0 ? errors : undefined
+        });
+
+    } catch (error) {
+        console.error("Bulk Upload Matrix Error:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };

@@ -75,7 +75,8 @@ const AddEmployee = () => {
         confirmPassword: "",
         skills: [],
         certifications: "",
-        notes: ""
+        notes: "",
+        status: "Active"
     });
 
     const [formErrors, setFormErrors] = useState({});
@@ -230,7 +231,7 @@ const AddEmployee = () => {
                 });
                 if (res.data) {
                     Swal.fire("Success!", "Employee saved.", "success");
-                    router.push(`/${loggedInRole}/asset-management/employee-master`);
+                    router.push(`/${loggedInRole}/employee-master`);
                 }
             } catch (err) {
                 Swal.fire("Error!", "Failed to save.", "error");
@@ -518,7 +519,7 @@ const AddEmployee = () => {
                         <Tooltip content="Back to List" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
                             <div
                                 className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-2 rounded transition-all active:scale-95 shadow-sm flex items-center gap-2 text-xs font-bold uppercase"
-                                onClick={() => router.push(`/${loggedInRole}/asset-management/employee-master`)}
+                                onClick={() => router.push(`/${loggedInRole}/employee-master`)}
                             >
                                 <FaUsers className="text-lg" />
                             </div>
@@ -601,7 +602,7 @@ const AddEmployee = () => {
                                 ) : <div />}
 
                                 <div className="flex gap-4 items-center">
-                                    <button type="button" onClick={() => router.push(`/${loggedInRole}/asset-management/employee-master`)} className="text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#3c8dbc]">Discard</button>
+                                    <button type="button" onClick={() => router.push(`/${loggedInRole}/employee-master`)} className="text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#3c8dbc]">Discard</button>
                                     {currentStep < 5 ? (
                                         <button 
                                             type="button" 

@@ -567,3 +567,26 @@ exports.getMetrics = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.patchStatus = async (req, res) => {
+    const { id, status } = req.body;
+    try {
+        const updated = await Employees.findOneAndUpdate(
+            { _id: id },
+            { $set: { status: status } },
+            { new: true }
+        );
+        if (updated) {
+            res.status(200).json({ 
+                message: `Employee status updated to ${status} successfully.`,
+                success: true 
+            });
+        } else {
+            res.status(404).json({ message: "Employee not found", success: false });
+        }
+    } catch (error) {
+        console.error("Patch Status Error:", error);
+        res.status(500).json({ error: error.message, success: false });
+    }
+};
+

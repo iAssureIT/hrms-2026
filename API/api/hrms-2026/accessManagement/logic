@@ -1,0 +1,77 @@
+
+
+	login -> user Details -> save localstorage -> check role -> if 'admin' ==> admin/dashboard
+						-> if 'user' ==> user/dashboard
+
+
+
+	1) Login Functionality
+		login -> user Details -> access data for this role -> save localstorage
+
+			/[role]/dashboard
+
+			admin/dashboard
+			user/dashboard 
+
+	2) Header -> create new function
+			-> check url 
+			-> check access for this page, from locastorage based access array
+			-> if no access, then redirect to 404.
+			-> if access, then show the page. 
+
+
+
+
+Access Management Implementation 
+
+1. accessManagement collection has data stored in following form
+	{
+		role: xxx,
+		permissions: [
+			{
+				facilityName: xxx,
+				create: true,
+				edit: true,
+				delete: false,
+				view: true,
+				list: true
+			},
+			{
+				facilityName: yyy,
+				create: true,
+				edit: true,
+				delete: false,
+				view: true,
+				list: true
+			}
+		]
+	}
+
+
+2. When user logins, we send UserDetails object from API and store that in LocalStorage. 
+Add this accessManagement Object in this UserDetails object. 
+
+
+3. On every page, take these permissions into a variable. 
+	let userDetails = localStorage.getItem('userDetails');
+	let permissions = userDetails.accessManagement. 
+
+4. The access or permission given to any user is to be implemented as follows
+	
+	if(permissions.userManagement.list){
+		<UserManagementList/>
+	}
+
+	if(permissions.userManagement.edit){
+		<i className="fa-pencil"></i>
+	}
+
+	if(permissions.userManagement.delete){
+		<i className="fa-trash"></i>
+	}
+
+
+
+
+
+

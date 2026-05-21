@@ -67,7 +67,7 @@ export default function RootLayout({ children }) {
         // {
         //   icon: <FaRegCircle />,
         //   title: "Employee Master",
-        //   link: "/center/asset-management/employee-master",
+        //   link: "/center/employee-master",
         // },
       ],
     },

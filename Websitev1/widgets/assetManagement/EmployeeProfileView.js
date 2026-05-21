@@ -74,7 +74,7 @@ const EmployeeProfileView = () => {
                     <Tooltip content="Back to List" arrow={false} placement="bottom" className="bg-[#3c8dbc]">
                         <div
                             className="cursor-pointer text-[#3c8dbc] hover:text-white hover:bg-[#3c8dbc] border border-[#3c8dbc] p-2 rounded transition-all active:scale-95 shadow-sm flex items-center justify-center w-10 h-10"
-                            onClick={() => router.push(`/${loggedInRole}/asset-management/employee-master`)}
+                            onClick={() => router.push(`/${loggedInRole}/employee-master`)}
                         >
                             <FaUsers className="text-lg" />
                         </div>
@@ -83,7 +83,7 @@ const EmployeeProfileView = () => {
             </div>
 
             {/* Header Profile Card - MATCHING PHOTO EXACTLY */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8 flex flex-col md:flex-row items-center gap-8">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
                 <div className="relative">
                     <div className="w-28 h-28 rounded-full bg-[#fce7f3] flex items-center justify-center overflow-hidden border-4 border-white shadow-sm">
                         {employeeData.profilePhoto ? (
@@ -92,19 +92,50 @@ const EmployeeProfileView = () => {
                             <FaUserCircle className="w-20 h-20 text-[#f9a8d4]" />
                         )}
                     </div>
-                    <div className="absolute bottom-1 right-2 w-5 h-5 bg-green-500 border-4 border-white rounded-full"></div>
+                    <div className={`absolute bottom-1 right-2 w-5 h-5 border-4 border-white rounded-full ${employeeData.status === "Inactive" ? "bg-red-500" : "bg-green-500"}`}></div>
                 </div>
 
                 <div className="flex-1 text-center md:text-left">
                     <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                         <h1 className="text-3xl font-bold text-[#333] m-0 tracking-tight">{employeeData.firstName} {employeeData.lastName}</h1>
-                        <span className="text-[11px] font-bold text-gray-400 mt-1 uppercase tracking-tight">Active</span>
+                        <span className={`text-[11px] font-bold mt-1 uppercase tracking-tight ${employeeData.status === "Inactive" ? "text-red-500" : "text-gray-400"}`}>{employeeData.status || "Active"}</span>
                     </div>
                     <div className="flex flex-wrap justify-center md:justify-start gap-6 text-gray-500 text-sm font-semibold">
                         <div className="flex items-center gap-2"><FaBriefcase className="text-gray-300" /> {employeeData.employeeDesignation}</div>
                         <div className="flex items-center gap-2 border-l border-gray-200 pl-6"><FaBuilding className="text-gray-300" /> {employeeData.departmentName}</div>
                         <div className="bg-[#f3f4f6] px-3 py-1 rounded text-[11px] font-bold text-gray-700 ml-2 tracking-tight uppercase">ID: {employeeData.employeeID}</div>
                     </div>
+                </div>
+
+                {/* Status Toggle Button */}
+                <div className="absolute bottom-4 right-4">
+                    <button
+                        onClick={async () => {
+                            const newStatus = employeeData.status === "Inactive" ? "Active" : "Inactive";
+                            try {
+                                const res = await axios.patch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/patch/status`, {
+                                    id: employeeId,
+                                    status: newStatus
+                                });
+                                if (res.data.success) {
+                                    setEmployeeData({ ...employeeData, status: newStatus });
+                                }
+                            } catch (err) {
+                                console.error("Error updating status:", err);
+                            }
+                        }}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all shadow-sm active:scale-95 ${
+                            employeeData.status === "Inactive" 
+                            ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100" 
+                            : "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+                        }`}
+                    >
+                        {employeeData.status === "Inactive" ? (
+                            <><FaCheckCircle /> Mark as Active</>
+                        ) : (
+                            <><FaUserSlash /> Mark as Inactive</>
+                        )}
+                    </button>
                 </div>
             </div>
 

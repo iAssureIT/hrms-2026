@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import { Tooltip } from "flowbite-react";
 import { CiViewList } from "react-icons/ci";
-import { FaUserTie, FaFileUpload, FaListUl, FaUserPlus, FaUsers, FaBuilding, FaVenusMars, FaSpinner } from "react-icons/fa";
+import { FaUserTie, FaFileUpload, FaListUl, FaUserPlus, FaUsers, FaBuilding, FaVenusMars, FaSpinner, FaCheckCircle, FaTimesCircle, FaCheck } from "react-icons/fa";
 import { BsPlusSquare } from "react-icons/bs";
 import ls from "localstorage-slim";
 import FilterTable from "@/widgets/GenericTable/FilterTable";
@@ -66,13 +66,38 @@ const EmployeeMaster = () => {
   const [runCount, setRunCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [filterData, setFilterData] = useState({});
-  const [activeStatusFilter, setActiveStatusFilter] = useState(null);
+  const [activeStatusFilter, setActiveStatusFilter] = useState("Active");
+  const [prevFilterIndex, setPrevFilterIndex] = useState(1);
+  const [slideDirection, setSlideDirection] = useState("none");
   const [counts, setCounts] = useState({
     totalWorkforce: 0,
     activeEmployees: 0,
-    totalDepartments: 0,
     genderRatio: { Male: 0, Female: 0, Other: 0 }
   });
+  const [animateTable, setAnimateTable] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => setAnimateTable(true), 500); // 500ms delay for 'buttery' feel
+      return () => clearTimeout(timer);
+    } else {
+      setAnimateTable(false);
+    }
+  }, [loading]);
+
+
+
+  const handleFilterChange = (newId, index) => {
+    if (index > prevFilterIndex) {
+      setSlideDirection("left");
+    } else if (index < prevFilterIndex) {
+      setSlideDirection("right");
+    }
+    setPrevFilterIndex(index);
+    setActiveStatusFilter(newId);
+    setPageNumber(1);
+  };
+
 
   useEffect(() => {
     if (pathname.includes("admin")) {
@@ -98,6 +123,7 @@ const EmployeeMaster = () => {
     employeeDesignation: "Designation",
     employmentType: "Emp Type",
     systemRole: "Access Role",
+    status: "Status",
     doj: "Joining Date",
     actions: "Actions",
   };
@@ -119,9 +145,14 @@ const EmployeeMaster = () => {
     apiURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees`,
     getListMethod: "post",
     deleteMethod: "delete",
+<<<<<<< Updated upstream
     editURL: `/asset-management/add-employee?id=`,
     viewURL: `/asset-management/employee-profile-view?id=`,
     salstr: `/payroll/salary/structure?empId=`,
+=======
+    editURL: `/add-employee?id=`,
+    viewURL: `/employee-profile-view?id=`,
+>>>>>>> Stashed changes
     searchApply: true,
     downloadApply: true,
     titleMsg: "Employee List",
@@ -188,14 +219,14 @@ const EmployeeMaster = () => {
 
                 <BsPlusSquare
                   className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
-                  onClick={() => router.push(`/${loggedInRole}/asset-management/add-employee`)}
+                  onClick={() => router.push(`/${loggedInRole}/add-employee`)}
                 />
               </Tooltip>
               <Tooltip content="Bulk Upload" placement="bottom" className="bg-[#3c8dbc]" arrow={false}>
                 <FaFileUpload
                   className="cursor-pointer text-[#3c8dbc] hover:text-[#367fa9] border border-[#3c8dbc] p-1 hover:border-[#367fa9] rounded text-[30px] transition-all active:scale-95 shadow-sm"
                   onClick={() => {
-                    router.push(`/${loggedInRole}/asset-management/employee-bulk-upload`);
+                    router.push(`/${loggedInRole}/employee-bulk-upload`);
                   }}
                 />
               </Tooltip>
@@ -214,10 +245,7 @@ const EmployeeMaster = () => {
             value={counts.totalWorkforce}
             icon={FaUsers}
             colorClass="bg-aqua"
-            onClick={() => {
-              setActiveStatusFilter(null);
-              setPageNumber(1);
-            }}
+            onClick={() => handleFilterChange(null, 0)}
             isActive={activeStatusFilter === null}
           />
           <StatusCard
@@ -225,10 +253,7 @@ const EmployeeMaster = () => {
             value={counts.activeEmployees}
             icon={FaUserTie}
             colorClass="bg-green"
-            onClick={() => {
-              setActiveStatusFilter("Active");
-              setPageNumber(1);
-            }}
+            onClick={() => handleFilterChange("Active", 1)}
             isActive={activeStatusFilter === "Active"}
           />
           <StatusCard
@@ -247,7 +272,45 @@ const EmployeeMaster = () => {
           />
         </div>
 
-        <div className="bg-white">
+        {/* Refined Equal-Width Status Toggle */}
+        <div className="flex justify-center mb-10">
+          <div className="inline-flex items-center bg-gray-100/80 p-1.5 rounded-xl shadow-inner border border-gray-200/50 backdrop-blur-sm w-full max-w-2xl">
+            {[
+              { id: null, label: "All Employees", icon: <FaUsers /> },
+              { id: "Active", label: "Active", icon: <FaCheckCircle /> },
+              { id: "Inactive", label: "Inactive", icon: <FaTimesCircle /> }
+            ].map((option, index) => (
+              <button
+                key={option.label}
+                onClick={() => handleFilterChange(option.id, index)}
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-widest transition-all duration-500 rounded-lg ${
+                  activeStatusFilter === option.id
+                    ? "bg-white text-[#3c8dbc] shadow-md ring-1 ring-black/5 transform scale-[1.02]"
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                <span className={`text-[14px] ${activeStatusFilter === option.id ? 'text-[#3c8dbc]' : 'text-gray-300'}`}>
+                  {option.icon}
+                </span>
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div 
+          className="bg-white transition-all duration-[1200ms] ease-[cubic-bezier(0.16, 1, 0.3, 1)] transform"
+          style={{
+            transform: animateTable 
+              ? 'translateX(0) scale(1)' 
+              : slideDirection === 'left' 
+                ? 'translateX(-150px) scale(0.97)' 
+                : slideDirection === 'right'
+                  ? 'translateX(150px) scale(0.97)'
+                  : 'translateY(50px) scale(0.97)'
+          }}
+        >
+
           <FilterTable
             tableHeading={tableHeading}
             excelHeading={excelHeading}

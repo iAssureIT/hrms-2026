@@ -31,6 +31,7 @@ const reportingSystemRoutes = require("./api/hrms-2026/reportingSystem/route.js"
 const dashboardRoutes = require("./api/hrms-2026/dashboard/route.js");
 const assetDepreciationRoutes = require("./api/hrms-2026/assetDepreciationMaster/route.js");
 const assetInspectionChecklistRoutes = require("./api/hrms-2026/assetInspectionChecklist/route.js");
+const accessManagementRoutes = require("./api/hrms-2026/accessManagement/routes.js");
 
 // const programRoutes = require("./api/hrms-2026/oneFieldModules/programManagement/routesNew.js");
 // const projectRoutes = require("./api/hrms-2026/oneFieldModules/projectManagement/routesNew.js");
@@ -97,6 +98,7 @@ const appRoutes = (app) => {
   app.use("/api/dashboard", dashboardRoutes);
   app.use("/api/asset-depreciation-master", assetDepreciationRoutes);
   app.use("/api/asset-inspection-checklist", assetInspectionChecklistRoutes);
+  app.use("/api/access", accessManagementRoutes);
 
   // core-admin api
   app.use("/startup", startupRoutes);
