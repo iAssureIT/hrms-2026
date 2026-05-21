@@ -1121,7 +1121,7 @@ export default function RootLayout({ children }) {
     {
       title: "Payroll",
       icon: <FaMoneyCheckAlt />,
-      link: "/admin/payroll/process",
+      link: "/admin/payroll/dashboard",
     },
     {
       title: "Asset Management",

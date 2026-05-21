@@ -2,20 +2,34 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  Loader2,
+  Check,
+} from "lucide-react";
 
-export default function PayrollMultiStepForm() {
+export default function PayrollProcessPage() {
 
-  const [step, setStep] = useState(1);
+  // STEP
+  const [step, setStep] =
+    useState(1);
 
-  // DEPARTMENTS
+  // STEP LIST
+  const stepList = [
+    "Departments",
+    "Employees",
+    "Attendance",
+    "Run Payroll",
+    "Salary Slips",
+  ];
+
+  // DATA
   const [departments, setDepartments] =
     useState([]);
 
-  // EMPLOYEES
   const [employees, setEmployees] =
     useState([]);
 
-  // SELECTED DATA
+  // SELECTED
   const [
     selectedDepartments,
     setSelectedDepartments,
@@ -26,592 +40,1391 @@ export default function PayrollMultiStepForm() {
     setSelectedEmployees,
   ] = useState([]);
 
-  // PAYROLL DATA
-  const [payrollData, setPayrollData] =
-    useState({
-      payrollDate: "",
-    });
-
-  // EMPLOYEE PAYROLL DETAILS
+  // ATTENDANCE
   const [
-    employeePayrollDetails,
-    setEmployeePayrollDetails,
+    employeeAttendance,
+    setEmployeeAttendance,
   ] = useState([]);
 
+  // PAYROLL
+  const [payrollMonth, setPayrollMonth] =
+    useState("");
+
+  const [payrollDate, setPayrollDate] =
+    useState("");
+
+  // PROCESS
+  const [isProcessing, setIsProcessing] =
+    useState(false);
+
+  const [progress, setProgress] =
+    useState(0);
+
+  const [
+    currentEmployee,
+    setCurrentEmployee,
+  ] = useState("");
+
+  const [
+    currentEmployeeID,
+    setCurrentEmployeeID,
+  ] = useState("");
+
+  // GENERATED SLIPS
+  const [
+    generatedSlips,
+    setGeneratedSlips,
+  ] = useState([]);
+
+  // POPUP
+  const [
+    showSlipPopup,
+    setShowSlipPopup,
+  ] = useState(false);
+
+  const [
+    popupSalaryData,
+    setPopupSalaryData,
+  ] = useState(null);
+
+  const [
+    popupEmployeeId,
+    setPopupEmployeeId,
+  ] = useState("");
+
+  const [
+    popupSalaryMonth,
+    setPopupSalaryMonth,
+  ] = useState("");
+
   // FETCH DEPARTMENTS
-  const fetchDepartments = async () => {
-
-    try {
-
-      const response = await axios.get(
-        "http://localhost:3050/api/payroll/prdept"
-      );
-      console.log(response.data);
-      setDepartments(response.data);
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+
+    const fetchDepartments =
+      async () => {
+
+        try {
+
+          const response =
+            await axios.get(
+              "http://localhost:3050/api/payroll/prdept"
+            );
+
+          setDepartments(
+            response.data || []
+          );
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+      };
+
     fetchDepartments();
+
   }, []);
 
   // FETCH EMPLOYEES
-  const fetchEmployees = async () => {
-
-    try {
-
-      const response = await axios.post(
-        "http://localhost:3050/api/payroll/prdept/premp",
-        {
-          departments: selectedDepartments.map((item) => item.id),
-        }
-      );
-      console.log(selectedDepartments);
-      console.log("Employees by Departments:", response);
-      setEmployees(response.data.data);
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+
+    const fetchEmployees =
+      async () => {
+
+        try {
+
+          const response =
+            await axios.post(
+              "http://localhost:3050/api/payroll/prdept/premp",
+              {
+                departments:
+                  selectedDepartments.map(
+                    (item) => item.id
+                  ),
+              }
+            );
+
+          setEmployees(
+            response.data.data || []
+          );
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+      };
 
     if (
       selectedDepartments.length > 0
     ) {
+
       fetchEmployees();
+
+    } else {
+
+      setEmployees([]);
     }
 
   }, [selectedDepartments]);
 
-  // HANDLE DEPARTMENT
-  //   const handleDepartmentChange = (
-  //     department,id
-  //   ) => {
-  // //console.log("handleDepartmentChange:", department, id);
-  //     setSelectedDepartments((prev) => {
-
-  //       if (
-  //         prev.includes(department)
-  //       ) {
-
-  //         return prev.filter(
-  //           (item) =>
-  //             item !== department
-  //         );
-  //       }
-
-  //       return [...prev, department];
-  //     });
-  //   };
-
-  const handleDepartmentChange = (
-    department,
-    id
+  // FORMAT MONTH
+  const formatSalaryMonth = (
+    monthValue
   ) => {
 
-    setSelectedDepartments((prev) => {
+    if (!monthValue)
+      return "";
 
-      const alreadyExists =
-        prev.find(
-          (item) => item.id === id
-        );
+    const date =
+      new Date(
+        monthValue
+      );
 
-      // REMOVE
-      if (alreadyExists) {
-
-        return prev.filter(
-          (item) => item.id !== id
-        );
+    return date.toLocaleString(
+      "default",
+      {
+        month: "short",
+        year: "numeric",
       }
-
-      // ADD
-      return [
-        ...prev,
-        {
-          id,
-          department,
-        },
-      ];
-    });
+    );
   };
 
-  // HANDLE EMPLOYEE
+  // GROUP EMPLOYEES
+  const groupedEmployees =
+    employees.reduce(
+      (acc, emp) => {
+
+        const dept =
+          emp.departmentName ||
+          "Others";
+
+        if (!acc[dept]) {
+
+          acc[dept] = [];
+        }
+
+        acc[dept].push(emp);
+
+        return acc;
+
+      },
+      {}
+    );
+
+  // SELECT DEPARTMENT
+  const handleDepartmentChange = (
+    item
+  ) => {
+
+    const exists =
+      selectedDepartments.find(
+        (dept) =>
+          dept.id === item._id
+      );
+
+    if (exists) {
+
+      setSelectedDepartments(
+        selectedDepartments.filter(
+          (dept) =>
+            dept.id !== item._id
+        )
+      );
+
+    } else {
+
+      setSelectedDepartments([
+        ...selectedDepartments,
+        {
+          id: item._id,
+          department:
+            item.fieldValue,
+        },
+      ]);
+    }
+  };
+
+  // SELECT EMPLOYEE
   const handleEmployeeChange = (
     employee
   ) => {
 
-    setSelectedEmployees((prev) => {
+    const exists =
+      selectedEmployees.find(
+        (emp) =>
+          emp._id === employee._id
+      );
 
-      if (prev.includes(employee)) {
+    if (exists) {
 
-        return prev.filter(
-          (item) =>
-            item !== employee
-        );
-      }
+      setSelectedEmployees(
+        selectedEmployees.filter(
+          (emp) =>
+            emp._id !== employee._id
+        )
+      );
 
-      return [...prev, employee];
-    });
+    } else {
+
+      setSelectedEmployees([
+        ...selectedEmployees,
+        employee,
+      ]);
+    }
   };
 
-  // NEXT
+  // NEXT STEP
   const nextStep = () => {
-    setStep((prev) => prev + 1);
-    fetchEmployees();
+
+    if (step === 2) {
+
+      const attendanceData =
+        selectedEmployees.map(
+          (emp) => ({
+            employeeId:
+              emp._id,
+
+            employeeID:
+              emp.employeeID ||
+              emp.employeeId ||
+              emp.empId,
+
+            employeeName:
+              emp.employeeName,
+
+            department:
+              emp.departmentName,
+
+            attendance: 28,
+
+            leave: 2,
+
+            otHours: 10,
+          })
+        );
+
+      setEmployeeAttendance(
+        attendanceData
+      );
+    }
+
+    setStep(step + 1);
   };
 
   // PREVIOUS
   const prevStep = () => {
-    setStep((prev) => prev - 1);
+
+    setStep(step - 1);
+
   };
 
-  // RUN PAYROLL
-  const runPayroll = () => {
-
-    const payrollEmployees =
-      selectedEmployees.map(
-        (emp) => ({
-          employee: emp,
-          attendance: "",
-          leave: "",
-          otHours: "",
-        })
-      );
-
-    setEmployeePayrollDetails(
-      payrollEmployees
-    );
-
-    nextStep();
-  };
-
-  // HANDLE DETAILS
-  const handlePayrollDetailChange = (
+  // ATTENDANCE CHANGE
+  const handleAttendanceChange = (
     index,
     field,
     value
   ) => {
 
     const updated = [
-      ...employeePayrollDetails,
+      ...employeeAttendance,
     ];
 
-    updated[index][field] = value;
+    updated[index][field] =
+      value;
 
-    setEmployeePayrollDetails(
+    setEmployeeAttendance(
       updated
     );
   };
 
-  // SUBMIT
-  const handleSubmit = async () => {
+  // VIEW SLIP
+  const handleViewSlip =
+    async (
+      employeeId
+    ) => {
 
-    const payload = {
-      // departments:
-      //   selectedDepartments,
-      departments: selectedDepartments.map(
-        (item) => item.id
-      ),
-      employees:
-        selectedEmployees,
-      payrollDate:
-        payrollData.payrollDate,
-      payrollDetails:
-        employeePayrollDetails,
+      try {
+
+        const res =
+          await axios.get(
+            `http://localhost:3050/api/employee-salary/${employeeId}`
+          );
+
+        const monthlyData = {
+          ...res.data,
+
+          salaryData:
+            (
+              res.data.salaryData || []
+            ).map(
+              (item) => ({
+                ...item,
+
+                amount: Math.round(
+                  Number(
+                    item.amount
+                  ) / 12
+                ),
+              })
+            ),
+        };
+
+        setPopupSalaryData(
+          monthlyData
+        );
+
+        setPopupEmployeeId(
+          employeeId
+        );
+
+        setPopupSalaryMonth(
+          formatSalaryMonth(
+            payrollMonth
+          )
+        );
+
+        setShowSlipPopup(
+          true
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Salary slip not found"
+        );
+      }
     };
 
-    try {
+  // RUN PAYROLL
+  const handleRunPayroll =
+    async () => {
 
-      await axios.post(
-        "http://localhost:3050/api/run-payroll",
-        payload
-      );
+      try {
 
-      alert(
-        "Payroll Run Successfully"
-      );
+        setIsProcessing(true);
 
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        setProgress(0);
+
+        setGeneratedSlips([]);
+
+        for (
+          let i = 0;
+          i <
+          employeeAttendance.length;
+          i++
+        ) {
+
+          try {
+
+            const emp =
+              employeeAttendance[i];
+
+            setCurrentEmployee(
+              emp.employeeName
+            );
+
+            setCurrentEmployeeID(
+              emp.employeeID
+            );
+
+            const salaryResponse =
+              await axios.get(
+                `http://localhost:3050/api/employee-salary/${emp.employeeID}`
+              );
+
+            const monthlyData = {
+              ...salaryResponse.data,
+
+              salaryData:
+                (
+                  salaryResponse.data.salaryData || []
+                ).map(
+                  (item) => ({
+                    ...item,
+
+                    amount: Math.round(
+                      Number(
+                        item.amount
+                      ) / 12
+                    ),
+                  })
+                ),
+            };
+
+            const totalEarnings =
+              monthlyData.salaryData
+                .filter(
+                  (item) =>
+                    item.amount > 0
+                )
+                .reduce(
+                  (
+                    acc,
+                    item
+                  ) =>
+                    acc +
+                    item.amount,
+                  0
+                );
+
+            const totalDeductions =
+              monthlyData.salaryData
+                .filter(
+                  (item) =>
+                    item.amount < 0
+                )
+                .reduce(
+                  (
+                    acc,
+                    item
+                  ) =>
+                    acc +
+                    Math.abs(
+                      item.amount
+                    ),
+                  0
+                );
+
+            const netSalary =
+              totalEarnings -
+              totalDeductions;
+
+            setGeneratedSlips(
+              (prev) => [
+                ...prev,
+                {
+                  employee:
+                    emp.employeeName,
+
+                  employeeID:
+                    emp.employeeID,
+
+                  department:
+                    emp.department,
+
+                  netSalary,
+
+                  status:
+                    "success",
+                },
+              ]
+            );
+
+          } catch (error) {
+
+            console.log(error);
+
+            setGeneratedSlips(
+              (prev) => [
+                ...prev,
+                {
+                  employee:
+                    employeeAttendance[i]
+                      .employeeName,
+
+                  employeeID:
+                    employeeAttendance[i]
+                      .employeeID,
+
+                  department:
+                    employeeAttendance[i]
+                      .department,
+
+                  netSalary: 0,
+
+                  status:
+                    "failed",
+                },
+              ]
+            );
+          }
+
+          const progressValue =
+            Math.round(
+              ((i + 1) /
+                employeeAttendance.length) *
+                100
+            );
+
+          setProgress(
+            progressValue
+          );
+        }
+
+        setIsProcessing(false);
+
+        setStep(5);
+
+      } catch (error) {
+
+        console.log(error);
+
+        setIsProcessing(false);
+      }
+    };
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-[#f5f7fb] p-4">
 
       <div className="max-w-7xl mx-auto">
 
-        {/* PAGE HEADER */}
-        <div className="bg-white border border-gray-200 rounded-xl px-6 py-5 mb-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
+        {/* HEADER */}
+        <div className="bg-white border rounded-md p-5 mb-4">
 
-              <h1 className="text-2xl font-semibold text-gray-800">
-                Payroll Processing
-              </h1>
+          <h1 className="text-2xl font-semibold">
+            Payroll Process
+          </h1>
 
-              <p className="text-sm text-gray-500 mt-1">
-                Execute monthly payroll process
-              </p>
+        </div>
 
-            </div>
+        {/* STEP BOXES */}
+        <div className="bg-white border rounded-md p-4 mb-4">
 
-            <div className="flex gap-3">
+          <div className="grid grid-cols-5 gap-3">
 
-              {[1, 2, 3, 4].map(
-                (item) => (
+            {stepList.map(
+              (
+                item,
+                index
+              ) => {
+
+                const stepNumber =
+                  index + 1;
+
+                const completed =
+                  step > stepNumber;
+
+                const active =
+                  step === stepNumber;
+
+                return (
 
                   <div
-                    key={item}
-                    className={`w-10 h-10 rounded-lg border flex items-center justify-center text-sm font-medium
-                    ${step >= item
+                    key={index}
+                    className={`border rounded-md p-3 flex items-center gap-3
+                    ${completed
                         ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-white text-gray-500 border-gray-300"
+                        : active
+                          ? "bg-blue-50 border-blue-600"
+                          : "bg-white"
                       }`}
                   >
 
-                    {item}
+                    <div
+                      className={`w-9 h-9 rounded-md flex items-center justify-center text-sm font-semibold
+                      ${completed
+                          ? "bg-white text-blue-600"
+                          : active
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                    >
+
+                      {completed ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        stepNumber
+                      )}
+
+                    </div>
+
+                    <div>
+
+                      <p className="text-xs opacity-70">
+                        Step {stepNumber}
+                      </p>
+
+                      <h3 className="text-sm font-medium">
+                        {item}
+                      </h3>
+
+                    </div>
+
+                  </div>
+                );
+              }
+            )}
+
+          </div>
+
+        </div>
+
+        {/* MAIN */}
+        <div className="bg-white border rounded-md p-5">
+
+          {/* STEP 1 */}
+          {step === 1 && (
+            <div>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-sm font-medium">
+                  Select Departments
+                </h2>
+
+                <button
+                  onClick={() => {
+
+                    if (
+                      selectedDepartments.length ===
+                      departments.length
+                    ) {
+
+                      setSelectedDepartments([]);
+
+                    } else {
+
+                      setSelectedDepartments(
+                        departments.map(
+                          (item) => ({
+                            id: item._id,
+                            department:
+                              item.fieldValue,
+                          })
+                        )
+                      );
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  {
+                    selectedDepartments.length ===
+                    departments.length
+                      ? "Unselect All"
+                      : "Select All"
+                  }
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+
+                {departments.map(
+                  (
+                    item,
+                    index
+                  ) => {
+
+                    const checked =
+                      selectedDepartments.find(
+                        (dept) =>
+                          dept.id === item._id
+                      );
+
+                    return (
+
+                      <div
+                        key={index}
+                        onClick={() =>
+                          handleDepartmentChange(
+                            item
+                          )
+                        }
+                        className={`border rounded-md p-4 cursor-pointer
+                        ${checked
+                            ? "border-blue-600 bg-blue-50"
+                            : ""
+                          }`}
+                      >
+
+                        <div className="flex items-center gap-3">
+
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            readOnly
+                          />
+
+                          <span className="text-sm">
+                            {
+                              item.fieldValue
+                            }
+                          </span>
+
+                        </div>
+
+                      </div>
+                    );
+                  }
+                )}
+
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2 */}
+          {step === 2 && (
+            <div>
+
+              <div className="flex items-center justify-between mb-5">
+
+                <h2 className="text-sm font-medium">
+                  Select Employees
+                </h2>
+
+                <button
+                  onClick={() => {
+
+                    if (
+                      selectedEmployees.length ===
+                      employees.length
+                    ) {
+
+                      setSelectedEmployees([]);
+
+                    } else {
+
+                      setSelectedEmployees(
+                        employees
+                      );
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  {
+                    selectedEmployees.length ===
+                    employees.length
+                      ? "Unselect All"
+                      : "Select All"
+                  }
+                </button>
+
+              </div>
+
+              <div className="space-y-5">
+
+                {Object.keys(
+                  groupedEmployees
+                ).map((dept) => (
+
+                  <div
+                    key={dept}
+                    className="border rounded-md overflow-hidden"
+                  >
+
+                    <div className="bg-gray-50 border-b px-4 py-3">
+
+                      <h3 className="text-sm font-semibold">
+                        {dept}
+                      </h3>
+
+                    </div>
+
+                    <div className="p-4 grid grid-cols-3 gap-3">
+
+                      {groupedEmployees[
+                        dept
+                      ].map(
+                        (
+                          item,
+                          index
+                        ) => {
+
+                          const checked =
+                            selectedEmployees.find(
+                              (emp) =>
+                                emp._id ===
+                                item._id
+                            );
+
+                          return (
+
+                            <div
+                              key={index}
+                              onClick={() =>
+                                handleEmployeeChange(
+                                  item
+                                )
+                              }
+                              className={`border rounded-md p-3 cursor-pointer
+                              ${checked
+                                  ? "border-blue-600 bg-blue-50"
+                                  : ""
+                                }`}
+                            >
+
+                              <div className="flex gap-3">
+
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  readOnly
+                                />
+
+                                <div>
+
+                                  <h4 className="text-sm font-medium">
+                                    {
+                                      item.employeeName
+                                    }
+                                  </h4>
+
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Employee ID :
+                                    {" "}
+                                    {
+                                      item.employeeID
+                                    }
+                                  </p>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+                          );
+                        }
+                      )}
+
+                    </div>
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
+          )}
+
+          {/* STEP 3 */}
+          {step === 3 && (
+            <div className="space-y-3">
+
+              {employeeAttendance.map(
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+                    key={index}
+                    className="border rounded-md p-4"
+                  >
+
+                    <div className="flex items-center justify-between">
+
+                      <div>
+
+                        <h3 className="text-sm font-medium">
+                          {
+                            item.employeeName
+                          }
+                        </h3>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          Employee ID :
+                          {" "}
+                          {
+                            item.employeeID
+                          }
+                        </p>
+
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 w-[420px]">
+
+                        <input
+                          type="number"
+                          value={
+                            item.attendance
+                          }
+                          onChange={(e) =>
+                            handleAttendanceChange(
+                              index,
+                              "attendance",
+                              e.target.value
+                            )
+                          }
+                          className="border rounded-md px-3 py-2 text-sm"
+                          placeholder="Attendance"
+                        />
+
+                        <input
+                          type="number"
+                          value={
+                            item.leave
+                          }
+                          onChange={(e) =>
+                            handleAttendanceChange(
+                              index,
+                              "leave",
+                              e.target.value
+                            )
+                          }
+                          className="border rounded-md px-3 py-2 text-sm"
+                          placeholder="Leave"
+                        />
+
+                        <input
+                          type="number"
+                          value={
+                            item.otHours
+                          }
+                          onChange={(e) =>
+                            handleAttendanceChange(
+                              index,
+                              "otHours",
+                              e.target.value
+                            )
+                          }
+                          className="border rounded-md px-3 py-2 text-sm"
+                          placeholder="OT"
+                        />
+
+                      </div>
+
+                    </div>
 
                   </div>
                 )
               )}
 
             </div>
-          </div>
-        </div>
+          )}
 
-        {/* MAIN CARD */}
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          {/* STEP 4 */}
+          {step === 4 && (
+            <div>
 
-          {/* TOP BAR */}
-          <div className="border-b border-gray-200 px-6 py-4 bg-gray-50">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
+              {!isProcessing ? (
 
-                <h2 className="text-lg font-semibold text-gray-800">
+                <div>
 
-                  {step === 1 &&
-                    "Department Selection"}
+                  <div className="grid grid-cols-2 gap-4 mb-5">
 
-                  {step === 2 &&
-                    "Employee Selection"}
+                    <input
+                      type="month"
+                      value={payrollMonth}
+                      onChange={(e) =>
+                        setPayrollMonth(
+                          e.target.value
+                        )
+                      }
+                      className="border rounded-md px-4 py-3 text-sm"
+                    />
 
-                  {step === 3 &&
-                    "Payroll Run"}
+                    <input
+                      type="date"
+                      value={payrollDate}
+                      onChange={(e) =>
+                        setPayrollDate(
+                          e.target.value
+                        )
+                      }
+                      className="border rounded-md px-4 py-3 text-sm"
+                    />
 
-                  {step === 4 &&
-                    "Attendance Details"}
+                  </div>
 
-                </h2>
+                  <div className="flex justify-end">
+
+                    <button
+                      onClick={
+                        handleRunPayroll
+                      }
+                      className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm"
+                    >
+                      Run Payroll
+                    </button>
+
+                  </div>
+
+                </div>
+
+              ) : (
+
+                <div>
+
+                  <div className="mb-6">
+
+                    <div className="flex justify-between mb-2">
+
+                      <span className="text-sm">
+                        Processing Payroll
+                      </span>
+
+                      <span className="text-sm font-medium text-blue-600">
+                        {progress}%
+                      </span>
+
+                    </div>
+
+                    <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+
+                      <div
+                        className="h-full bg-blue-600"
+                        style={{
+                          width: `${progress}%`,
+                        }}
+                      />
+
+                    </div>
+
+                  </div>
+
+                  <div className="border rounded-md p-4 flex items-center gap-3">
+
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+
+                    <div>
+
+                      <p className="text-xs text-gray-500">
+                        Processing Employee
+                      </p>
+
+                      <h3 className="text-sm font-medium">
+                        {
+                          currentEmployee
+                        }
+                      </h3>
+
+                      <p className="text-xs text-gray-500 mt-1">
+                        Employee ID :
+                        {" "}
+                        {
+                          currentEmployeeID
+                        }
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* STEP 5 */}
+          {step === 5 && (
+            <div>
+
+              <div className="grid grid-cols-2 gap-4 mb-5">
+
+                <div className="border rounded-md p-5 bg-blue-50">
+
+                  <p className="text-xs text-gray-500">
+                    Total Employees
+                  </p>
+
+                  <h2 className="text-3xl font-semibold mt-2">
+                    {
+                      generatedSlips.length
+                    }
+                  </h2>
+
+                </div>
+
+                <div className="border rounded-md p-5 bg-green-50">
+
+                  <p className="text-xs text-gray-500">
+                    Total Payroll Amount
+                  </p>
+
+                  <h2 className="text-3xl font-semibold mt-2">
+
+                    ₹
+                    {
+                      generatedSlips
+                        .reduce(
+                          (
+                            acc,
+                            item
+                          ) =>
+                            acc +
+                            Number(
+                              item.netSalary || 0
+                            ),
+                          0
+                        )
+                        .toLocaleString()
+                    }
+
+                  </h2>
+
+                </div>
 
               </div>
 
-              <div className="text-sm text-gray-500">
+              <div className="border rounded-md overflow-hidden">
 
-                Step {step} of 4
+                <div className="grid grid-cols-5 bg-gray-100 border-b">
+
+                  <div className="p-3 text-xs font-semibold">
+                    Employee Name
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Employee ID
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Salary
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Status
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Payslip
+                  </div>
+
+                </div>
+
+                {generatedSlips.map(
+                  (
+                    item,
+                    index
+                  ) => (
+
+                    <div
+                      key={index}
+                      className="grid grid-cols-5 border-b hover:bg-gray-50"
+                    >
+
+                      <div className="p-3 text-sm">
+                        {item.employee}
+                      </div>
+
+                      <div className="p-3 text-sm">
+                        {item.employeeID}
+                      </div>
+
+                      <div className="p-3 text-sm">
+
+                        ₹
+                        {
+                          Number(
+                            item.netSalary || 0
+                          ).toLocaleString()
+                        }
+
+                      </div>
+
+                      <div className="p-3">
+
+                        <span
+                          className={`text-xs px-2 py-1 rounded
+                          ${item.status === "success"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                            }`}
+                        >
+
+                          {item.status}
+
+                        </span>
+
+                      </div>
+
+                      <div className="p-3">
+
+                        <button
+                          onClick={() =>
+                            handleViewSlip(
+                              item.employeeID
+                            )
+                          }
+                          className="text-xs text-blue-600 hover:underline"
+                        >
+                          View Slip
+                        </button>
+
+                      </div>
+
+                    </div>
+                  )
+                )}
 
               </div>
+
+            </div>
+          )}
+
+          {/* FOOTER */}
+          <div className="border-t mt-5 pt-5 flex justify-between">
+
+            <button
+              onClick={prevStep}
+              disabled={step === 1}
+              className={`px-5 py-2 border rounded-md text-sm
+              ${step === 1
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white"
+                }`}
+            >
+              Previous
+            </button>
+
+            <div className="flex gap-3">
+
+              {step < 4 && (
+
+                <button
+                  onClick={nextStep}
+                  className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm"
+                >
+                  Next
+                </button>
+
+              )}
 
             </div>
 
           </div>
 
-          {/* BODY */}
-          <div className="p-6">
+        </div>
 
-            {/* STEP 1 */}
-            {step === 1 && (
+        {/* POPUP */}
+        {showSlipPopup &&
+          popupSalaryData && (
 
-              <div>
+            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5 overflow-auto">
 
-                <div className="overflow-x-auto border border-gray-200 rounded-xl">
+              <div className="bg-white w-full max-w-5xl rounded-md shadow-lg">
 
-                  <table className="w-full">
+                <div className="flex items-center justify-between border-b p-4">
 
-                    <thead className="bg-gray-50">
+                  <h2 className="text-lg font-semibold">
+                    Salary Slip
+                  </h2>
 
-                      <tr>
-
-                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
-                          Select
-                        </th>
-
-                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
-                          Department Name
-                        </th>
-
-                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
-                          Status
-                        </th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {departments.map(
-                        (
-                          item,
-                          index
-                        ) => {
-
-                          const department =
-                            item.fieldValue;
-
-                          // const checked =
-                          //   selectedDepartments.includes(
-                          //     department
-                          //   );
-                          const checked =
-                            selectedDepartments.some(
-                              (dept) => dept.id === item._id
-                            );
-
-                          return (
-
-                            <tr
-                              key={index}
-                              className="hover:bg-gray-50"
-                            >
-
-                              <td className="px-4 py-3 border-b">
-
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    checked
-                                  }
-                                  onChange={() =>
-                                    handleDepartmentChange(
-                                      department, item._id
-                                    )
-                                  }
-                                />
-
-                              </td>
-
-                              <td className="px-4 py-3 border-b">
-
-                                {
-                                  department
-                                }
-
-                              </td>
-
-                              <td className="px-4 py-3 border-b">
-
-                                <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-
-                                  Active
-
-                                </span>
-
-                              </td>
-
-                            </tr>
-                          );
-                        }
-                      )}
-
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-              </div>
-            )}
-
-            {/* STEP 2 */}
-            {step === 2 && (
-
-              <div>
-
-                <div className="mb-5">
-
-                  <p className="text-sm text-gray-500">
-
-                    Selected Departments :
-
-                    {" "}
-
-                    {/* {selectedDepartments.join(
-                      ", "
-                    )} */}
-                    {
-                      selectedDepartments
-                        .map((item) => item.department)
-                        .join(", ")
+                  <button
+                    onClick={() =>
+                      setShowSlipPopup(
+                        false
+                      )
                     }
-
-                  </p>
+                    className="text-red-600 text-sm"
+                  >
+                    Close
+                  </button>
 
                 </div>
 
-                <div className="overflow-x-auto border border-gray-200 rounded-xl">
+                <div className="p-6">
 
-                  <table className="w-full">
+                  <div className="text-center border-b pb-4">
 
-                    <thead className="bg-gray-50">
+                    <h1 className="text-3xl font-bold">
+                      Company Name
+                    </h1>
 
-                      <tr>
+                    <h2 className="text-xl mt-2">
+                      Salary Slip for{" "}
+                      {
+                        popupSalaryMonth
+                      }
+                    </h2>
 
-                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
-                          Select
-                        </th>
+                  </div>
 
-                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
-                          Employee Name
-                        </th>
+                  <div className="grid grid-cols-2 border border-t-0">
 
-                        <th className="px-4 py-3 text-left text-sm font-semibold border-b">
-                          Department
-                        </th>
+                    {/* EARNINGS */}
+                    <div className="border-r">
 
-                      </tr>
+                      <div className="grid grid-cols-2 bg-gray-100 font-bold border-b">
 
-                    </thead>
+                        <div className="p-3 border-r">
+                          Earnings
+                        </div>
 
-                    <tbody>
+                        <div className="p-3">
+                          Amount
+                        </div>
 
-                      {employees.map(
-                        (
-                          item,
-                          index
-                        ) => {
+                      </div>
 
-                          const employeeName =
-                            item.employeeName;
+                      {(popupSalaryData?.salaryData || [])
+                        .filter(
+                          (item) =>
+                            item.amount > 0
+                        )
+                        .map(
+                          (
+                            item,
+                            index
+                          ) => (
 
-                          const checked =
-                            selectedEmployees.includes(
-                              employeeName
-                            );
-
-                          return (
-
-                            <tr
+                            <div
                               key={index}
-                              className="hover:bg-gray-50"
+                              className="grid grid-cols-2 border-b"
                             >
 
-                              <td className="px-4 py-3 border-b">
-
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    checked
-                                  }
-                                  onChange={() =>
-                                    handleEmployeeChange(
-                                      employeeName
-                                    )
-                                  }
-                                />
-
-                              </td>
-
-                              <td className="px-4 py-3 border-b">
-
+                              <div className="p-3 border-r">
                                 {
-                                  employeeName
+                                  item.components
+                                }
+                              </div>
+
+                              <div className="p-3">
+
+                                ₹
+                                {
+                                  item.amount.toLocaleString()
                                 }
 
-                              </td>
+                              </div>
 
-                              <td className="px-4 py-3 border-b">
+                            </div>
+                          )
+                        )}
 
-                                {
-                                  item.department
-                                }
+                    </div>
 
-                              </td>
+                    {/* DEDUCTIONS */}
+                    <div>
 
-                            </tr>
-                          );
-                        }
-                      )}
+                      <div className="grid grid-cols-2 bg-gray-100 font-bold border-b">
 
-                    </tbody>
+                        <div className="p-3 border-r">
+                          Deductions
+                        </div>
 
-                  </table>
+                        <div className="p-3">
+                          Amount
+                        </div>
 
-                </div>
+                      </div>
 
-              </div>
-            )}
-
-            {/* STEP 3 */}
-            {step === 3 && (
-
-              <div>
-
-                {/* FORM */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-
-                  <div>
-
-                    <label className="block text-sm font-medium mb-2">
-                      Payroll Date
-                    </label>
-
-                    <input
-                      type="date"
-                      value={
-                        payrollData.payrollDate
-                      }
-                      onChange={(e) =>
-                        setPayrollData({
-                          ...payrollData,
-                          payrollDate:
-                            e.target.value,
-                        })
-                      }
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                    />
-
-                  </div>
-
-                </div>
-
-                {/* SELECTED EMPLOYEES */}
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-
-                  <div className="bg-gray-50 px-4 py-3 border-b">
-
-                    <h3 className="font-semibold">
-                      Selected Employees
-                    </h3>
-
-                  </div>
-
-                  <div className="p-4">
-
-                    <div className="flex flex-wrap gap-2">
-
-                      {selectedEmployees.map(
-                        (
-                          emp,
-                          index
-                        ) => (
-
-                          <div
-                            key={index}
-                            className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-sm"
-                          >
-
-                            {emp}
-
-                          </div>
+                      {(popupSalaryData?.salaryData || [])
+                        .filter(
+                          (item) =>
+                            item.amount < 0
                         )
-                      )}
+                        .map(
+                          (
+                            item,
+                            index
+                          ) => (
+
+                            <div
+                              key={index}
+                              className="grid grid-cols-2 border-b"
+                            >
+
+                              <div className="p-3 border-r">
+                                {
+                                  item.components
+                                }
+                              </div>
+
+                              <div className="p-3">
+
+                                ₹
+                                {Math.abs(
+                                  item.amount
+                                ).toLocaleString()}
+
+                              </div>
+
+                            </div>
+                          )
+                        )}
 
                     </div>
 
@@ -619,194 +1432,10 @@ export default function PayrollMultiStepForm() {
 
                 </div>
 
-                <button
-                  onClick={runPayroll}
-                  type="button"
-                  className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-                >
-                  Run Payroll
-                </button>
-
               </div>
-            )}
 
-            {/* STEP 4 */}
-            {step === 4 && (
-
-              <div>
-
-                <div className="overflow-x-auto border border-gray-200 rounded-xl">
-
-                  <table className="w-full">
-
-                    <thead className="bg-gray-50">
-
-                      <tr>
-
-                        <th className="px-4 py-3 text-left border-b">
-                          Employee
-                        </th>
-
-                        <th className="px-4 py-3 text-left border-b">
-                          Attendance
-                        </th>
-
-                        <th className="px-4 py-3 text-left border-b">
-                          Leave
-                        </th>
-
-                        <th className="px-4 py-3 text-left border-b">
-                          OT Hours
-                        </th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {employeePayrollDetails.map(
-                        (
-                          item,
-                          index
-                        ) => (
-
-                          <tr
-                            key={index}
-                            className="hover:bg-gray-50"
-                          >
-
-                            <td className="px-4 py-3 border-b font-medium">
-
-                              {
-                                item.employee
-                              }
-
-                            </td>
-
-                            <td className="px-4 py-3 border-b">
-
-                              <input
-                                type="number"
-                                value={
-                                  item.attendance
-                                }
-                                onChange={(
-                                  e
-                                ) =>
-                                  handlePayrollDetailChange(
-                                    index,
-                                    "attendance",
-                                    e.target
-                                      .value
-                                  )
-                                }
-                                className="w-full border border-gray-300 rounded-md px-3 py-2"
-                              />
-
-                            </td>
-
-                            <td className="px-4 py-3 border-b">
-
-                              <input
-                                type="number"
-                                value={
-                                  item.leave
-                                }
-                                onChange={(
-                                  e
-                                ) =>
-                                  handlePayrollDetailChange(
-                                    index,
-                                    "leave",
-                                    e.target
-                                      .value
-                                  )
-                                }
-                                className="w-full border border-gray-300 rounded-md px-3 py-2"
-                              />
-
-                            </td>
-
-                            <td className="px-4 py-3 border-b">
-
-                              <input
-                                type="number"
-                                value={
-                                  item.otHours
-                                }
-                                onChange={(
-                                  e
-                                ) =>
-                                  handlePayrollDetailChange(
-                                    index,
-                                    "otHours",
-                                    e.target
-                                      .value
-                                  )
-                                }
-                                className="w-full border border-gray-300 rounded-md px-3 py-2"
-                              />
-
-                            </td>
-
-                          </tr>
-                        )
-                      )}
-
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-                {/* FINAL BUTTON */}
-                <div className="mt-6 flex justify-end">
-
-                  <button
-                    onClick={
-                      handleSubmit
-                    }
-                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg"
-                  >
-                    Final Submit Payroll
-                  </button>
-
-                </div>
-
-              </div>
-            )}
-
-          </div>
-
-          {/* FOOTER BUTTONS */}
-          <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-between">
-
-            <button
-              onClick={prevStep}
-              disabled={step === 1}
-              className={`px-5 py-2 rounded-lg border
-              ${step === 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-white hover:bg-gray-100"
-                }`}
-            >
-              Previous
-            </button>
-
-            {step < 3 && (
-
-              <button
-                onClick={nextStep}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-              >
-                Next
-              </button>
-            )}
-
-          </div>
-
-        </div>
+            </div>
+          )}
 
       </div>
 

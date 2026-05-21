@@ -65,12 +65,7 @@ export default function PayrollProcessPage() {
     setCurrentEmployee,
   ] = useState("");
 
-  const [
-    currentEmployeeID,
-    setCurrentEmployeeID,
-  ] = useState("");
-
-  // GENERATED SLIPS
+  // SLIPS
   const [
     generatedSlips,
     setGeneratedSlips,
@@ -221,13 +216,13 @@ export default function PayrollProcessPage() {
             employeeId:
               emp._id,
 
+            employeeName:
+              emp.employeeName,
+
             employeeID:
               emp.employeeID ||
               emp.employeeId ||
               emp.empId,
-
-            employeeName:
-              emp.employeeName,
 
             department:
               emp.departmentName,
@@ -248,7 +243,7 @@ export default function PayrollProcessPage() {
     setStep(step + 1);
   };
 
-  // PREVIOUS STEP
+  // PREVIOUS
   const prevStep = () => {
 
     setStep(step - 1);
@@ -296,28 +291,6 @@ export default function PayrollProcessPage() {
       {}
     );
 
-  // FORMAT MONTH
-  const formatSalaryMonth = (
-    monthValue
-  ) => {
-
-    if (!monthValue)
-      return "";
-
-    const date =
-      new Date(
-        monthValue
-      );
-
-    return date.toLocaleString(
-      "default",
-      {
-        month: "short",
-        year: "numeric",
-      }
-    );
-  };
-
   // RUN PAYROLL
   const handleRunPayroll =
     async () => {
@@ -337,160 +310,13 @@ export default function PayrollProcessPage() {
           i++
         ) {
 
-          try {
+          const emp =
+            employeeAttendance[i];
 
-            const emp =
-              employeeAttendance[i];
+          setCurrentEmployee(
+            emp.employeeName
+          );
 
-            setCurrentEmployee(
-              emp.employeeName
-            );
-
-            setCurrentEmployeeID(
-              emp.employeeID
-            );
-
-            // FETCH SALARY
-            const salaryResponse =
-              await axios.get(
-                `http://localhost:3050/api/employee-salary/${emp.employeeID}`
-              );
-
-            // MONTHLY DATA
-            const monthlyData = {
-              ...salaryResponse.data,
-
-              salaryData:
-                salaryResponse.data.salaryData.map(
-                  (item) => ({
-                    ...item,
-
-                    amount: Math.round(
-                      Number(
-                        item.amount
-                      ) / 12
-                    ),
-                  })
-                ),
-            };
-
-            // EARNINGS
-            const totalEarnings =
-              monthlyData.salaryData
-                .filter(
-                  (item) =>
-                    item.amount > 0
-                )
-                .reduce(
-                  (
-                    acc,
-                    item
-                  ) =>
-                    acc +
-                    item.amount,
-                  0
-                );
-
-            // DEDUCTIONS
-            const totalDeductions =
-              monthlyData.salaryData
-                .filter(
-                  (item) =>
-                    item.amount < 0
-                )
-                .reduce(
-                  (
-                    acc,
-                    item
-                  ) =>
-                    acc +
-                    Math.abs(
-                      item.amount
-                    ),
-                  0
-                );
-
-            // NET SALARY
-            const netSalary =
-              totalEarnings -
-              totalDeductions;
-
-            // SAVE
-            await axios.post(
-              "http://localhost:3050/api/salary-slips",
-              {
-                employeeId:
-                  emp.employeeID,
-
-                salaryMonth:
-                  formatSalaryMonth(
-                    payrollMonth
-                  ),
-
-                salaryData:
-                  monthlyData.salaryData,
-
-                totalEarnings,
-
-                totalDeductions,
-
-                netSalary,
-              }
-            );
-
-            // SUCCESS
-            setGeneratedSlips(
-              (prev) => [
-                ...prev,
-                {
-                  employee:
-                    emp.employeeName,
-
-                  employeeID:
-                    emp.employeeID,
-
-                  department:
-                    emp.department,
-
-                  netSalary,
-
-                  status:
-                    "success",
-                },
-              ]
-            );
-
-          } catch (error) {
-
-            console.log(error);
-
-            // FAILED
-            setGeneratedSlips(
-              (prev) => [
-                ...prev,
-                {
-                  employee:
-                    employeeAttendance[i]
-                      .employeeName,
-
-                  employeeID:
-                    employeeAttendance[i]
-                      .employeeID,
-
-                  department:
-                    employeeAttendance[i]
-                      .department,
-
-                  netSalary: 0,
-
-                  status:
-                    "failed",
-                },
-              ]
-            );
-          }
-
-          // PROGRESS
           const progressValue =
             Math.round(
               ((i + 1) /
@@ -500,6 +326,33 @@ export default function PayrollProcessPage() {
 
           setProgress(
             progressValue
+          );
+
+          setGeneratedSlips(
+            (prev) => [
+              ...prev,
+              {
+                employee:
+                  emp.employeeName,
+
+                employeeID:
+                  emp.employeeID,
+
+                department:
+                  emp.department,
+
+                netSalary:
+                  47000,
+              },
+            ]
+          );
+
+          await new Promise(
+            (resolve) =>
+              setTimeout(
+                resolve,
+                700
+              )
           );
         }
 
@@ -567,6 +420,7 @@ export default function PayrollProcessPage() {
                       }`}
                   >
 
+                    {/* NUMBER BOX */}
                     <div
                       className={`w-9 h-9 rounded-md flex items-center justify-center text-sm font-semibold
                       ${completed
@@ -585,6 +439,7 @@ export default function PayrollProcessPage() {
 
                     </div>
 
+                    {/* TEXT */}
                     <div>
 
                       <p className="text-xs opacity-70">
@@ -750,6 +605,7 @@ export default function PayrollProcessPage() {
 
                 </div>
 
+                {/* DEPARTMENT GROUPS */}
                 <div className="space-y-5">
 
                   {Object.keys(
@@ -761,6 +617,7 @@ export default function PayrollProcessPage() {
                       className="border border-gray-200 rounded-md overflow-hidden"
                     >
 
+                      {/* DEPARTMENT HEADER */}
                       <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
 
                         <h3 className="text-sm font-semibold text-gray-700">
@@ -769,6 +626,7 @@ export default function PayrollProcessPage() {
 
                       </div>
 
+                      {/* EMPLOYEE LIST */}
                       <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
 
                         {groupedEmployees[
@@ -812,6 +670,7 @@ export default function PayrollProcessPage() {
                                       checked
                                     }
                                     readOnly
+                                    className="mt-1"
                                   />
 
                                   <div>
@@ -856,6 +715,10 @@ export default function PayrollProcessPage() {
 
               <div className="space-y-3">
 
+                <h2 className="text-sm font-medium mb-4">
+                  Attendance & OT
+                </h2>
+
                 {employeeAttendance.map(
                   (
                     item,
@@ -876,14 +739,6 @@ export default function PayrollProcessPage() {
                               item.employeeName
                             }
                           </h3>
-
-                          <p className="text-xs text-gray-500 mt-1">
-                            Employee ID :
-                            {" "}
-                            {
-                              item.employeeID
-                            }
-                          </p>
 
                         </div>
 
@@ -1006,6 +861,7 @@ export default function PayrollProcessPage() {
 
                   <div>
 
+                    {/* PROGRESS */}
                     <div className="mb-6">
 
                       <div className="flex justify-between mb-2">
@@ -1033,6 +889,7 @@ export default function PayrollProcessPage() {
 
                     </div>
 
+                    {/* CURRENT EMPLOYEE */}
                     <div className="border border-gray-200 rounded-md p-4 flex items-center gap-3">
 
                       <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
@@ -1049,14 +906,6 @@ export default function PayrollProcessPage() {
                           }
                         </h3>
 
-                        <p className="text-xs text-gray-500 mt-1">
-                          Employee ID :
-                          {" "}
-                          {
-                            currentEmployeeID
-                          }
-                        </p>
-
                       </div>
 
                     </div>
@@ -1070,172 +919,53 @@ export default function PayrollProcessPage() {
             {/* STEP 5 */}
             {step === 5 && (
 
-              <div>
+              <div className="space-y-3">
 
-                {/* SUMMARY */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                {generatedSlips.map(
+                  (
+                    item,
+                    index
+                  ) => (
 
-                  <div className="border border-gray-200 rounded-md p-4 bg-blue-50">
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-md p-4 flex items-center justify-between"
+                    >
 
-                    <p className="text-xs text-gray-500">
-                      Total Employees
-                    </p>
+                      <div>
 
-                    <h2 className="text-2xl font-semibold text-gray-800 mt-1">
+                        <h3 className="text-sm font-medium text-gray-700">
+                          {
+                            item.employee
+                          }
+                        </h3>
 
-                      {
-                        generatedSlips.length
-                      }
+                        <p className="text-xs text-gray-500 mt-1">
+                          {
+                            item.department
+                          }
+                        </p>
 
-                    </h2>
+                      </div>
 
-                  </div>
+                      <div className="text-right">
 
-                  <div className="border border-gray-200 rounded-md p-4 bg-green-50">
+                        <p className="text-sm font-medium text-gray-700">
+                          ₹
+                          {
+                            item.netSalary
+                          }
+                        </p>
 
-                    <p className="text-xs text-gray-500">
-                      Total Payroll Amount
-                    </p>
+                        <button className="text-xs text-blue-600 mt-1">
+                          View Slip
+                        </button>
 
-                    <h2 className="text-2xl font-semibold text-gray-800 mt-1">
+                      </div>
 
-                      ₹
-                      {
-                        generatedSlips.reduce(
-                          (
-                            acc,
-                            item
-                          ) =>
-                            acc +
-                            Number(
-                              item.netSalary || 0
-                            ),
-                          0
-                        ).toLocaleString()
-                      }
-
-                    </h2>
-
-                  </div>
-
-                </div>
-
-                {/* TABLE */}
-                <div className="border border-gray-200 rounded-md overflow-hidden">
-
-                  {/* TABLE HEADER */}
-                  <div className="grid grid-cols-5 bg-gray-100 border-b border-gray-200">
-
-                    <div className="p-3 text-xs font-semibold text-gray-700">
-                      Employee Name
                     </div>
-
-                    <div className="p-3 text-xs font-semibold text-gray-700">
-                      Employee ID
-                    </div>
-
-                    <div className="p-3 text-xs font-semibold text-gray-700">
-                      Salary
-                    </div>
-
-                    <div className="p-3 text-xs font-semibold text-gray-700">
-                      Payroll Status
-                    </div>
-
-                    <div className="p-3 text-xs font-semibold text-gray-700">
-                      Payslip
-                    </div>
-
-                  </div>
-
-                  {/* TABLE BODY */}
-                  {generatedSlips.length > 0 ? (
-
-                    generatedSlips.map(
-                      (
-                        item,
-                        index
-                      ) => (
-
-                        <div
-                          key={index}
-                          className="grid grid-cols-5 border-b border-gray-200 last:border-b-0 hover:bg-gray-50"
-                        >
-
-                          <div className="p-3 text-sm text-gray-700">
-                            {item.employee}
-                          </div>
-
-                          <div className="p-3 text-sm text-gray-700">
-                            {item.employeeID}
-                          </div>
-
-                          <div className="p-3 text-sm font-medium text-gray-700">
-
-                            ₹
-                            {
-                              Number(
-                                item.netSalary || 0
-                              ).toLocaleString()
-                            }
-
-                          </div>
-
-                          <div className="p-3">
-
-                            <span
-                              className={`text-xs px-2 py-1 rounded
-                              ${item.status === "success"
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-red-100 text-red-700"
-                                }`}
-                            >
-
-                              {item.status}
-
-                            </span>
-
-                          </div>
-
-                          <div className="p-3">
-
-                            {item.status === "success" ? (
-
-                              <button
-                                onClick={() =>
-                                  window.open(
-                                    `/payroll/salary/salaryslip?empId=${item.employeeID}&Salmonth=${formatSalaryMonth(payrollMonth)}`,
-                                    "_blank"
-                                  )
-                                }
-                                className="text-xs text-blue-600 hover:underline"
-                              >
-                                View Slip
-                              </button>
-
-                            ) : (
-
-                              <span className="text-xs text-gray-400">
-                                Not Available
-                              </span>
-
-                            )}
-
-                          </div>
-
-                        </div>
-                      )
-                    )
-
-                  ) : (
-
-                    <div className="p-6 text-center text-sm text-gray-500">
-                      No payroll records found
-                    </div>
-
-                  )}
-
-                </div>
+                  )
+                )}
 
               </div>
             )}
@@ -1248,7 +978,7 @@ export default function PayrollProcessPage() {
             <button
               onClick={prevStep}
               disabled={step === 1}
-              className={`px-5 py-2 rounded-md text-sm border
+              className={`px-5 py-2 text-sm rounded-md border
               ${step === 1
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                   : "bg-white text-gray-700"

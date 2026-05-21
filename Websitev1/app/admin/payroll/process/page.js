@@ -1,7 +1,21 @@
-import PayrollProcess from "@/widgets/payroll/process/Process";
+"use client";
 
-const PayrollProcessPage = () => {
-  return <PayrollProcess />;
-};
+import dynamic from "next/dynamic";
 
-export default PayrollProcessPage;
+const PayrollMultiStepForm =
+  dynamic(
+    () =>
+      import(
+        "@/widgets/payroll/process/Process"
+      ),
+    {
+      ssr: false,
+    }
+  );
+
+export default function Page() {
+
+  return (
+    <PayrollMultiStepForm />
+  );
+}
