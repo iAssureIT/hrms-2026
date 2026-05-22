@@ -18,8 +18,8 @@ export default function PayrollProcessPage() {
     "Departments",
     "Employees",
     "Attendance",
+    "Run Payroll",
     "Salary Slips",
-    "Reports"
   ];
 
   // DATA
@@ -615,7 +615,7 @@ export default function PayrollProcessPage() {
 
         setIsProcessing(false);
 
-        setStep(4);
+        setStep(5);
 
       } catch (error) {
 
@@ -725,7 +725,6 @@ export default function PayrollProcessPage() {
                   Select Departments
                 </h2>
 
-
                 <button
                   onClick={() => {
 
@@ -793,49 +792,7 @@ export default function PayrollProcessPage() {
               }
 
             </div>
-<div className="grid grid-cols-2 gap-4 mt-5 mb-5">
 
-  {/* PAYROLL MONTH */}
-  <div>
-
-    <label className="block text-xs text-gray-500 mb-2">
-      Payroll Month
-    </label>
-
-    <input
-      type="month"
-      value={payrollMonth}
-      onChange={(e) =>
-        setPayrollMonth(
-          e.target.value
-        )
-      }
-      className="border rounded-md px-4 py-3 text-sm w-full"
-    />
-
-  </div>
-
-  {/* PAYROLL DATE */}
-  <div>
-
-    <label className="block text-xs text-gray-500 mb-2">
-      Payroll Date
-    </label>
-
-    <input
-      type="date"
-      value={payrollDate}
-      onChange={(e) =>
-        setPayrollDate(
-          e.target.value
-        )
-      }
-      className="border rounded-md px-4 py-3 text-sm w-full"
-    />
-
-  </div>
-
-</div>
           </div>
 
               <div className="grid grid-cols-3 gap-3">
@@ -897,7 +854,7 @@ export default function PayrollProcessPage() {
 
     <input
       type="checkbox"
-      checked={!!checked}
+      checked={checked}
       readOnly
     />
 
@@ -1065,7 +1022,7 @@ export default function PayrollProcessPage() {
 
                                 <input
                                   type="checkbox"
-                                  checked={!!checked}
+                                  checked={checked}
                                   readOnly
                                 />
 
@@ -1196,29 +1153,43 @@ export default function PayrollProcessPage() {
                   </div>
                 )
               )}
-                  <div className="flex justify-end">
 
-                    <button
-                      onClick={
-                        handleRunPayroll
-                      }
-                      className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm"
-                    >
-                      Run Payroll
-                    </button>
-
-                  </div>
-                  
             </div>
           )}
 
-          {/* STEP 5 */}
-          {step === 5 && (
+          {/* STEP 4 */}
+          {step === 4 && (
             <div>
 
               {!isProcessing ? (
 
                 <div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-5">
+
+                    <input
+                      type="month"
+                      value={payrollMonth}
+                      onChange={(e) =>
+                        setPayrollMonth(
+                          e.target.value
+                        )
+                      }
+                      className="border rounded-md px-4 py-3 text-sm"
+                    />
+
+                    <input
+                      type="date"
+                      value={payrollDate}
+                      onChange={(e) =>
+                        setPayrollDate(
+                          e.target.value
+                        )
+                      }
+                      className="border rounded-md px-4 py-3 text-sm"
+                    />
+
+                  </div>
 
                   <div className="flex justify-end">
 
@@ -1300,242 +1271,171 @@ export default function PayrollProcessPage() {
             </div>
           )}
 
-{/* STEP 4 */}
-{step === 4 && (
-  <div>
+          {/* STEP 5 */}
+          {step === 5 && (
+            <div>
 
-    {/* PROCESSING */}
-    {isProcessing ? (
+              <div className="grid grid-cols-2 gap-4 mb-5">
 
-      <div>
+                <div className="border rounded-md p-5 bg-blue-50">
 
-        <div className="mb-6">
+                  <p className="text-xs text-gray-500">
+                    Total Employees
+                  </p>
 
-          <div className="flex justify-between mb-2">
+                  <h2 className="text-3xl font-semibold mt-2">
 
-            <span className="text-sm">
-              Processing Payroll
-            </span>
+                    {
+                      generatedSlips.filter(
+                        (item) =>
+                          item.status === "success"
+                      ).length
+                    }
 
-            <span className="text-sm font-medium text-blue-600">
-              {progress}%
-            </span>
-
-          </div>
-
-          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-
-            <div
-              className="h-full bg-blue-600 transition-all duration-300"
-              style={{
-                width: `${progress}%`,
-              }}
-            />
-
-          </div>
-
-        </div>
-
-        <div className="border rounded-md p-4 flex items-center gap-3">
-
-          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-
-          <div>
-
-            <p className="text-xs text-gray-500">
-              Processing Employee
-            </p>
-
-            <h3 className="text-sm font-medium">
-              {
-                currentEmployee
-              }
-            </h3>
-
-            <p className="text-xs text-gray-500 mt-1">
-              Employee ID :
-              {" "}
-              {
-                currentEmployeeID
-              }
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    ) : (
-
-      /* FINAL RESULT */
-      <div>
-
-        <div className="grid grid-cols-2 gap-4 mb-5">
-
-          <div className="border rounded-md p-5 bg-blue-50">
-
-            <p className="text-xs text-gray-500">
-              Total Employees
-            </p>
-
-            <h2 className="text-3xl font-semibold mt-2">
-
-              {
-                generatedSlips.filter(
-                  (item) =>
-                    item.status === "success"
-                ).length
-              }
-
-            </h2>
-
-          </div>
-
-          <div className="border rounded-md p-5 bg-green-50">
-
-            <p className="text-xs text-gray-500">
-              Total Payroll Amount
-            </p>
-
-            <h2 className="text-3xl font-semibold mt-2">
-
-              ₹
-              {
-                generatedSlips
-                  .filter(
-                    (item) =>
-                      item.status === "success"
-                  )
-                  .reduce(
-                    (
-                      acc,
-                      item
-                    ) =>
-                      acc +
-                      Number(
-                        item.netSalary || 0
-                      ),
-                    0
-                  )
-                  .toLocaleString()
-              }
-
-            </h2>
-
-          </div>
-
-        </div>
-
-        <div className="border rounded-md overflow-hidden">
-
-          <div className="grid grid-cols-5 bg-gray-100 border-b">
-
-            <div className="p-3 text-xs font-semibold">
-              Employee Name
-            </div>
-
-            <div className="p-3 text-xs font-semibold">
-              Employee ID
-            </div>
-
-            <div className="p-3 text-xs font-semibold">
-              Salary
-            </div>
-
-            <div className="p-3 text-xs font-semibold">
-              Status
-            </div>
-
-            <div className="p-3 text-xs font-semibold">
-              Payslip
-            </div>
-
-          </div>
-
-          {generatedSlips.map(
-            (
-              item,
-              index
-            ) => (
-
-              <div
-                key={index}
-                className="grid grid-cols-5 border-b hover:bg-gray-50"
-              >
-
-                <div className="p-3 text-sm">
-                  {item.employee}
-                </div>
-
-                <div className="p-3 text-sm">
-                  {item.employeeID}
-                </div>
-
-                <div className="p-3 text-sm font-medium">
-
-                  ₹
-                  {
-                    Number(
-                      item.netSalary || 0
-                    ).toLocaleString()
-                  }
+                  </h2>
 
                 </div>
 
-                <div className="p-3">
+                <div className="border rounded-md p-5 bg-green-50">
 
-                  <span
-                    className={`text-xs px-2 py-1 rounded
-                    ${
-                      item.status === "success"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
+                  <p className="text-xs text-gray-500">
+                    Total Payroll Amount
+                  </p>
 
-                    {item.status}
+                  <h2 className="text-3xl font-semibold mt-2">
 
-                  </span>
-
-                </div>
-
-                <div className="p-3">
-
-                  {item.status === "success" ? (
-
-                    <button
-                      onClick={() =>
-                        handleViewSlip(
-                          item.employeeID
+                    ₹
+                    {
+                      generatedSlips
+                        .filter(
+                          (item) =>
+                            item.status === "success"
                         )
-                      }
-                      className="text-xs text-blue-600 hover:underline"
-                    >
-                      View Slip
-                    </button>
+                        .reduce(
+                          (
+                            acc,
+                            item
+                          ) =>
+                            acc +
+                            Number(
+                              item.netSalary || 0
+                            ),
+                          0
+                        )
+                        .toLocaleString()
+                    }
 
-                  ) : (
-
-                    <span className="text-xs text-gray-400">
-                      Not Available
-                    </span>
-
-                  )}
+                  </h2>
 
                 </div>
 
               </div>
-            )
+
+              <div className="border rounded-md overflow-hidden">
+
+                <div className="grid grid-cols-5 bg-gray-100 border-b">
+
+                  <div className="p-3 text-xs font-semibold">
+                    Employee Name
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Employee ID
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Salary
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Status
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Payslip
+                  </div>
+
+                </div>
+
+                {generatedSlips.map(
+                  (
+                    item,
+                    index
+                  ) => (
+
+                    <div
+                      key={index}
+                      className="grid grid-cols-5 border-b hover:bg-gray-50"
+                    >
+
+                      <div className="p-3 text-sm">
+                        {item.employee}
+                      </div>
+
+                      <div className="p-3 text-sm">
+                        {item.employeeID}
+                      </div>
+
+                      <div className="p-3 text-sm font-medium">
+
+                        ₹
+                        {
+                          Number(
+                            item.netSalary || 0
+                          ).toLocaleString()
+                        }
+
+                      </div>
+
+                      <div className="p-3">
+
+                        <span
+                          className={`text-xs px-2 py-1 rounded
+                          ${item.status === "success"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                            }`}
+                        >
+
+                          {item.status}
+
+                        </span>
+
+                      </div>
+
+                      <div className="p-3">
+
+                        {item.status === "success" ? (
+
+                          <button
+                            onClick={() =>
+                              handleViewSlip(
+                                item.employeeID
+                              )
+                            }
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            View Slip
+                          </button>
+
+                        ) : (
+
+                          <span className="text-xs text-gray-400">
+                            Not Available
+                          </span>
+
+                        )}
+
+                      </div>
+
+                    </div>
+                  )
+                )}
+
+              </div>
+
+            </div>
           )}
-
-        </div>
-
-      </div>
-    )}
-
-  </div>
-)}
 
           {/* FOOTER */}
           <div className="border-t mt-5 pt-5 flex justify-between">
@@ -1554,7 +1454,7 @@ export default function PayrollProcessPage() {
 
             <div className="flex gap-3">
 
-              {step < 3 && (
+              {step < 4 && (
 
                 <button
                   onClick={nextStep}
