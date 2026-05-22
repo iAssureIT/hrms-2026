@@ -275,36 +275,115 @@ export default function PayrollProcessPage() {
   };
 
   // NEXT STEP
-  const nextStep = () => {
+  const nextStep = async () => {
+
+    // STEP 1 VALIDATION
+    if (step === 1) {
+      if (!payrollMonth) {
+        alert(
+          "Please select payroll month"
+        );
+        return;
+      }
+
+      // if (!payrollDate) {
+      //   alert(
+      //     "Please select payroll date"
+      //   );
+      //   return;
+      // }
+
+      if (
+        selectedDepartments.length === 0
+      ) {
+        alert(
+          "Please select at least one department"
+        );
+        return;
+      }
+    }
 
     if (step === 2) {
 
-      const attendanceData =
-        selectedEmployees.map(
-          (emp) => ({
-            employeeId:
-              emp._id,
+      if (
+        selectedEmployees.length === 0
+      ) {
+        alert("Please select at least one employee");
+        return;
+      }
 
-            employeeID:
-              emp.employeeID ||
-              emp.employeeId ||
-              emp.empId,
+      // const attendanceData =
+      //   selectedEmployees.map(
+      //     (emp) => ({
+      //       employeeId:
+      //         emp._id,
 
-            employeeName:
-              emp.employeeName,
+      //       employeeID:
+      //         emp.employeeID ||
+      //         emp.employeeId ||
+      //         emp.empId,
 
-            department:
-              emp.departmentName,
+      //       employeeName:
+      //         emp.employeeName,
 
-            attendance: 28,
-            leave: 2,
-            otHours: 10,
-          })
+      //       department:
+      //         emp.departmentName,
+
+      //       attendance: 28,
+      //       leave: 2,
+      //       otHours: 10,
+      //     })
+      //   );
+
+      // setEmployeeAttendance(
+      //   attendanceData
+      // );
+
+try {
+
+        // GET MONTH + YEAR
+        const selectedMonth =
+          payrollMonth
+            ? Number(
+              payrollMonth.split("-")[1]
+            )
+            : new Date().getMonth() + 1;
+
+        const selectedYear =
+          payrollMonth
+            ? Number(
+              payrollMonth.split("-")[0]
+            )
+            : new Date().getFullYear();
+
+        // API CALL
+        const response = await axios.post(
+            "http://localhost:3050/api/attendance/payroll/attendance-summary",
+            {
+              employeeIds:
+                selectedEmployees.map(
+                  (emp) => emp._id
+                ),
+
+              month: selectedMonth,
+
+              year: selectedYear
+            }
+          );
+          console.log("em-ployee attdance ",response);
+
+        // SET DATA
+        setEmployeeAttendance(
+          response.data.data || []
         );
 
-      setEmployeeAttendance(
-        attendanceData
-      );
+      } catch (error) {
+
+        console.log(error);
+
+        setEmployeeAttendance([]);
+      }
+
     }
 
     setStep(step + 1);
@@ -410,10 +489,9 @@ export default function PayrollProcessPage() {
 
       try {
 
+        setStep(4);
         setIsProcessing(true);
-
         setProgress(0);
-
         setGeneratedSlips([]);
 
         for (
@@ -615,8 +693,6 @@ export default function PayrollProcessPage() {
 
         setIsProcessing(false);
 
-        setStep(4);
-
       } catch (error) {
 
         console.log(error);
@@ -765,11 +841,13 @@ export default function PayrollProcessPage() {
           <div className="flex items-center justify-between mb-4">
 
             <div className="flex items-center gap-3">
-
+              <label className="block text-xs text-gray-500 mb-2">
+                Search Department
+              </label>
               <input
                 type="text"
                 placeholder="Search Department"
-                className="border rounded-md px-3 py-2 text-sm w-[260px]"
+                className="border rounded-md py-2 text-sm w-[260px]"
               />
 
               <p className="text-sm text-blue-600 font-medium">
@@ -1220,19 +1298,6 @@ export default function PayrollProcessPage() {
 
                 <div>
 
-                  <div className="flex justify-end">
-
-                    <button
-                      onClick={
-                        handleRunPayroll
-                      }
-                      className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm"
-                    >
-                      Run Payroll
-                    </button>
-
-                  </div>
-
                 </div>
 
               ) : (
@@ -1554,7 +1619,7 @@ export default function PayrollProcessPage() {
 
             <div className="flex gap-3">
 
-              {step < 3 && (
+              {step !== 3 && step < 5 && (
 
                 <button
                   onClick={nextStep}
