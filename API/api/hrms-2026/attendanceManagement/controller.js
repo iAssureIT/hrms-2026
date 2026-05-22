@@ -399,19 +399,40 @@ exports.getPayrollAttendanceSummary =
                 year
             } = req.body;
 
-            // MONTH START
+            // GIVES MONTH WISE DATA FOR PAYROLL CALCULATION BASED ON ATTENDANCE LOGS
+            // // MONTH START
+            // const startDate =
+            //     moment([year, month - 1])
+            //         .startOf("month")
+            //         .startOf("day")
+            //         .toDate();
+
+            // // MONTH END
+            // const endDate =
+            //     moment([year, month - 1])
+            //         .endOf("month")
+            //         .endOf("day")
+            //         .toDate();
+
+
+            // SALARY CYCLE
+            // 21 CURRENT MONTH -> 20 NEXT MONTH
+
             const startDate =
                 moment([year, month - 1])
-                    .startOf("month")
+                    .date(21)
                     .startOf("day")
                     .toDate();
 
-            // MONTH END
             const endDate =
                 moment([year, month - 1])
-                    .endOf("month")
+                    .add(1, "month")
+                    .date(20)
                     .endOf("day")
                     .toDate();
+
+            console.log("START", startDate);
+            console.log("END", endDate);
 
             // GET ATTENDANCE
             const attendanceLogs =
@@ -438,9 +459,7 @@ exports.getPayrollAttendanceSummary =
 
                     const empLogs =
                         attendanceLogs.filter(
-                            (log) =>
-                                log.employee_id.toString() ===
-                                emp._id.toString()
+                            (log) => log.employee_id.toString() === emp._id.toString()
                         );
 
                     // PRESENT COUNT
@@ -471,6 +490,13 @@ exports.getPayrollAttendanceSummary =
                                 ),
                             0
                         );
+
+                    console.log(
+                        empLogs.map((log) => ({
+                            date: moment(log.date).format("DD-MM-YYYY"),
+                            status: log.status
+                        }))
+                    );
 
                     return {
 
