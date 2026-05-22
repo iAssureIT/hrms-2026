@@ -5,6 +5,7 @@ import axios from "axios";
 import {
   Loader2,
   Check,
+  Search,
 } from "lucide-react";
 import Swal from "sweetalert2";
 
@@ -49,7 +50,11 @@ export default function PayrollProcessPage() {
 
   // PAYROLL
   const [payrollMonth, setPayrollMonth] =
-    useState("");
+    useState(
+    new Date()
+      .toISOString()
+      .slice(0, 7)
+  );
 
   const [payrollDate, setPayrollDate] =
     useState("");
@@ -488,9 +493,6 @@ export default function PayrollProcessPage() {
 
         console.log(error);
 
-        alert(
-          "Salary slip not found"
-        );
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -813,15 +815,12 @@ export default function PayrollProcessPage() {
             <div>
 
               <div className="flex items-center justify-between mb-5">
-
                 <h2 className="text-sm font-medium">
                   Select Departments
                 </h2>
 
-
                 <button
                   onClick={() => {
-
                     if (
                       selectedDepartments.length ===
                       departments.length
@@ -856,59 +855,52 @@ export default function PayrollProcessPage() {
 
               {/* SEARCH + SUMMARY */}
               <div className="flex items-center justify-between mb-4">
+                <div className="relative w-[260px]">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search Departments..."
+                      className="border rounded-md pl-10 pr-3 py-2 text-sm w-full"
+                    />
+                </div>
 
                 <div className="flex items-center gap-3">
-                  <label className="block text-xs text-gray-500 mb-2">
-                    Search Department
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Search Department"
-                    className="border rounded-md py-2 text-sm w-[260px]"
-                  />
-
                   <p className="text-sm text-blue-600 font-medium">
-
                     Selected :
                     {" "}
                     {
                       selectedDepartments.length
                     }
-
                   </p>
-
                 </div>
-
                 <div className="text-sm text-gray-500">
-
                   Total Departments :
                   {" "}
                   {
                     departments.length
                   }
-
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-5 mb-5">
 
                   {/* PAYROLL MONTH */}
-                  <div>
+<div className="relative w-full">
 
-                    <label className="block text-xs text-gray-500 mb-2">
-                      Payroll Month
-                    </label>
+  <label className="block text-sm text-gray-600 mb-2">
+    Payroll Month
+  </label>
 
-                    <input
-                      type="month"
-                      value={payrollMonth}
-                      onChange={(e) =>
-                        setPayrollMonth(
-                          e.target.value
-                        )
-                      }
-                      className="border rounded-md px-4 py-3 text-sm w-full"
-                    />
+  <input
+    type="month"
+    value={payrollMonth}
+    onChange={(e) =>
+      setPayrollMonth(
+        e.target.value
+      )
+    }
+    className="border rounded-md px-4 py-3 text-sm w-full bg-white"
+  />
 
-                  </div>
+</div>
 
                   {/* PAYROLL DATE */}
                   <div>
@@ -947,7 +939,6 @@ export default function PayrollProcessPage() {
                       );
 
                     return (
-
                       <div
                         key={index}
                         onClick={() =>
