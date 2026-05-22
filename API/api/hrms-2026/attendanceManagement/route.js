@@ -15,4 +15,6 @@ router.post('/post/bulk-matrix', attendanceController.bulkUploadMatrix);
 router.post('/post/mapping', attendanceController.saveColumnMapping);
 router.get('/get/mappings/:user_id', attendanceController.getMappings);
 
+router.post('/payroll/attendance-summary', attendanceController.getPayrollAttendanceSummary);
+
 module.exports = router;
