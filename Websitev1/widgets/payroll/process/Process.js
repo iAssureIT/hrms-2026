@@ -6,6 +6,13 @@ import {
   Loader2,
   Check,
   Search,
+  Users,
+  Landmark,
+  Monitor,
+  ShieldCheck,
+  Megaphone,
+  Building2,  
+  UserCircle2
 } from "lucide-react";
 import Swal from "sweetalert2";
 
@@ -102,6 +109,12 @@ export default function PayrollProcessPage() {
     popupSalaryMonth,
     setPopupSalaryMonth,
   ] = useState("");
+
+  const [
+    payrollDetails,
+    setPayrollDetails,
+  ] = useState([]);
+
 
   // FETCH DEPARTMENTS
   useEffect(() => {
@@ -386,7 +399,6 @@ export default function PayrollProcessPage() {
             year: selectedYear
           }
         );
-        console.log("em-ployee attdance ", response);
 
         // SET DATA
         setEmployeeAttendance(
@@ -540,7 +552,6 @@ export default function PayrollProcessPage() {
 
             const monthlyData = {
               ...salaryResponse.data,
-
               salaryData:
                 (
                   salaryResponse.data.salaryData || []
@@ -555,7 +566,6 @@ export default function PayrollProcessPage() {
                   .map(
                     (item) => ({
                       ...item,
-
                       amount: Math.round(
                         Number(
                           item.amount
@@ -720,6 +730,96 @@ export default function PayrollProcessPage() {
       }
     };
 
+
+
+const handleSavePayrollDetails =
+  async () => {
+
+    try {
+
+      const payload = {
+        payrollMonth:
+          formatSalaryMonth(
+            payrollMonth
+          ),
+
+        payrollDate,
+
+        departments:
+          selectedDepartments.map(
+            (item) => item.id
+          ),
+
+        totalEmployees:
+          generatedSlips.length,
+
+        totalPayrollAmount:
+          generatedSlips.reduce(
+            (
+              acc,
+              item
+            ) =>
+              acc +
+              Number(
+                item.netSalary || 0
+              ),
+            0
+          ),
+
+        processedBy:
+          "Admin",
+      };
+
+      const response =
+        await axios.post(
+          "http://localhost:3050/api/payroll-details",
+          payload
+        );
+
+      setStep(5);
+
+    } catch (error) {
+
+      console.log(
+        "ERROR",
+        error.response?.data ||
+          error.message
+      );
+    }
+  };
+
+
+ // FETCH EMPLOYEES
+useEffect(() => {
+
+  if (step === 5) {
+
+    fetchPayrollDetails();
+
+  }
+
+}, [step]);
+
+const fetchPayrollDetails =
+  async () => {
+
+    try {
+
+      const response =
+        await axios.get(
+          "http://localhost:3050/api/payroll-details"
+        );
+
+      setPayrollDetails(
+        response.data.data || []
+      );
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   return (
 
     <div className="min-h-screen bg-[#f5f7fb] p-4">
@@ -761,9 +861,9 @@ export default function PayrollProcessPage() {
                     key={index}
                     className={`border rounded-md p-3 flex items-center gap-3
                     ${completed
-                        ? "bg-blue-600 text-white border-blue-600"
+                        ? "bg-[#3c8dbc] text-white border-[#3c8dbc]"
                         : active
-                          ? "bg-blue-50 border-blue-600"
+                          ? "bg-blue-50 border-[#3c8dbc]"
                           : "bg-white"
                       }`}
                   >
@@ -773,7 +873,7 @@ export default function PayrollProcessPage() {
                       ${completed
                           ? "bg-white text-blue-600"
                           : active
-                            ? "bg-blue-600 text-white"
+                            ? "bg-[#3c8dbc] text-white"
                             : "bg-gray-100 text-gray-700"
                         }`}
                     >
@@ -841,7 +941,7 @@ export default function PayrollProcessPage() {
                       );
                     }
                   }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                  className="bg-[#3c8dbc] text-white px-4 py-2 rounded-md text-sm"
                 >
                   {
                     selectedDepartments.length ===
@@ -883,29 +983,29 @@ export default function PayrollProcessPage() {
                 <div className="grid grid-cols-2 gap-4 mt-5 mb-5">
 
                   {/* PAYROLL MONTH */}
-<div className="relative w-full">
+                  <div className="relative w-full">
 
-  <label className="block text-sm text-gray-600 mb-2">
-    Payroll Month
-  </label>
+                    <label className="block text-sm text-gray-600 mb-2">
+                      Payroll Month
+                    </label>
 
-  <input
-    type="month"
-    value={payrollMonth}
-    onChange={(e) =>
-      setPayrollMonth(
-        e.target.value
-      )
-    }
-    className="border rounded-md px-4 py-3 text-sm w-full bg-white"
-  />
+                    <input
+                      type="month"
+                      value={payrollMonth}
+                      onChange={(e) =>
+                        setPayrollMonth(
+                          e.target.value
+                        )
+                      }
+                      className="border rounded-md px-4 py-3 text-sm w-full bg-white"
+                    />
 
-</div>
+                  </div>
 
                   {/* PAYROLL DATE */}
                   <div>
 
-                    <label className="block text-xs text-gray-500 mb-2">
+                    <label className="block text-sm text-gray-500 mb-2">
                       Payroll Date
                     </label>
 
@@ -925,7 +1025,7 @@ export default function PayrollProcessPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-4">
                 {departments.map(
                   (
                     item,
@@ -939,113 +1039,96 @@ export default function PayrollProcessPage() {
                       );
 
                     return (
-                      <div
-                        key={index}
-                        onClick={() =>
-                          handleDepartmentChange(
-                            item
-                          )
-                        }
-                        className={`border rounded-md p-4 cursor-pointer transition hover:border-blue-500
-  ${checked
-                            ? "border-blue-600 bg-blue-50"
-                            : "bg-white"
-                          }`}
-                      >
+                          <div
+                            key={index}
+                            onClick={() =>
+                              handleDepartmentChange(
+                                item
+                              )
+                            }
+                            className={`border rounded-xl overflow-hidden cursor-pointer transition-all
+                            ${
+                              checked
+                                ? "border-blue-600 bg-blue-50"
+                                : "bg-white hover:border-gray-300"
+                            }`}
+                          >
 
-                        {/* TOP */}
-                        <div className="flex items-start justify-between">
+                            {/* TOP */}
+                            <div className="p-4">
 
-                          <div>
+                              <div className="flex items-start justify-between">
 
-                            <h3 className="text-sm font-semibold">
-                              {
-                                item.fieldValue
-                              }
-                            </h3>
+                                <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
 
-                            <p className="text-xs text-gray-500 mt-1">
+                                  <Users className="w-4 h-4 text-blue-600" />
 
-                              Employee Count :
-                              {" "}
-                              {
-                                employees.filter(
-                                  (emp) =>
-                                    emp.departmentName ===
-                                    item.fieldValue
-                                ).length
-                              }
+                                </div>
 
-                            </p>
+                                <input
+                                  type="checkbox"
+                                  checked={!!checked}
+                                  readOnly
+                                />
 
-                          </div>
+                              </div>
 
-                          <input
-                            type="checkbox"
-                            checked={!!checked}
-                            readOnly
-                          />
+                              <h3 className="text-[15px] font-semibold mt-4">
+                                {item.fieldValue}
+                              </h3>
 
-                        </div>
+                              <div className="flex items-center gap-2 mt-3">
 
-                        {/* BODY */}
-                        <div className="mt-4 space-y-2">
+                                <h2 className="text-3xl font-semibold leading-none">
 
-                          {/* PAYROLL ESTIMATE */}
-                          <div className="flex items-center justify-between text-xs">
-
-                            <span className="text-gray-500">
-                              Estimated Payroll
-                            </span>
-
-                            <span className="font-medium text-green-600">
-
-                              ₹
-                              {
-                                (
-                                  employees.filter(
-                                    (emp) =>
-                                      emp.departmentName ===
+                                  {
+                                    groupedEmployees[
                                       item.fieldValue
-                                  ).length * 45000
-                                ).toLocaleString()
-                              }
+                                    ]?.length || 0
+                                  }
 
-                            </span>
+                                </h2>
+
+                                <span className="text-[11px] bg-green-50 text-green-600 px-2 py-1 rounded">
+
+                                  Active Dept
+
+                                </span>
+
+                              </div>
+
+                            </div>
+
+                            {/* FOOTER */}
+                            <div className="border-t px-4 py-3 flex items-center justify-between bg-gray-50">
+
+                              <div className="flex items-center gap-4 text-xs text-gray-500">
+
+                                <span>
+                                  Active:
+                                  {" "}
+                                  {
+                                    groupedEmployees[
+                                      item.fieldValue
+                                    ]?.length || 0
+                                  }
+                                </span>
+
+                                <span>
+                                  Inactive: 0
+                                </span>
+
+                              </div>
+
+                              <button className="text-xs text-gray-600 flex items-center gap-1">
+
+                                Details →
+
+                              </button>
+
+                            </div>
 
                           </div>
-
-                          {/* ATTENDANCE */}
-                          <div className="flex items-center justify-between text-xs">
-
-                            <span className="text-gray-500">
-                              Attendance Status
-                            </span>
-
-                            <span className="text-blue-600 font-medium">
-                              92%
-                            </span>
-
-                          </div>
-
-                          {/* PAYROLL STATUS */}
-                          <div className="flex items-center justify-between text-xs">
-
-                            <span className="text-gray-500">
-                              Payroll Status
-                            </span>
-
-                            <span className="bg-green-100 text-green-700 px-2 py-[2px] rounded">
-
-                              Ready
-
-                            </span>
-
-                          </div>
-
-                        </div>
-
-                      </div>
                     );
                   }
                 )}
@@ -1082,7 +1165,7 @@ export default function PayrollProcessPage() {
                       );
                     }
                   }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                  className="bg-[#3c8dbc] text-white px-4 py-2 rounded-md text-sm"
                 >
                   {
                     selectedEmployees.length ===
@@ -1363,7 +1446,7 @@ export default function PayrollProcessPage() {
                   onClick={
                     handleRunPayroll
                   }
-                  className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm"
+                  className="bg-[#3c8dbc] text-white px-5 py-2 rounded-md text-sm"
                 >
                   Run Payroll
                 </button>
@@ -1373,80 +1456,7 @@ export default function PayrollProcessPage() {
             </div>
           )}
 
-          {/* STEP 5 */}
-          {step === 5 && (
-            <div>
 
-              {!isProcessing ? (
-
-                <div>
-
-                </div>
-
-              ) : (
-
-                <div>
-
-                  <div className="mb-6">
-
-                    <div className="flex justify-between mb-2">
-
-                      <span className="text-sm">
-                        Processing Payroll
-                      </span>
-
-                      <span className="text-sm font-medium text-blue-600">
-                        {progress}%
-                      </span>
-
-                    </div>
-
-                    <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-
-                      <div
-                        className="h-full bg-blue-600"
-                        style={{
-                          width: `${progress}%`,
-                        }}
-                      />
-
-                    </div>
-
-                  </div>
-
-                  <div className="border rounded-md p-4 flex items-center gap-3">
-
-                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-
-                    <div>
-
-                      <p className="text-xs text-gray-500">
-                        Processing Employee
-                      </p>
-
-                      <h3 className="text-sm font-medium">
-                        {
-                          currentEmployee
-                        }
-                      </h3>
-
-                      <p className="text-xs text-gray-500 mt-1">
-                        Employee ID :
-                        {" "}
-                        {
-                          currentEmployeeID
-                        }
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                </div>
-              )}
-
-            </div>
-          )}
 
           {/* STEP 4 */}
           {step === 4 && (
@@ -1495,6 +1505,7 @@ export default function PayrollProcessPage() {
                       </p>
 
                       <h3 className="text-sm font-medium">
+                        
                         {
                           currentEmployee
                         }
@@ -1507,22 +1518,15 @@ export default function PayrollProcessPage() {
                           currentEmployeeID
                         }
                       </p>
-
                     </div>
-
                   </div>
-
                 </div>
-
               ) : (
 
                 /* FINAL RESULT */
                 <div>
-
                   <div className="grid grid-cols-2 gap-4 mb-5">
-
                     <div className="border rounded-md p-5 bg-blue-50">
-
                       <p className="text-xs text-gray-500">
                         Total Employees
                       </p>
@@ -1570,14 +1574,11 @@ export default function PayrollProcessPage() {
                         }
 
                       </h2>
-
                     </div>
-
                   </div>
-
                   <div className="border rounded-md overflow-hidden">
 
-                    <div className="grid grid-cols-5 bg-gray-100 border-b">
+                    <div className="grid grid-cols-6 bg-gray-100 border-b">
 
                       <div className="p-3 text-xs font-semibold">
                         Employee Name
@@ -1589,6 +1590,10 @@ export default function PayrollProcessPage() {
 
                       <div className="p-3 text-xs font-semibold">
                         Salary
+                      </div>
+
+                      <div className="p-3 text-xs font-semibold">
+                        Payroll Date
                       </div>
 
                       <div className="p-3 text-xs font-semibold">
@@ -1609,17 +1614,19 @@ export default function PayrollProcessPage() {
 
                         <div
                           key={index}
-                          className="grid grid-cols-5 border-b hover:bg-gray-50"
+                          className="grid grid-cols-6 border-b hover:bg-gray-50"
                         >
 
-                          <div className="p-3 text-sm">
+                        <div className="p-3 text-sm flex items-center gap-2">
+                          <UserCircle2 className="w-6 h-6 text-blue-600 shrink-0" />
+                          <span className="truncate">
                             {item.employee}
-                          </div>
+                          </span>
+                        </div>
 
                           <div className="p-3 text-sm">
                             {item.employeeID}
                           </div>
-
                           <div className="p-3 text-sm font-medium">
 
                             ₹
@@ -1630,21 +1637,20 @@ export default function PayrollProcessPage() {
                             }
 
                           </div>
-
+                          <div className="p-3 text-sm">
+                            {payrollDate}
+                          </div>
                           <div className="p-3">
 
                             <span
                               className={`text-xs px-2 py-1 rounded
-                    ${item.status === "success"
+                              ${item.status === "success"
                                   ? "bg-green-100 text-green-700"
                                   : "bg-red-100 text-red-700"
                                 }`}
                             >
-
                               {item.status}
-
                             </span>
-
                           </div>
 
                           <div className="p-3">
@@ -1684,6 +1690,155 @@ export default function PayrollProcessPage() {
             </div>
           )}
 
+
+          {/* STEP 5 */}
+          {step === 5 && (
+            <div>
+
+              <div className="grid grid-cols-4 gap-4 mb-5">
+
+                <div className="border rounded-md p-4 bg-blue-50">
+
+                  <p className="text-xs text-gray-500">
+                    Payroll Month
+                  </p>
+
+                  <h3 className="text-lg font-semibold mt-2">
+                    {
+                      payrollDetails?.payrollMonth
+                    }
+                  </h3>
+
+                </div>
+
+                <div className="border rounded-md p-4 bg-green-50">
+
+                  <p className="text-xs text-gray-500">
+                    Payroll Date
+                  </p>
+
+                  <h3 className="text-lg font-semibold mt-2">
+                    {
+                      payrollDetails?.payrollDate
+                    }
+                  </h3>
+
+                </div>
+
+                <div className="border rounded-md p-4 bg-yellow-50">
+
+                  <p className="text-xs text-gray-500">
+                    Total Employees
+                  </p>
+
+                  <h3 className="text-lg font-semibold mt-2">
+                    {
+                      payrollDetails?.totalEmployees
+                    }
+                  </h3>
+
+                </div>
+
+                <div className="border rounded-md p-4 bg-purple-50">
+
+                  <p className="text-xs text-gray-500">
+                    Total Payroll
+                  </p>
+
+                  <h3 className="text-lg font-semibold mt-2">
+
+                    ₹
+                    {
+                      Number(
+                        payrollDetails?.totalPayrollAmount || 0
+                      ).toLocaleString()
+                    }
+
+                  </h3>
+
+                </div>
+
+              </div>
+
+              {/* TABLE */}
+              <div className="border rounded-md overflow-hidden">
+
+                <div className="grid grid-cols-5 bg-gray-100 border-b">
+
+                  <div className="p-3 text-xs font-semibold">
+                    Payroll Month
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Payroll Date
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Employees
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Payroll Amount
+                  </div>
+
+                  <div className="p-3 text-xs font-semibold">
+                    Status
+                  </div>
+
+                </div>
+
+              {payrollDetails.map(
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+                    key={index}
+                    className="grid grid-cols-5 border-b"
+                  >
+
+                    <div className="p-3 text-sm">
+                      {item.payrollMonth}
+                    </div>
+
+                    <div className="p-3 text-sm">
+                      {item.payrollDate}
+                    </div>
+
+                    <div className="p-3 text-sm">
+                      {item.totalEmployees}
+                    </div>
+
+                    <div className="p-3 text-sm">
+
+                      ₹
+                      {
+                        Number(
+                          item.totalPayrollAmount || 0
+                        ).toLocaleString()
+                      }
+
+                    </div>
+
+                    <div className="p-3">
+
+                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
+                        Completed
+                      </span>
+
+                    </div>
+
+                  </div>
+                )
+              )}
+
+              </div>
+
+            </div>
+          )}
+
+
           {/* FOOTER */}
           <div className="border-t mt-5 pt-5 flex justify-between">
 
@@ -1701,16 +1856,19 @@ export default function PayrollProcessPage() {
 
             <div className="flex gap-3">
 
-              {step !== 3 && step < 5 && (
+            {step !== 3 && step < 5 && (
 
-                <button
-                  onClick={nextStep}
-                  className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm"
-                >
-                  Next
-                </button>
-
-              )}
+              <button
+                onClick={
+                  step === 4
+                    ? handleSavePayrollDetails
+                    : nextStep
+                }
+                className="bg-[#3c8dbc] text-white px-5 py-2 rounded-md text-sm"
+              >
+                Next
+              </button>
+            )}
 
             </div>
 
