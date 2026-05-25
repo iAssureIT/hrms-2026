@@ -1120,8 +1120,30 @@ export default function RootLayout({ children }) {
     },
     {
       title: "Payroll",
+      submenu: true,
       icon: <FaMoneyCheckAlt />,
-      link: "/admin/payroll/dashboard",
+      submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Employee Selection",
+          link: "/admin/payroll/empselect",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Employee Preview",
+          link: "/admin/payroll/preview",
+        },  
+        {
+          icon: <FaRegCircle />,
+          title: "Approval Workflow",
+          link: "/admin/payroll/approval",
+        },   
+        {
+          icon: <FaRegCircle />,
+          title: "Execution",
+          link: "/admin/payroll/execution",
+        },                   
+      ],
     },
     {
       title: "Asset Management",
@@ -1204,6 +1226,60 @@ export default function RootLayout({ children }) {
       title: "Helpdesk",
       icon: <FaHeadset />,
       link: "/admin/helpdesk",
+    },
+     {
+      title: "Hrms Master Data",
+      submenu: true,
+      icon: <BsClipboardDataFill />,
+      submenuItems: [
+        {
+          icon: <FaRegCircle />,
+          title: "Business Unit Master",
+          link: "/admin/hrms-master-data/business-unit",
+        },  
+        {
+          icon: <FaRegCircle />,
+          title: "Job Type Master", 
+          link: "/admin/hrms-master-data/job-type",
+        },               
+        {
+          icon: <FaRegCircle />,
+          title: "Location",
+          link: "/admin/master-data/center-details/center-details-list",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Sub-Location ",
+          link: "/admin/master-data/sublocation",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Department ",
+          link: "/admin/master-data/department-subdepartment",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Category & Depreciation",
+          link: "/admin/master-data/asset-depreciation",
+        },
+        {
+          icon: <FaRegCircle />,
+          title: "Asset sub-Category ",
+          link: "/admin/master-data/asset-category-subcategory",
+        },
+
+        {
+          icon: <FaRegCircle />,
+          title: "Asset Inspection Checklist Master",
+          link: "/admin/master-data/asset-inspection-checklist",
+        },
+
+        {
+          icon: <FaRegCircle />,
+          title: "Leave Type Master",
+          link: "/admin/master-data/leave-types",
+        },
+      ],
     },
     {
       title: "Master Data",

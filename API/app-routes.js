@@ -23,6 +23,7 @@ const vendorMasterRoutes = require("./api/hrms-2026/vendorMaster/route.js");
 const locationSubcategoryRoutes = require("./api/hrms-2026/oneFieldModules/locationSubcategory/routes.js");
 const departmentMasterRoutes = require("./api/hrms-2026/oneFieldModules/departmentMaster/routes.js");
 const subdepartmentMasterRoutes = require("./api/hrms-2026/oneFieldModules/subdepartmentMaster/routes.js");
+const businessuniMasterRoutes = require("./api/hrms-2026/oneFieldModules/businessUnitMaster/routes.js");
 // const assetAllocationRoutes = require("./api/hrms-2026/assetAllocation/route.js");
 const employeeManagementRoutes = require("./api/hrms-2026/employeeManagement/route.js");
 const attendanceManagementRoutes = require("./api/hrms-2026/attendanceManagement/route.js");
@@ -65,7 +66,11 @@ const payrollDetailsRoutes = require("./api/hrms-2026/payroll/details/route.js")
 // app.js OR server.js
 
 
+const jobtypeMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTypeMaster/routes.js");
+
 const appRoutes = (app) => {
+
+  app.use("/api/job-type-master", jobtypeMasterRoutes);
 
   app.use("/api/payroll-details", payrollDetailsRoutes);
   app.use("/api/salary-components", salCompoRoutes);
@@ -91,6 +96,7 @@ const appRoutes = (app) => {
   app.use("/api/location-subcategory", locationSubcategoryRoutes);
   app.use("/api/department-master", departmentMasterRoutes);
   app.use("/api/subdepartment-master", subdepartmentMasterRoutes);
+  app.use("/api/business-unit-master", businessuniMasterRoutes);
   app.use("/api/employees", employeeManagementRoutes);
   // app.use("/api/asset-allocation", assetAllocationRoutes);
   // app.use("/api/account-header-master", accountHeaderMasterRoutes);
