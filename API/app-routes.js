@@ -40,7 +40,7 @@ const accessManagementRoutes = require("./api/hrms-2026/accessManagement/routes.
 // const unitRoutes = require("./api/hrms-2026/oneFieldModules/unitManagement/routesNew.js");
 // const utilizationApprovalLevelRoutes = require("./api/hrms-2026/utilization-approval-level/routes.js");
 
-//LeaveRoute
+// LeaveRoute
 const leaveTypeRoutes = require("./api/hrms-2026/leaveManagement/leaveTypes/route.js");
 const leaveApplications = require("./api/hrms-2026/leaveManagement/leaveApplications/route");
 const leavePolicyRoutes = require("./api/hrms-2026/leaveManagement/leavePolicy/route.js");
@@ -67,10 +67,12 @@ const payrollDetailsRoutes = require("./api/hrms-2026/payroll/details/route.js")
 
 
 const jobtypeMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTypeMaster/routes.js");
+const jobtimingMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTimingMaster/routes.js");
 
 const appRoutes = (app) => {
 
   app.use("/api/job-type-master", jobtypeMasterRoutes);
+  app.use("/api/job-timing-master", jobtimingMasterRoutes);
 
   app.use("/api/payroll-details", payrollDetailsRoutes);
   app.use("/api/salary-components", salCompoRoutes);

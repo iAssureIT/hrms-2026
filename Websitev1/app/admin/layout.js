@@ -1240,8 +1240,13 @@ export default function RootLayout({ children }) {
         {
           icon: <FaRegCircle />,
           title: "Job Type Master", 
-          link: "/admin/hrms-master-data/job-type",
-        },               
+          link: "/admin/hrms-master-data/jobtype",
+        },   
+        {
+          icon: <FaRegCircle />,
+          title: "Job Timing Master", 
+          link: "/admin/hrms-master-data/jobtiming",
+        },                    
         {
           icon: <FaRegCircle />,
           title: "Location",

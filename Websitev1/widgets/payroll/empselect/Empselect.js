@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import {
   ChevronRight,
   CalendarDays,
@@ -68,6 +69,7 @@ const employees = [
     eligibility: "Eligible",
   },
 ];
+
 
 const badgeStyles = {
   green:
@@ -149,6 +151,7 @@ function CheckboxMultiSelect({
     }
   };
 
+  
   return (
     <div className="relative flex flex-col gap-2">
       <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
@@ -254,6 +257,65 @@ function StatCard({
 }
 
 export default function PayrollEmpSelect() {
+
+  const [businessUnits, setBusinessUnits] = useState([]);
+  const [centerLocation, setcenterLocation] = useState([]);
+  const [department, setDepartment] = useState([]);
+  const [jobType, setJobType] = useState([]);
+
+  const getBusinessUnits = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3050/api/business-unit-master/get"
+      );
+      setBusinessUnits(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getLocations = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3050/api/centers/list"
+        );
+        setcenterLocation(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+  const getDepartment = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3050/api/payroll/prdept"
+        );
+        setDepartment(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+  const getJobType = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3050/api/job-type-master/get"
+        );
+        setJobType(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+useEffect(() => {
+  getBusinessUnits();
+  getLocations();
+  getDepartment();
+  getJobType();
+}, []);
+
+
   return (
     <div className="min-h-screen bg-[#f4f6fa]">
       {/* Header */}
@@ -394,40 +456,28 @@ export default function PayrollEmpSelect() {
 
 
             {/* Business Unit */}
-            <CheckboxMultiSelect
-              label="Business Unit"
-              options={[
-                "Corporate HQ",
-                "India Operations",
-                "North America",
-                "Europe Division",
-                "Shared Services",
-              ]}
-            />
+              <CheckboxMultiSelect
+                label="Business Unit"
+                options={businessUnits.map(
+                  (item) => item.fieldValue
+                )}
+              />
 
             {/* Location */}
-            <CheckboxMultiSelect
-              label="Location"
-              options={[
-                "New York",
-                "San Francisco",
-                "Austin",
-                "Pune",
-                "Bangalore",
-              ]}
-            />
+              <CheckboxMultiSelect
+                label="Location"
+                options={centerLocation.map(
+                  (item) => item.centerName
+                )}
+              />
 
             {/* Department */}
-            <CheckboxMultiSelect
-              label="Department"
-              options={[
-                "Engineering",
-                "Finance",
-                "HR",
-                "Operations",
-                "Marketing",
-              ]}
-            />
+              <CheckboxMultiSelect
+                label="Department"
+                options={department.map(
+                  (item) => item.fieldValue
+                )}
+              />
 
             {/* Designation */}
             <CheckboxMultiSelect
@@ -444,12 +494,9 @@ export default function PayrollEmpSelect() {
             {/* Job Type */}
             <CheckboxMultiSelect
               label="Job Type"
-              options={[
-                "Reguler",
-                "Contract",
-                "Intern",
-                "Freelancer",
-              ]}
+                options={jobType.map(
+                  (item) => item.fieldValue
+                )}
             />
 
             {/* Job Timing */}

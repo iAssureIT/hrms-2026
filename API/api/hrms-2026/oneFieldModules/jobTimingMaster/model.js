@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const jobTypeSchema = mongoose.Schema({
+const jobTimingSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    fieldValue: { type: String, trim: true, required: true }, // Job Type Name
+    fieldValue: { type: String, trim: true, required: true }, // Job Timing Name
     createdAt: { type: Date, default: Date.now() },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     updateLog: [
@@ -14,4 +14,4 @@ const jobTypeSchema = mongoose.Schema({
     fileName: String,
 });
 
-module.exports = mongoose.model('job-type-master', jobTypeSchema);
+module.exports = mongoose.model('job-timing-master', jobTimingSchema);

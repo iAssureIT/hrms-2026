@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const jobTypeController = require('./controller');
+const jobTimingController = require('./controller');
 
-router.post('/post', jobTypeController.createJobType);
-router.post('/getdata', jobTypeController.getData);
-router.get('/get', jobTypeController.getJobTypes);
-router.put('/put/:id', jobTypeController.updateJobType);
-router.delete('/delete/:id', jobTypeController.deleteJobType);
+router.post('/post', jobTimingController.createJobTiming);
+router.post('/getdata', jobTimingController.getData);
+router.get('/get', jobTimingController.getJobTimings);
+router.put('/put/:id', jobTimingController.updateJobTiming);
+router.delete('/delete/:id', jobTimingController.deleteJobTiming);
 
 module.exports = router;
