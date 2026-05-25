@@ -262,6 +262,8 @@ export default function PayrollEmpSelect() {
   const [centerLocation, setcenterLocation] = useState([]);
   const [department, setDepartment] = useState([]);
   const [jobType, setJobType] = useState([]);
+  const [jobTiming, setJobTiming] = useState([]); 
+  const [designation, setDesignation] = useState([]);    
 
   const getBusinessUnits = async () => {
     try {
@@ -308,11 +310,36 @@ export default function PayrollEmpSelect() {
       }
   };
 
+  const getJobTiming = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3050/api/job-timing-master/get"
+        );
+        setJobTiming(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+  const getDesignation = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3050/api/designation-master/get"
+        );
+        setDesignation(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+
 useEffect(() => {
   getBusinessUnits();
   getLocations();
   getDepartment();
   getJobType();
+  getJobTiming();
+  getDesignation();
 }, []);
 
 
@@ -482,13 +509,9 @@ useEffect(() => {
             {/* Designation */}
             <CheckboxMultiSelect
               label="Designation"
-              options={[
-                "Software Engineer",
-                "Project Manager",
-                "UI/UX Designer",
-                "HR Executive",
-                "Finance Analyst",
-              ]}
+                options={designation.map(
+                  (item) => item.fieldValue
+                )}
             />
 
             {/* Job Type */}
@@ -502,18 +525,9 @@ useEffect(() => {
             {/* Job Timing */}
             <CheckboxMultiSelect
               label="Job Timing"
-              options={[
-                "Full Time",
-                "Part Time",
-                "General Shift",
-                "Morning Shift",
-                "Evening Shift",
-                "Night Shift",
-                "Rotational Shift",
-                "Flexible Timing",
-                "Weekend Shift",
-                "Split Shift",
-              ]}
+              options={jobTiming.map(
+                (item) => item.fieldValue
+              )}
             />    
 
             {/* Search */}

@@ -1,34 +1,32 @@
-const JobTimingMaster = require("./model.js");
+const DesignationMaster = require("./model.js");
 const mongoose = require("mongoose");
 
-exports.createJobTiming = async (req, res) => {
-    console.log("Request Body:", req.body); // Debugging log
-    
+exports.createDesignation = async (req, res) => {
     try {
-        const existing = await JobTimingMaster.findOne({
+        const existing = await DesignationMaster.findOne({
             fieldValue: req.body.fieldValue,
         });
 
         if (existing) {
-            return res.status(409).json({ message: "JobTiming already exists" });
+            return res.status(409).json({ message: "Designation already exists" });
         }
 
-        const jobtiming = new JobTimingMaster({
+        const designation = new DesignationMaster({
             _id: new mongoose.Types.ObjectId(),
             fieldValue: req.body.fieldValue,
             createdBy: req.body.user_id,
         });
 
-        const result = await jobtiming.save();
+        const result = await designation.save();
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error });
     }
 };
 
-exports.getJobTimings = async (req, res) => {
+exports.getDesignations = async (req, res) => {
     try {
-        const data = await JobTimingMaster.find().sort({ fieldValue: 1 });
+        const data = await DesignationMaster.find().sort({ fieldValue: 1 });
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error });
@@ -41,8 +39,8 @@ exports.getData = async (req, res) => {
     let skipRec = recsPerPage * (pageNum - 1);
 
     try {
-        const totalRecs = await JobTimingMaster.countDocuments();
-        const data = await JobTimingMaster.find()
+        const totalRecs = await DesignationMaster.countDocuments();
+        const data = await DesignationMaster.find()
             .skip(parseInt(skipRec))
             .limit(parseInt(recsPerPage))
             .sort({ createdAt: -1 });
@@ -57,38 +55,38 @@ exports.getData = async (req, res) => {
     }
 };
 
-exports.updateJobTiming = async (req, res) => {
+exports.updateDesignation = async (req, res) => {
     try {
-        const jobtiming = await JobTimingMaster.findById(req.params.id);
+        const designation = await DesignationMaster.findById(req.params.id);
 
-        if (!jobtiming) {
-            return res.status(404).json({ error: "JobTiming not found" });
+        if (!designation) {
+            return res.status(404).json({ error: "Designation not found" });
         }
 
         const { fieldValue, user_id } = req.body;
 
-        const existing = await JobTimingMaster.findOne({
+        const existing = await DesignationMaster.findOne({
             fieldValue: fieldValue,
             _id: { $ne: req.params.id },
         });
 
         if (existing) {
-            return res.status(409).json({ message: "JobTiming with this name already exists" });
+            return res.status(409).json({ message: "Designation with this name already exists" });
         }
 
         let updated = false;
-        if (jobtiming.fieldValue !== fieldValue) {
-            jobtiming.fieldValue = fieldValue;
+        if (designation.fieldValue !== fieldValue) {
+            designation.fieldValue = fieldValue;
             updated = true;
         }
 
         if (updated) {
-            jobtiming.updateLog.push({
+            designation.updateLog.push({
                 updatedBy: user_id,
                 updatedAt: new Date(),
             });
-            const result = await jobtiming.save();
-            return res.status(200).json({ result, success: true, message: "JobTiming updated successfully" });
+            const result = await designation.save();
+            return res.status(200).json({ result, success: true, message: "Designation updated successfully" });
         } else {
             return res.status(200).json({ success: false, message: "No changes detected" });
         }
@@ -97,10 +95,10 @@ exports.updateJobTiming = async (req, res) => {
     }
 };
 
-exports.deleteJobTiming = async (req, res) => {
+exports.deleteDesignation = async (req, res) => {
     try {
-        await JobTimingMaster.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "JobTiming deleted" });
+        await DesignationMaster.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: "Designation deleted" });
     } catch (error) {
         res.status(500).json({ error });
     }

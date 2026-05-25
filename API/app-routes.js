@@ -68,11 +68,13 @@ const payrollDetailsRoutes = require("./api/hrms-2026/payroll/details/route.js")
 
 const jobtypeMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTypeMaster/routes.js");
 const jobtimingMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTimingMaster/routes.js");
+const designationMasterRoutes = require("./api/hrms-2026/oneFieldModules/designationMaster/routes.js");
 
 const appRoutes = (app) => {
 
   app.use("/api/job-type-master", jobtypeMasterRoutes);
   app.use("/api/job-timing-master", jobtimingMasterRoutes);
+  app.use("/api/designation-master", designationMasterRoutes);
 
   app.use("/api/payroll-details", payrollDetailsRoutes);
   app.use("/api/salary-components", salCompoRoutes);
