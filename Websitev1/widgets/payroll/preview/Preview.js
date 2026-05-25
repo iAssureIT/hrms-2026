@@ -17,6 +17,9 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const payrollData = [
   {
@@ -99,6 +102,7 @@ function SummaryCard({
   positive,
   bg = "bg-white",
 }) {
+
   return (
     <div
       className={`${bg} border border-gray-200 rounded-2xl p-5`}
@@ -109,11 +113,10 @@ function SummaryCard({
         </div>
 
         <div
-          className={`text-[11px] font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${
-            positive
-              ? "bg-green-50 text-green-600"
-              : "bg-red-50 text-red-500"
-          }`}
+          className={`text-[11px] font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${positive
+            ? "bg-green-50 text-green-600"
+            : "bg-red-50 text-red-500"
+            }`}
         >
           {positive ? (
             <ArrowUpRight className="w-3 h-3" />
@@ -167,6 +170,27 @@ function StatusBadge({ text }) {
 }
 
 export default function PayrollPreview() {
+
+  const [employeeDataCount, setEmployeeDataCount] = useState("");
+
+
+  useEffect(() => {
+    getEmployeeCount();
+  }, [])
+
+  const getEmployeeCount = () => {
+    const response = axios.get("/api/employees/get").then((res) => {
+      console.log("Employee Count:", res.data.length);
+      setEmployeeDataCount(res.data.length);
+    }).catch((err) => {
+      Swal.fire({
+        icon: "error",
+        title: "Error fetching employee count",
+        text: err.message,
+      });
+    });
+  }
+
   return (
     <div className="min-h-screen bg-[#f5f7fb]">
       {/* Top Header */}
@@ -186,21 +210,19 @@ export default function PayrollPreview() {
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                      index === 1
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${index === 1
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-500"
+                      }`}
                   >
                     {index + 1}
                   </div>
 
                   <span
-                    className={`text-sm font-medium ${
-                      index === 1
-                        ? "text-gray-900"
-                        : "text-gray-500"
-                    }`}
+                    className={`text-sm font-medium ${index === 1
+                      ? "text-gray-900"
+                      : "text-gray-500"
+                      }`}
                   >
                     {step}
                   </span>
@@ -308,7 +330,7 @@ export default function PayrollPreview() {
                     </p>
 
                     <h2 className="text-4xl font-bold text-gray-900 mt-4">
-                      2,450
+                      {employeeDataCount ? employeeDataCount : "2,450"}
                     </h2>
 
                     <p className="text-xs text-gray-500 mt-3">
