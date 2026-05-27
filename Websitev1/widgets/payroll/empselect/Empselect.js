@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   ChevronRight,
@@ -18,6 +18,7 @@ import {
   CalendarRange,
   ChevronDown,
 } from "lucide-react";
+import { FaUser } from "react-icons/fa";
 
 const employees = [
   {
@@ -133,8 +134,9 @@ function CheckboxMultiSelect({
   options = [],
 }) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] =
-    useState([]);
+  const [selected, setSelected] = useState([]);
+
+  const dropdownRef = useRef();
 
   const toggleOption = (value) => {
     if (selected.includes(value)) {
@@ -151,9 +153,32 @@ function CheckboxMultiSelect({
     }
   };
 
-  
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+
   return (
-    <div className="relative flex flex-col gap-2">
+    <div className="relative flex flex-col gap-2" ref={dropdownRef}>
       <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
         {label}
       </label>
@@ -214,7 +239,7 @@ function CheckboxMultiSelect({
 function StatusBadge({ text }) {
   return (
     <div
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getBadge(
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap max-w-fit ${getBadge(
         text
       )}`}
     >
@@ -262,8 +287,13 @@ export default function PayrollEmpSelect() {
   const [centerLocation, setcenterLocation] = useState([]);
   const [department, setDepartment] = useState([]);
   const [jobType, setJobType] = useState([]);
-  const [jobTiming, setJobTiming] = useState([]); 
-  const [designation, setDesignation] = useState([]);    
+  const [jobTiming, setJobTiming] = useState([]);
+  const [designation, setDesignation] = useState([]);
+  const [employeeData, setEmployeeData] = useState([]);
+  const [employeeDataCount, setEmployeeDataCount] = useState(0);
+
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
 
   const getBusinessUnits = async () => {
     try {
@@ -278,69 +308,112 @@ export default function PayrollEmpSelect() {
 
 
   const getLocations = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3050/api/centers/list"
-        );
-        setcenterLocation(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.get(
+        "http://localhost:3050/api/centers/list"
+      );
+      setcenterLocation(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getDepartment = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3050/api/payroll/prdept"
-        );
-        setDepartment(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.get(
+        "http://localhost:3050/api/payroll/prdept"
+      );
+      setDepartment(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getJobType = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3050/api/job-type-master/get"
-        );
-        setJobType(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.get(
+        "http://localhost:3050/api/job-type-master/get"
+      );
+      setJobType(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getJobTiming = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3050/api/job-timing-master/get"
-        );
-        setJobTiming(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.get(
+        "http://localhost:3050/api/job-timing-master/get"
+      );
+      setJobTiming(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getDesignation = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3050/api/designation-master/get"
-        );
-        setDesignation(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.get(
+        "http://localhost:3050/api/designation-master/get"
+      );
+      setDesignation(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
 
-useEffect(() => {
-  getBusinessUnits();
-  getLocations();
-  getDepartment();
-  getJobType();
-  getJobTiming();
-  getDesignation();
-}, []);
+  const getEmployeeList = () => {
+    axios.get("/api/employees/get").then((res) => {
+      console.log("get all Employees Data:", res.data);
+      setEmployeeData(res.data);
+      setEmployeeDataCount(res.data.length);
+    }).catch((err) => {
+      Swal.fire({
+        icon: "error",
+        title: "Error fetching employee count",
+        text: err.message,
+      });
+    });
+  }
+
+
+  useEffect(() => {
+    getBusinessUnits();
+    getLocations();
+    getDepartment();
+    getJobType();
+    getJobTiming();
+    getDesignation();
+    getEmployeeList();
+  }, []);
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      console.log("inside handleselect all checked ");
+
+      const allEmployeeIds = employeeData.map(
+        (emp) => emp.employeeID
+      );
+      console.log("allEmployeeIds:", allEmployeeIds);
+
+      setSelectedEmployees(allEmployeeIds);
+    } else {
+      setSelectedEmployees([]);
+    }
+  };
+
+  const handleSelectEmployee = (id) => {
+    setSelectedEmployees((prevSelected) => {
+      if (prevSelected.includes(id)) {
+        return prevSelected.filter(
+          (empId) => empId !== id
+        );
+      } else {
+        return [...prevSelected, id];
+      }
+    });
+  };
 
 
   return (
@@ -362,21 +435,19 @@ useEffect(() => {
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                      index === 0
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${index === 0
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-500"
+                      }`}
                   >
                     {index + 1}
                   </div>
 
                   <span
-                    className={`text-sm font-medium ${
-                      index === 0
-                        ? "text-gray-900"
-                        : "text-gray-500"
-                    }`}
+                    className={`text-sm font-medium ${index === 0
+                      ? "text-gray-900"
+                      : "text-gray-500"
+                      }`}
                   >
                     {step}
                   </span>
@@ -446,80 +517,80 @@ useEffect(() => {
             />
 
             {/* Payroll Duration */}
-{/* Start Date */}
-<div>
-  <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
-    Start Date
-  </p>
+            {/* Start Date */}
+            <div>
+              <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
+                Start Date
+              </p>
 
-  <div className="mt-2 relative">
-    <input
-      type="date"
-      defaultValue="2024-07-01"
-      className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
-    />
+              <div className="mt-2 relative">
+                <input
+                  type="date"
+                  defaultValue="2024-07-01"
+                  className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
+                />
 
-    <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
-  </div>
-</div>
+                <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
 
-{/* End Date */}
-<div>
-  <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
-    End Date
-  </p>
+            {/* End Date */}
+            <div>
+              <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
+                End Date
+              </p>
 
-  <div className="mt-2 relative">
-    <input
-      type="date"
-      defaultValue="2024-07-31"
-      className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
-    />
+              <div className="mt-2 relative">
+                <input
+                  type="date"
+                  defaultValue="2024-07-31"
+                  className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
+                />
 
-    <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
-  </div>
-</div>
+                <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
 
 
 
             {/* Business Unit */}
-              <CheckboxMultiSelect
-                label="Business Unit"
-                options={businessUnits.map(
-                  (item) => item.fieldValue
-                )}
-              />
+            <CheckboxMultiSelect
+              label="Business Unit"
+              options={businessUnits.map(
+                (item) => item.fieldValue
+              )}
+            />
 
             {/* Location */}
-              <CheckboxMultiSelect
-                label="Location"
-                options={centerLocation.map(
-                  (item) => item.centerName
-                )}
-              />
+            <CheckboxMultiSelect
+              label="Location"
+              options={centerLocation.map(
+                (item) => item.centerName
+              )}
+            />
 
             {/* Department */}
-              <CheckboxMultiSelect
-                label="Department"
-                options={department.map(
-                  (item) => item.fieldValue
-                )}
-              />
+            <CheckboxMultiSelect
+              label="Department"
+              options={department.map(
+                (item) => item.fieldValue
+              )}
+            />
 
             {/* Designation */}
             <CheckboxMultiSelect
               label="Designation"
-                options={designation.map(
-                  (item) => item.fieldValue
-                )}
+              options={designation.map(
+                (item) => item.fieldValue
+              )}
             />
 
             {/* Job Type */}
             <CheckboxMultiSelect
               label="Job Type"
-                options={jobType.map(
-                  (item) => item.fieldValue
-                )}
+              options={jobType.map(
+                (item) => item.fieldValue
+              )}
             />
 
             {/* Job Timing */}
@@ -528,7 +599,7 @@ useEffect(() => {
               options={jobTiming.map(
                 (item) => item.fieldValue
               )}
-            />    
+            />
 
             {/* Search */}
             <div className="flex flex-col gap-2">
@@ -575,7 +646,7 @@ useEffect(() => {
               <Users className="w-5 h-5" />
             }
             title="Total Employees"
-            value="840"
+            value={employeeDataCount || "0"}
             sub="System Wide"
           />
 
@@ -590,8 +661,8 @@ useEffect(() => {
         </div>
 
         {/* Employee Table */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden">
-          {/* Head */}
+        {/* <div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          Header
           <div className="grid grid-cols-10 gap-4 px-6 py-4 border-b border-gray-200 bg-gray-50 text-[11px] uppercase font-semibold tracking-wide text-gray-500">
             <div>Select</div>
             <div>EMP ID</div>
@@ -606,7 +677,7 @@ useEffect(() => {
             <div>Eligibility</div>
           </div>
 
-          {/* Rows */}
+          Rows
           {employees.map((emp, index) => (
             <div
               key={index}
@@ -624,7 +695,7 @@ useEffect(() => {
                 {emp.id}
               </div>
 
-              {/* Name */}
+              Name
               <div className="col-span-2 flex items-center gap-3">
                 <div className="w-11 h-11 rounded-full bg-gray-200" />
 
@@ -639,17 +710,17 @@ useEffect(() => {
                 </div>
               </div>
 
-              {/* Department */}
+              Department
               <div className="text-sm text-gray-700">
                 {emp.dept}
               </div>
 
-              {/* Location */}
+              Location
               <div className="text-sm text-gray-700">
                 {emp.location}
               </div>
 
-              {/* Job Type */}
+              Job Type
               <div className="flex flex-col gap-2">
                 {emp.jobType.map(
                   (item, idx) => (
@@ -663,17 +734,17 @@ useEffect(() => {
                 )}
               </div>
 
-              {/* Attendance */}
+              Attendance
               <StatusBadge
                 text={emp.attendance}
               />
 
-              {/* Salary */}
+              Salary
               <StatusBadge
                 text={emp.salary}
               />
 
-              {/* Eligibility */}
+              Eligibility
               <div className="flex items-center justify-between gap-3">
                 <StatusBadge
                   text={emp.eligibility}
@@ -685,7 +756,189 @@ useEffect(() => {
               </div>
             </div>
           ))}
+        </div> */}
+
+        {/* New table */}
+        {/* Employee Table */}
+        <div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1600px] border-collapse table-auto">
+
+              {/* Head */}
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left ">
+                    <input
+                      type="checkbox"
+                      checked={
+                        employeeData.length > 0 &&
+                        selectedEmployees.length === employeeData.length
+                      }
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 rounded"
+                    />
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    EMP ID
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Name & Role
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Email & Mobile
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Department
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Business Unit
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Job Timing
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Job Type
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Location
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Attendance
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Salary
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Eligibility
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              {/* Body */}
+              <tbody>
+                {employeeData.map((emp, index) => (
+                  <tr
+                    key={index}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-5">
+                      <input
+                        type="checkbox"
+                        // defaultChecked
+                        checked={selectedEmployees.includes(emp.employeeID)}
+                        onChange={() => handleSelectEmployee(emp.employeeID)}
+                        className="w-4 h-4 rounded"
+                      />
+                    </td>
+
+                    <td className="px-6 py-5 text-sm font-semibold text-blue-600 whitespace-nowrap">
+                      {emp?.employeeID || "EMP001"}
+                    </td>
+
+                    <td className="px-6 py-5 min-w-[260px]">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-full bg-gray-200 shrink-0" >
+                          <FaUser className="w-6 h-6 text-blue-500 mx-auto mt-2" />
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-900">
+                            {emp?.employeeName || "John Doe"}
+                          </h3>
+
+                          <p className="text-xs text-gray-500 mt-1">
+                            {emp?.employeeDesignation || "Software Engineer"}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <div>
+                        <p className="text-sm text-gray-900 font-medium">
+                          {emp?.employeeEmail || "-"}
+                        </p>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          {emp?.employeeMobile || "-"}
+                        </p>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.departmentName || "Engineering"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.businessUnit || "-"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.jobTiming || "-"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.jobType || "Intern"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.centerName || "Pune"}
+                    </td>
+
+                    {/* <td className="px-6 py-5">
+                      <div className="flex flex-col gap-2">
+                        {emp.jobType.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="px-3 py-1 rounded-full bg-gray-100 text-xs text-gray-700 font-medium w-fit whitespace-nowrap"
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    </td> */}
+
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <StatusBadge text={emp?.attendance || "Completed"} />
+                    </td>
+
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <StatusBadge text={emp?.salary || "Active"} />
+                    </td>
+
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <StatusBadge text={emp?.eligibility || "Eligible"} />
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <button>
+                        <MoreVertical className="w-4 h-4 text-gray-500" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+
+
 
         {/* Footer */}
         <div className="mt-6 bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between">
@@ -697,7 +950,11 @@ useEffect(() => {
               </p>
 
               <h3 className="text-lg font-bold text-gray-900">
-                5 Employees
+                {selectedEmployees.length}{" "}
+                {selectedEmployees.length === 1
+                  ? "Employee"
+                  : "Employees"}{" "}
+                Selected
               </h3>
             </div>
 

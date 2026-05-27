@@ -1249,6 +1249,11 @@ export default function RootLayout({ children }) {
         },                    
         {
           icon: <FaRegCircle />,
+          title: "Designation Master", 
+          link: "/admin/hrms-master-data/designation",
+        },                    
+        {
+          icon: <FaRegCircle />,
           title: "Location",
           link: "/admin/master-data/center-details/center-details-list",
         },

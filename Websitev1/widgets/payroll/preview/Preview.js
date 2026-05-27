@@ -331,7 +331,7 @@ export default function PayrollPreview() {
 
                     <h2 className="text-4xl font-bold text-gray-900 mt-4">
                       {employeeDataCount ? employeeDataCount : "2,450"}
-                    </h2>
+                      </h2>
 
                     <p className="text-xs text-gray-500 mt-3">
                       Organization employee count
