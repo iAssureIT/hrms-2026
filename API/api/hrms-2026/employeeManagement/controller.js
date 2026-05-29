@@ -590,3 +590,78 @@ exports.patchStatus = async (req, res) => {
     }
 };
 
+
+
+exports.filterEmployees = async (req, res) => {
+  try {
+    const {
+      businessunit = [],
+      location = [],
+      department = [],
+      designation = [],
+      jobtype = [],
+      jobtiming = [],
+    } = req.body;
+
+    let filter = {};
+    console.log("Filter criteria:", req.body);
+    // Business Unit
+    if (businessunit.length > 0) {
+      filter.businessUnit = {
+        $in: businessunit,
+      };
+    }
+
+    // Location
+    if (location.length > 0) {
+      filter.location = {
+        $in: location,
+      };
+    }
+
+    // Department
+    if (department.length > 0) {
+      filter.department = {
+        $in: department,
+      };
+    }
+
+    // Designation
+    if (designation.length > 0) {
+      filter.designation = {
+        $in: designation,
+      };
+    }
+
+    // Job Type
+    if (jobtype.length > 0) {
+      filter.jobType = {
+        $in: jobtype,
+      };
+    }
+
+    // Job Timing
+    if (jobtiming.length > 0) {
+      filter.jobTiming = {
+        $in: jobtiming,
+      };
+    }
+
+    const employees = await Employees.find(filter).sort({
+      employeeName: 1,
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: employees.length,
+      data: employees,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch employees",
+    });
+  }
+};

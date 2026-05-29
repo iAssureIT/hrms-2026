@@ -13,4 +13,6 @@ router.post('/post/list', employeeController.getEmployeeList);
 router.post('/get/metrics', employeeController.getMetrics);
 router.patch('/patch/status', employeeController.patchStatus);
 
+router.post("/filter", employeeController.filterEmployees);
+
 module.exports = router;

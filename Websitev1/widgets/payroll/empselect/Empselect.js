@@ -18,59 +18,9 @@ import {
   CalendarRange,
   ChevronDown,
 } from "lucide-react";
+import FilterTable from "@/widgets/GenericTable/FilterTable";
 import { FaUser } from "react-icons/fa";
-
-const employees = [
-  {
-    id: "E001",
-    name: "Alexander Pierce",
-    role: "Senior Software Engineer",
-    dept: "Engineering",
-    location: "San Francisco",
-    designation: "Software Engineer",
-    jobType: ["Regular", "Full Time"],
-    attendance: "Completed",
-    salary: "Active",
-    eligibility: "Eligible",
-  },
-  {
-    id: "E002",
-    name: "Sarah Jenkins",
-    role: "Project Manager",
-    dept: "Operations",
-    location: "New York",
-    designation: "Project Manager",
-    jobType: ["Contract", "Part Time"],
-    attendance: "Missing Punches",
-    salary: "Active",
-    eligibility: "Eligible",
-  },
-  {
-    id: "E003",
-    name: "Michael Chen",
-    role: "UX Designer",
-    dept: "Engineering",
-    location: "San Francisco",
-    designation: "UI/UX Designer",
-    jobType: ["Regular", "Flexible Hours"],
-    attendance: "Completed",
-    salary: "Missing Structure",
-    eligibility: "Blocked",
-  },
-  {
-    id: "E004",
-    name: "Elena Rodriguez",
-    role: "HR Specialist",
-    dept: "HR",
-    location: "Austin",
-    designation: "HR Executive",
-    jobType: ["Regular", "Full Time"],
-    attendance: "Attendance Exception",
-    salary: "Pending Approval",
-    eligibility: "Eligible",
-  },
-];
-
+import Swal from "sweetalert2";
 
 const badgeStyles = {
   green:
@@ -110,18 +60,31 @@ const getBadge = (text) => {
 
 function SelectField({
   label,
-  options = [],
+  options,
+  value,
+  onChange,
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+    <div>
+      <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
         {label}
-      </label>
+      </p>
 
-      <select className="h-11 px-4 rounded-xl border border-gray-200 bg-white text-sm outline-none">
-        {options.map((item, index) => (
-          <option key={index}>
-            {item}
+      <select
+        value={value}
+        onChange={onChange}
+        className="mt-2 w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-blue-500"
+      >
+        <option value="">
+          - Select -
+        </option>
+
+        {options.map((option) => (
+          <option
+            key={option}
+            value={option}
+          >
+            {option}
           </option>
         ))}
       </select>
@@ -132,25 +95,28 @@ function SelectField({
 function CheckboxMultiSelect({
   label,
   options = [],
+  selectedValues = [],
+  onChange,
 }) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
 
   const dropdownRef = useRef();
 
   const toggleOption = (value) => {
-    if (selected.includes(value)) {
-      setSelected(
-        selected.filter(
-          (item) => item !== value
-        )
+
+    let updatedValues = [];
+
+    if (selectedValues.includes(value)) {
+      updatedValues = selectedValues.filter(
+        (item) => item !== value
       );
     } else {
-      setSelected([
-        ...selected,
+      updatedValues = [
+        ...selectedValues,
         value,
-      ]);
+      ];
     }
+    onChange(updatedValues);
   };
 
   useEffect(() => {
@@ -176,65 +142,155 @@ function CheckboxMultiSelect({
     };
   }, []);
 
-
   return (
-    <div className="relative flex flex-col gap-2" ref={dropdownRef}>
-      <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+    <div
+      ref={dropdownRef}
+      className="relative"
+    >
+      <label className="block mb-1 text-sm font-medium">
         {label}
       </label>
 
-      {/* Trigger */}
-      <button
-        type="button"
-        onClick={() =>
-          setOpen(!open)
-        }
-        className="h-11 px-4 rounded-xl border border-gray-200 bg-white text-sm flex items-center justify-between"
+      <div
+        onClick={() => setOpen(!open)}
+        className="border rounded-lg px-3 py-2 cursor-pointer"
       >
-        <span className="truncate text-left">
-          {selected.length > 0
-            ? selected.join(", ")
-            : `Select ${label}`}
-        </span>
+        {selectedValues.length > 0
+          ? selectedValues.join(", ")
+          : "Select"}
+      </div>
 
-        <ChevronDown className="w-4 h-4 text-gray-500" />
-      </button>
-
-      {/* Dropdown */}
       {open && (
-        <div className="absolute top-[72px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-50 p-4 max-h-[240px] overflow-y-auto">
-          <div className="flex flex-col gap-3">
-            {options.map(
-              (item, index) => (
-                <label
-                  key={index}
-                  className="flex items-center gap-3 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(
-                      item
-                    )}
-                    onChange={() =>
-                      toggleOption(
-                        item
-                      )
-                    }
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600"
-                  />
-
-                  <span className="text-sm text-gray-700">
-                    {item}
-                  </span>
-                </label>
-              )
-            )}
-          </div>
+        <div className="absolute z-10 mt-1 w-full border rounded-lg bg-white shadow">
+          {options.map((option) => (
+            <label
+              key={option}
+              className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100"
+            >
+              <input
+                type="checkbox"
+                checked={selectedValues.includes(
+                  option
+                )}
+                onChange={() =>
+                  toggleOption(option)
+                }
+              />
+              {option}
+            </label>
+          ))}
         </div>
       )}
     </div>
   );
 }
+
+// function CheckboxMultiSelect({
+//   label,
+//   options = [],
+// }) {
+//   const [open, setOpen] = useState(false);
+//   const [selected, setSelected] = useState([]);
+
+//   const dropdownRef = useRef();
+
+//   const toggleOption = (value) => {
+//     if (selected.includes(value)) {
+//       setSelected(
+//         selected.filter(
+//           (item) => item !== value
+//         )
+//       );
+//     } else {
+//       setSelected([
+//         ...selected,
+//         value,
+//       ]);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (
+//         dropdownRef.current &&
+//         !dropdownRef.current.contains(event.target)
+//       ) {
+//         setOpen(false);
+//       }
+//     };
+
+//     document.addEventListener(
+//       "mousedown",
+//       handleClickOutside
+//     );
+
+//     return () => {
+//       document.removeEventListener(
+//         "mousedown",
+//         handleClickOutside
+//       );
+//     };
+//   }, []);
+
+
+//   return (
+//     <div className="relative flex flex-col gap-2" ref={dropdownRef}>
+//       <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+//         {label}
+//       </label>
+
+//       {/* Trigger */}
+//       <button
+//         type="button"
+//         onClick={() =>
+//           setOpen(!open)
+//         }
+//         className="h-11 px-4 rounded-xl border border-gray-200 bg-white text-sm flex items-center justify-between"
+//       >
+//         <span className="truncate text-left">
+//           {selected.length > 0
+//             ? selected.join(", ")
+//             : `Select ${label}`}
+//         </span>
+
+//         <ChevronDown className="w-4 h-4 text-gray-500" />
+//       </button>
+
+//       {/* Dropdown */}
+//       {open && (
+//         <div className="absolute top-[72px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-50 p-4 max-h-[240px] overflow-y-auto">
+//           <div className="flex flex-col gap-3">
+//             {options.map(
+//               (item, index) => (
+//                 <label
+//                   key={index}
+//                   className="flex items-center gap-3 cursor-pointer"
+//                 >
+//                   <input
+//                     type="checkbox"
+//                     checked={selected.includes(
+//                       item
+//                     )}
+//                     onChange={() =>
+//                       toggleOption(
+//                         item
+//                       )
+//                     }
+//                     className="w-4 h-4 rounded border-gray-300 text-blue-600"
+//                   />
+
+//                   <span className="text-sm text-gray-700">
+//                     {item}
+//                   </span>
+//                 </label>
+//               )
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
 
 function StatusBadge({ text }) {
   return (
@@ -291,9 +347,96 @@ export default function PayrollEmpSelect() {
   const [designation, setDesignation] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
   const [employeeDataCount, setEmployeeDataCount] = useState(0);
-
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [selectedEmployeesCount, setSelectedEmployeesCount] = useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [calendarDays, setCalendarDays] = useState([]);
+  const [workingDays, setWorkingDays] = useState([]);
+  // const [selectedEmployees, setSelectedEmployees] = useState([]);      
 
+
+const [filters, setFilters] = useState({
+    payrollmonth: "",
+    payrollyear: "",
+    startdate: "",
+    enddate: "",
+    businessunit: [],
+    location: [],
+    department: [],
+    designation: [],
+    jobtype: [],
+    jobtiming: [],   
+  });
+
+  const [appliedFilters, setAppliedFilters] = useState(null);
+
+  const applyFilters = () => {
+    setAppliedFilters(filters);
+    getMonthDetails(filters.payrollmonth);
+    getEmployeeList();
+  };
+
+
+  // Total Month & Working days
+const [monthDetails, setMonthDetails] =
+  useState({
+    totalDays: 0,
+    workingDays: 0,
+  });
+
+const getMonthDetails = (
+  monthName
+) => {
+  const monthIndex = new Date(
+    `${monthName} 1`
+  ).getMonth();
+
+  // Total Days
+  const totalDays = new Date(
+    2026,
+    monthIndex + 1,
+    0
+  ).getDate();
+
+  // Working Days
+  let workingDays = 0;
+
+  for (
+    let day = 1;
+    day <= totalDays;
+    day++
+  ) {
+    const date = new Date(
+      2026,
+      monthIndex,
+      day
+    );
+
+    const weekDay =
+      date.getDay();
+
+    if (
+      weekDay !== 0 &&
+      weekDay !== 6
+    ) {
+      workingDays++;
+    }
+  }
+
+  setMonthDetails({
+    totalDays,
+    workingDays,
+  });
+};
+
+
+  const handleRowSelect = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
 
   const getBusinessUnits = async () => {
     try {
@@ -363,11 +506,23 @@ export default function PayrollEmpSelect() {
   };
 
 
-  const getEmployeeList = () => {
+  const getEmployeeCount = () => {
     axios.get("/api/employees/get").then((res) => {
-      console.log("get all Employees Data:", res.data);
-      setEmployeeData(res.data);
       setEmployeeDataCount(res.data.length);
+    }).catch((err) => {
+      Swal.fire({
+        icon: "error",
+        title: "Error fetching employee count",
+        text: err.message,
+      });
+    });
+  }
+
+
+  const getEmployeeList = () => {
+    axios.post("/api/employees/filter", { ...filters }).then((res) => {
+      setEmployeeData(res.data.data || []);
+      setSelectedEmployeesCount(res.data.data.length || 0);
     }).catch((err) => {
       Swal.fire({
         icon: "error",
@@ -385,7 +540,7 @@ export default function PayrollEmpSelect() {
     getJobType();
     getJobTiming();
     getDesignation();
-    getEmployeeList();
+    getEmployeeCount();
   }, []);
 
   const handleSelectAll = (e) => {
@@ -416,9 +571,34 @@ export default function PayrollEmpSelect() {
   };
 
 
+const tableHeading = {
+  employeeName: "Employee",
+  employeeID: "Employee ID",
+  businessUnit: "Business Unit",
+  departmentName: "Department",
+  subDepartmentName: "Sub Department",
+  employeeDesignation: "Designation",
+  centerName: "Location",
+  jobType: "Job Type",
+  jobTiming: "Job Timing",
+  reportingManagerName: "Reporting Manager",
+  employeeEmail: "Email",
+  employeeMobile: "Mobile",
+};
+
+const tableObjects = {
+  apiURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/filter`,
+  getListMethod: "post",
+  searchApply: true,
+  downloadApply: true,
+  titleMsg: "Payroll Employee Selection",
+  checkboxSelection: true,
+};
+
+
   return (
     <div className="min-h-screen bg-[#f4f6fa]">
-      {/* Header */}
+      {/* Header */}  
       <div className="bg-white border-b border-gray-200 px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Steps */}
@@ -472,10 +652,20 @@ export default function PayrollEmpSelect() {
               Reset
             </button>
 
-            <button className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium flex items-center gap-2 shadow">
+            {/* <button className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium flex items-center gap-2 shadow">
               <Filter className="w-4 h-4" />
               Apply Filters
-            </button>
+            </button> */}
+
+        <div className="mt-6">
+          <button
+            onClick={applyFilters}
+            className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          >
+            Apply Filter
+          </button>
+        </div>
+
           </div>
         </div>
       </div>
@@ -502,18 +692,42 @@ export default function PayrollEmpSelect() {
                 "April",
                 "May",
                 "June",
-                "July",
+                "July",,
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
               ]}
+
+              value={filters.payrollmonth}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    payrollmonth: e.target.value,
+                  }))
+                }                 
             />
 
             {/* Payroll Year */}
             <SelectField
               label="Payroll Year"
-              options={[
-                "2023",
-                "2024",
-                "2025",
-              ]}
+              options={Array.from(
+                { length: 7 },
+                (_, index) =>
+                  (
+                    new Date().getFullYear() -
+                    3 +
+                    index
+                  ).toString()
+              )}
+              value={filters.payrollyear}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    payrollyear: e.target.value,
+                  }))
+                }              
             />
 
             {/* Payroll Duration */}
@@ -526,7 +740,13 @@ export default function PayrollEmpSelect() {
               <div className="mt-2 relative">
                 <input
                   type="date"
-                  defaultValue="2024-07-01"
+                  value={filters.startdate}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      startdate: e.target.value,
+                    }))
+                  }
                   className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
                 />
 
@@ -543,7 +763,13 @@ export default function PayrollEmpSelect() {
               <div className="mt-2 relative">
                 <input
                   type="date"
-                  defaultValue="2024-07-31"
+                    value={filters.enddate}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      enddate: e.target.value,
+                    }))
+                  }
                   className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
                 />
 
@@ -556,53 +782,106 @@ export default function PayrollEmpSelect() {
             {/* Business Unit */}
             <CheckboxMultiSelect
               label="Business Unit"
+              name="businessUnit"
               options={businessUnits.map(
                 (item) => item.fieldValue
               )}
+              selectedValues={filters.businessunit}
+              onChange={(values) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  businessunit: values,
+                }))
+              }
             />
 
             {/* Location */}
             <CheckboxMultiSelect
               label="Location"
+              name="location"
               options={centerLocation.map(
                 (item) => item.centerName
               )}
+              selectedValues={filters.location}
+              onChange={(values) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  location: values,
+                }))
+              }
             />
 
             {/* Department */}
+
             <CheckboxMultiSelect
               label="Department"
+              name="department"
               options={department.map(
                 (item) => item.fieldValue
               )}
-            />
+              selectedValues={filters.department}
+              onChange={(values) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  department: values,
+                }))
+              }
+            />            
+
 
             {/* Designation */}
             <CheckboxMultiSelect
               label="Designation"
+              name="designation"
               options={designation.map(
                 (item) => item.fieldValue
               )}
+              selectedValues={filters.designation}
+              onChange={(values) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  designation: values,
+                }))
+              }
             />
 
             {/* Job Type */}
             <CheckboxMultiSelect
               label="Job Type"
+              name="jobType"
               options={jobType.map(
                 (item) => item.fieldValue
               )}
+              selectedValues={filters.jobtype}
+              onChange={(values) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  jobtype: values,
+                }))
+              }
             />
 
             {/* Job Timing */}
             <CheckboxMultiSelect
               label="Job Timing"
+              name="jobTiming"
               options={jobTiming.map(
                 (item) => item.fieldValue
               )}
+              selectedValues={filters.jobtiming}
+              onChange={(values) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  jobtiming: values,
+                }))
+              }
             />
 
+
+          </div>
             {/* Search */}
-            <div className="flex flex-col gap-2">
+
+            <div className="flex flex-col gap-2 mt-5">
               <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                 Search
               </label>
@@ -615,10 +894,7 @@ export default function PayrollEmpSelect() {
                   className="h-11 w-full pl-11 pr-4 rounded-xl border border-gray-200 bg-white outline-none text-sm"
                 />
               </div>
-            </div>
-
-
-          </div>
+            </div>          
         </div>
 
         {/* Stats */}
@@ -628,7 +904,7 @@ export default function PayrollEmpSelect() {
               <CalendarDays className="w-5 h-5" />
             }
             title="Calendar Days"
-            value="30"
+            value={monthDetails.totalDays}
             sub="Fixed"
           />
 
@@ -637,7 +913,7 @@ export default function PayrollEmpSelect() {
               <Clock3 className="w-5 h-5" />
             }
             title="Working Days"
-            value="22"
+            value={monthDetails.workingDays}
             sub="+1 vs May"
           />
 
@@ -654,116 +930,28 @@ export default function PayrollEmpSelect() {
             icon={
               <ShieldCheck className="w-5 h-5" />
             }
-            title="Applied Filter Selection"
-            value="5"
-            sub="Active List"
+            title="Selected Employees"
+            value={selectedEmployeesCount || "0"}
+            sub="Selected for Payroll"
           />
         </div>
-
-        {/* Employee Table */}
-        {/* <div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden">
-          Header
-          <div className="grid grid-cols-10 gap-4 px-6 py-4 border-b border-gray-200 bg-gray-50 text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-            <div>Select</div>
-            <div>EMP ID</div>
-            <div className="col-span-2">
-              Name & Role
-            </div>
-            <div>Department</div>
-            <div>Location</div>
-            <div>Job Type</div>
-            <div>Attendance</div>
-            <div>Salary</div>
-            <div>Eligibility</div>
-          </div>
-
-          Rows
-          {employees.map((emp, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-gray-100 items-center hover:bg-gray-50"
-            >
-              <div>
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="w-4 h-4 rounded"
-                />
-              </div>
-
-              <div className="text-sm font-semibold text-blue-600">
-                {emp.id}
-              </div>
-
-              Name
-              <div className="col-span-2 flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-gray-200" />
-
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900">
-                    {emp.name}
-                  </h3>
-
-                  <p className="text-xs text-gray-500 mt-1">
-                    {emp.role}
-                  </p>
-                </div>
-              </div>
-
-              Department
-              <div className="text-sm text-gray-700">
-                {emp.dept}
-              </div>
-
-              Location
-              <div className="text-sm text-gray-700">
-                {emp.location}
-              </div>
-
-              Job Type
-              <div className="flex flex-col gap-2">
-                {emp.jobType.map(
-                  (item, idx) => (
-                    <div
-                      key={idx}
-                      className="px-3 py-1 rounded-full bg-gray-100 text-xs text-gray-700 font-medium w-fit"
-                    >
-                      {item}
-                    </div>
-                  )
-                )}
-              </div>
-
-              Attendance
-              <StatusBadge
-                text={emp.attendance}
-              />
-
-              Salary
-              <StatusBadge
-                text={emp.salary}
-              />
-
-              Eligibility
-              <div className="flex items-center justify-between gap-3">
-                <StatusBadge
-                  text={emp.eligibility}
-                />
-
-                <button>
-                  <MoreVertical className="w-4 h-4 text-gray-500" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div> */}
 
         {/* New table */}
         {/* Employee Table */}
         <div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1600px] border-collapse table-auto">
 
+<div className="p-6 border-b border-gray-200">
+<FilterTable
+  tableHeading={tableHeading}
+  excelHeading="Payroll Employee Selection"
+  tableObjects={tableObjects}
+  getData={getEmployeeList} 
+  tableData={employeeData}
+/>
+</div>
+
+            <table className="w-full min-w-[1600px] border-collapse table-auto">
               {/* Head */}
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -936,9 +1124,6 @@ export default function PayrollEmpSelect() {
             </table>
           </div>
         </div>
-
-
-
 
         {/* Footer */}
         <div className="mt-6 bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between">

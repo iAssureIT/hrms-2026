@@ -11,5 +11,4 @@ router.get("/", controller.getPayrollDepartments);
 
 router.post("/premp", controller.getEmployeesByDepartments);
 
-
 module.exports = router;

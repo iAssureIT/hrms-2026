@@ -23,6 +23,9 @@ const employeeSchema = new mongoose.Schema({
     currentAddress: { type: String, trim: true },
     permanentAddress: { type: String, trim: true },
     isSameAddress: { type: Boolean, default: false },
+    businessUnit: { type: String, trim: true },
+    jobType: { type: String, trim: true },
+    jobTiming: { type: String, trim: true },
 
     // Employment Details
     employeeDesignation: { type: String, trim: true, required: true },
