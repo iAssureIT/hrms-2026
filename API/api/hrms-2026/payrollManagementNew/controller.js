@@ -61,7 +61,7 @@ exports.createPayrollBatch = async (req, res) => {
       .select("payrollCycleNumber");
 
     const payrollCycleNumber = (lastPayroll?.payrollCycleNumber || 0) + 1;
-    const payrollBatchNo = `PAY-${payrollYear}${String(payrollMonth).padStart(2, "0")}-${String(payrollCycleNumber).padStart(3, "0")}`;
+    const payrollBatchNo = `PAY-${payrollYear}${String(payrollMonth).padStart(2, "0")}-${String(payrollCycleNumber).padStart(3, "0")}-${employeeData.employeeID}`;
 
     // Create Summary
     const payrollBatch = await PayrollSummary.create({
