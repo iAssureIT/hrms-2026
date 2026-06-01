@@ -1018,11 +1018,7 @@ export default function EmployeeSelection() {
             {/* Search */}
 
             <div className="flex flex-col gap-2">
-<<<<<<< Updated upstream
               <label className="text-sm font-medium  tracking-wide ">
-=======
-              <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
->>>>>>> Stashed changes
                 Search
               </label>
 
@@ -1370,13 +1366,13 @@ export default function EmployeeSelection() {
 
           {/* Right */}
           <div className="flex items-center gap-4" >
-            <button 
-            onClick={handleSubmit} 
-            // onClick={() => {
-            //    // ── Log selected employees array for verification ──
-            //   console.log("Selected Employees for Payroll:", selectedEmployees);
-            // }} 
-            className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
+            <button
+              onClick={handleSubmit}
+              // onClick={() => {
+              //    // ── Log selected employees array for verification ──
+              //   console.log("Selected Employees for Payroll:", selectedEmployees);
+              // }} 
+              className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
               Proceed to Payroll Preview
             </button>
           </div>
