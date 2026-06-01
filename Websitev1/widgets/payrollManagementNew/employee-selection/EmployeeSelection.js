@@ -19,7 +19,7 @@ import {
   CalendarRange,
   ChevronDown,
 } from "lucide-react";
-import FilterTable from "@/widgets/GenericTable/FilterTable";
+import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
 import { FaUser } from "react-icons/fa";
 import Swal from "sweetalert2";
 
@@ -349,7 +349,7 @@ export default function EmployeeSelection() {
   const firstDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   //console.log("firstDate:", firstDate);
   // Last day of current month
-  const lastDate = new Date(currentDate.getFullYear(),currentDate.getMonth() + 1, 0);
+  const lastDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
   //console.log("lastDate:", lastDate);
 
   // Format as YYYY-MM-DD
@@ -384,7 +384,18 @@ export default function EmployeeSelection() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [calendarDays, setCalendarDays] = useState([]);
   const [workingDays, setWorkingDays] = useState([]);
-  // const [selectedEmployees, setSelectedEmployees] = useState([]);      
+  // const [selectedEmployees, setSelectedEmployees] = useState([]);   
+
+  // ── FilterTable required states ──
+  const [tableData, setTableData] = useState([]);
+  const [recsPerPage, setRecsPerPage] = useState(10);
+  const [numOfPages, setNumOfPages] = useState([1]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [searchText, setSearchText] = useState("-");
+  const [totalRecs, setTotalRecs] = useState(0);
+  const [runCount, setRunCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [filterData, setFilterData] = useState({});
 
 
   const [filters, setFilters] = useState({
@@ -397,7 +408,7 @@ export default function EmployeeSelection() {
     department: [],
     designation: [],
     jobtype: [],
-    jobtiming: [],   
+    jobtiming: [],
   });
 
   const [appliedFilters, setAppliedFilters] = useState(null);
@@ -409,7 +420,8 @@ export default function EmployeeSelection() {
   };
 
 
-    // Total Month & Working days
+
+  // Total Month & Working days
   const [monthDetails, setMonthDetails] =
     useState({
       totalDays: 0,
@@ -550,22 +562,71 @@ export default function EmployeeSelection() {
     });
   }
 
+  //  old api 
+  // const getEmployeeList = () => {
+  //   axios.post("/api/employees/filter", { ...filters }).then((res) => {
+  //     let empData = res.data.data;
+  //     setEmployeeData(empData || []);
+  //     setSelectedEmployeesCount(empData.length || 0);
+  //     const allEmployeeIds = empData.map((emp) => { return { employeeID: emp.employeeID, employeeName: emp.employeeName }; });
+  //     setSelectedEmployees(allEmployeeIds);
+  //   }).catch((err) => {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error fetching employee count",
+  //       text: err.message,
+  //     });
 
-  const getEmployeeList = () => {
-    axios.post("/api/employees/filter", { ...filters }).then((res) => {
-      let empData = res.data.data; 
-      setEmployeeData(empData || []);
-      setSelectedEmployeesCount(empData.length || 0);      
-      const allEmployeeIds = empData.map((emp) => { return { employeeID: emp.employeeID, employeeName: emp.employeeName }; });
-      setSelectedEmployees(allEmployeeIds);
-    }).catch((err) => {
-      Swal.fire({
-        icon: "error",
-        title: "Error fetching employee count",
-        text: err.message,
-      });
+
+  useEffect(() => {
+    getEmployeeList();
+  }, [pageNumber, recsPerPage, runCount, searchText]);
+
+
+  const getEmployeeList = async () => {
+    setLoading(true);
+    const formValues = {
+      searchText: searchText,
+      pageNumber: pageNumber,
+      recsPerPage: recsPerPage,
+      ...filters,
+    };
+    setFilterData(formValues);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
+        formValues
+      );
+      if (response.data) {
+        setTableData(response.data.tableData || []);
+        setTotalRecs(response.data.totalRecs || 0);
+      }
+    } catch (err) {
+      Swal.fire({ icon: "error", title: "Error fetching employees", text: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  // ── Reset filters ──
+  const resetFilters = () => {
+    setFilters({
+      payrollmonth: "",
+      payrollyear: "",
+      startdate: "",
+      enddate: "",
+      businessunit: [],
+      location: [],
+      department: [],
+      designation: [],
+      jobtype: [],
+      jobtiming: [],
     });
-  }
+    setPageNumber(1);
+    setSearchText("-");
+  };
 
 
   useEffect(() => {
@@ -604,87 +665,103 @@ export default function EmployeeSelection() {
   };
 
 
-    const tableHeading = {
-      employeeName: "Employee",
-      employeeID: "Employee ID",
-      businessUnit: "Business Unit",
-      departmentName: "Department",
-      subDepartmentName: "Sub Department",
-      employeeDesignation: "Designation",
-      centerName: "Location",
-      jobType: "Job Type",
-      jobTiming: "Job Timing",
-      reportingManagerName: "Reporting Manager",
-      employeeEmail: "Email",
-      employeeMobile: "Mobile",
-    };
 
-    const tableObjects = {
-      apiURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/filter`,
-      getListMethod: "post",
-      searchApply: true,
-      downloadApply: true,
-      titleMsg: "Payroll Employee Selection",
-      checkboxSelection: true,
-    };
 
-    const handleSubmit = async () => {
-      try {
-        const payload = {
-          payrollMonth: payrollMonth,
-          payrollYear: payrollYear,
-          payrollStartDate: startDate,
-          payrollEndDate: endDate,
-          businessUnits: filters.businessunit,
-          locations: filters.location,
-          departments: filters.department,
-          designations: filters.designation,
-          jobTypes: filters.jobtype,
-          jobTimings: filters.jobtiming,
-          remarks: "",
-          createdBy: {
-            userId: 101, // replace with logged-in user id
-            userName: "Admin", // replace with logged-in username
-          },
-          employeeData: selectedEmployees,
-        };
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        payrollMonth: payrollMonth,
+        payrollYear: payrollYear,
+        payrollStartDate: startDate,
+        payrollEndDate: endDate,
+        businessUnits: filters.businessunit,
+        locations: filters.location,
+        departments: filters.department,
+        designations: filters.designation,
+        jobTypes: filters.jobtype,
+        jobTimings: filters.jobtiming,
+        remarks: "",
+        createdBy: {
+          userId: 101, // replace with logged-in user id
+          userName: "Admin", // replace with logged-in username
+        },
+        employeeData: selectedEmployees,
+      };
 
-        const response = await axios.post(
-          "/api/payroll/create-payroll-batch",
-          payload
-        );
+      const response = await axios.post(
+        "/api/payroll/create-payroll-batch",
+        payload
+      );
 
-        console.log("Payroll Batch Created:", response.data);
+      console.log("Payroll Batch Created:", response.data);
 
-        // Save batch id for next step
+      // Save batch id for next step
 
-        const batchId = response.data.payrollBatchId; // adjust according to API response
-        console.log('bid',batchId)
+      const batchId = response.data.payrollBatchId; // adjust according to API response
+      console.log('bid', batchId)
 
-        if (batchId) {
-          router.push(`/admin/payrollManagementNew/employee-preview/${batchId}`);
-        }
-
-        localStorage.setItem(
-          "payrollBatchId",
-          payrollBatchId
-        );
-
-        alert("Payroll Batch Created Successfully");
-      } catch (error) {
-        console.error(error);
-
-        alert(
-          error?.response?.data?.message ||
-          "Failed to create payroll batch"
-        );
+      if (batchId) {
+        router.push(`/admin/payrollManagementNew/employee-preview/${batchId}`);
       }
-    };
+
+      localStorage.setItem(
+        "payrollBatchId",
+        payrollBatchId
+      );
+
+      alert("Payroll Batch Created Successfully");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error?.response?.data?.message ||
+        "Failed to create payroll batch"
+      );
+    }
+  };
+
+  const tableHeading = {
+    employeeName: "Employee",
+    employeeID: "Employee ID",
+    businessUnit: "Business Unit",
+    departmentName: "Department",
+    subDepartmentName: "Sub Department",
+    employeeDesignation: "Designation",
+    centerName: "Location",
+    jobType: "Job Type",
+    jobTiming: "Job Timing",
+    reportingManagerName: "Reporting Manager",
+    employeeEmail: "Email",
+    employeeMobile: "Mobile",
+  };
+
+  const excelHeading = {
+    employeeName: "Employee Name",
+    employeeID: "Employee ID",
+    businessUnit: "Business Unit",
+    departmentName: "Department",
+    employeeDesignation: "Designation",
+    centerName: "Location",
+    jobType: "Job Type",
+    jobTiming: "Job Timing",
+    employeeEmail: "Email",
+    employeeMobile: "Mobile",
+  };
+
+  const tableObjects = {
+    apiURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees`,
+    downloadURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
+    getListMethod: "post",
+    searchApply: true,
+    downloadApply: true,
+    titleMsg: "Payroll Employee Selection",
+    tableName: "Employee List",
+  };
 
 
   return (
     <div className="min-h-screen bg-[#f4f6fa]">
-      {/* Header */}  
+      {/* Header */}
       <div className="bg-white border-b border-gray-200 px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Steps */}
@@ -725,46 +802,46 @@ export default function EmployeeSelection() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
 
       {/* Main */}
-      <div className="p-8">
+      < div className="p-8" >
         {/* Title */}
-        <div className="mb-7">
+        <div div className="mb-7" >
           <h1 className="text-3xl font-bold text-gray-900">
             Payroll Execution: Employee Selection
           </h1>
         </div>
 
         {/* Filters */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5">
+        < div className="bg-white border border-gray-200 rounded-2xl p-5" >
           <div className="grid grid-cols-4 gap-5">
             {/* Payroll Month */}
             <SelectField
               label="Payroll Month"
               options={[
-                {label: "January", value: 1},
-                {label: "February", value: 2},
-                {label: "March", value: 3},
-                {label: "April", value: 4},
-                {label: "May", value: 5},
-                {label: "June", value: 6},
-                {label: "July", value: 7},
-                {label: "August", value: 8},
-                {label: "September", value: 9},
-                {label: "October", value: 10},
-                {label: "November", value: 11},
-                {label: "December", value: 12},
+                { label: "January", value: 1 },
+                { label: "February", value: 2 },
+                { label: "March", value: 3 },
+                { label: "April", value: 4 },
+                { label: "May", value: 5 },
+                { label: "June", value: 6 },
+                { label: "July", value: 7 },
+                { label: "August", value: 8 },
+                { label: "September", value: 9 },
+                { label: "October", value: 10 },
+                { label: "November", value: 11 },
+                { label: "December", value: 12 },
               ]}
 
               value={payrollMonth}
               onChange={(e) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    payrollMonth: e.target.value,
-                  }))
-                }                 
+                setFilters((prev) => ({
+                  ...prev,
+                  payrollMonth: e.target.value,
+                }))
+              }
             />
 
             {/* Payroll Year */}
@@ -782,9 +859,10 @@ export default function EmployeeSelection() {
                 })
               )}
               value={payrollYear}
-                onChange={(e) =>
-                  setPayrollYear(e.target.value)
-                }              
+              onChange={(e) =>
+                setPayrollYear(e.target.value)
+              }
+
             />
 
             {/* Payroll Duration */}
@@ -819,7 +897,7 @@ export default function EmployeeSelection() {
               <div className="mt-2 relative">
                 <input
                   type="date"
-                    value={endDate}
+                  value={endDate}
                   onChange={(e) =>
                     setEndDate((prev) => ({
                       ...prev,
@@ -882,7 +960,7 @@ export default function EmployeeSelection() {
                   department: values,
                 }))
               }
-            />            
+            />
 
 
             {/* Designation */}
@@ -933,124 +1011,326 @@ export default function EmployeeSelection() {
               }
             />
 
+
             {/* Search */}
-            <div className="flex flex-col gap-2">
+
+            <div className="flex flex-col gap-2 mt-5">
               <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                 Search
               </label>
 
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-
                 <input
                   placeholder="Search Employee..."
-                  className="h-11 w-full pl-11 pr-4 rounded-md border border-gray-200 bg-white outline-none text-sm"
+                  className="h-11 w-full pl-11 pr-4 rounded-xl border border-gray-200 bg-white outline-none text-sm"
                 />
               </div>
-            </div> 
-          </div>
-        <div className="mt-6">
-          <button
-            onClick={applyFilters}
-            className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-          >
-            Apply Filter
-          </button>
-        </div>          
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-5 mt-6">
-          <StatCard
-            icon={
-              <CalendarDays className="w-5 h-5" />
-            }
-            title="Calendar Days"
-            value={monthDetails.totalDays}
-            sub="Fixed"
-          />
-
-          <StatCard
-            icon={
-              <Clock3 className="w-5 h-5" />
-            }
-            title="Working Days"
-            value={monthDetails.workingDays}
-            sub="+1 vs May"
-          />
-
-          <StatCard
-            icon={
-              <Users className="w-5 h-5" />
-            }
-            title="Total Employees"
-            value={employeeDataCount || "0"}
-            sub="System Wide"
-          />
-          
-          <StatCard
-            icon={
-              <ShieldCheck className="w-5 h-5" />
-            }
-            title="Selected Employees"
-            value={selectedEmployeesCount || "0"}
-            sub="Selected for Payroll"
-          />
-        </div>
-
-        {/* Employee Table */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <div className="p-6 border-b border-gray-200">
-              <FilterTable
-                tableHeading={tableHeading}
-                excelHeading="Payroll Employee Selection"
-                tableObjects={tableObjects}
-                getData={getEmployeeList} 
-                tableData={employeeData}
-              />
             </div>
+          </div >
+
+          {/* Stats */}
+          <div div className="grid grid-cols-4 gap-5 mt-6" >
+            <StatCard
+              icon={
+                <CalendarDays className="w-5 h-5" />
+              }
+              title="Calendar Days"
+              value={monthDetails.totalDays}
+              sub="Fixed"
+            />
+
+            <StatCard
+              icon={
+                <Clock3 className="w-5 h-5" />
+              }
+              title="Working Days"
+              value={monthDetails.workingDays}
+              sub="+1 vs May"
+            />
+
+            <StatCard
+              icon={
+                <Users className="w-5 h-5" />
+              }
+              title="Total Employees"
+              value={employeeDataCount || "0"}
+              sub="System Wide"
+            />
+
+            <StatCard
+              icon={
+                <ShieldCheck className="w-5 h-5" />
+              }
+              title="Selected Employees"
+              value={selectedEmployeesCount || "0"}
+              sub="Selected for Payroll"
+            />
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between">
-          {/* Left */}
-          <div className="flex items-center gap-8">
-            <div>
-              <p className="text-[11px] uppercase text-gray-500 font-semibold">
-                Current Selection
-              </p>
-              <h3 className="text-lg font-bold text-gray-900">
-                {selectedEmployees.length}{" "}
-                {selectedEmployees.length === 1
-                  ? "Employee"
-                  : "Employees"}{" "}
-                Selected
-              </h3>
-            </div>
+          {/* Employee Table */}
+          < div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden" >
+            <div className="overflow-x-auto">
 
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 text-sm text-gray-700">
-                <CircleCheck className="w-4 h-4 text-green-600" />
-                1,240 Eligible
+              <div className="p-6 border-b border-gray-200">
+                <FilterTable
+                  tableHeading={tableHeading}
+                  excelHeading={excelHeading}
+                  tableObjects={tableObjects}
+                  getData={getEmployeeList}
+                  tableData={tableData}
+                  setTableData={setTableData}
+                  recsPerPage={recsPerPage}
+                  setRecsPerPage={setRecsPerPage}
+                  pageNumber={pageNumber}
+                  setPageNumber={setPageNumber}
+                  searchText={searchText}
+                  setSearchText={setSearchText}
+                  totalRecs={totalRecs}
+                  setTotalRecs={setTotalRecs}
+                  numOfPages={numOfPages}
+                  setNumOfPages={setNumOfPages}
+                  runCount={runCount}
+                  setRunCount={setRunCount}
+                  filterData={filterData}
+                  loading={loading}
+                  checkboxSelection={true}
+                  selectedRows={selectedEmployees}
+                  rowIdKey="employeeID"
+                  onSelectAll={(e) => {
+                    // Select or deselect all rows on current page
+                    if (e.target.checked) {
+                      setSelectedEmployees(tableData.map((emp) => emp.employeeID));
+                    } else {
+                      setSelectedEmployees([]);
+                    }
+                  }}
+                  onRowSelect={(id) => {
+                    // Toggle individual row selection
+                    setSelectedEmployees((prev) =>
+                      prev.includes(id)
+                        ? prev.filter((empId) => empId !== id)
+                        : [...prev, id]
+                    );
+                  }}
+                />
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-700">
-                <CircleAlert className="w-4 h-4 text-red-600" />
-                24 Blocked
-              </div>
-            </div>
-          </div>
+              {/* old table with checkbox  */}
+              {/* <table className="w-full min-w-[1600px] border-collapse table-auto">
+              Head
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left ">
+                    <input
+                      type="checkbox"
+                      checked={
+                        employeeData.length > 0 &&
+                        selectedEmployees.length === employeeData.length
+                      }
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 rounded"
+                    />
+                  </th>
 
-          {/* Right */}
-          <div className="flex items-center gap-4">
-            <button onClick={handleSubmit} className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
-              Proceed to Payroll Preview
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    EMP ID
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Name & Role
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Email & Mobile
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Department
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Business Unit
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Job Timing
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Job Type
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Location
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Attendance
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Salary
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Eligibility
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              Body
+              <tbody>
+                {employeeData.map((emp, index) => (
+                  <tr
+                    key={index}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-5">
+                      <input
+                        type="checkbox"
+                        // defaultChecked
+                        checked={selectedEmployees.includes(emp.employeeID)}
+                        onChange={() => handleSelectEmployee(emp.employeeID)}
+                        className="w-4 h-4 rounded"
+                      />
+                    </td>
+
+                    <td className="px-6 py-5 text-sm font-semibold text-blue-600 whitespace-nowrap">
+                      {emp?.employeeID || "EMP001"}
+                    </td>
+
+                    <td className="px-6 py-5 min-w-[260px]">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-full bg-gray-200 shrink-0" >
+                          <FaUser className="w-6 h-6 text-blue-500 mx-auto mt-2" />
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-900">
+                            {emp?.employeeName || "John Doe"}
+                          </h3>
+
+                          <p className="text-xs text-gray-500 mt-1">
+                            {emp?.employeeDesignation || "Software Engineer"}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <div>
+                        <p className="text-sm text-gray-900 font-medium">
+                          {emp?.employeeEmail || "-"}
+                        </p>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          {emp?.employeeMobile || "-"}
+                        </p>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.departmentName || "Engineering"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.businessUnit || "-"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.jobTiming || "-"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.jobType || "Intern"}
+                    </td>
+
+                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
+                      {emp?.centerName || "Pune"}
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col gap-2">
+                        {emp.jobType.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="px-3 py-1 rounded-full bg-gray-100 text-xs text-gray-700 font-medium w-fit whitespace-nowrap"
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <StatusBadge text={emp?.attendance || "Completed"} />
+                    </td>
+
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <StatusBadge text={emp?.salary || "Active"} />
+                    </td>
+
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <StatusBadge text={emp?.eligibility || "Eligible"} />
+                    </td>
+
+                    <td className="px-6 py-5">
+                      <button>
+                        <MoreVertical className="w-4 h-4 text-gray-500" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table> */}
+            </div >
+          </div >
+
+          {/* Footer */}
+          < div className="mt-6 bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between" >
+            {/* Left */}
+            < div className="flex items-center gap-8" >
+              <div>
+                <p className="text-[11px] uppercase text-gray-500 font-semibold">
+                  Current Selection
+                </p>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {selectedEmployees.length}{" "}
+                  {selectedEmployees.length === 1
+                    ? "Employee"
+                    : "Employees"}{" "}
+                  Selected
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <CircleCheck className="w-4 h-4 text-green-600" />
+                  1,240 Eligible
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <CircleAlert className="w-4 h-4 text-red-600" />
+                  24 Blocked
+                </div>
+              </div>
+            </div >
+
+            {/* Right */}
+            <div className="flex items-center gap-4" >
+              <button onClick={handleSubmit} className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
+                Proceed to Payroll Preview
+              </button>
+            </div>
+          </div >
+        </div >
+      </div >
+    </div >
+
   );
 }

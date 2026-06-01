@@ -7,9 +7,9 @@ const SubdepartmentMaster = require("../oneFieldModules/subdepartmentMaster/mode
 const FailedRecords = require("../failedRecords/model.js");
 
 exports.upsertEmployee = async (req, res) => {
-    const { 
+    const {
         _id, employeeName, firstName, lastName, gender, dob, profilePhoto,
-        employeeID, employee_id, 
+        employeeID, employee_id,
         employeeEmail, personalEmail, employeeMobile, alternateContact, currentAddress, permanentAddress, isSameAddress,
         employeeDesignation, systemRole, doj, employmentType, reportingManager_id, reportingManagerName,
         center_id, centerName, subLocation_id, subLocationName,
@@ -23,29 +23,29 @@ exports.upsertEmployee = async (req, res) => {
     try {
         if (_id) {
             // --- EDIT MODE ---
-            
+
             // 1. Check if ANOTHER employee has the same employeeID
             if (employeeID && employeeID !== "-") {
-                const idExists = await Employees.findOne({ 
-                    employeeID: employeeID, 
-                    _id: { $ne: _id } 
+                const idExists = await Employees.findOne({
+                    employeeID: employeeID,
+                    _id: { $ne: _id }
                 });
                 if (idExists) {
-                    return res.status(409).json({ 
-                        message: `Employee ID "${employeeID}" is already assigned to ${idExists.employeeName}.` 
+                    return res.status(409).json({
+                        message: `Employee ID "${employeeID}" is already assigned to ${idExists.employeeName}.`
                     });
                 }
             }
 
             // 2. Check if ANOTHER employee has the same employeeEmail
             if (employeeEmail) {
-                const emailExists = await Employees.findOne({ 
-                    employeeEmail: employeeEmail, 
-                    _id: { $ne: _id } 
+                const emailExists = await Employees.findOne({
+                    employeeEmail: employeeEmail,
+                    _id: { $ne: _id }
                 });
                 if (emailExists) {
-                    return res.status(409).json({ 
-                        message: `Email "${employeeEmail}" is already assigned to ${emailExists.employeeName}.` 
+                    return res.status(409).json({
+                        message: `Email "${employeeEmail}" is already assigned to ${emailExists.employeeName}.`
                     });
                 }
             }
@@ -116,8 +116,8 @@ exports.upsertEmployee = async (req, res) => {
             if (employeeEmail) {
                 const emailExists = await Employees.findOne({ employeeEmail: employeeEmail });
                 if (emailExists) {
-                    return res.status(409).json({ 
-                        message: `Employee with email "${employeeEmail}" already exists (${emailExists.employeeName}).` 
+                    return res.status(409).json({
+                        message: `Employee with email "${employeeEmail}" already exists (${emailExists.employeeName}).`
                     });
                 }
             }
@@ -126,8 +126,8 @@ exports.upsertEmployee = async (req, res) => {
             if (employeeID && employeeID !== "-") {
                 const idExists = await Employees.findOne({ employeeID: employeeID });
                 if (idExists) {
-                    return res.status(409).json({ 
-                        message: `Employee ID "${employeeID}" already exists (${idExists.employeeName}).` 
+                    return res.status(409).json({
+                        message: `Employee ID "${employeeID}" already exists (${idExists.employeeName}).`
                     });
                 }
             }
@@ -205,7 +205,7 @@ exports.bulkUpload = async (req, res) => {
 
         for (let row of excelData) {
             let remark = "";
-            
+
             // 1. Mandatory Fields Check
             if (!row.employeeName || row.employeeName === "-") remark += "Name missing, ";
             if (!row.employeeEmail || row.employeeEmail === "-") remark += "Email missing, ";
@@ -268,7 +268,7 @@ exports.bulkUpload = async (req, res) => {
 
             let subLoc_id = null;
             if (row.subLocationName && row.subLocationName !== "-" && center_id) {
-                const subLoc = await LocationSubcategory.findOne({ 
+                const subLoc = await LocationSubcategory.findOne({
                     inputValue: new RegExp(`^${row.subLocationName.trim()}$`, "i"),
                     dropdown_id: center_id
                 });
@@ -278,7 +278,7 @@ exports.bulkUpload = async (req, res) => {
 
             let subDept_id = null;
             if (row.subDepartmentName && row.subDepartmentName !== "-" && dept_id) {
-                const subDept = await SubdepartmentMaster.findOne({ 
+                const subDept = await SubdepartmentMaster.findOne({
                     inputValue: new RegExp(`^${row.subDepartmentName.trim()}$`, "i"),
                     dropdown_id: dept_id
                 });
@@ -306,7 +306,7 @@ exports.bulkUpload = async (req, res) => {
 
         console.log("Total Valid Records to save:", validData.length);
         console.log("Total Invalid Records:", invalidData.length);
-        
+
         if (validData.length > 0) {
             console.log("Sample valid record fileName:", validData[0].fileName);
             try {
@@ -385,20 +385,91 @@ exports.getOneEmployee = (req, res) => {
         .catch(err => res.status(500).json({ error: err }));
 };
 
+// exports.getEmployeeList = (req, res) => {
+//     const { recsPerPage, pageNumber } = req.params;
+//     const { searchText, removePagination, status } = req.body;
+
+//     // Support both params and body for recsPerPage and pageNumber
+//     const limit = parseInt(recsPerPage || req.body.recsPerPage) || 10;
+//     const skip = (parseInt(pageNumber || req.body.pageNumber) - 1) * limit;
+
+//     let query = {};
+//     if (status) {
+//         query.status = status;
+//     }
+//     if (searchText && searchText !== "-") {
+//         query = {
+//             $or: [
+//                 { employeeName: { $regex: searchText, $options: "i" } },
+//                 { employeeID: { $regex: searchText, $options: "i" } },
+//                 { employee_id: { $regex: searchText, $options: "i" } },
+//                 { employeeEmail: { $regex: searchText, $options: "i" } },
+//                 { employeeMobile: { $regex: searchText, $options: "i" } },
+//                 { centerName: { $regex: searchText, $options: "i" } },
+//                 { departmentName: { $regex: searchText, $options: "i" } }
+//             ]
+//         };
+//     }
+
+//     if (removePagination) {
+//         Employees.find(query).sort({ createdAt: -1 })
+//             .then(data => {
+//                 res.status(200).json({
+//                     tableData: data,
+//                     totalRecs: data.length
+//                 });
+//             })
+//             .catch(err => {
+//                 console.error("Get All Employees Error:", err);
+//                 res.status(500).json({ error: err });
+//             });
+//     } else {
+//         Promise.all([
+//             Employees.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+//             Employees.countDocuments(query)
+//         ])
+//             .then(([data, total]) => {
+//                 res.status(200).json({
+//                     tableData: data,
+//                     totalRecs: total
+//                 });
+//             })
+//             .catch(err => {
+//                 console.error("Get Employee List Error:", err);
+//                 res.status(500).json({ error: err });
+//             });
+//     }
+// };
+
+
 exports.getEmployeeList = (req, res) => {
     const { recsPerPage, pageNumber } = req.params;
-    const { searchText, removePagination, status } = req.body;
-    
-    // Support both params and body for recsPerPage and pageNumber
+    const {
+        searchText,
+        removePagination,
+        status,
+        businessunit,
+        location,
+        department,
+        designation,
+        jobtype,
+        jobtiming
+    } = req.body;
+
     const limit = parseInt(recsPerPage || req.body.recsPerPage) || 10;
     const skip = (parseInt(pageNumber || req.body.pageNumber) - 1) * limit;
 
     let query = {};
+
+    // Status filter
     if (status) {
         query.status = status;
     }
+
+    // Search filter
     if (searchText && searchText !== "-") {
         query = {
+            ...query,           // ✅ Preserve status
             $or: [
                 { employeeName: { $regex: searchText, $options: "i" } },
                 { employeeID: { $regex: searchText, $options: "i" } },
@@ -409,6 +480,26 @@ exports.getEmployeeList = (req, res) => {
                 { departmentName: { $regex: searchText, $options: "i" } }
             ]
         };
+    }
+
+    // Payroll filters
+    if (businessunit?.length > 0) {
+        query.businessUnit = { $in: businessunit };
+    }
+    if (location?.length > 0) {
+        query.centerName = { $in: location };
+    }
+    if (department?.length > 0) {
+        query.departmentName = { $in: department };
+    }
+    if (designation?.length > 0) {
+        query.employeeDesignation = { $in: designation };
+    }
+    if (jobtype?.length > 0) {
+        query.jobType = { $in: jobtype };
+    }
+    if (jobtiming?.length > 0) {
+        query.jobTiming = { $in: jobtiming };
     }
 
     if (removePagination) {
@@ -577,9 +668,9 @@ exports.patchStatus = async (req, res) => {
             { new: true }
         );
         if (updated) {
-            res.status(200).json({ 
+            res.status(200).json({
                 message: `Employee status updated to ${status} successfully.`,
-                success: true 
+                success: true
             });
         } else {
             res.status(404).json({ message: "Employee not found", success: false });
@@ -593,75 +684,75 @@ exports.patchStatus = async (req, res) => {
 
 
 exports.filterEmployees = async (req, res) => {
-  try {
-    const {
-      businessunit = [],
-      location = [],
-      department = [],
-      designation = [],
-      jobtype = [],
-      jobtiming = [],
-    } = req.body;
+    try {
+        const {
+            businessunit = [],
+            location = [],
+            department = [],
+            designation = [],
+            jobtype = [],
+            jobtiming = [],
+        } = req.body;
 
-    let filter = {};
-    console.log("Filter criteria:", req.body);
-    // Business Unit
-    if (businessunit.length > 0) {
-      filter.businessUnit = {
-        $in: businessunit,
-      };
+        let filter = {};
+        console.log("Filter criteria:", req.body);
+        // Business Unit
+        if (businessunit.length > 0) {
+            filter.businessUnit = {
+                $in: businessunit,
+            };
+        }
+
+        // Location
+        if (location.length > 0) {
+            filter.location = {
+                $in: location,
+            };
+        }
+
+        // Department
+        if (department.length > 0) {
+            filter.department = {
+                $in: department,
+            };
+        }
+
+        // Designation
+        if (designation.length > 0) {
+            filter.designation = {
+                $in: designation,
+            };
+        }
+
+        // Job Type
+        if (jobtype.length > 0) {
+            filter.jobType = {
+                $in: jobtype,
+            };
+        }
+
+        // Job Timing
+        if (jobtiming.length > 0) {
+            filter.jobTiming = {
+                $in: jobtiming,
+            };
+        }
+
+        const employees = await Employees.find(filter).sort({
+            employeeName: 1,
+        });
+
+        return res.status(200).json({
+            success: true,
+            count: employees.length,
+            data: employees,
+        });
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch employees",
+        });
     }
-
-    // Location
-    if (location.length > 0) {
-      filter.centerName = {
-        $in: location,
-      };
-    }
-
-    // Department
-    if (department.length > 0) {
-      filter.departmentName = {
-        $in: department,
-      };
-    }
-
-    // Designation
-    if (designation.length > 0) {
-      filter.employeeDesignation = {
-        $in: designation,
-      };
-    }
-
-    // Job Type
-    if (jobtype.length > 0) {
-      filter.jobType = {
-        $in: jobtype,
-      };
-    }
-
-    // Job Timing
-    if (jobtiming.length > 0) {
-      filter.jobTiming = {
-        $in: jobtiming,
-      };
-    }
-
-    const employees = await Employees.find(filter).sort({
-      employeeName: 1,
-    });
-
-    return res.status(200).json({
-      success: true,
-      count: employees.length,
-      data: employees,
-    });
-  } catch (error) {
-    console.log(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch employees",
-    });
-  }
-};
+}
