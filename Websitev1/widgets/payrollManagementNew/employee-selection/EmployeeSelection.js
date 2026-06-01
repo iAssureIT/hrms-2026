@@ -1015,7 +1015,11 @@ export default function EmployeeSelection() {
             {/* Search */}
 
             <div className="flex flex-col gap-2">
+<<<<<<< Updated upstream
               <label className="text-sm font-medium  tracking-wide ">
+=======
+              <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+>>>>>>> Stashed changes
                 Search
               </label>
 
