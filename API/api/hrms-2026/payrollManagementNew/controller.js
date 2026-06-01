@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 const PayrollSummary = require("./Model_payrollSummary.js");
 const PayrollDetails = require("./Model_payrollDetails.js");
+const EmployeeSalary = require("../payroll/salary/structure/model.js");
 const moment = require("moment");
 
 
 exports.createPayrollBatch = async (req, res) => {
   try {
     const {
-      payrollMonth,
+      payrollMonth, 
       payrollYear,
       payrollStartDate,
       payrollEndDate,
@@ -288,3 +289,34 @@ exports.createPayrollBatch = async (req, res) => {
 //     });
 //   }
 // };
+
+
+
+
+exports.getPayrollSummaryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const payrollSummary = await PayrollSummary.findById(id);
+
+    if (!payrollSummary) {
+      return res.status(404).json({
+        success: false,
+        message: "Payroll summary not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: payrollSummary,
+    });
+  } catch (error) {
+    console.error("Error fetching payroll summary:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};

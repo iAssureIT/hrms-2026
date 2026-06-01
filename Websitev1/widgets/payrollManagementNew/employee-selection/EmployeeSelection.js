@@ -692,20 +692,20 @@ export default function EmployeeSelection() {
       };
 
       const response = await axios.post(
-        "/api/payroll/create-payroll-batch",
+        "/api/payroll-management/create-payroll-batch",
         payload
       );
 
-      console.log("Payroll Batch Created:", response.data);
+      console.log("Payroll Batch Created:", selectedEmployees);
 
       // Save batch id for next step
 
       const batchId = response.data.payrollBatchId; // adjust according to API response
       console.log('bid', batchId)
 
-      if (batchId) {
-        router.push(`/admin/payrollManagementNew/employee-preview/${batchId}`);
-      }
+      // if (batchId) {
+      //   router.push(`/admin/payrollManagementNew/employee-preview/${batchId}`);
+      // }
 
       localStorage.setItem(
         "payrollBatchId",
@@ -1018,7 +1018,12 @@ export default function EmployeeSelection() {
             {/* Search */}
 
             <div className="flex flex-col gap-2">
+<<<<<<< Updated upstream
               <label className="text-sm font-medium  tracking-wide ">
+=======
+
+              <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+>>>>>>> Stashed changes
                 Search
               </label>
 

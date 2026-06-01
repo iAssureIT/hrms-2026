@@ -4,5 +4,6 @@ const payrollController = require('./controller.js');
 
 //Payroll Execution Process
 router.post('/create-payroll-batch', payrollController.createPayrollBatch);
+router.get("/summaryData/:id", payrollController.getPayrollSummaryById);
 
 module.exports = router;

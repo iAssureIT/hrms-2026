@@ -1,4 +1,4 @@
-import FinalPayrollExecution from "@/widgets/payroll/execution/Execution";
+import FinalPayrollExecution from "@/widgets/payrollManagementNew/execution/Execution";
 
 const FinalPayrollExecutionPage = () => {
   return <FinalPayrollExecution />;

@@ -70,6 +70,8 @@ const jobtypeMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTypeMast
 const jobtimingMasterRoutes = require("./api/hrms-2026/oneFieldModules/jobTimingMaster/routes.js");
 const designationMasterRoutes = require("./api/hrms-2026/oneFieldModules/designationMaster/routes.js");
 
+const payrollsManagementRoutes = require("./api/hrms-2026/payrollManagementNew/route.js");
+
 const appRoutes = (app) => {
 
   app.use("/api/job-type-master", jobtypeMasterRoutes);
@@ -81,7 +83,8 @@ const appRoutes = (app) => {
   app.use("/api/employee-salary", employeeSalaryRoutes);  
   app.use("/api/salary-slips", salarySlipRoutes);
   app.use("/api/payroll/prdept", prDepartmentMasterRoutes);
-
+  app.use("/api/payroll-management", payrollsManagementRoutes);
+  
   //lupin api
   app.use("/api/centers", centersRoutes);
   app.use("/api/bank-details", bankRoutes);

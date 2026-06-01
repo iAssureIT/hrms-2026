@@ -181,6 +181,7 @@ function SummaryCard({
 }
 
 export default function PayrollApprovalPage() {
+
   return (
     <div className="min-h-screen bg-[#f5f7fb]">
       {/* Header */}

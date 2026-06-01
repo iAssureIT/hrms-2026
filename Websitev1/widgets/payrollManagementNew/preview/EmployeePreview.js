@@ -1,5 +1,5 @@
 "use client";
-
+import { useParams } from "react-router-dom";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -17,6 +17,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -172,7 +173,18 @@ function StatusBadge({ text }) {
 export default function EmployeePreview() {
 
   const [employeeDataCount, setEmployeeDataCount] = useState("");
+  const { id } = useParams();
 
+  useEffect(() => {
+    axios
+      .get(`/api/payroll-management/summaryData/${id}`)
+      .then((res) => {
+        console.log('Summary data : ',res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [id]);
 
   useEffect(() => {
     getEmployeeCount();
