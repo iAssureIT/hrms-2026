@@ -646,7 +646,7 @@ const GenericTable = ({
                                                 <input
                                                     type="checkbox"
                                                     className="w-4 h-4 rounded"
-                                                    // Checked only when all current page rows are selected
+                                                    // ── All rows selected when selectedRows count matches tableData count ──
                                                     checked={
                                                         tableData.length > 0 &&
                                                         selectedRows?.length === tableData.length
@@ -655,7 +655,7 @@ const GenericTable = ({
                                                 />
                                             </th>
                                         )}
-                                        <th className="px-6 py-5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap">
+                                        <th className="px-2 py-5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap">
                                             Sr. No
                                         </th>
                                         {tableHeading ? (
@@ -664,7 +664,7 @@ const GenericTable = ({
                                                     return (
                                                         <th
                                                             key={i}
-                                                            className={`px-6 py-5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap`}
+                                                            className={`px-2 py-5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap`}
                                                             id="ActionContent"
                                                         >
                                                             {value}
@@ -674,7 +674,7 @@ const GenericTable = ({
                                                     return (
                                                         <th
                                                             key={i}
-                                                            className={`px-6 py-5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap`}
+                                                            className={`px-2 py-2 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap`}
                                                         >
                                                             {value}{" "}
                                                             <span
@@ -720,7 +720,7 @@ const GenericTable = ({
                                                             />
                                                         </td>
                                                     )}
-                                                    <td className="text-center px-1 md:px-4 py-2 font-normal">
+                                                    <td className="text-center px-1 md:px-2 py-2 font-normal">
                                                         {value.centerName === "Total" ||
                                                             value.vNo === "Total"
                                                             ? ""
@@ -729,7 +729,7 @@ const GenericTable = ({
                                                     {Object.keys(tableHeading).map((key, index) => {
                                                         if (key === "employeeName") {
                                                             return (
-                                                                <td key={index} className="px-2 md:px-4 py-2">
+                                                                <td key={index} className="px-2 md:px-2 py-2">
                                                                     <div
                                                                         className={`flex items-center gap-3 ${tableObjects?.viewURL ? "cursor-pointer group" : ""}`}
                                                                         onClick={() => tableObjects?.viewURL && redirect("view", value._id)}

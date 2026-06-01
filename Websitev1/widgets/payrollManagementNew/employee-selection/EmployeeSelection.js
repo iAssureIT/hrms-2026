@@ -379,6 +379,7 @@ export default function EmployeeSelection() {
   const [designation, setDesignation] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
   const [employeeDataCount, setEmployeeDataCount] = useState(0);
+  // ── Stores array of {employeeID, employeeName} objects for selected employees ──
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectedEmployeesCount, setSelectedEmployeesCount] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -580,7 +581,7 @@ export default function EmployeeSelection() {
 
   useEffect(() => {
     getEmployeeList();
-  }, [pageNumber, recsPerPage, runCount, searchText]);
+  }, [pageNumber, recsPerPage, runCount, searchText, filters]);
 
 
   const getEmployeeList = async () => {
@@ -598,6 +599,8 @@ export default function EmployeeSelection() {
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
         formValues
       );
+      console.log("employee list response --->", response);
+
       if (response.data) {
         setTableData(response.data.tableData || []);
         setTotalRecs(response.data.totalRecs || 0);
@@ -721,8 +724,8 @@ export default function EmployeeSelection() {
   };
 
   const tableHeading = {
-    employeeName: "Employee",
     employeeID: "Employee ID",
+    employeeName: "Employee",
     businessUnit: "Business Unit",
     departmentName: "Department",
     subDepartmentName: "Sub Department",
@@ -1075,8 +1078,8 @@ export default function EmployeeSelection() {
             icon={
               <ShieldCheck className="w-5 h-5" />
             }
-            title="Selected Employees"
-            value={selectedEmployeesCount || "0"}
+            title="Filtered Employees"
+            value={totalRecs || "0"}
             sub="Selected for Payroll"
           />
         </div>
@@ -1108,23 +1111,54 @@ export default function EmployeeSelection() {
                 filterData={filterData}
                 loading={loading}
                 checkboxSelection={true}
-                selectedRows={selectedEmployees}
+                // selectedRows={selectedEmployees}
+                // ── Extract just IDs for GenericTable to compare against rowIdKey ──
+                selectedRows={selectedEmployees.map((e) => e.employeeID)}
                 rowIdKey="employeeID"
+                // onSelectAll={(e) => {
+                //   // Select or deselect all rows on current page
+                //   if (e.target.checked) {
+                //     setSelectedEmployees(tableData.map((emp) => emp.employeeID));
+                //   } else {
+                //     setSelectedEmployees([]);
+                //   }
+                // }}
                 onSelectAll={(e) => {
-                  // Select or deselect all rows on current page
                   if (e.target.checked) {
-                    setSelectedEmployees(tableData.map((emp) => emp.employeeID));
+                    // ── Store full objects {employeeID, employeeName} for all rows ──
+                    const allEmployees = tableData.map((emp) => ({
+                      employeeID: emp.employeeID,
+                      employeeName: emp.employeeName,
+                    }));
+                    setSelectedEmployees(allEmployees);
                   } else {
+                    // ── Deselect all ──
                     setSelectedEmployees([]);
                   }
                 }}
+                // onRowSelect={(id) => {
+                //   // Toggle individual row selection
+                //   setSelectedEmployees((prev) =>
+                //     prev.includes(id)
+                //       ? prev.filter((empId) => empId !== id)
+                //       : [...prev, id]
+                //   );
+                // }}
                 onRowSelect={(id) => {
-                  // Toggle individual row selection
-                  setSelectedEmployees((prev) =>
-                    prev.includes(id)
-                      ? prev.filter((empId) => empId !== id)
-                      : [...prev, id]
-                  );
+                  // ── Find the full employee record from tableData using employeeID ──
+                  const emp = tableData.find((e) => e.employeeID === id);
+                  if (!emp) return;
+
+                  setSelectedEmployees((prev) => {
+                    const alreadySelected = prev.some((e) => e.employeeID === id);
+                    if (alreadySelected) {
+                      // ── Remove from array if already selected ──
+                      return prev.filter((e) => e.employeeID !== id);
+                    } else {
+                      // ── Add {employeeID, employeeName} object to array ──
+                      return [...prev, { employeeID: emp.employeeID, employeeName: emp.employeeName }];
+                    }
+                  });
                 }}
               />
             </div>
@@ -1336,7 +1370,13 @@ export default function EmployeeSelection() {
 
           {/* Right */}
           <div className="flex items-center gap-4" >
-            <button onClick={handleSubmit} className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
+            <button 
+            onClick={handleSubmit} 
+            // onClick={() => {
+            //    // ── Log selected employees array for verification ──
+            //   console.log("Selected Employees for Payroll:", selectedEmployees);
+            // }} 
+            className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
               Proceed to Payroll Preview
             </button>
           </div>

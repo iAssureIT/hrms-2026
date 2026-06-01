@@ -443,6 +443,8 @@ exports.getOneEmployee = (req, res) => {
 
 
 exports.getEmployeeList = (req, res) => {
+    console.log("Get Employee List Request Params:", req.params);
+    console.log("Get Employee List Request Body:", req.body);
     const { recsPerPage, pageNumber } = req.params;
     const {
         searchText,
