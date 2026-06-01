@@ -714,7 +714,8 @@ const GenericTable = ({
                                       )}
                                     </div>
                                     <span className={`font-bold text-slate-700 whitespace-nowrap transition-colors duration-200 ${tableObjects?.viewURL ? "group-hover:text-[#3c8dbc]" : ""}`}>
-                                      {value.employeeName}
+                                      <div>{value.employeeName}</div>
+                                      <div>{value.employeeID}</div>
                                     </span>
                                   </div>
                                 </td>

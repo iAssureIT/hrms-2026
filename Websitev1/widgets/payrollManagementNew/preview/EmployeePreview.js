@@ -169,7 +169,7 @@ function StatusBadge({ text }) {
   );
 }
 
-export default function PayrollPreview() {
+export default function EmployeePreview() {
 
   const [employeeDataCount, setEmployeeDataCount] = useState("");
 
@@ -237,16 +237,6 @@ export default function PayrollPreview() {
 
           {/* Buttons */}
           <div className="flex items-center gap-3">
-            <button className="h-11 px-5 rounded-xl border border-gray-200 bg-white text-sm font-medium flex items-center gap-2">
-              <Save className="w-4 h-4" />
-              Save View
-            </button>
-
-            <button className="h-11 px-5 rounded-xl text-red-500 text-sm font-medium flex items-center gap-2">
-              <RotateCcw className="w-4 h-4" />
-              Reset
-            </button>
-
             <button className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium flex items-center gap-2 shadow">
               <Filter className="w-4 h-4" />
               Apply Filters

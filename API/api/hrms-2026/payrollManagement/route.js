@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const payrollController = require('./controller.js');
 
-// Process
+
+//Payroll Execution Process
+router.post('/create-payroll-batch', payrollController.createPayrollBatch);
+
 router.post('/post/initiate', payrollController.initiatePayrollRun);
 router.post('/post/batch-data', payrollController.getPayrollBatch);
 router.post('/post/approve', payrollController.approveBatch);

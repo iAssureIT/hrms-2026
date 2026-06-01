@@ -1126,22 +1126,22 @@ export default function RootLayout({ children }) {
         {
           icon: <FaRegCircle />,
           title: "Employee Selection",
-          link: "/admin/payroll/empselect",
+          link: "/admin/payrollManagementNew/employee-selection",
         },
         {
           icon: <FaRegCircle />,
           title: "Employee Preview",
-          link: "/admin/payroll/preview",
+          link: "/admin/payrollManagementNew/employee-preview",
         },  
         {
           icon: <FaRegCircle />,
           title: "Approval Workflow",
-          link: "/admin/payroll/approval",
+          link: "/admin/payrollManagementNew/approval",
         },   
         {
           icon: <FaRegCircle />,
           title: "Execution",
-          link: "/admin/payroll/execution",
+          link: "/admin/payrollManagementNew/execution",
         },                   
       ],
     },

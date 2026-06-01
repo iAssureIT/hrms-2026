@@ -614,21 +614,21 @@ exports.filterEmployees = async (req, res) => {
 
     // Location
     if (location.length > 0) {
-      filter.location = {
+      filter.centerName = {
         $in: location,
       };
     }
 
     // Department
     if (department.length > 0) {
-      filter.department = {
+      filter.departmentName = {
         $in: department,
       };
     }
 
     // Designation
     if (designation.length > 0) {
-      filter.designation = {
+      filter.employeeDesignation = {
         $in: designation,
       };
     }
