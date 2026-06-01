@@ -1014,8 +1014,8 @@ export default function EmployeeSelection() {
 
             {/* Search */}
 
-            <div className="flex flex-col gap-2 mt-5">
-              <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium  tracking-wide ">
                 Search
               </label>
 
@@ -1029,95 +1029,104 @@ export default function EmployeeSelection() {
             </div>
           </div >
 
-          {/* Stats */}
-          <div div className="grid grid-cols-4 gap-5 mt-6" >
-            <StatCard
-              icon={
-                <CalendarDays className="w-5 h-5" />
-              }
-              title="Calendar Days"
-              value={monthDetails.totalDays}
-              sub="Fixed"
-            />
-
-            <StatCard
-              icon={
-                <Clock3 className="w-5 h-5" />
-              }
-              title="Working Days"
-              value={monthDetails.workingDays}
-              sub="+1 vs May"
-            />
-
-            <StatCard
-              icon={
-                <Users className="w-5 h-5" />
-              }
-              title="Total Employees"
-              value={employeeDataCount || "0"}
-              sub="System Wide"
-            />
-
-            <StatCard
-              icon={
-                <ShieldCheck className="w-5 h-5" />
-              }
-              title="Selected Employees"
-              value={selectedEmployeesCount || "0"}
-              sub="Selected for Payroll"
-            />
+          <div className="mt-6">
+            <button
+              onClick={applyFilters}
+              className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            >
+              Apply Filter
+            </button>
           </div>
+        </div>
 
-          {/* Employee Table */}
-          < div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden" >
-            <div className="overflow-x-auto">
+        {/* Stats */}
+        <div div className="grid grid-cols-4 gap-5 mt-6" >
+          <StatCard
+            icon={
+              <CalendarDays className="w-5 h-5" />
+            }
+            title="Calendar Days"
+            value={monthDetails.totalDays}
+            sub="Fixed"
+          />
 
-              <div className="p-6 border-b border-gray-200">
-                <FilterTable
-                  tableHeading={tableHeading}
-                  excelHeading={excelHeading}
-                  tableObjects={tableObjects}
-                  getData={getEmployeeList}
-                  tableData={tableData}
-                  setTableData={setTableData}
-                  recsPerPage={recsPerPage}
-                  setRecsPerPage={setRecsPerPage}
-                  pageNumber={pageNumber}
-                  setPageNumber={setPageNumber}
-                  searchText={searchText}
-                  setSearchText={setSearchText}
-                  totalRecs={totalRecs}
-                  setTotalRecs={setTotalRecs}
-                  numOfPages={numOfPages}
-                  setNumOfPages={setNumOfPages}
-                  runCount={runCount}
-                  setRunCount={setRunCount}
-                  filterData={filterData}
-                  loading={loading}
-                  checkboxSelection={true}
-                  selectedRows={selectedEmployees}
-                  rowIdKey="employeeID"
-                  onSelectAll={(e) => {
-                    // Select or deselect all rows on current page
-                    if (e.target.checked) {
-                      setSelectedEmployees(tableData.map((emp) => emp.employeeID));
-                    } else {
-                      setSelectedEmployees([]);
-                    }
-                  }}
-                  onRowSelect={(id) => {
-                    // Toggle individual row selection
-                    setSelectedEmployees((prev) =>
-                      prev.includes(id)
-                        ? prev.filter((empId) => empId !== id)
-                        : [...prev, id]
-                    );
-                  }}
-                />
-              </div>
+          <StatCard
+            icon={
+              <Clock3 className="w-5 h-5" />
+            }
+            title="Working Days"
+            value={monthDetails.workingDays}
+            sub="+1 vs May"
+          />
 
-              {/* old table with checkbox  */}
-              {/* <table className="w-full min-w-[1600px] border-collapse table-auto">
+          <StatCard
+            icon={
+              <Users className="w-5 h-5" />
+            }
+            title="Total Employees"
+            value={employeeDataCount || "0"}
+            sub="System Wide"
+          />
+          <StatCard
+            icon={
+              <ShieldCheck className="w-5 h-5" />
+            }
+            title="Selected Employees"
+            value={selectedEmployeesCount || "0"}
+            sub="Selected for Payroll"
+          />
+        </div>
+
+        {/* Employee Table */}
+        < div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden" >
+          <div className="overflow-x-auto">
+
+            <div className="p-6 border-b border-gray-200">
+              <FilterTable
+                tableHeading={tableHeading}
+                excelHeading={excelHeading}
+                tableObjects={tableObjects}
+                getData={getEmployeeList}
+                tableData={tableData}
+                setTableData={setTableData}
+                recsPerPage={recsPerPage}
+                setRecsPerPage={setRecsPerPage}
+                pageNumber={pageNumber}
+                setPageNumber={setPageNumber}
+                searchText={searchText}
+                setSearchText={setSearchText}
+                totalRecs={totalRecs}
+                setTotalRecs={setTotalRecs}
+                numOfPages={numOfPages}
+                setNumOfPages={setNumOfPages}
+                runCount={runCount}
+                setRunCount={setRunCount}
+                filterData={filterData}
+                loading={loading}
+                checkboxSelection={true}
+                selectedRows={selectedEmployees}
+                rowIdKey="employeeID"
+                onSelectAll={(e) => {
+                  // Select or deselect all rows on current page
+                  if (e.target.checked) {
+                    setSelectedEmployees(tableData.map((emp) => emp.employeeID));
+                  } else {
+                    setSelectedEmployees([]);
+                  }
+                }}
+                onRowSelect={(id) => {
+                  // Toggle individual row selection
+                  setSelectedEmployees((prev) =>
+                    prev.includes(id)
+                      ? prev.filter((empId) => empId !== id)
+                      : [...prev, id]
+                  );
+                }}
+              />
+            </div>
+
+            {/* old table with checkbox  */}
+            {/* <table className="w-full min-w-[1600px] border-collapse table-auto">
               Head
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -1288,46 +1297,45 @@ export default function EmployeeSelection() {
                 ))}
               </tbody>
             </table> */}
-            </div >
           </div >
+        </div >
 
-          {/* Footer */}
-          < div className="mt-6 bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between" >
-            {/* Left */}
-            < div className="flex items-center gap-8" >
-              <div>
-                <p className="text-[11px] uppercase text-gray-500 font-semibold">
-                  Current Selection
-                </p>
-                <h3 className="text-lg font-bold text-gray-900">
-                  {selectedEmployees.length}{" "}
-                  {selectedEmployees.length === 1
-                    ? "Employee"
-                    : "Employees"}{" "}
-                  Selected
-                </h3>
+        {/* Footer */}
+        < div className="mt-6 bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between" >
+          {/* Left */}
+          < div className="flex items-center gap-8" >
+            <div>
+              <p className="text-[11px] uppercase text-gray-500 font-semibold">
+                Current Selection
+              </p>
+              <h3 className="text-lg font-bold text-gray-900">
+                {selectedEmployees.length}{" "}
+                {selectedEmployees.length === 1
+                  ? "Employee"
+                  : "Employees"}{" "}
+                Selected
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <CircleCheck className="w-4 h-4 text-green-600" />
+                1,240 Eligible
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <CircleCheck className="w-4 h-4 text-green-600" />
-                  1,240 Eligible
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <CircleAlert className="w-4 h-4 text-red-600" />
-                  24 Blocked
-                </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <CircleAlert className="w-4 h-4 text-red-600" />
+                24 Blocked
               </div>
-            </div >
-
-            {/* Right */}
-            <div className="flex items-center gap-4" >
-              <button onClick={handleSubmit} className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
-                Proceed to Payroll Preview
-              </button>
             </div>
           </div >
+
+          {/* Right */}
+          <div className="flex items-center gap-4" >
+            <button onClick={handleSubmit} className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
+              Proceed to Payroll Preview
+            </button>
+          </div>
         </div >
       </div >
     </div >
