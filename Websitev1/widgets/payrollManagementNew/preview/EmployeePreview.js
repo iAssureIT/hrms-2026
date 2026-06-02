@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
-//import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
+import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -127,70 +127,110 @@ const getMonthName = (monthNumber) => {
 };
 
 
-  const tableHeading = {
-    employeeName: "Employee",
-    netPaid: "Net Paid",
-    grssSalary: "Gross Salary",
-    variablePay: "Variable Pay",
-    overTime: "Over Time",
-    deduction: "Deduction",
-    netPay: "Net Pay",
-    eligibility: "Eligibility",
-  };
-  const tableObjects = {
-    titleMsg: "Payroll Employee Selection",
-    tableName: "Employee List",
-  };
+const tableHeading = {
+  employeeName: "Employee",
+  netPaid: "Net Paid",
+  grssSalary: "Gross Salary",
+  variablePay: "Variable Pay",
+  overTime: "Over Time",
+  deduction: "Deduction",
+  netPay: "Net Pay",
+  eligibility: "Eligibility",
+};
+const tableObjects = {
+  titleMsg: "Payroll Employee Selection",
+  tableName: "Employee List",
+};
 
 export default function EmployeePreview() {
 
   const [employeeDataCount, setEmployeeDataCount] = useState("");
   const [summaryData, setSummaryData] = useState([]);
-  const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);  
-  const { batchId } = useParams();  
+  const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);
+  const { batchId } = useParams();
   const [grandTotals, setGrandTotals] = useState("");
   // const [totaldeduction, setTotalDeduction] = useState("");
   // const [totalNet, setTotalNet] = useState("");
 
-  
+  const [tableData, setTableData] = useState([]);
+  const [recsPerPage, setRecsPerPage] = useState(10);
+  const [numOfPages, setNumOfPages] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [totalRecs, setTotalRecs] = useState(0);
+  const [runCount, setRunCount] = useState(0);
+
+
   useEffect(() => {
 
-      axios
+    axios
       .get(`/api/payroll-management/summaryData/${batchId}`)
       .then((res) => {
         setSummaryData(res.data.data);
       })
       .catch((err) => {
         console.error(err);
-      }); 
+      });
 
-      getMonthDetails(summaryData.payrollMonth);
+    getMonthDetails(summaryData.payrollMonth);
 
 
-      axios
+    axios
       .get(`/api/payroll-management/employeeDetailss/${batchId}`)
       .then((res) => {
         console.log("Payroll Details:", res.data.data);
-        setPayrollEmployeeData(res.data.data);
+        const formattedData = res.data.data.map((emp) => ({
+          ...emp,
+
+          employeeName: emp.employeeFullName,
+          formattedEmpID: emp.employeeID,
+
+          netPaid:
+            emp.attendanceSummary?.totalPresentDays || monthDetails.workingDays,
+
+          grssSalary:
+            emp.calculatedNetSalary?.grossSalary || 0,
+
+          variablePay: 0,
+
+          overTime:
+            emp.attendanceSummary?.overtimeHours || 0,
+
+          deduction:
+            emp.calculatedNetSalary?.totalDeductions || 0,
+
+          netPay:
+            emp.calculatedNetSalary?.netSalaryPayable || 0,
+
+          eligibility:
+            emp.payrollEligibility,
+        }));
+
+        console.log("formatted data -->", formattedData);
+
+
+        setPayrollEmployeeData(formattedData);
         setGrandTotals(res.data.summary);
+        setTableData(formattedData);
+        setTotalRecs(formattedData.length);
       })
       .catch((err) => {
         console.error(err);
       });
 
 
-      // axios
-      // .get(`/api/payroll-management/employeeDetails/${batchId}`)
-      // .then((res) => {
-      //   setPayrollEmployeeData(res.data.data);
-      // })
-      // .catch((err) => {
-      //   console.error(err);
-      // });
+    // axios
+    // .get(`/api/payroll-management/employeeDetails/${batchId}`)
+    // .then((res) => {
+    //   setPayrollEmployeeData(res.data.data);
+    // })
+    // .catch((err) => {
+    //   console.error(err);
+    // });
 
 
-      }, [batchId]
-    );
+  }, [batchId]
+  );
 
 
 
@@ -262,6 +302,19 @@ export default function EmployeePreview() {
       totalDays,
       workingDays,
     });
+  };
+
+
+
+  const tableHeading = {
+    employeeName: "Employee",
+    netPaid: "Net Paid Days",
+    grssSalary: "Gross Salary",
+    variablePay: "Variable Pay",
+    overTime: "Over Time",
+    deduction: "Deduction",
+    netPay: "Net Payable",
+    eligibility: "Eligibility",
   };
 
 
@@ -396,7 +449,7 @@ export default function EmployeePreview() {
 
                     <h2 className="text-4xl font-bold text-gray-900 mt-4">
                       {employeeDataCount ? employeeDataCount : "2,450"}
-                      </h2>
+                    </h2>
 
                     <p className="text-xs text-gray-500 mt-3">
                       Organization employee count
@@ -642,11 +695,36 @@ export default function EmployeePreview() {
             </div>
           </div>
 
-              {/* <FilterTable
+          {/* <FilterTable
                 tableHeading={tableHeading}
                 tableObjects={tableObjects}
                 getData={payrollEmployeeData}
                 /> */}
+
+          {/* NEW Table  */}
+
+          <FilterTable
+            tableHeading={tableHeading}
+            tableObjects={tableObjects}
+            getData={() => { }}
+            tableData={tableData}
+            setTableData={setTableData}
+            recsPerPage={recsPerPage}
+            setRecsPerPage={setRecsPerPage}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            totalRecs={totalRecs}
+            setTotalRecs={setTotalRecs}
+            numOfPages={numOfPages}
+            setNumOfPages={setNumOfPages}
+            runCount={runCount}
+            setRunCount={setRunCount}
+            filterData={{}}
+            loading={false}
+            checkboxSelection={false}
+          />
 
 
           {/* Table */}
@@ -674,80 +752,80 @@ export default function EmployeePreview() {
 
               const employeeTotal = row.employeeSalaryStructure.salaryComponents.forEach((component) => {
 
-                  const amount = Number(component.monthlyAmount || 0);
+                const amount = Number(component.monthlyAmount || 0);
 
-                  if (
-                    [
-                      "PF Employee",
-                      "PF Employer",
-                      "TDS",
-                      "Professional Tax (PT)",
-                    ].includes(component.componentCode)
-                  ) {
-                      deductions += Math.abs(amount);
-                    } else {
-                      earnings += amount;
-                    }
-            });
+                if (
+                  [
+                    "PF Employee",
+                    "PF Employer",
+                    "TDS",
+                    "Professional Tax (PT)",
+                  ].includes(component.componentCode)
+                ) {
+                  deductions += Math.abs(amount);
+                } else {
+                  earnings += amount;
+                }
+              });
 
-            const netSalary = earnings - deductions;
+              const netSalary = earnings - deductions;
 
-              return(
+              return (
                 <div
                   key={row.id}
                   className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-gray-100 items-center hover:bg-gray-50"
                 >
-                <div className="text-sm font-medium">
-                  {row.id}
-                </div>
+                  <div className="text-sm font-medium">
+                    {row.id}
+                  </div>
 
-                {/* Employee */}
-                <div className="col-span-2 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-200" />
+                  {/* Employee */}
+                  <div className="col-span-2 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gray-200" />
+
+                    <div>
+                      <h3 className="text-sm font-bold text-gray-900">
+                        {row.employeeFullName}
+                      </h3>
+
+                      <p className="text-xs text-blue-600 mt-1">
+                        {row.employeeID}
+                      </p>
+
+                      <p className="text-xs text-gray-500 mt-1">
+                        {row.dept} • {row.location}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-sm font-semibold">
+                    {monthDetails.workingDays} Days
+                  </div>
+
+                  <div className="text-sm">
+                    {earnings.toLocaleString()}
+                  </div>
+
+                  <div className="text-sm">
+                    {row.variable}
+                  </div>
+
+                  <div className="text-sm">
+                    {row.overtime}
+                  </div>
+
+                  <div className="text-sm text-red-500 font-semibold">
+                    {deductions.toLocaleString()}
+                  </div>
+
+                  <div className="text-sm text-blue-600 font-bold">
+                    {netSalary.toLocaleString()}
+                  </div>
 
                   <div>
-                    <h3 className="text-sm font-bold text-gray-900">
-                      {row.employeeFullName}
-                    </h3>
-
-                    <p className="text-xs text-blue-600 mt-1">
-                      {row.employeeID}
-                    </p>
-
-                    <p className="text-xs text-gray-500 mt-1">
-                      {row.dept} • {row.location}
-                    </p>
+                    <StatusBadge text={row.status} />
                   </div>
-                </div>
-
-                <div className="text-sm font-semibold">
-                  {monthDetails.workingDays} Days
-                </div>
-
-                <div className="text-sm">
-                  {earnings.toLocaleString()}
-                </div>
-
-                <div className="text-sm">
-                  {row.variable}
-                </div>
-
-                <div className="text-sm">
-                  {row.overtime}
-                </div>
-
-                <div className="text-sm text-red-500 font-semibold">
-                  {deductions.toLocaleString()}
-                </div>
-
-                <div className="text-sm text-blue-600 font-bold">
-                  {netSalary.toLocaleString()}
-                </div>
-
-                <div>
-                  <StatusBadge text={row.status} />
-                </div>
-              </div>);
+                </div>);
             })}
           </div>
 

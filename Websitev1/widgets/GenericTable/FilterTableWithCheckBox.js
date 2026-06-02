@@ -754,6 +754,11 @@ const GenericTable = ({
                                                                                     {value.employeeDesignation}
                                                                                 </span>
                                                                             )}
+                                                                            {value.formattedEmpID && (
+                                                                                <span className="text-xs text-gray-500 mt-0.5 whitespace-nowrap">
+                                                                                    {value.formattedEmpID}
+                                                                                </span>
+                                                                            )}
                                                                         </div>
                                                                     </div>
                                                                 </td>
