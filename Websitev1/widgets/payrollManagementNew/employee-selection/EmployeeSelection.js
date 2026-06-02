@@ -896,9 +896,9 @@ export default function EmployeeSelection() {
                       startDate: e.target.value,
                     }))
                   }
-                  className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
+                  className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-blue-500"
                 />
-                <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+                {/* <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" /> */}
               </div>
             </div>
 
@@ -918,10 +918,10 @@ export default function EmployeeSelection() {
                       endDate: e.target.value,
                     }))
                   }
-                  className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-blue-500"
+                  className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-blue-500"
                 />
 
-                <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+                {/* <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" /> */}
               </div>
             </div>
 
