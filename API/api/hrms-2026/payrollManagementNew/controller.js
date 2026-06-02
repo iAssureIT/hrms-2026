@@ -108,7 +108,7 @@ exports.createPayrollBatch = async (req, res) => {
     // }
 
 
-
+console.log("Employee Data for Payroll Details:", employeeData);
     const employeeIds = employeeData.map(emp => emp.employeeID);
 
     const salaryStructures = await EmployeeSalary.find({

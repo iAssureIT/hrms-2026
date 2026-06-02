@@ -599,7 +599,6 @@ export default function EmployeeSelection() {
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
         formValues
       );
-      console.log("employee list response --->", response);
 
       if (response.data) {
         const formattedData = (response.data.tableData || []).map((emp) => ({
@@ -652,34 +651,6 @@ export default function EmployeeSelection() {
     getDesignation();
     getEmployeeCount();
   }, []);
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      console.log("inside handleselect all checked ");
-      const allEmployeeIds = employeeData.map(
-        (emp) => emp.employeeID
-      );
-      console.log("allEmployeeIds:", allEmployeeIds);
-      setSelectedEmployees(allEmployeeIds);
-    } else {
-      setSelectedEmployees([]);
-    }
-  };
-
-  const handleSelectEmployee = (id) => {
-    setSelectedEmployees((prevSelected) => {
-      if (prevSelected.includes(id)) {
-        return prevSelected.filter(
-          (empId) => empId !== id
-        );
-      } else {
-        return [...prevSelected, id];
-      }
-    });
-  };
-
-
-
 
   const handleSubmit = async () => {
     try {
