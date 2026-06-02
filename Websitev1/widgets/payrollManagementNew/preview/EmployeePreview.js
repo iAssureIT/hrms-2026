@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -170,21 +170,68 @@ function StatusBadge({ text }) {
   );
 }
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+
+  return `${String(date.getDate()).padStart(2, "0")}-${String(
+    date.getMonth() + 1
+  ).padStart(2, "0")}-${date.getFullYear()}`;
+};
+
+const getMonthName = (monthNumber) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  return months[monthNumber - 1] || "";
+};
+
+
+
+
+
 export default function EmployeePreview() {
 
   const [employeeDataCount, setEmployeeDataCount] = useState("");
-  const { id } = useParams();
+  const [summaryData, setSummaryData] = useState([]);
+  const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);  
+  const { batchId } = useParams();  
 
   useEffect(() => {
     axios
-      .get(`/api/payroll-management/summaryData/${id}`)
+      .get(`/api/payroll-management/summaryData/${batchId}`)
       .then((res) => {
-        console.log('Summary data : ',res.data);
+        setSummaryData(res.data.data);
+        console.log("Summary Data:", res.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      }); 
+
+      getMonthDetails(summaryData.payrollMonth);
+
+
+      axios
+      .get(`/api/payroll-management/employeeDetails/${batchId}`)
+      .then((res) => {
+        console.log("Payroll Details:", res.data.data);
+        setPayrollEmployeeData(res.data.data);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, [id]);
+  }, [batchId]);
 
   useEffect(() => {
     getEmployeeCount();
@@ -192,7 +239,6 @@ export default function EmployeePreview() {
 
   const getEmployeeCount = () => {
     const response = axios.get("/api/employees/get").then((res) => {
-      console.log("Employee Count:", res.data.length);
       setEmployeeDataCount(res.data.length);
     }).catch((err) => {
       Swal.fire({
@@ -202,6 +248,60 @@ export default function EmployeePreview() {
       });
     });
   }
+
+  // Total Month & Working days
+  const [monthDetails, setMonthDetails] =
+    useState({
+      totalDays: 0,
+      workingDays: 0,
+    });
+
+  const getMonthDetails = (
+    monthName
+  ) => {
+    const monthIndex = new Date(
+      `${monthName} 1`
+    ).getMonth();
+
+    // Total Days
+    const totalDays = new Date(
+      2026,
+      monthIndex + 1,
+      0
+    ).getDate();
+
+    // Working Days
+    let workingDays = 0;
+
+    for (
+      let day = 1;
+      day <= totalDays;
+      day++
+    ) {
+      const date = new Date(
+        2026,
+        monthIndex,
+        day
+      );
+
+      const weekDay =
+        date.getDay();
+
+      if (
+        weekDay !== 0 &&
+        weekDay !== 6
+      ) {
+        workingDays++;
+      }
+    }
+
+    setMonthDetails({
+      totalDays,
+      workingDays,
+    });
+  };
+
+
 
   return (
     <div className="min-h-screen bg-[#f5f7fb]">
@@ -273,11 +373,11 @@ export default function EmployeePreview() {
 
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">
-                    July 2024 Cycle
+                    {getMonthName(summaryData.payrollMonth)} {summaryData.payrollYear} Cycle
                   </h2>
 
                   <p className="text-sm text-gray-500 mt-1">
-                    July 01 - July 31, 2024
+                    {formatDate(summaryData.payrollStartDate)} - {formatDate(summaryData.payrollEndDate)}
                   </p>
                 </div>
               </div>
@@ -378,7 +478,7 @@ export default function EmployeePreview() {
                     </p>
 
                     <h2 className="text-4xl font-bold text-gray-900 mt-4">
-                      1,180
+                      {summaryData.totalEmployees ? summaryData.totalEmployees : "245"}
                     </h2>
 
                     <p className="text-xs text-gray-500 mt-3">
@@ -407,7 +507,7 @@ export default function EmployeePreview() {
                 </span>
 
                 <span className="font-bold">
-                  31 Days
+                  {monthDetails.totalDays} Days
                 </span>
               </div>
 
@@ -417,7 +517,7 @@ export default function EmployeePreview() {
                 </span>
 
                 <span className="font-bold">
-                  22 Days
+                  {monthDetails.workingDays} Days
                 </span>
               </div>
 
@@ -576,14 +676,6 @@ export default function EmployeePreview() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="h-10 px-4 rounded-xl border border-gray-200 bg-white text-sm font-medium">
-                Filter Columns
-              </button>
-
-              <button className="h-10 px-4 rounded-xl border border-gray-200 bg-white text-sm font-medium flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Download CSV
-              </button>
             </div>
           </div>
 
@@ -671,15 +763,6 @@ export default function EmployeePreview() {
             </button>
 
             <div className="flex items-center gap-4">
-              <button className="h-11 px-5 rounded-xl border border-gray-200 bg-white text-sm font-medium">
-                Save Draft
-              </button>
-
-              <button className="h-11 px-5 rounded-xl border border-gray-200 bg-white text-sm font-medium flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Export Preview (PDF)
-              </button>
-
               <button className="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
                 Submit Payroll For Approval
               </button>

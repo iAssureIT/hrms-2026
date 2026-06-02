@@ -703,9 +703,9 @@ export default function EmployeeSelection() {
       const batchId = response.data.payrollBatchId; // adjust according to API response
       console.log('bid', batchId)
 
-      // if (batchId) {
-      //   router.push(`/admin/payrollManagementNew/employee-preview/${batchId}`);
-      // }
+      if (batchId) {
+        router.push(`/admin/payrollManagementNew/preview/${batchId}`);
+      }
 
       localStorage.setItem(
         "payrollBatchId",
@@ -838,7 +838,7 @@ export default function EmployeeSelection() {
                 { label: "December", value: 12 },
               ]}
 
-              value={payrollMonth}
+              value={filters.payrollMonth}
               onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
@@ -1018,12 +1018,7 @@ export default function EmployeeSelection() {
             {/* Search */}
 
             <div className="flex flex-col gap-2">
-<<<<<<< Updated upstream
               <label className="text-sm font-medium  tracking-wide ">
-=======
-
-              <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
->>>>>>> Stashed changes
                 Search
               </label>
 
@@ -1075,6 +1070,7 @@ export default function EmployeeSelection() {
             value={employeeDataCount || "0"}
             sub="System Wide"
           />
+          
           <StatCard
             icon={
               <ShieldCheck className="w-5 h-5" />

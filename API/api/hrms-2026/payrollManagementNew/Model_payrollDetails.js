@@ -68,20 +68,20 @@ const payrollDetailsSchema = new mongoose.Schema({
   },
 
   employeeSalaryStructure: {
-    annualCTC: {
-      type: Number,
-      default: 0,
-    },
+    // annualCTC: {
+    //   type: Number,
+    //   default: 0,
+    // },
 
-    monthlyCTC: {
-      type: Number,
-      default: 0,
-    },
+    // monthlyCTC: {
+    //   type: Number,
+    //   default: 0,
+    // },
 
-    grossMonthlySalary: {
-      type: Number,
-      default: 0,
-    },
+    // grossMonthlySalary: {
+    //   type: Number,
+    //   default: 0,
+    // },
 
     salaryComponents: [
       {
@@ -246,24 +246,24 @@ const payrollDetailsSchema = new mongoose.Schema({
 });
 
 // Useful indexes
-payrollDetailsSchema.index({
-  payrollBatchId: 1,
-});
+// payrollDetailsSchema.index({
+//   payrollBatchId: 1,
+// });
 
-payrollDetailsSchema.index({
-  payrollBatchNo: 1,
-});
+// payrollDetailsSchema.index({
+//   payrollBatchNo: 1,
+// });
 
-payrollDetailsSchema.index({
-  employeeId: 1,
-});
+// payrollDetailsSchema.index({
+//   employeeId: 1,
+// });
 
-payrollDetailsSchema.index({
-  payrollBatchId: 1,
-  employeeId: 1,
-}, {
-  unique: true,
-});
+// payrollDetailsSchema.index({
+//   payrollBatchId: 1,
+//   employeeId: 1,
+// }, {
+//   unique: true,
+// });
 
 module.exports = mongoose.model(
   "PayrollDetails",
