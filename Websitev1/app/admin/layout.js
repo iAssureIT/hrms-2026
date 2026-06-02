@@ -1131,7 +1131,7 @@ export default function RootLayout({ children }) {
         {
           icon: <FaRegCircle />,
           title: "Employee Preview",
-          link: "/admin/payrollManagementNew/employee-preview",
+          link: "/admin/payrollManagementNew/preview",
         },  
         {
           icon: <FaRegCircle />,

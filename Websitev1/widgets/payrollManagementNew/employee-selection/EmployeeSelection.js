@@ -604,7 +604,8 @@ export default function EmployeeSelection() {
       if (response.data) {
         const formattedData = (response.data.tableData || []).map((emp) => ({
           ...emp,
-          employeeID: `<span style="color:#3b82f6; font-weight:600;">${emp.employeeID || "-"}</span>`,
+          employeeID: emp.employeeID || "-", // Handle null/undefined employeeID
+          formattedEmpID: `<span style="color:#3b82f6; font-weight:600;">${emp.employeeID || "-"}</span>`,
           employeeEmail: `
             <div style="display:flex; flex-direction:column; gap:2px;">
               <span style="font-size:13px; color:#111827; font-weight:500;">${emp.employeeEmail || "-"}</span>
@@ -734,7 +735,7 @@ export default function EmployeeSelection() {
   };
 
   const tableHeading = {
-    employeeID: "Employee ID",
+    formattedEmpID: "Employee ID",
     employeeName: "Employee Name",
     employeeEmail: "Email & Mobile",
     businessUnit: "Business Unit",
@@ -1137,6 +1138,7 @@ export default function EmployeeSelection() {
                       employeeID: emp.employeeID,
                       employeeName: emp.employeeName,
                     }));
+                    // console.log("All Employees:", allEmployees);
                     setSelectedEmployees(allEmployees);
                   } else {
                     // ── Deselect all ──
@@ -1154,10 +1156,12 @@ export default function EmployeeSelection() {
                 onRowSelect={(id) => {
                   // ── Find the full employee record from tableData using employeeID ──
                   const emp = tableData.find((e) => e.employeeID === id);
+                  // console.log("Selected Employee:", emp);
                   if (!emp) return;
 
                   setSelectedEmployees((prev) => {
                     const alreadySelected = prev.some((e) => e.employeeID === id);
+                    // console.log("Already Selected:", alreadySelected);
                     if (alreadySelected) {
                       // ── Remove from array if already selected ──
                       return prev.filter((e) => e.employeeID !== id);
@@ -1378,11 +1382,11 @@ export default function EmployeeSelection() {
           {/* Right */}
           <div className="flex items-center gap-4" >
             <button
-              onClick={handleSubmit}
-              // onClick={() => {
-              //    // ── Log selected employees array for verification ──
-              //   console.log("Selected Employees for Payroll:", selectedEmployees);
-              // }} 
+              // onClick={handleSubmit}
+              onClick={() => {
+                 // ── Log selected employees array for verification ──
+                console.log("Selected Employees for Payroll:", selectedEmployees);
+              }} 
               className="h-11 px-7 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
               Proceed to Payroll Preview
             </button>
