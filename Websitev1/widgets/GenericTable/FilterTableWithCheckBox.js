@@ -745,9 +745,16 @@ const GenericTable = ({
                                                                                 </div>
                                                                             )}
                                                                         </div>
-                                                                        <span className={`font-bold text-slate-700 whitespace-nowrap transition-colors duration-200 ${tableObjects?.viewURL ? "group-hover:text-[#3c8dbc]" : ""}`}>
-                                                                            {value.employeeName}
-                                                                        </span>
+                                                                        <div className="flex flex-col">
+                                                                            <span className={`font-bold text-slate-700 whitespace-nowrap transition-colors duration-200 ${tableObjects?.viewURL ? "group-hover:text-[#3c8dbc]" : ""}`}>
+                                                                                {value.employeeName}
+                                                                            </span>
+                                                                            {value.employeeDesignation && (
+                                                                                <span className="text-xs text-gray-500 mt-0.5 whitespace-nowrap">
+                                                                                    {value.employeeDesignation}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
                                                                     </div>
                                                                 </td>
                                                             );

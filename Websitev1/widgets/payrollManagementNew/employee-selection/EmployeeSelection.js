@@ -602,7 +602,17 @@ export default function EmployeeSelection() {
       console.log("employee list response --->", response);
 
       if (response.data) {
-        setTableData(response.data.tableData || []);
+        const formattedData = (response.data.tableData || []).map((emp) => ({
+          ...emp,
+          employeeID: `<span style="color:#3b82f6; font-weight:600;">${emp.employeeID || "-"}</span>`,
+          employeeEmail: `
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <span style="font-size:13px; color:#111827; font-weight:500;">${emp.employeeEmail || "-"}</span>
+              <span style="font-size:12px; color:#6b7280;">${emp.employeeMobile || "-"}</span>
+            </div>
+          `,
+        }));
+        setTableData(formattedData);
         setTotalRecs(response.data.totalRecs || 0);
       }
     } catch (err) {
@@ -725,17 +735,18 @@ export default function EmployeeSelection() {
 
   const tableHeading = {
     employeeID: "Employee ID",
-    employeeName: "Employee",
+    employeeName: "Employee Name",
+    employeeEmail: "Email & Mobile",
     businessUnit: "Business Unit",
     departmentName: "Department",
     subDepartmentName: "Sub Department",
-    employeeDesignation: "Designation",
+    // employeeDesignation: "Designation",
     centerName: "Location",
     jobType: "Job Type",
     jobTiming: "Job Timing",
     reportingManagerName: "Reporting Manager",
-    employeeEmail: "Email",
-    employeeMobile: "Mobile",
+    // employeeEmail: "Email",
+    // employeeMobile: "Mobile",
   };
 
   const excelHeading = {
@@ -1070,7 +1081,7 @@ export default function EmployeeSelection() {
             value={employeeDataCount || "0"}
             sub="System Wide"
           />
-          
+
           <StatCard
             icon={
               <ShieldCheck className="w-5 h-5" />
