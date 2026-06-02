@@ -976,7 +976,6 @@ export default function EmployeeSelection() {
               }
             />
 
-
             {/* Designation */}
             <CheckboxMultiSelect
               label="Designation"

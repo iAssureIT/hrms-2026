@@ -1,5 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
+//import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -22,78 +23,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const payrollData = [
-  {
-    id: 1,
-    emp: "Alexander Pierce",
-    code: "EMP-001",
-    dept: "Technology",
-    location: "San Francisco",
-    paidDays: "22/31",
-    gross: "₹10,650.00",
-    variable: "₹0.00",
-    overtime: "₹0.00",
-    deduction: "₹2,654.00",
-    net: "₹7,996.00",
-    status: "Verified",
-  },
-  {
-    id: 2,
-    emp: "Sarah Jenkins",
-    code: "EMP-002",
-    dept: "Design",
-    location: "Austin",
-    paidDays: "18/31",
-    gross: "₹8,200.00",
-    variable: "₹0.00",
-    overtime: "₹0.00",
-    deduction: "₹1,840.00",
-    net: "₹6,360.00",
-    status: "Pending Review",
-  },
-  {
-    id: 3,
-    emp: "Michael Chen",
-    code: "EMP-003",
-    dept: "Finance",
-    location: "New York",
-    paidDays: "23/31",
-    gross: "₹12,100.00",
-    variable: "₹0.00",
-    overtime: "₹0.00",
-    deduction: "₹3,120.00",
-    net: "₹8,980.00",
-    status: "Verified",
-  },
-  {
-    id: 4,
-    emp: "Elena Rodriguez",
-    code: "EMP-004",
-    dept: "Marketing",
-    location: "Miami",
-    paidDays: "20/31",
-    gross: "₹15,400.00",
-    variable: "₹0.00",
-    overtime: "₹0.00",
-    deduction: "₹4,520.00",
-    net: "₹10,880.00",
-    status: "Flagged",
-  },
-  {
-    id: 5,
-    emp: "David Smith",
-    code: "EMP-005",
-    dept: "HR",
-    location: "San Francisco",
-    paidDays: "21/31",
-    gross: "₹7,500.00",
-    variable: "₹0.00",
-    overtime: "₹0.00",
-    deduction: "₹1,620.00",
-    net: "₹5,880.00",
-    status: "Verified",
-  },
-];
 
 function SummaryCard({
   title,
@@ -198,8 +127,20 @@ const getMonthName = (monthNumber) => {
 };
 
 
-
-
+  const tableHeading = {
+    employeeName: "Employee",
+    netPaid: "Net Paid",
+    grssSalary: "Gross Salary",
+    variablePay: "Variable Pay",
+    overTime: "Over Time",
+    deduction: "Deduction",
+    netPay: "Net Pay",
+    eligibility: "Eligibility",
+  };
+  const tableObjects = {
+    titleMsg: "Payroll Employee Selection",
+    tableName: "Employee List",
+  };
 
 export default function EmployeePreview() {
 
@@ -207,6 +148,9 @@ export default function EmployeePreview() {
   const [summaryData, setSummaryData] = useState([]);
   const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);  
   const { batchId } = useParams();  
+  const [totalGross, setTotalGross] = useState("");
+  const [totaldeduction, setTotalDeduction] = useState("");
+  const [totalNet, setTotalNet] = useState("");
 
   useEffect(() => {
     axios
@@ -679,6 +623,13 @@ export default function EmployeePreview() {
             </div>
           </div>
 
+              {/* <FilterTable
+                tableHeading={tableHeading}
+                tableObjects={tableObjects}
+                getData={payrollEmployeeData}
+                /> */}
+
+
           {/* Table */}
           <div>
             {/* Head */}
@@ -687,21 +638,46 @@ export default function EmployeePreview() {
               <div className="col-span-2">
                 Employee Information
               </div>
-              <div>Net Paid Days</div>
-              <div>Gross Salary</div>
-              <div>Variable Pay</div>
-              <div>Overtime Amt</div>
-              <div>Deductions</div>
-              <div>Net Payable</div>
-              <div>Eligibility</div>
+              <div> Net Paid Days </div>
+              <div> Gross Salary </div>
+              <div> Variable Pay </div>
+              <div> Overtime Amt </div>
+              <div> Deductions </div>
+              <div> Net Payable </div>
+              <div> Eligibility </div>
             </div>
 
             {/* Rows */}
-            {payrollData.map((row) => (
-              <div
-                key={row.id}
-                className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-gray-100 items-center hover:bg-gray-50"
-              >
+            {payrollEmployeeData.map((row) => {
+
+              let earnings = 0;
+              let deductions = 0;
+
+              const employeeTotal = row.employeeSalaryStructure.salaryComponents.forEach((component) => {
+
+                  const amount = Number(component.monthlyAmount || 0);
+
+                  if (
+                    [
+                      "PF Employee",
+                      "PF Employer",
+                      "TDS",
+                      "Professional Tax (PT)",
+                    ].includes(component.componentCode)
+                  ) {
+                      deductions += Math.abs(amount);
+                    } else {
+                      earnings += amount;
+                    }
+            });
+
+            const netSalary = earnings - deductions;
+
+              return(
+                <div
+                  key={row.id}
+                  className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-gray-100 items-center hover:bg-gray-50"
+                >
                 <div className="text-sm font-medium">
                   {row.id}
                 </div>
@@ -712,7 +688,8 @@ export default function EmployeePreview() {
 
                   <div>
                     <h3 className="text-sm font-bold text-gray-900">
-                      {row.emp}
+                      <div>{row.employeeFullName}</div>
+                      <div>{row.employeeID}</div>
                     </h3>
 
                     <p className="text-xs text-blue-600 mt-1">
@@ -730,7 +707,7 @@ export default function EmployeePreview() {
                 </div>
 
                 <div className="text-sm">
-                  {row.gross}
+                  {earnings.toLocaleString()}
                 </div>
 
                 <div className="text-sm">
@@ -742,18 +719,18 @@ export default function EmployeePreview() {
                 </div>
 
                 <div className="text-sm text-red-500 font-semibold">
-                  {row.deduction}
+                  {deductions.toLocaleString()}
                 </div>
 
                 <div className="text-sm text-blue-600 font-bold">
-                  {row.net}
+                  {netSalary.toLocaleString()}
                 </div>
 
                 <div>
                   <StatusBadge text={row.status} />
                 </div>
-              </div>
-            ))}
+              </div>);
+            })}
           </div>
 
           {/* Footer */}

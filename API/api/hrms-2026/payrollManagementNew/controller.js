@@ -170,35 +170,6 @@ exports.createPayrollBatch = async (req, res) => {
   }
 };
 
-
-
-
-exports.getPayrollEmployeeDetailsById = async (req, res) => {
-  try {
-    const { batchId } = req.params;
-
-    const payrollDetails = await PayrollDetails.find({
-      payrollBatchId: new mongoose.Types.ObjectId(batchId),
-    });
-
-    return res.status(200).json({
-      success: true,
-      count: payrollDetails.length,
-      data: payrollDetails,
-    });
-  } catch (error) {
-    console.error("Error fetching payroll details:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-
-
 exports.getPayrollSummaryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -223,6 +194,28 @@ exports.getPayrollSummaryById = async (req, res) => {
       success: false,
       message: "Something went wrong",
       error: error.message,
+    });
+  }
+};
+
+exports.getPayrollEmployeeDetailsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const payrollDetails = await PayrollDetails.find({
+      payrollBatchId: id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: payrollDetails.length,
+      data: payrollDetails,
+    });
+  } catch (error) {
+    console.error("Error fetching payroll details:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
