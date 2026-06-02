@@ -693,7 +693,7 @@ export default function EmployeeSelection() {
         designations: filters.designation,
         jobTypes: filters.jobtype,
         jobTimings: filters.jobtiming,
-        remarks: "",
+        remarks: "",  
         createdBy: {
           userId: 101, // replace with logged-in user id
           userName: "Admin", // replace with logged-in username

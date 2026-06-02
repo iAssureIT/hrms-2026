@@ -219,3 +219,80 @@ exports.getPayrollEmployeeDetailsById = async (req, res) => {
     });
   }
 };
+
+
+exports.getPayrollEmployeeDetailssById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const payrollDetails = await PayrollDetails.find({
+      payrollBatchId: id,
+    });
+
+    let totalGross = 0;
+    let totalDeductions = 0;
+    let totalNet = 0;
+    let employerContri = 0;
+
+    const employeeData = payrollDetails.map((employee) => {
+      let gross = 0;
+      let deductions = 0;
+
+      employee.employeeSalaryStructure.salaryComponents.forEach(
+        (component) => {
+          const amount = Number(component.monthlyAmount || 0);
+
+          if (
+            ["PF Employer"].includes(component.componentCode)
+          ) {
+            employerContri += Math.abs(amount);
+          }
+
+          if (
+            [
+              "PF Employee",
+              "PF Employer",
+              "TDS",
+              "Professional Tax (PT)",
+            ].includes(component.componentCode)
+          ) {
+            deductions += Math.abs(amount);
+          } else {
+            gross += amount;
+          }
+        }
+      );
+
+      const netSalary = gross - deductions;
+
+      totalGross += gross;
+      totalDeductions += deductions;
+      totalNet += netSalary;
+
+      return {
+        ...employee.toObject(),
+        gross,
+        deductions,
+        netSalary,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: employeeData,
+      summary: {
+        totalGross,
+        totalDeductions,
+        totalNet,
+        employerContri
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

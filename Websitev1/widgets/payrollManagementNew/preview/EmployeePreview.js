@@ -148,16 +148,17 @@ export default function EmployeePreview() {
   const [summaryData, setSummaryData] = useState([]);
   const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);  
   const { batchId } = useParams();  
-  const [totalGross, setTotalGross] = useState("");
-  const [totaldeduction, setTotalDeduction] = useState("");
-  const [totalNet, setTotalNet] = useState("");
+  const [grandTotals, setGrandTotals] = useState("");
+  // const [totaldeduction, setTotalDeduction] = useState("");
+  // const [totalNet, setTotalNet] = useState("");
 
+  
   useEffect(() => {
-    axios
+
+      axios
       .get(`/api/payroll-management/summaryData/${batchId}`)
       .then((res) => {
         setSummaryData(res.data.data);
-        console.log("Summary Data:", res.data.data);
       })
       .catch((err) => {
         console.error(err);
@@ -167,15 +168,33 @@ export default function EmployeePreview() {
 
 
       axios
-      .get(`/api/payroll-management/employeeDetails/${batchId}`)
+      .get(`/api/payroll-management/employeeDetailss/${batchId}`)
       .then((res) => {
         console.log("Payroll Details:", res.data.data);
         setPayrollEmployeeData(res.data.data);
+        setGrandTotals(res.data.summary);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, [batchId]);
+
+
+      // axios
+      // .get(`/api/payroll-management/employeeDetails/${batchId}`)
+      // .then((res) => {
+      //   setPayrollEmployeeData(res.data.data);
+      // })
+      // .catch((err) => {
+      //   console.error(err);
+      // });
+
+
+      }, [batchId]
+    );
+
+
+
+
 
   useEffect(() => {
     getEmployeeCount();
@@ -350,17 +369,17 @@ export default function EmployeePreview() {
                 </p>
 
                 <h3 className="text-sm font-semibold mt-2">
-                  Main Headquarters - USA
+                  {summaryData.businessUnits}
                 </h3>
               </div>
 
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
-                  Generated On
+                  Department
                 </p>
 
                 <h3 className="text-sm font-semibold mt-2">
-                  2024-08-02 09:45:12 AM
+                  {summaryData.departments}
                 </h3>
               </div>
             </div>
@@ -399,7 +418,7 @@ export default function EmployeePreview() {
                     </p>
 
                     <h2 className="text-4xl font-bold text-gray-900 mt-4">
-                      1,240
+                      0
                     </h2>
 
                     <p className="text-xs text-gray-500 mt-3">
@@ -496,7 +515,7 @@ export default function EmployeePreview() {
           <div className="grid grid-cols-4 gap-5">
             <SummaryCard
               title="Total Gross Salary"
-              value="₹428,650"
+              value={`₹${grandTotals.totalGross?.toLocaleString()}`}
               icon={<Wallet className="w-5 h-5" />}
               change="+4.2%"
               positive={false}
@@ -504,7 +523,7 @@ export default function EmployeePreview() {
 
             <SummaryCard
               title="Total Deductions"
-              value="₹84,210"
+              value={`₹${grandTotals.totalDeductions?.toLocaleString()}`}
               icon={<ArrowDownRight className="w-5 h-5" />}
               change="-1.5%"
               positive
@@ -512,7 +531,7 @@ export default function EmployeePreview() {
 
             <SummaryCard
               title="Total Net Payable"
-              value="₹344,439"
+              value={`₹${grandTotals.totalNet?.toLocaleString()}`}
               icon={<ArrowUpRight className="w-5 h-5" />}
               change="+5.8%"
               positive
@@ -521,7 +540,7 @@ export default function EmployeePreview() {
 
             <SummaryCard
               title="Overtime Liability"
-              value="₹12,450"
+              value="₹0"
               icon={<Clock3 className="w-5 h-5" />}
               change="+12%"
               positive={false}
@@ -541,7 +560,7 @@ export default function EmployeePreview() {
               </p>
 
               <h2 className="text-4xl font-bold mt-2">
-                ₹31,200
+                ₹0
               </h2>
             </div>
 
@@ -555,7 +574,7 @@ export default function EmployeePreview() {
               </p>
 
               <h2 className="text-4xl font-bold mt-2">
-                ₹58,400
+                ₹{grandTotals.employerContri?.toLocaleString()}
               </h2>
             </div>
 
@@ -569,7 +588,7 @@ export default function EmployeePreview() {
               </p>
 
               <h2 className="text-4xl font-bold mt-2 text-gray-900">
-                245 / 250
+                0
               </h2>
             </div>
           </div>
@@ -688,12 +707,11 @@ export default function EmployeePreview() {
 
                   <div>
                     <h3 className="text-sm font-bold text-gray-900">
-                      <div>{row.employeeFullName}</div>
-                      <div>{row.employeeID}</div>
+                      {row.employeeFullName}
                     </h3>
 
                     <p className="text-xs text-blue-600 mt-1">
-                      {row.code}
+                      {row.employeeID}
                     </p>
 
                     <p className="text-xs text-gray-500 mt-1">
@@ -703,7 +721,7 @@ export default function EmployeePreview() {
                 </div>
 
                 <div className="text-sm font-semibold">
-                  {row.paidDays}
+                  {monthDetails.workingDays} Days
                 </div>
 
                 <div className="text-sm">

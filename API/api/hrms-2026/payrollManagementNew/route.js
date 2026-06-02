@@ -6,5 +6,6 @@ const payrollController = require('./controller.js');
 router.post('/create-payroll-batch', payrollController.createPayrollBatch);
 router.get("/summaryData/:id", payrollController.getPayrollSummaryById);
 router.get("/employeeDetails/:id", payrollController.getPayrollEmployeeDetailsById);
+router.get("/employeeDetailss/:id", payrollController.getPayrollEmployeeDetailssById);
 
 module.exports = router;
