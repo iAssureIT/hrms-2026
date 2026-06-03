@@ -186,10 +186,10 @@ export default function EmployeePreview() {
           previewEmpID: emp.employeeID,
 
           netPaid:
-            emp.attendanceSummary?.totalPresentDays || monthDetails.workingDays,
+            monthDetails.workingDays,
 
           grssSalary:
-            emp.calculatedNetSalary?.grossSalary || 0,
+            '₹' + (emp.gross || 0).toLocaleString(),
 
           variablePay: 0,
 
@@ -197,10 +197,10 @@ export default function EmployeePreview() {
             emp.attendanceSummary?.overtimeHours || 0,
 
           deduction:
-            emp.calculatedNetSalary?.totalDeductions || 0,
+            '₹' + (emp.deductions || 0).toLocaleString(),
 
           netPay:
-            emp.calculatedNetSalary?.netSalaryPayable || 0,
+            '₹' + (emp.netSalary || 0).toLocaleString(),
 
           eligibility:
             emp.payrollEligibility,
@@ -572,6 +572,7 @@ export default function EmployeePreview() {
               icon={<Wallet className="w-5 h-5" />}
               change="+4.2%"
               positive={false}
+              valueClassName="text-base text-sm"
             />
 
             <SummaryCard
@@ -678,7 +679,7 @@ export default function EmployeePreview() {
         </div>
 
         {/* Employee Table */}
-        <div className="bg-white border border-gray-200 rounded-2xl mt-8 overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-2xl mt-8 overflow-hidden p-10">
           {/* Table Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
             <div>
@@ -727,107 +728,7 @@ export default function EmployeePreview() {
           />
 
 
-          {/* Table */}
-          <div>
-            {/* Head */}
-            <div className="grid grid-cols-10 gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 text-[11px] uppercase tracking-wide font-semibold text-gray-500">
-              <div>#</div>
-              <div className="col-span-2">
-                Employee Information
-              </div>
-              <div> Net Paid Days </div>
-              <div> Gross Salary </div>
-              <div> Variable Pay </div>
-              <div> Overtime Amt </div>
-              <div> Deductions </div>
-              <div> Net Payable </div>
-              <div> Eligibility </div>
-            </div>
 
-            {/* Rows */}
-            {payrollEmployeeData.map((row) => {
-
-              let earnings = 0;
-              let deductions = 0;
-
-              const employeeTotal = row.employeeSalaryStructure.salaryComponents.forEach((component) => {
-
-                const amount = Number(component.monthlyAmount || 0);
-
-                if (
-                  [
-                    "PF Employee",
-                    "PF Employer",
-                    "TDS",
-                    "Professional Tax (PT)",
-                  ].includes(component.componentCode)
-                ) {
-                  deductions += Math.abs(amount);
-                } else {
-                  earnings += amount;
-                }
-              });
-
-              const netSalary = earnings - deductions;
-
-              return (
-                <div
-                  key={row.id}
-                  className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-gray-100 items-center hover:bg-gray-50"
-                >
-                  <div className="text-sm font-medium">
-                    {row.id}
-                  </div>
-
-                  {/* Employee */}
-                  <div className="col-span-2 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gray-200" />
-
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900">
-                        {row.employeeFullName}
-                      </h3>
-
-                      <p className="text-xs text-blue-600 mt-1">
-                        {row.employeeID}
-                      </p>
-
-                      <p className="text-xs text-gray-500 mt-1">
-                        {row.dept} • {row.location}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="text-sm font-semibold">
-                    {monthDetails.workingDays} Days
-                  </div>
-
-                  <div className="text-sm">
-                    {earnings.toLocaleString()}
-                  </div>
-
-                  <div className="text-sm">
-                    {row.variable}
-                  </div>
-
-                  <div className="text-sm">
-                    {row.overtime}
-                  </div>
-
-                  <div className="text-sm text-red-500 font-semibold">
-                    {deductions.toLocaleString()}
-                  </div>
-
-                  <div className="text-sm text-blue-600 font-bold">
-                    {netSalary.toLocaleString()}
-                  </div>
-
-                  <div>
-                    <StatusBadge text={row.status} />
-                  </div>
-                </div>);
-            })}
-          </div>
 
           {/* Footer */}
           <div className="flex items-center justify-between px-6 py-5 bg-white">

@@ -1,4 +1,4 @@
-import PayrollApproval from "@/widgets/payroll/approval/Approval";
+import PayrollApproval from "@/widgets/payrollManagementNew/approval/Approval";
 
 const PayrollApprovalPage = () => {
   return <PayrollApproval />;
