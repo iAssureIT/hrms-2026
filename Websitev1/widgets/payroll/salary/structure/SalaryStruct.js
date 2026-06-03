@@ -3,16 +3,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
 export default function EmployeeSalaryForm({
   empId,
 }) {
 
   const [ctc, setCtc] = useState("");
-  const [components, setComponents] =
-    useState([]);
-  const [salaryStructure, setSalaryStructure] =
-    useState([]);
+  const [components, setComponents] = useState([]);
+  const [salaryStructure, setSalaryStructure] = useState([]);
 
   const employeeId = empId;
 
@@ -214,13 +211,13 @@ export default function EmployeeSalaryForm({
       const payload = {
         employeeId,
         salaryData:
-          salaryStructure.map(
-            (item) => ({
-              components:
-                item.component,
-              amount: item.amount,
-            })
-          ),
+        salaryStructure.map(
+          (item) => ({
+            components:
+              item.component,
+            amount: item.amount,
+          })
+        ),
       };
 
       await axios.post(

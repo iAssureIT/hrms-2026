@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function EmployeeSalaryForm() {  
   //const [employeeId, setEmployeeId] = useState("");

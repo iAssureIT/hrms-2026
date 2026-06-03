@@ -1,4 +1,4 @@
-import SalaryStructForm from "@/widgets/payroll/salary/structure/SalaryStruct";
+import SalaryStructForm from "@/widgets/payroll/salary/structure/SalaryStruct__";
 
 const SalaryStructFormPage = ({
   searchParams,
