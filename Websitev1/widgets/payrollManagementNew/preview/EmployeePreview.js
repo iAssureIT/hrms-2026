@@ -183,7 +183,7 @@ export default function EmployeePreview() {
           ...emp,
 
           employeeName: emp.employeeFullName,
-          formattedEmpID: emp.employeeID,
+          previewEmpID: emp.employeeID,
 
           netPaid:
             emp.attendanceSummary?.totalPresentDays || monthDetails.workingDays,

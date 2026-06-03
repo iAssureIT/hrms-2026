@@ -754,9 +754,9 @@ const GenericTable = ({
                                                                                     {value.employeeDesignation}
                                                                                 </span>
                                                                             )}
-                                                                            {value.formattedEmpID && (
+                                                                            {value.previewEmpID && (
                                                                                 <span className="text-xs text-gray-500 mt-0.5 whitespace-nowrap">
-                                                                                    {value.formattedEmpID}
+                                                                                    {value.previewEmpID}
                                                                                 </span>
                                                                             )}
                                                                         </div>
