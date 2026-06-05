@@ -420,9 +420,8 @@ export default function EmployeeSelection() {
     getEmployeeList();
   };
 
-
-
   // Total Month & Working days
+
   const [monthDetails, setMonthDetails] =
     useState({
       totalDays: 0,
@@ -581,6 +580,7 @@ export default function EmployeeSelection() {
 
   useEffect(() => {
     getEmployeeList();
+    getMonthDetails(payrollMonth);
   }, [pageNumber, recsPerPage, runCount, searchText, filters]);
 
 
@@ -624,6 +624,7 @@ export default function EmployeeSelection() {
 
 
   // ── Reset filters ──
+
   const resetFilters = () => {
     setFilters({
       payrollmonth: "",
@@ -641,7 +642,6 @@ export default function EmployeeSelection() {
     setSearchText("-");
   };
 
-
   useEffect(() => {
     getBusinessUnits();
     getLocations();
@@ -650,6 +650,7 @@ export default function EmployeeSelection() {
     getJobTiming();
     getDesignation();
     getEmployeeCount();
+
   }, []);
 
   const handleSubmit = async () => {
@@ -691,17 +692,12 @@ export default function EmployeeSelection() {
 
       localStorage.setItem(
         "payrollBatchId",
-        payrollBatchId
+        batchId
       );
 
       alert("Payroll Batch Created Successfully");
     } catch (error) {
       console.error(error);
-
-      alert(
-        error?.response?.data?.message ||
-        "Failed to create payroll batch"
-      );
     }
   };
 
@@ -801,7 +797,7 @@ export default function EmployeeSelection() {
         </div>
 
         {/* Filters */}
-        < div className="bg-white border border-gray-200 rounded-2xl p-5" >
+        <div className="bg-white border border-gray-200 rounded-2xl p-5">
           <div className="grid grid-cols-4 gap-5">
             {/* Payroll Month */}
             <SelectField
@@ -896,9 +892,11 @@ export default function EmployeeSelection() {
                 {/* <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" /> */}
               </div>
             </div>
+          </div>
+          </div>
 
-
-
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 mt-5">
+            <div className="grid grid-cols-4 gap-5">
             {/* Business Unit */}
             <CheckboxMultiSelect
               label="Business Unit"

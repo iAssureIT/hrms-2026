@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 const PayrollSummary = require("./Model_payrollSummary.js");
 const PayrollDetails = require("./Model_payrollDetails.js");
 const EmployeeSalary = require("../payroll/salary/structure/model.js");
-const moment = require("moment");
+const AttendanceLogs = require("../attendanceManagement/model.js");
+const Holiday = require("../holidayManagement/model.js");
 
+const moment = require("moment");
 
 exports.createPayrollBatch = async (req, res) => {
   try {
@@ -42,15 +44,15 @@ exports.createPayrollBatch = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: `
-            Payroll batch already exists for:
-            Month: ${payrollMonth}
-            Year: ${payrollYear}
-            Business Units: ${businessUnits?.join(", ") || "N/A"}
-            Locations: ${locations?.join(", ") || "N/A"}
-            Departments: ${departments?.join(", ") || "N/A"}
-            Designations: ${designations?.join(", ") || "N/A"}
-            Job Types: ${jobTypes?.join(", ") || "N/A"}
-            Job Timings: ${jobTimings?.join(", ") || "N/A"}
+          Payroll batch already exists for:
+          Month: ${payrollMonth}
+          Year: ${payrollYear}
+          Business Units: ${businessUnits?.join(", ") || "N/A"}
+          Locations: ${locations?.join(", ") || "N/A"}
+          Departments: ${departments?.join(", ") || "N/A"}
+          Designations: ${designations?.join(", ") || "N/A"}
+          Job Types: ${jobTypes?.join(", ") || "N/A"}
+          Job Timings: ${jobTimings?.join(", ") || "N/A"}
         `.trim(),
       });
     }
@@ -107,8 +109,6 @@ exports.createPayrollBatch = async (req, res) => {
     //     );
     // }
 
-
-console.log("Employee Data for Payroll Details:", employeeData);
     const employeeIds = employeeData.map(emp => emp.employeeID);
 
     const salaryStructures = await EmployeeSalary.find({
@@ -147,7 +147,6 @@ console.log("Employee Data for Payroll Details:", employeeData);
     });
 
     await PayrollDetails.insertMany(records);
-
 
     return res.status(201).json({
       success: true,
@@ -198,30 +197,30 @@ exports.getPayrollSummaryById = async (req, res) => {
   }
 };
 
+// exports.getPayrollEmployeeDetailsById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const payrollDetails = await PayrollDetails.find({
+//       payrollBatchId: id,
+//     });
+
+//     return res.status(200).json({
+//       success: true,
+//       count: payrollDetails.length,
+//       data: payrollDetails,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching payroll details:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+
 exports.getPayrollEmployeeDetailsById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const payrollDetails = await PayrollDetails.find({
-      payrollBatchId: id,
-    });
-
-    return res.status(200).json({
-      success: true,
-      count: payrollDetails.length,
-      data: payrollDetails,
-    });
-  } catch (error) {
-    console.error("Error fetching payroll details:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-exports.getPayrollEmployeeDetailssById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -293,6 +292,93 @@ exports.getPayrollEmployeeDetailssById = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+
+exports.getPayrollEmployeeAttendance = async (req, res) => {
+  try {
+    const { employeeIds, month, year } = req.body;
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1);
+
+    const attendance = await AttendanceLogs.aggregate([
+      {
+        $match: {
+          employeeID: { $in: employeeIds },
+          date: {
+            $gte: startDate,
+            $lt: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$employeeID",
+          workingDays: { $sum: 1 },
+          records: { $push: "$$ROOT" },
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: attendance,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
+exports.getHolidaysCount = async (req, res) => { 
+  try {
+    const { year, month } = req.query;
+
+    if (!year || !month) {
+      return res.status(400).json({
+        success: false,
+        message: "year and month are required",
+      });
+    }
+
+    const startDate = new Date(
+      Number(year),
+      Number(month) - 1,
+      1
+    );
+
+    const endDate = new Date(
+      Number(year),
+      Number(month),
+      1
+    );
+
+    const holidayCount = await Holiday.countDocuments({
+      date: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      year,
+      month,
+      holidayCount,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 };

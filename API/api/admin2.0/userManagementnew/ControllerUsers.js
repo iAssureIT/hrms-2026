@@ -58,7 +58,7 @@ exports.add_user_details = (req, res, next) => {
                           },
                         },
                         username: emailId.toLowerCase(),
-                        authService: req.body.authService,
+                        authService: req.body.authService,  
                         department: req.body.department,
                         designation: req.body.designation,
                         orgLevel: req.body.orgLevel,
@@ -3211,7 +3211,7 @@ exports.post_list_users_filter = (req, res, next) => {
       usersQuery
         .exec()
         .then((data) => {
-          // console.log('data post/list==>>',data);
+          console.log('data post/list==>>',data);
           if (data) {
             var returnData = data.map((user) => {
               var loginTokenscount =

@@ -2,27 +2,26 @@
 import { useParams } from "next/navigation";
 import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
 import {
-  ArrowDownRight,
-  ArrowUpRight,
-  CalendarDays,
-  ChevronDown,
-  ChevronRight,
-  CircleAlert,
-  CircleCheck,
-  Clock3,
-  Download,
-  Filter,
-  RotateCcw,
-  Save,
-  ShieldAlert,
-  Users,
-  Wallet,
+    ArrowDownRight,
+    ArrowUpRight,
+    CalendarDays,
+    ChevronDown,
+    ChevronRight,
+    CircleAlert,
+    CircleCheck,
+    Clock3,
+    Download,
+    Filter,
+    RotateCcw,
+    Save,
+    ShieldAlert,
+    Users,
+    Wallet,
 } from "lucide-react";
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-
 
 function SummaryCard({
   title,
@@ -63,7 +62,7 @@ function SummaryCard({
           {title}
         </p>
 
-        <h2 className="text-4xl font-bold text-gray-900 mt-2">
+        <h2 className="text-2xl font-bold text-gray-900 mt-2">
           {value}
         </h2>
       </div>
@@ -92,7 +91,7 @@ function StatusBadge({ text }) {
 
   return (
     <span
-      className={`px-3 py-1 rounded-full text-xs font-semibold ${style}`}
+      className={`px-3 py-1 rounded-full text-sm font-semibold ${style}`}
     >
       {text}
     </span>
@@ -100,8 +99,9 @@ function StatusBadge({ text }) {
 }
 
 const formatDate = (dateString) => {
+  if (!dateString) return "";
   const date = new Date(dateString);
-
+  if (isNaN(date.getTime())) return "";
   return `${String(date.getDate()).padStart(2, "0")}-${String(
     date.getMonth() + 1
   ).padStart(2, "0")}-${date.getFullYear()}`;
@@ -126,17 +126,25 @@ const getMonthName = (monthNumber) => {
   return months[monthNumber - 1] || "";
 };
 
-
 const tableHeading = {
   employeeName: "Employee",
-  netPaid: "Net Paid",
   grssSalary: "Gross Salary",
-  variablePay: "Variable Pay",
-  overTime: "Over Time",
-  deduction: "Deduction",
+  monthDays: "Days in Month",
+  workingDays: "Total Working Days",
+  weeklyOff: "Weekly Off",
+  publicHolidays: "Public Holidays",
+  presentDays: "Total Present Days",
+  absentDays: "Total Absent Days",
+  paidLeaves: "Paid Leaves",
+  unPaidLeaves: "Unpaid Leaves",
+  netPaidDays: "Net Paid Days",
   netPay: "Net Pay",
   eligibility: "Eligibility",
+  status:"Status",
+  action:"Action",
+  remark:"Remark"
 };
+
 const tableObjects = {
   titleMsg: "Payroll Employee Selection",
   tableName: "Employee List",
@@ -144,179 +152,321 @@ const tableObjects = {
 
 export default function EmployeePreview() {
 
-  const [employeeDataCount, setEmployeeDataCount] = useState("");
-  const [summaryData, setSummaryData] = useState([]);
-  const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);
-  const { batchId } = useParams();
-  const [grandTotals, setGrandTotals] = useState("");
-  // const [totaldeduction, setTotalDeduction] = useState("");
-  // const [totalNet, setTotalNet] = useState("");
+    const { batchId } = useParams();
+    const [employeeDataCount, setEmployeeDataCount] = useState("");
+    const [grandTotals, setGrandTotals] = useState("");
+    const [tableData, setTableData] = useState([]);
+    const [recsPerPage, setRecsPerPage] = useState(10);
+    const [numOfPages, setNumOfPages] = useState([]);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [searchText, setSearchText] = useState("");
+    const [totalRecs, setTotalRecs] = useState(0);
+    const [runCount, setRunCount] = useState(0);
+    const [attenEmpIds, setAttenEmpIds] = useState([]);
+    const [allData, setAllData] = useState([]);
 
-  const [tableData, setTableData] = useState([]);
-  const [recsPerPage, setRecsPerPage] = useState(10);
-  const [numOfPages, setNumOfPages] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [searchText, setSearchText] = useState("");
-  const [totalRecs, setTotalRecs] = useState(0);
-  const [runCount, setRunCount] = useState(0);
+    const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);
+    const [attendanceData, setAttendanceData] = useState({});
+    const [holidayCount, setHolidayCount] = useState(0);
+    const [summaryData, setSummaryData] = useState({});
 
-
-  useEffect(() => {
-
-    axios
-      .get(`/api/payroll-management/summaryData/${batchId}`)
-      .then((res) => {
-        setSummaryData(res.data.data);
-      })
-      .catch((err) => {
-        console.error(err);
+    // Total Month & Working days
+    const [monthDetails, setMonthDetails] =
+      useState({
+        totalDays: 0,
+        monthWorkingDays: 0,
       });
 
-    getMonthDetails(summaryData.payrollMonth);
+    const getMonthDetails = (
+      monthName
+    ) => {
+      const monthIndex = new Date(
+        `${monthName} 1`
+      ).getMonth();
 
-
-    axios
-      .get(`/api/payroll-management/employeeDetailss/${batchId}`)
-      .then((res) => {
-        console.log("Payroll Details:", res.data.data);
-        const formattedData = res.data.data.map((emp) => ({
-          ...emp,
-
-          employeeName: emp.employeeFullName,
-          previewEmpID: emp.employeeID,
-
-          netPaid:
-            monthDetails.workingDays,
-
-          grssSalary:
-            '₹' + (emp.gross || 0).toLocaleString(),
-
-          variablePay: 0,
-
-          overTime:
-            emp.attendanceSummary?.overtimeHours || 0,
-
-          deduction:
-            '₹' + (emp.deductions || 0).toLocaleString(),
-
-          netPay:
-            '₹' + (emp.netSalary || 0).toLocaleString(),
-
-          eligibility:
-            emp.payrollEligibility,
-        }));
-
-        console.log("formatted data -->", formattedData);
-
-
-        setPayrollEmployeeData(formattedData);
-        setGrandTotals(res.data.summary);
-        setTableData(formattedData);
-        setTotalRecs(formattedData.length);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-
-    // axios
-    // .get(`/api/payroll-management/employeeDetails/${batchId}`)
-    // .then((res) => {
-    //   setPayrollEmployeeData(res.data.data);
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    // });
-
-
-  }, [batchId]
-  );
-
-
-
-
-
-  useEffect(() => {
-    getEmployeeCount();
-  }, [])
-
-  const getEmployeeCount = () => {
-    const response = axios.get("/api/employees/get").then((res) => {
-      setEmployeeDataCount(res.data.length);
-    }).catch((err) => {
-      Swal.fire({
-        icon: "error",
-        title: "Error fetching employee count",
-        text: err.message,
-      });
-    });
-  }
-
-  // Total Month & Working days
-  const [monthDetails, setMonthDetails] =
-    useState({
-      totalDays: 0,
-      workingDays: 0,
-    });
-
-  const getMonthDetails = (
-    monthName
-  ) => {
-    const monthIndex = new Date(
-      `${monthName} 1`
-    ).getMonth();
-
-    // Total Days
-    const totalDays = new Date(
-      2026,
-      monthIndex + 1,
-      0
-    ).getDate();
-
-    // Working Days
-    let workingDays = 0;
-
-    for (
-      let day = 1;
-      day <= totalDays;
-      day++
-    ) {
-      const date = new Date(
+      // Total Days
+      const totalDays = new Date(
         2026,
-        monthIndex,
-        day
-      );
+        monthIndex + 1,
+        0
+      ).getDate();
 
-      const weekDay =
-        date.getDay();
+      // Working Days
+      let monthWorkingDays = 0;
+      let monthWeeklyOff = 8;
 
-      if (
-        weekDay !== 0 &&
-        weekDay !== 6
+      for (
+        let day = 1;
+        day <= totalDays;
+        day++
       ) {
-        workingDays++;
+        const date = new Date(
+          2026,
+          monthIndex,
+          day
+        );
+        const weekDay =
+          date.getDay();
+
+        if (
+          weekDay !== 0 &&
+          weekDay !== 6
+        ) {
+          monthWorkingDays++;
+        }
       }
+      const details = {
+        totalDays,
+        monthWorkingDays,
+        monthWeeklyOff
+      };
+
+      setMonthDetails(details);
+
+      return details;
+
+    };
+
+    useEffect(() => {
+
+        // --------- Get Payroll Summary Data
+        axios
+        .get(`/api/payroll-management/summaryData/${batchId}`)
+        .then((res) => {
+          const summaryDatas = res.data.data; 
+          setSummaryData(res.data.data);
+          fetchHolidayCount(summaryDatas.payrollYear, summaryDatas.payrollMonth);
+          console.log('Summary ',summaryDatas);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+        const mdetails = getMonthDetails(summaryData.payrollMonth);
+        
+
+
+        // ----------- Get public holidys count
+
+        const fetchHolidayCount = async (yrr,mnn) => {
+            try {
+              const res = await axios.get(
+                "/api/payroll-management/holidaysCount",
+                {
+                  params: {
+                    year: yrr,
+                    month: mnn,
+                  },
+                }
+              );
+              setHolidayCount(res.data.holidayCount)
+            // setTableData((prev) =>
+            //   prev.map((emp) => ({
+            //     ...emp,
+            //     publicHolidays: res.data.holidayCount,
+            //     workingDays: mdetails.monthWorkingDays - res.data.holidayCount,
+            //   }))
+            // );   
+
+            } catch (error) {
+              console.error(error);
+            }
+          };
+
+
+        // --------- Get Selected Employee data for Payroll
+        
+        const fetchEmployees = async () => {
+          try {
+            const res = await axios.get(
+              `/api/payroll-management/employeeDetails/${batchId}`
+            );
+            const formattedData = res.data.data.map((emp) => ({
+              ...emp,
+              employeeName: emp.employeeFullName,
+              previewEmpID: emp.employeeID,
+              monthDays: mdetails.totalDays, 
+              weeklyOff: mdetails.monthWeeklyOff,
+              netPaidDays: 0,
+              grssSalary: "₹" + (emp.gross || 0).toLocaleString(),
+              variablePay: 0,
+              overTime: emp.attendanceSummary?.overtimeHours || 0,
+              deduction: "₹" + (emp.deductions || 0).toLocaleString(),
+              netPay: "₹" + (emp.netSalary || 0).toLocaleString(),
+              eligibility: emp.payrollEligibility,
+            }));
+
+            setPayrollEmployeeData(res.data.data);
+            setGrandTotals(res.data.summary);
+            //setTableData(formattedData);
+            setTotalRecs(formattedData.length);
+
+            setAttenEmpIds(
+              res.data.data.map((emp) => emp.employeeID)
+            );
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        if (batchId) {
+          fetchEmployees();
+        }
+
+
+    }, [batchId]);
+
+
+    useEffect(() => {
+      const fetchAttendance = async () => {
+        try {
+          if (
+            attenEmpIds.length === 0 ||
+            !summaryData?.payrollMonth ||
+            !summaryData?.payrollYear
+          ) {
+            return;
+          }
+          const attendanceRes = await axios.post(
+            "/api/payroll-management/employeePayrollAttendance",
+              {
+                employeeIds: attenEmpIds,
+                month: summaryData.payrollMonth,
+                year: summaryData.payrollYear,
+              }
+          );
+
+          console.log("attendance data:", attendanceRes.data);
+
+          // const attendanceMap = attendanceRes.data.data.reduce(
+          //   (acc, item) => {
+          //     acc[item._id] = item;
+          //     return acc;
+          //   },
+          //   {}
+          // );
+
+          // setAttendanceData(attendanceMap);
+
+          setAttendanceData(attendanceRes.data);
+
+          const attendanceMap = attendanceRes.data.data.reduce((acc, item) => {
+            acc[item._id] = item.workingDays;   // presentDays
+            return acc;
+          }, {});
+
+          setPayrollEmployeeData((prev) =>
+            prev.map((emp) => ({
+              ...emp,
+              presentDays: attendanceMap[emp.employeeID] || 0,
+            }))
+          );
+
+          // setTableData((prev) =>
+          //   prev.map((emp) => ({
+          //     ...emp,
+          //     presentDays: attendanceMap[emp.employeeID] || 0,
+          //     absentDays: 100,
+          //   }))
+          // );
+
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchAttendance();
+    }, [
+      attenEmpIds,
+      summaryData?.payrollMonth,
+      summaryData?.payrollYear,
+    ]);
+
+    useEffect(() => {
+      getEmployeeCount();
+    }, [])
+
+    const getEmployeeCount = () => {
+      const response = axios.get("/api/employees/get").then((res) => {
+        setEmployeeDataCount(res.data.length);
+      }).catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error fetching employee count",
+          text: err.message,
+        });
+      });
     }
 
-    setMonthDetails({
-      totalDays,
-      workingDays,
+
+
+
+useEffect(() => {
+  if (!payrollEmployeeData.length) return;
+
+  // const formattedData = payrollEmployeeData.map((emp) => ({
+  //   ...emp,
+  //   employeeName: emp.employeeFullName,
+  //   previewEmpID: emp.employeeID,
+  //   monthDays: monthDetails.totalDays || 0,
+  //   weeklyOff: monthDetails.monthWeeklyOff || 0,
+  //   publicHolidays: holidayCount,
+  //   workingDays: (monthDetails.monthWorkingDays || 0) - holidayCount,
+  //   presentDays: attendanceData[emp.employeeID] || 0,
+  //   absentDays: 11,
+  //   netPaidDays: 0,
+  //   grssSalary: "₹" + (emp.gross || 0).toLocaleString(),
+  //   variablePay: 0,
+  //   overTime: emp.attendanceSummary ?.overtimeHours || 0,
+  //   deduction: "₹" + (emp.deductions || 0).toLocaleString(),
+  //   netPay: "₹" + (emp.netSalary || 0).toLocaleString(),
+  //   eligibility:
+  //     emp.payrollEligibility,
+  // }));
+
+
+    const formattedData = payrollEmployeeData.map((emp) => {
+    const attendance = attendanceData[emp.employeeID] || {};
+console.log("atten - ", attendanceData);
+      return {
+        ...emp,
+        employeeName: emp.employeeFullName,
+        previewEmpID: emp.employeeID,
+
+        monthDays: monthDetails.totalDays || 0,
+        weeklyOff: monthDetails.monthWeeklyOff || 0,
+        publicHolidays: holidayCount,
+
+        workingDays: (monthDetails.monthWorkingDays || 0) - holidayCount,
+
+        absentDays:
+          (attendance.workingDays || 0) -
+          (attendance.presentDays || attendance.workingDays || 0),
+
+        netPaidDays: 0,
+
+        grssSalary: "₹" + (emp.gross || 0).toLocaleString(),
+
+        variablePay: 0,
+
+        overTime:
+          emp.attendanceSummary?.overtimeHours || 0,
+
+        deduction:
+          "₹" + (emp.deductions || 0).toLocaleString(),
+
+        netPay:
+          "₹" + (emp.netSalary || 0).toLocaleString(),
+
+        eligibility: emp.payrollEligibility,
+      };
     });
-  };
 
-
-
-  const tableHeading = {
-    employeeName: "Employee",
-    netPaid: "Net Paid Days",
-    grssSalary: "Gross Salary",
-    variablePay: "Variable Pay",
-    overTime: "Over Time",
-    deduction: "Deduction",
-    netPay: "Net Payable",
-    eligibility: "Eligibility",
-  };
-
+  setTableData(formattedData);
+}, [
+  payrollEmployeeData,
+  attendanceData,
+  holidayCount,
+  monthDetails,
+]);
 
 
   return (
@@ -362,14 +512,6 @@ export default function EmployeePreview() {
               </div>
             ))}
           </div>
-
-          {/* Buttons */}
-          <div className="flex items-center gap-3">
-            <button className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium flex items-center gap-2 shadow">
-              <Filter className="w-4 h-4" />
-              Apply Filters
-            </button>
-          </div>
         </div>
       </div>
 
@@ -386,12 +528,10 @@ export default function EmployeePreview() {
                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
                   <CalendarDays className="w-6 h-6" />
                 </div>
-
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">
-                    {getMonthName(summaryData.payrollMonth)} {summaryData.payrollYear} Cycle
+                    {getMonthName(summaryData.payrollMonth)} {summaryData.payrollYear}
                   </h2>
-
                   <p className="text-sm text-gray-500 mt-1">
                     {formatDate(summaryData.payrollStartDate)} - {formatDate(summaryData.payrollEndDate)}
                   </p>
@@ -400,7 +540,7 @@ export default function EmployeePreview() {
 
               {/* Batch ID */}
               <div className="px-4 py-2 rounded-full border border-gray-200 text-xs font-semibold text-gray-600">
-                ID: PAY-2024-07-0042
+                ID: {summaryData.payrollBatchNo}
               </div>
             </div>
 
@@ -408,11 +548,11 @@ export default function EmployeePreview() {
             <div className="grid grid-cols-3 gap-6 mt-8">
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
-                  Company
+                  Location
                 </p>
 
                 <h3 className="text-sm font-semibold mt-2">
-                  Global Tech Solutions Inc.
+                  {summaryData.locations}
                 </h3>
               </div>
 
@@ -533,7 +673,7 @@ export default function EmployeePreview() {
                 </span>
 
                 <span className="font-bold">
-                  {monthDetails.workingDays} Days
+                  {monthDetails.monthWorkingDays} Days
                 </span>
               </div>
 
@@ -550,7 +690,7 @@ export default function EmployeePreview() {
 
             <div className="mt-8 flex items-center gap-2 text-sm text-green-600 font-medium">
               <CircleCheck className="w-4 h-4" />
-              All calculations based on US-CAL-2024
+              All calculations based on India
             </div>
           </div>
         </div>
@@ -574,7 +714,6 @@ export default function EmployeePreview() {
               positive={false}
               valueClassName="text-base text-sm"
             />
-
             <SummaryCard
               title="Total Deductions"
               value={`₹${grandTotals.totalDeductions?.toLocaleString()}`}
@@ -582,7 +721,6 @@ export default function EmployeePreview() {
               change="-1.5%"
               positive
             />
-
             <SummaryCard
               title="Total Net Payable"
               value={`₹${grandTotals.totalNet?.toLocaleString()}`}
@@ -591,7 +729,6 @@ export default function EmployeePreview() {
               positive
               bg="bg-blue-50"
             />
-
             <SummaryCard
               title="Overtime Liability"
               value="₹0"
@@ -613,7 +750,7 @@ export default function EmployeePreview() {
                 Compliance Liability
               </p>
 
-              <h2 className="text-4xl font-bold mt-2">
+              <h2 className="text-2xl font-bold mt-2">
                 ₹0
               </h2>
             </div>
@@ -627,7 +764,7 @@ export default function EmployeePreview() {
                 Employer Contribution
               </p>
 
-              <h2 className="text-4xl font-bold mt-2">
+              <h2 className="text-2xl font-bold mt-2">
                 ₹{grandTotals.employerContri?.toLocaleString()}
               </h2>
             </div>
@@ -641,7 +778,7 @@ export default function EmployeePreview() {
                 Total Selected Employees
               </p>
 
-              <h2 className="text-4xl font-bold mt-2 text-gray-900">
+              <h2 className="text-2xl font-bold mt-2 text-gray-900">
                 0
               </h2>
             </div>
@@ -649,7 +786,7 @@ export default function EmployeePreview() {
         </div>
 
         {/* Validation Checks */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-8">
+        {/* <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-8">
           <div className="flex items-center gap-3 mb-5">
             <h3 className="text-sm font-bold uppercase tracking-wide text-gray-700">
               Critical Validation Checks
@@ -676,7 +813,7 @@ export default function EmployeePreview() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Employee Table */}
         <div className="bg-white border border-gray-200 rounded-2xl mt-8 overflow-hidden p-10">
@@ -688,19 +825,13 @@ export default function EmployeePreview() {
               </h2>
 
               <p className="text-sm text-gray-500 mt-1">
-                Showing 245 calculated entries
+                
               </p>
             </div>
 
             <div className="flex items-center gap-3">
             </div>
           </div>
-
-          {/* <FilterTable
-                tableHeading={tableHeading}
-                tableObjects={tableObjects}
-                getData={payrollEmployeeData}
-                /> */}
 
           {/* NEW Table  */}
 
@@ -726,9 +857,6 @@ export default function EmployeePreview() {
             loading={false}
             checkboxSelection={false}
           />
-
-
-
 
           {/* Footer */}
           <div className="flex items-center justify-between px-6 py-5 bg-white">
