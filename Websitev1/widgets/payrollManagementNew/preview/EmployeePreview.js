@@ -162,9 +162,6 @@ export default function EmployeePreview() {
     const [searchText, setSearchText] = useState("");
     const [totalRecs, setTotalRecs] = useState(0);
     const [runCount, setRunCount] = useState(0);
-    const [attenEmpIds, setAttenEmpIds] = useState([]);
-    const [allData, setAllData] = useState([]);
-
     const [payrollEmployeeData, setPayrollEmployeeData] = useState([]);
     const [attendanceData, setAttendanceData] = useState({});
     const [holidayCount, setHolidayCount] = useState(0);
@@ -245,33 +242,33 @@ export default function EmployeePreview() {
         const mdetails = getMonthDetails(summaryData.payrollMonth);
         
 
-
         // ----------- Get public holidys count
 
         const fetchHolidayCount = async (yrr,mnn) => {
-            try {
-              const res = await axios.get(
-                "/api/payroll-management/holidaysCount",
-                {
-                  params: {
-                    year: yrr,
-                    month: mnn,
-                  },
-                }
-              );
-              setHolidayCount(res.data.holidayCount)
-            // setTableData((prev) =>
-            //   prev.map((emp) => ({
-            //     ...emp,
-            //     publicHolidays: res.data.holidayCount,
-            //     workingDays: mdetails.monthWorkingDays - res.data.holidayCount,
-            //   }))
-            // );   
+          try {
+            const res = await axios.get(
+              "/api/payroll-management/holidaysCount",
+              {
+                params: {
+                  year: yrr,
+                  month: mnn,
+                },
+              }
+            );
+            
+            setHolidayCount(res.data.holidayCount);
 
-            } catch (error) {
-              console.error(error);
-            }
-          };
+            setTableData((prev) =>
+              prev.map((emp) => ({
+                ...emp,
+                publicHolidays: res.data.holidayCount,
+              }))
+            ); 
+
+          } catch (error) {
+            console.error(error);
+          }
+        };
 
 
         // --------- Get Selected Employee data for Payroll
@@ -285,8 +282,11 @@ export default function EmployeePreview() {
               ...emp,
               employeeName: emp.employeeFullName,
               previewEmpID: emp.employeeID,
-              monthDays: mdetails.totalDays, 
-              weeklyOff: mdetails.monthWeeklyOff,
+              monthDays: emp.attendanceSummary.totalCalendarDays, 
+              weeklyOff: emp.attendanceSummary.totalWeeklyOffs,
+              presentDays: emp.attendanceSummary.totalPresentDays,
+              workingDays: emp.attendanceSummary.totalWorkingDays,
+              absentDays: emp.attendanceSummary.totalAbsentDays,
               netPaidDays: 0,
               grssSalary: "₹" + (emp.gross || 0).toLocaleString(),
               variablePay: 0,
@@ -298,7 +298,7 @@ export default function EmployeePreview() {
 
             setPayrollEmployeeData(res.data.data);
             setGrandTotals(res.data.summary);
-            //setTableData(formattedData);
+            setTableData(formattedData);
             setTotalRecs(formattedData.length);
 
             setAttenEmpIds(
@@ -311,74 +311,8 @@ export default function EmployeePreview() {
         if (batchId) {
           fetchEmployees();
         }
-
-
     }, [batchId]);
 
-
-    useEffect(() => {
-      const fetchAttendance = async () => {
-        try {
-          if (
-            attenEmpIds.length === 0 ||
-            !summaryData?.payrollMonth ||
-            !summaryData?.payrollYear
-          ) {
-            return;
-          }
-          const attendanceRes = await axios.post(
-            "/api/payroll-management/employeePayrollAttendance",
-              {
-                employeeIds: attenEmpIds,
-                month: summaryData.payrollMonth,
-                year: summaryData.payrollYear,
-              }
-          );
-
-          console.log("attendance data:", attendanceRes.data);
-
-          // const attendanceMap = attendanceRes.data.data.reduce(
-          //   (acc, item) => {
-          //     acc[item._id] = item;
-          //     return acc;
-          //   },
-          //   {}
-          // );
-
-          // setAttendanceData(attendanceMap);
-
-          setAttendanceData(attendanceRes.data);
-
-          const attendanceMap = attendanceRes.data.data.reduce((acc, item) => {
-            acc[item._id] = item.workingDays;   // presentDays
-            return acc;
-          }, {});
-
-          setPayrollEmployeeData((prev) =>
-            prev.map((emp) => ({
-              ...emp,
-              presentDays: attendanceMap[emp.employeeID] || 0,
-            }))
-          );
-
-          // setTableData((prev) =>
-          //   prev.map((emp) => ({
-          //     ...emp,
-          //     presentDays: attendanceMap[emp.employeeID] || 0,
-          //     absentDays: 100,
-          //   }))
-          // );
-
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchAttendance();
-    }, [
-      attenEmpIds,
-      summaryData?.payrollMonth,
-      summaryData?.payrollYear,
-    ]);
 
     useEffect(() => {
       getEmployeeCount();
@@ -395,78 +329,6 @@ export default function EmployeePreview() {
         });
       });
     }
-
-
-
-
-useEffect(() => {
-  if (!payrollEmployeeData.length) return;
-
-  // const formattedData = payrollEmployeeData.map((emp) => ({
-  //   ...emp,
-  //   employeeName: emp.employeeFullName,
-  //   previewEmpID: emp.employeeID,
-  //   monthDays: monthDetails.totalDays || 0,
-  //   weeklyOff: monthDetails.monthWeeklyOff || 0,
-  //   publicHolidays: holidayCount,
-  //   workingDays: (monthDetails.monthWorkingDays || 0) - holidayCount,
-  //   presentDays: attendanceData[emp.employeeID] || 0,
-  //   absentDays: 11,
-  //   netPaidDays: 0,
-  //   grssSalary: "₹" + (emp.gross || 0).toLocaleString(),
-  //   variablePay: 0,
-  //   overTime: emp.attendanceSummary ?.overtimeHours || 0,
-  //   deduction: "₹" + (emp.deductions || 0).toLocaleString(),
-  //   netPay: "₹" + (emp.netSalary || 0).toLocaleString(),
-  //   eligibility:
-  //     emp.payrollEligibility,
-  // }));
-
-
-    const formattedData = payrollEmployeeData.map((emp) => {
-    const attendance = attendanceData[emp.employeeID] || {};
-console.log("atten - ", attendanceData);
-      return {
-        ...emp,
-        employeeName: emp.employeeFullName,
-        previewEmpID: emp.employeeID,
-
-        monthDays: monthDetails.totalDays || 0,
-        weeklyOff: monthDetails.monthWeeklyOff || 0,
-        publicHolidays: holidayCount,
-
-        workingDays: (monthDetails.monthWorkingDays || 0) - holidayCount,
-
-        absentDays:
-          (attendance.workingDays || 0) -
-          (attendance.presentDays || attendance.workingDays || 0),
-
-        netPaidDays: 0,
-
-        grssSalary: "₹" + (emp.gross || 0).toLocaleString(),
-
-        variablePay: 0,
-
-        overTime:
-          emp.attendanceSummary?.overtimeHours || 0,
-
-        deduction:
-          "₹" + (emp.deductions || 0).toLocaleString(),
-
-        netPay:
-          "₹" + (emp.netSalary || 0).toLocaleString(),
-
-        eligibility: emp.payrollEligibility,
-      };
-    });
-
-  setTableData(formattedData);
-}, [
-  payrollEmployeeData,
-  attendanceData,
-  holidayCount,
-  monthDetails,
-]);
 
 
   return (

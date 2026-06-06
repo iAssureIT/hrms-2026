@@ -55,7 +55,6 @@ const getBadge = (text) => {
   ) {
     return badgeStyles.red;
   }
-
   return badgeStyles.green;
 };
 
@@ -675,7 +674,7 @@ export default function EmployeeSelection() {
       };
 
       const response = await axios.post(
-        "/api/payroll-management/create-payroll-batch",
+        `/api/payroll-management/create-payroll-batch?month=${payrollMonth}&year=${payrollYear}`,
         payload
       );
 
@@ -790,7 +789,7 @@ export default function EmployeeSelection() {
       {/* Main */}
       < div className="p-8" >
         {/* Title */}
-        <div div className="mb-7" >
+        <div className="mb-7" >
           <h1 className="text-3xl font-bold text-gray-900">
             Payroll Execution: Employee Selection
           </h1>
@@ -1023,7 +1022,7 @@ export default function EmployeeSelection() {
         </div>
 
         {/* Stats */}
-        <div div className="grid grid-cols-4 gap-5 mt-6" >
+        <div className="grid grid-cols-4 gap-5 mt-6" >
           <StatCard
             icon={
               <CalendarDays className="w-5 h-5" />

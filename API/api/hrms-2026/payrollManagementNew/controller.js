@@ -89,26 +89,6 @@ exports.createPayrollBatch = async (req, res) => {
       remarks,
     });
 
-    // Create Payroll Details Records
-    // let insertedRecords = [];
-
-    // if (employeeData && Array.isArray(employeeData) && employeeData.length > 0 ) {
-    //   const records = employeeData.map(
-    //     (item) => ({
-    //         _id: new mongoose.Types.ObjectId(),
-    //         payrollBatchId: payrollBatch._id,
-    //         payrollBatchNo: payrollBatch.payrollBatchNo,
-    //         employeeID: item.employeeID,
-    //         employeeFullName: item.employeeName,
-    //     })
-    //   );
-
-    //   insertedRecords =
-    //     await PayrollDetails.insertMany(
-    //       records
-    //     );
-    // }
-
     const employeeIds = employeeData.map(emp => emp.employeeID);
 
     const salaryStructures = await EmployeeSalary.find({
@@ -119,31 +99,108 @@ exports.createPayrollBatch = async (req, res) => {
       salaryStructures.map(item => [item.employeeId, item])
     );
 
-    const records = employeeData.map((item) => {
-      const salary = salaryMap.get(item.employeeID);
 
-      return {
-        _id: new mongoose.Types.ObjectId(),
-        payrollBatchId: payrollBatch._id,
-        payrollBatchNo: payrollBatch.payrollBatchNo,
-        employeeID: item.employeeID,
-        employeeFullName: item.employeeName,
+    const startDate = new Date(
+      payrollYear,
+      payrollMonth - 1,
+      1
+    );
 
-        employeeSalaryStructure: {
-          annualCTC:
-            salary?.salaryData?.find(
-              s => s.components === "CTC"
-            )?.amount || 0,
+    const endDate = new Date(
+      payrollYear,
+      payrollMonth,
+      0,
+      23,
+      59,
+      59,
+      999
+    );
 
-          salaryComponents:
-            salary?.salaryData?.map(comp => ({
-              componentCode: comp.components,
-              componentName: comp.components,
-              monthlyAmount: comp.amount,
-              annualAmount: comp.amount * 12,
-            })) || [],
+    const attendanceLogs =
+      await AttendanceLogs.find({
+        employeeID: { $in: employeeIds },
+        date: {
+          $gte: startDate,
+          $lte: endDate,
         },
-      };
+      }).lean();
+
+    const attendanceMap = new Map();
+
+    attendanceLogs.forEach((log) => {
+      if (!attendanceMap.has(log.employeeID)) {
+        attendanceMap.set(log.employeeID, []);
+      }
+
+      attendanceMap.get(log.employeeID).push({
+        employeeID: log.employeeID,
+        date: log.date,
+        inTime: log.inTime,
+        outTime: log.outTime,
+        overtime: log.overtime,
+      });
+    });
+
+    const records = employeeData.map((item) => {
+
+        const salary = salaryMap.get(item.employeeID);
+        const attendance =
+          attendanceMap.get(
+            item.employeeID
+          ) || [];        
+
+          const totalPresentDays = attendance.filter(
+            (a) => a.status === "P"
+          ).length;
+
+          const totalAbsentDays = attendance.filter(
+            (a) => a.status === "A"
+          ).length;
+
+          const totalHalfDays = attendance.filter(
+            (a) => a.status === "HD"
+          ).length;
+
+          const overtimeHours = attendance.reduce(
+            (sum, a) => sum + (a.overtime || 0),
+            0
+          );
+
+
+        return {
+          _id: new mongoose.Types.ObjectId(),
+          payrollBatchId: payrollBatch._id,
+          payrollBatchNo: payrollBatch.payrollBatchNo,
+          employeeID: item.employeeID,
+          employeeFullName: item.employeeName,
+
+          employeeSalaryStructure: {
+            annualCTC:
+              salary?.salaryData?.find(
+                s => s.components === "CTC"
+              )?.amount || 0,
+
+            salaryComponents:
+              salary?.salaryData?.map(comp => ({
+                componentCode: comp.components,
+                componentName: comp.components,
+                monthlyAmount: comp.amount,
+                annualAmount: comp.amount * 12,
+              })) || [],
+          },
+          
+          attendanceSummary: {
+              totalCalendarDays: endDate.getDate(),
+              totalWorkingDays: 22,
+              totalPresentDays: attendance.length,
+              totalAbsentDays: 22 - attendance.length,
+              totalWeeklyOffs: 8,
+              totalPublicHolidays: 0,
+              totalHalfDays,
+              overtimeHours,
+            },
+        };
+
     });
 
     await PayrollDetails.insertMany(records);
