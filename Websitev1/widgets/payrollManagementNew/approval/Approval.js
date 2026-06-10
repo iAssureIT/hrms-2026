@@ -1,5 +1,5 @@
 "use client";
-
+import { useParams, useRouter } from "next/navigation";
 import {
   CheckCircle2,
   ChevronRight,
@@ -181,6 +181,12 @@ function SummaryCard({
 }
 
 export default function PayrollApprovalPage() {
+
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+        router.push(`/admin/payrollManagementNew/execution`);
+  }
 
   return (
     <div className="min-h-screen bg-[#f5f7fb]">
@@ -431,7 +437,7 @@ export default function PayrollApprovalPage() {
                 Download Approved Payroll
               </button>
 
-              <button className="h-11 px-6 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-semibold shadow flex items-center gap-2">
+              <button onClick={handleSubmit} className="h-11 px-6 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-semibold shadow flex items-center gap-2">
                 <Play className="w-4 h-4" />
                 Execute Payroll
               </button>
