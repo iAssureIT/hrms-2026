@@ -1,4 +1,4 @@
-import PayrollWorkflowForm from "@/widgets/payrollManagementNew/payrollWorkflow/WorkflowMaster";
+import PayrollWorkflowForm from "@/widgets/payrollManagementNew/payrollworkflow/WorkflowMaster";
 
 const WorkflowMasterPage = () => {
   return <PayrollWorkflowForm />;
