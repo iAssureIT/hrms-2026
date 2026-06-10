@@ -305,6 +305,8 @@ export default function LoginPage() {
             "asset-incharge",
             "asset-admin",
             "fa-accounts",
+            "employee",
+            "project-manager",            
           ],
         });
         if (response.data.message === "Login Auth Successful") {

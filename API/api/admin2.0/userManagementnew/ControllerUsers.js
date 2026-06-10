@@ -3118,30 +3118,35 @@ exports.fetch_users_status = (req, res, next) => {
 exports.post_list_users_filter = (req, res, next) => {
   var status = req.body.status;
   var role = req.body.role;
+  const deletedStatuses = [
+    "deleted",
+    "deleted-active",
+    "deleted-blocked",
+    "deleted-inactive",
+  ];
+  const sendUserListError = (err) => {
+    console.log("Error fetching users list", err);
+    res.status(500).json({
+      error: err?.message || "Failed to fetch users list",
+    });
+  };
+
   if (
     (role === "all" || role === "-") &&
     (status === "all" || status === "-")
   ) {
     var selector = {
       "profile.status": {
-        $nin: [
-          "deleted",
-          "deleted-active",
-          "deleted-blocked",
-          "deleted-inactive",
-        ],
+        $exists: true,
+        $nin: deletedStatuses,
       },
     };
   } else if (status === "all" || status === "-") {
     var selector = {
       roles: { $in: [role] },
       "profile.status": {
-        $nin: [
-          "deleted",
-          "deleted-active",
-          "deleted-blocked",
-          "deleted-inactive",
-        ],
+        $exists: true,
+        $nin: deletedStatuses,
       },
     };
   } else if (role === "all" || role === "-") {
@@ -3150,12 +3155,7 @@ exports.post_list_users_filter = (req, res, next) => {
         { "profile.status": req.body.status },
         {
           "profile.status": {
-            $nin: [
-              "deleted",
-              "deleted-active",
-              "deleted-blocked",
-              "deleted-inactive",
-            ],
+            $nin: deletedStatuses,
           },
         },
       ],
@@ -3166,24 +3166,23 @@ exports.post_list_users_filter = (req, res, next) => {
         { "profile.status": status },
         {
           "profile.status": {
-            $nin: [
-              "deleted",
-              "deleted-active",
-              "deleted-blocked",
-              "deleted-inactive",
-            ],
+            $nin: deletedStatuses,
           },
         },
       ],
       roles: { $in: [role] },
     };
   }
-  let recsPerPage = req.body.recsPerPage;
-  let pageNum = req.body.pageNumber;
+  let recsPerPage = parseInt(req.body.recsPerPage) || 10;
+  let pageNum = parseInt(req.body.pageNumber) || 1;
   let skipRec = recsPerPage * (pageNum - 1);
 
-  if (req.body.searchText !== "-") {
-    const searchRegex = new RegExp(req.body.searchText, "i"); // 'i' for case-insensitive
+  if (req.body.searchText && req.body.searchText !== "-") {
+    const escapedSearchText = String(req.body.searchText).replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+    const searchRegex = new RegExp(escapedSearchText, "i"); // 'i' for case-insensitive
     selector.$or = [
       { "profile.firstname": searchRegex },
       { "profile.lastname": searchRegex },
@@ -3211,29 +3210,28 @@ exports.post_list_users_filter = (req, res, next) => {
       usersQuery
         .exec()
         .then((data) => {
-          console.log('data post/list==>>',data);
           if (data) {
             var returnData = data.map((user) => {
-              var loginTokenscount =
-                user?.services?.resume?.loginTokens?.length;
+              const profile = user?.profile || {};
+              const loginTokens = user?.services?.resume?.loginTokens || [];
+              var loginTokenscount = loginTokens.length;
               return {
                 _id: user._id,
-                firstname: user.profile.firstname,
-                lastname: user.profile.lastname,
-                companyID: user.profile.companyID,
-                companyName: user.profile.companyName,
-                center_id: user.profile.center_id,
-                centerName: user.profile.centerName,
-                email: user.profile.email ? user.profile.email : " ",
-                mobNumber: user.profile.mobile ? user.profile.mobile : " ",
-                role: user.roles,
-                status: user.profile.status,
-                fullName: user.profile.fullName,
+                firstname: profile.firstname || "",
+                lastname: profile.lastname || "",
+                companyID: profile.companyID,
+                companyName: profile.companyName || "",
+                center_id: profile.center_id,
+                centerName: profile.centerName || "",
+                email: profile.email ? profile.email : " ",
+                mobNumber: profile.mobile ? profile.mobile : " ",
+                role: Array.isArray(user.roles) ? user.roles : [],
+                status: profile.status || "",
+                fullName: profile.fullName || "",
                 createdAt: user.createdAt,
                 lastLogin:
                   loginTokenscount > 0
-                    ? user.services.resume.loginTokens[loginTokenscount - 1]
-                      .loginTimeStamp
+                    ? loginTokens[loginTokenscount - 1].loginTimeStamp
                     : null,
               };
             });
@@ -3248,18 +3246,11 @@ exports.post_list_users_filter = (req, res, next) => {
           }
         })
         .catch((err) => {
-          console.log("err 1", err);
-
-          res.status(500).json({
-            error: err,
-          });
+          sendUserListError(err);
         });
     })
     .catch((err) => {
-      console.log("err 2", err);
-      res.status(500).json({
-        error: err,
-      });
+      sendUserListError(err);
     });
 };
 

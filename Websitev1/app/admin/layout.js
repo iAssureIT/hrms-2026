@@ -1125,6 +1125,11 @@ export default function RootLayout({ children }) {
       submenuItems: [
         {
           icon: <FaRegCircle />,
+          title: "Payroll Dashboard",
+          link: "/admin/payrollManagementNew/dashboard",
+        },        
+        {
+          icon: <FaRegCircle />,
           title: "Employee Selection",
           link: "/admin/payrollManagementNew/employee-selection",
         },

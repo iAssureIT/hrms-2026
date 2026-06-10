@@ -526,6 +526,8 @@ const Navbar = ({ navbarData, profileMenus, onItemClick, setOpen }) => {
 
     switch (role) {
       case "admin":
+      case "employee":
+      case "project-manager":    
         window.location.replace("/admin/dashboard");
         break;
       case "center-incharge":

@@ -118,6 +118,8 @@ function Login(props) {
             "asset-incharge",
             "asset-admin",
             "fa-accounts",
+            "employee",
+            "project-manager",            
           ],
         });
         console.log("response of login api -->", response);
@@ -126,7 +128,7 @@ function Login(props) {
           const userDetails = response.data.userDetails || {};
 
           ls.set("userDetails", userDetails, { encrypt: true });
-          if (userDetails.roles.includes("admin")) {
+          if (userDetails.roles.includes("admin") || userDetails.roles.includes("employee") || userDetails.roles.includes("project-manager")) {
             window.location.replace("/admin/dashboard");
           } else if (userDetails.roles.includes("center-incharge")) {
             window.location.replace("/center/dashboard");

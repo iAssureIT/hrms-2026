@@ -133,6 +133,7 @@ const payrollSummarySchema = new mongoose.Schema(
         workflowLevel: { type: String, trim: true, },
         userId: { type: mongoose.Schema.Types.Mixed, },
         userName: { type: String, trim: true, },
+        empId: { type: String, trim: true, },
         action: { type: String, enum: ["Approved", "Rejected"], },
         remarks: { type: String, trim: true, default: "", },
         dateTime: { type: Date, default: Date.now, },

@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const PayrollSummary = require("./Model_payrollSummary.js");
 const PayrollDetails = require("./Model_payrollDetails.js");
+const PayrollWorkflowMaster = require("./Model_payrollWorkflowMaster.js");
 const EmployeeSalary = require("../payroll/salary/structure/model.js");
 const AttendanceLogs = require("../attendanceManagement/model.js");
 const Holiday = require("../holidayManagement/model.js");
+const User = require("../../admin2.0/userManagementnew/ModelUsers.js");
 
 const moment = require("moment");
 
@@ -254,28 +256,52 @@ exports.getPayrollSummaryById = async (req, res) => {
   }
 };
 
-// exports.getPayrollEmployeeDetailsById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const payrollDetails = await PayrollDetails.find({
-//       payrollBatchId: id,
-//     });
+exports.getPayrollSummary = async (req, res) => {
+  try {
+    const { year, month, location, department, designation } = req.query;
 
-//     return res.status(200).json({
-//       success: true,
-//       count: payrollDetails.length,
-//       data: payrollDetails,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching payroll details:", error);
+    const filter = {};
 
-//     return res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
+    if (year) {
+      filter.payrollYear = Number(year);
+    }
 
+    if (month) {
+      filter.payrollMonth = Number(month);
+    }
+
+    if (location) {
+      filter.locations = location;
+    }
+
+    if (department) {
+      filter.departments = department;
+    }
+
+    if (designation) {
+      filter.designations = designation;
+    }
+
+    console.log("Filter:", filter);
+
+    const payrollSummaries = await PayrollSummary.find(filter)
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: payrollSummaries.length,
+      data: payrollSummaries,
+    });
+  } catch (error) {
+    console.error("Error fetching payroll summaries:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
 
 exports.getPayrollEmployeeDetailsById = async (req, res) => {
   try {
@@ -353,7 +379,6 @@ exports.getPayrollEmployeeDetailsById = async (req, res) => {
   }
 };
 
-
 exports.getPayrollEmployeeAttendance = async (req, res) => {
   try {
     const { employeeIds, month, year } = req.body;
@@ -391,8 +416,6 @@ exports.getPayrollEmployeeAttendance = async (req, res) => {
     });
   }
 };
-
-
 
 exports.getHolidaysCount = async (req, res) => { 
   try {
@@ -436,6 +459,64 @@ exports.getHolidaysCount = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+exports.createPayrollWorkflowMaster = async (req, res) => {
+  try {
+    const workflows = req.body;
+
+    console.log("createPayrollWorkflowMaster payload:", JSON.stringify(workflows));
+
+    const result = await PayrollWorkflowMaster.insertMany(workflows);
+
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in createPayrollWorkflowMaster:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// --- get employee list for create payroll workflow master
+exports.getWorkflowApproverList = async (req, res) => {
+  try {
+    const users = await User.find(
+      {},
+      {
+        username: 1,
+        "profile.firstname": 1,
+        "profile.lastname": 1,
+        "profile.email": 1,
+      }
+    ).lean();
+
+    const data = users.map((user) => ({
+      _id: user._id,
+      username: user.username,
+      employeeName: `${user.profile?.firstname || ""} ${
+        user.profile?.lastname || ""
+      }`.trim(),
+      email: user.profile?.email || "",
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: data.length,
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching workflow users:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };

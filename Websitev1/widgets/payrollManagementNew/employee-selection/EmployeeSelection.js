@@ -19,9 +19,9 @@ import {
   CalendarRange,
   ChevronDown,
 } from "lucide-react";
+import Swal from "sweetalert2";
 import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
 import { FaUser } from "react-icons/fa";
-import Swal from "sweetalert2";
 
 const badgeStyles = {
   green:
@@ -365,10 +365,10 @@ export default function EmployeeSelection() {
   // console.log("firstDateISO:", firstDateISO);
   // console.log("lastDateISO:", lastDateISO);
 
-  const [payrollMonth, setPayrollMonth] = useState(currentMonth);
-  const [payrollYear, setPayrollYear] = useState(currentYear);
-  const [startDate, setStartDate] = useState(firstDateISO);
-  const [endDate, setEndDate] = useState(lastDateISO);
+  const [payrollMonth, setPayrollMonth] = useState("");
+  const [payrollYear, setPayrollYear] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [businessUnits, setBusinessUnits] = useState([]);
   const [centerLocation, setcenterLocation] = useState([]);
@@ -415,7 +415,7 @@ export default function EmployeeSelection() {
 
   const applyFilters = () => {
     setAppliedFilters(filters);
-    getMonthDetails(filters.payrollmonth);
+    getMonthDetails(filters.payrollMonth);
     getEmployeeList();
   };
 
@@ -580,6 +580,7 @@ export default function EmployeeSelection() {
   useEffect(() => {
     getEmployeeList();
     getMonthDetails(payrollMonth);
+    console.log("Filters ",)
   }, [pageNumber, recsPerPage, runCount, searchText, filters]);
 
 
@@ -665,6 +666,7 @@ export default function EmployeeSelection() {
         designations: filters.designation,
         jobTypes: filters.jobtype,
         jobTimings: filters.jobtiming,
+        currentStage: 'Step1',
         remarks: "",  
         createdBy: {
           userId: 101, // replace with logged-in user id
@@ -678,12 +680,9 @@ export default function EmployeeSelection() {
         payload
       );
 
-      console.log("Payroll Batch Created:", selectedEmployees);
-
       // Save batch id for next step
 
       const batchId = response.data.payrollBatchId; // adjust according to API response
-      console.log('bid', batchId)
 
       if (batchId) {
         router.push(`/admin/payrollManagementNew/preview/${batchId}`);
@@ -694,7 +693,12 @@ export default function EmployeeSelection() {
         batchId
       );
 
-      alert("Payroll Batch Created Successfully");
+      Swal.fire({
+        icon: "",
+        title: "Payroll Process",
+        text: "Payroll Batch Created Successfully",
+      });
+
     } catch (error) {
       console.error(error);
     }
@@ -739,7 +743,6 @@ export default function EmployeeSelection() {
     tableName: "Employee List",
   };
 
-
   return (
     <div className="min-h-screen bg-[#f4f6fa]">
       {/* Header */}
@@ -776,7 +779,6 @@ export default function EmployeeSelection() {
                     {step}
                   </span>
                 </div>
-
                 {index !== 3 && (
                   <ChevronRight className="w-4 h-4 text-gray-400" />
                 )}
@@ -815,13 +817,9 @@ export default function EmployeeSelection() {
                 { label: "November", value: 11 },
                 { label: "December", value: 12 },
               ]}
-
-              value={filters.payrollMonth}
+              value={payrollMonth}
               onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  payrollMonth: e.target.value,
-                }))
+                setPayrollMonth(e.target.value)
               }
             />
 
@@ -843,7 +841,6 @@ export default function EmployeeSelection() {
               onChange={(e) =>
                 setPayrollYear(e.target.value)
               }
-
             />
 
             {/* Payroll Duration */}
@@ -852,17 +849,11 @@ export default function EmployeeSelection() {
               <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
                 Start Date
               </p>
-
               <div className="mt-2 relative">
                 <input
                   type="date"
                   value={startDate}
-                  onChange={(e) =>
-                    setStartDate((prev) => ({
-                      ...prev,
-                      startDate: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setStartDate(e.target.value)}
                   className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-blue-500"
                 />
                 {/* <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" /> */}
@@ -874,20 +865,13 @@ export default function EmployeeSelection() {
               <p className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
                 End Date
               </p>
-
               <div className="mt-2 relative">
                 <input
                   type="date"
                   value={endDate}
-                  onChange={(e) =>
-                    setEndDate((prev) => ({
-                      ...prev,
-                      endDate: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => setEndDate(e.target.value)}
                   className="w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-blue-500"
-                />
-
+                />                
                 {/* <CalendarRange className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" /> */}
               </div>
             </div>
@@ -995,12 +979,10 @@ export default function EmployeeSelection() {
 
 
             {/* Search */}
-
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium  tracking-wide ">
                 Search
               </label>
-
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -1010,7 +992,6 @@ export default function EmployeeSelection() {
               </div>
             </div>
           </div >
-
           <div className="mt-6">
             <button
               onClick={applyFilters}
@@ -1063,7 +1044,6 @@ export default function EmployeeSelection() {
         {/* Employee Table */}
         < div className="mt-6 bg-white border border-gray-200 rounded-2xl overflow-hidden" >
           <div className="overflow-x-auto">
-
             <div className="p-6 border-b border-gray-200">
               <FilterTable
                 tableHeading={tableHeading}
@@ -1091,14 +1071,6 @@ export default function EmployeeSelection() {
                 // ── Extract just IDs for GenericTable to compare against rowIdKey ──
                 selectedRows={selectedEmployees.map((e) => e.employeeID)}
                 rowIdKey="employeeID"
-                // onSelectAll={(e) => {
-                //   // Select or deselect all rows on current page
-                //   if (e.target.checked) {
-                //     setSelectedEmployees(tableData.map((emp) => emp.employeeID));
-                //   } else {
-                //     setSelectedEmployees([]);
-                //   }
-                // }}
                 onSelectAll={(e) => {
                   if (e.target.checked) {
                     // ── Store full objects {employeeID, employeeName} for all rows ──
@@ -1113,14 +1085,6 @@ export default function EmployeeSelection() {
                     setSelectedEmployees([]);
                   }
                 }}
-                // onRowSelect={(id) => {
-                //   // Toggle individual row selection
-                //   setSelectedEmployees((prev) =>
-                //     prev.includes(id)
-                //       ? prev.filter((empId) => empId !== id)
-                //       : [...prev, id]
-                //   );
-                // }}
                 onRowSelect={(id) => {
                   // ── Find the full employee record from tableData using employeeID ──
                   const emp = tableData.find((e) => e.employeeID === id);

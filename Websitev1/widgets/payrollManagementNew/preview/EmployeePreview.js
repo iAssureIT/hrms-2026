@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import FilterTable from "@/widgets/GenericTable/FilterTableWithCheckBox";
 import {
     ArrowDownRight,
@@ -150,9 +150,13 @@ const tableObjects = {
   tableName: "Employee List",
 };
 
+
+
+
 export default function EmployeePreview() {
 
     const { batchId } = useParams();
+    const router = useRouter();    
     const [employeeDataCount, setEmployeeDataCount] = useState("");
     const [grandTotals, setGrandTotals] = useState("");
     const [tableData, setTableData] = useState([]);
@@ -223,6 +227,10 @@ export default function EmployeePreview() {
       return details;
 
     };
+
+  const handleSubmit = async () => {
+        router.push(`/admin/payrollManagementNew/approval`);
+  }
 
     useEffect(() => {
 
@@ -301,9 +309,9 @@ export default function EmployeePreview() {
             setTableData(formattedData);
             setTotalRecs(formattedData.length);
 
-            setAttenEmpIds(
-              res.data.data.map((emp) => emp.employeeID)
-            );
+            // setAttenEmpIds(
+            //   res.data.data.map((emp) => emp.employeeID)
+            // );
           } catch (err) {
             console.error(err);
           }
@@ -723,11 +731,11 @@ export default function EmployeePreview() {
           {/* Footer */}
           <div className="flex items-center justify-between px-6 py-5 bg-white">
             <button className="text-sm text-gray-500 font-medium">
-              ← Previous Step
+              
             </button>
 
             <div className="flex items-center gap-4">
-              <button className="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
+              <button onClick={handleSubmit} className="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow">
                 Submit Payroll For Approval
               </button>
             </div>
