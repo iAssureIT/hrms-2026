@@ -61,6 +61,7 @@ const holidayRoutes = require("./api/hrms-2026/holidayManagement/route.js");
 const salCompoRoutes = require("./api/hrms-2026/payroll/salary/components/route.js");
 const employeeSalaryRoutes = require("./api/hrms-2026/payroll/salary/structure/route.js");
 const salarySlipRoutes = require("./api/hrms-2026/payroll/salary/salaryslip/route.js");
+const salaryListRoutes = require("./api/hrms-2026/payroll/salary/salarylist/route.js");
 const prDepartmentMasterRoutes = require("./api/hrms-2026/payroll/process/route.js");
 const payrollDetailsRoutes = require("./api/hrms-2026/payroll/details/route.js");
 // app.js OR server.js
@@ -82,6 +83,7 @@ const appRoutes = (app) => {
   app.use("/api/salary-components", salCompoRoutes);
   app.use("/api/employee-salary", employeeSalaryRoutes);  
   app.use("/api/salary-slips", salarySlipRoutes);
+  app.use("/api/salary-list", salaryListRoutes);  
   app.use("/api/payroll/prdept", prDepartmentMasterRoutes);
   app.use("/api/payroll-management", payrollsManagementRoutes);
   
