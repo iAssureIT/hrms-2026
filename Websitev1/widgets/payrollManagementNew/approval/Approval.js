@@ -183,9 +183,11 @@ function SummaryCard({
 export default function PayrollApprovalPage() {
 
   const router = useRouter();
+  const { batchId } = useParams();
+
 
   const handleSubmit = async () => {
-        router.push(`/admin/payrollManagementNew/execution`);
+        router.push(`/admin/payrollManagementNew/execution/${batchId}`);
   }
 
   return (

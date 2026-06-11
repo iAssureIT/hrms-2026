@@ -85,6 +85,21 @@ const payrollSummarySchema = new mongoose.Schema(
       default: 0,
     },
 
+    totalGross: {
+      type: String,
+      default: 0,
+    },
+
+    totalDeduction: {
+      type: String,
+      default: 0,
+    },
+
+    totalNet: {
+      type: String,
+      default: 0,
+    },
+
     payrollEligibleEmployees: {
       type: Number,
       default: 0,
@@ -134,6 +149,7 @@ const payrollSummarySchema = new mongoose.Schema(
         userId: { type: mongoose.Schema.Types.Mixed, },
         userName: { type: String, trim: true, },
         empId: { type: String, trim: true, },
+        role: { type: String, trim: true, },
         action: { type: String, enum: ["Approved", "Rejected"], },
         remarks: { type: String, trim: true, default: "", },
         dateTime: { type: Date, default: Date.now, },

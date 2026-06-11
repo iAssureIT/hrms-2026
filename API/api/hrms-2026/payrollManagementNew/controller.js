@@ -323,7 +323,6 @@ exports.getPayrollEmployeeDetailsById = async (req, res) => {
       employee.employeeSalaryStructure.salaryComponents.forEach(
         (component) => {
           const amount = Number(component.monthlyAmount || 0);
-
           if (
             ["PF Employer"].includes(component.componentCode)
           ) {
@@ -358,6 +357,17 @@ exports.getPayrollEmployeeDetailsById = async (req, res) => {
         netSalary,
       };
     });
+
+
+    // Update Payroll Summary
+    await PayrollSummary.findByIdAndUpdate(
+      id,
+      {
+        totalGross: totalGross.toString(),
+        totalDeduction: totalDeductions.toString(),
+        totalNet: totalNet.toString(),
+      }
+    );
 
     return res.status(200).json({
       success: true,
@@ -494,6 +504,7 @@ exports.getWorkflowApproverList = async (req, res) => {
         "profile.firstname": 1,
         "profile.lastname": 1,
         "profile.email": 1,
+        "profile.roles": 1,
       }
     ).lean();
 
@@ -504,6 +515,7 @@ exports.getWorkflowApproverList = async (req, res) => {
         user.profile?.lastname || ""
       }`.trim(),
       email: user.profile?.email || "",
+      roles: user.roles,
     }));
 
     res.status(200).json({
@@ -549,6 +561,61 @@ exports.deletePayrollBatch = async (req, res) => {
     });
   } catch (error) {
     console.error("Delete Payroll Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+exports.initializeApprovalWorkflow = async (req, res) => {
+  try {
+
+    const { payrollSummaryId } = req.params;
+
+    // Get workflow master data
+    const workflowLevels = await PayrollWorkflowMaster.find()
+      .sort({ approvalLevel: 1 })
+      .lean();
+
+    if (!workflowLevels.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No workflow master found",
+      });
+    }
+
+    const approvsalLog = workflowLevels.map((item) => ({
+      workflowLevel: `Level ${item.approvalLevel}`,
+      userId: null,
+      userName: item.approverName,
+      empId: "",
+      role: item.approverRole,
+      action: null,
+      remarks: "",
+      dateTime: null,
+    }));
+
+    const updatedSummary =
+      await PayrollSummary.findByIdAndUpdate(
+        payrollSummaryId,
+        {
+          $set: {
+            approvsalLog,
+          },
+        },
+        { new: true }
+      );
+
+    res.status(200).json({
+      success: true,
+      message: "Approval workflow initialized",
+      data: updatedSummary,
+    });
+  } catch (error) {
+    console.error(error);
 
     res.status(500).json({
       success: false,

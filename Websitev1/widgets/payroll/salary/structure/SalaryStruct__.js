@@ -13,6 +13,7 @@ export default function EmployeeSalaryForm() {
   const employeeId = searchParams.get("empId");  
   const router = useRouter();
 
+
   // FETCH COMPONENTS
   const fetchComponents = async () => {
     try {
@@ -25,6 +26,7 @@ export default function EmployeeSalaryForm() {
       );
 
       setComponents(sorted);
+      console.log(sorted)
     } catch (error) {
       console.log(error);
     }

@@ -11,17 +11,20 @@ const PayrollWorkflowForm = () => {
     {
       approvalLevel: 1,
       processName: "",
-      approverRole: "",
+      approverName: "",
+      approverRole: "Project Manager",
     },
     {
       approvalLevel: 2,
       processName: "",
-      approverRole: "",
+      approverName: "",      
+      approverRole: "Hr Admin",
     },
     {
       approvalLevel: 3,
       processName: "",
-      approverRole: "",
+      approverName: "",      
+      approverRole: "Manager",
     },
   ]);
 
@@ -31,7 +34,7 @@ const PayrollWorkflowForm = () => {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get("/api/payroll-management/patroll-workflow-approvers");
+      const res = await axios.get("/api/payroll-management/payroll-workflow-approvers");
       setEmployees(res.data.data || []);
       console.log('users ',res.data.data)
     } catch (error) {
@@ -42,6 +45,7 @@ const PayrollWorkflowForm = () => {
   const handleChange = (index, field, value) => {
     const updated = [...workflowData];
     updated[index][field] = value;
+    console.log(updated)
     setWorkflowData(updated);
   };
 
@@ -126,11 +130,11 @@ const PayrollWorkflowForm = () => {
                 </label>
 
                 <select
-                    value={workflowData[index].approverRole}
+                    value={workflowData[index].approverName}
                     onChange={(e) =>
                     handleChange(
                         index,
-                        "approverRole",
+                        "approverName",
                         e.target.value
                     )
                     }

@@ -10,10 +10,14 @@ router.get("/employeeDetails/:id", payrollController.getPayrollEmployeeDetailsBy
 router.post("/employeePayrollAttendance", payrollController.getPayrollEmployeeAttendance);
 router.get("/holidaysCount", payrollController.getHolidaysCount);
 router.post("/createPayrollWorkflow", payrollController.createPayrollWorkflowMaster);
-router.get("/patroll-workflow-approvers", payrollController.getWorkflowApproverList);
+router.get("/payroll-workflow-approvers", payrollController.getWorkflowApproverList);
 router.delete(
   "/deletePayrollBatch/:id",
   payrollController.deletePayrollBatch
+);
+router.put(
+  "/initialize-workflow/:payrollSummaryId",
+  payrollController.initializeApprovalWorkflow
 );
 
 module.exports = router;

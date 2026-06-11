@@ -6,6 +6,11 @@ const payrollWorkflowMasterSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    approverName: {
+      type: String,
+      required: true,
+      trim: true,
+    },    
     approverRole: {
       type: String,
       required: true,

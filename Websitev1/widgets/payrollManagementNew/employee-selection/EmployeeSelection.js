@@ -653,7 +653,67 @@ export default function EmployeeSelection() {
 
   }, []);
 
+
+const validateFields = () => {
+  if (!payrollMonth) {
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Please select Payroll Month",
+    });
+    return false;
+  }
+
+  if (!payrollYear) {
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Please select Payroll Year",
+    });
+    return false;
+  }
+
+  if (!startDate) {
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Please select Start Date",
+    });
+    return false;
+  }
+
+  if (!endDate) {
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Please select End Date",
+    });
+    return false;
+  }
+
+  if(selectedEmployees == 0) {
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Please select employees",
+    });
+    return false;    
+  }
+
+  if (new Date(startDate) > new Date(endDate)) {
+    Swal.fire({
+      icon: "warning",
+      title: "Validation Error",
+      text: "Start Date cannot be greater than End Date",
+    });
+    return false;
+  }
+
+  return true;
+};
+
   const handleSubmit = async () => {
+    if (!validateFields()) return;
     try {
       const payload = {
         payrollMonth: payrollMonth,

@@ -139,7 +139,7 @@ export default function Dashboard() {
               className="h-[48px] px-6 rounded-xl bg-[#6F56FF] text-white flex items-center gap-2 font-medium shadow-md"
             >
               <Play className="w-4 h-4" />
-              Execute Payroll
+              Execute New Payroll
             </button>
           </div>
         </header>
@@ -304,15 +304,15 @@ export default function Dashboard() {
                     </th>
 
                     <th className="px-5 py-4">
+                      Deduction
+                    </th>
+
+                    <th className="px-5 py-4">
                       Net Total
                     </th>
 
                     <th className="px-5 py-4">
                       Status
-                    </th>
-
-                    <th className="px-5 py-4">
-                      Personnel (M/C)
                     </th>
 
                     <th className="px-5 py-4">
@@ -362,11 +362,15 @@ export default function Dashboard() {
                       </td>
 
                       <td className="px-5 py-5 font-semibold">
-                        ₹{row.totalEmployees * 100000}
+                        ₹{row.totalGross}
+                      </td>
+
+                      <td className="px-5 py-5 font-semibold text-red-500">
+                        ₹{row.totalDeduction}
                       </td>
 
                       <td className="px-5 py-5 font-semibold">
-                        ₹{row.totalEmployees * 90000}
+                        ₹{row.totalNet}
                       </td>
 
                       <td className="px-5 py-5">
@@ -375,11 +379,6 @@ export default function Dashboard() {
                         >
                           {row.payrollStatus}
                         </span>
-                      </td>
-
-                      <td className="px-5 py-5 text-[12px] text-gray-600 leading-5">
-                        <div>{row.manager}</div>
-                        <div>{row.checker}</div>
                       </td>
 
                       <td className="px-5 py-5 text-[12px] text-gray-600 leading-5">

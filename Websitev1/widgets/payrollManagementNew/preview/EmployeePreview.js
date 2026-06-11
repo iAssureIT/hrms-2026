@@ -223,14 +223,14 @@ export default function EmployeePreview() {
       };
 
       setMonthDetails(details);
-
       return details;
 
     };
 
-  const handleSubmit = async () => {
-        router.push(`/admin/payrollManagementNew/approval`);
-  }
+    const handleSubmit = async () => {
+          const res = await axios.put(`/api/payroll-management/initialize-workflow/${batchId}`);
+          router.push(`/admin/payrollManagementNew/approval/${batchId}`);
+    }
 
     useEffect(() => {
 
