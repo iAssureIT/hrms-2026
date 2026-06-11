@@ -461,28 +461,6 @@ export default function EmployeeSelection() {
   }, [pageNumber, recsPerPage, runCount, searchText, filters]);
 
 
-  const getEmployeeList = async () => {
-    setLoading(true);
-    const formValues = {
-      searchText: searchText,
-      pageNumber: pageNumber,
-      recsPerPage: recsPerPage,
-      ...filters,
-    };
-    setFilterData(formValues);
-
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
-        formValues
-      );
-
-      const defaultValue = (value) => {
-        return value === null || value === undefined || value === ""
-          ? "-"
-          : value;
-      };
-
       const defaultBuValue = (value) => {
         return value === null || value === undefined || value === ""
           ? "Operational"
@@ -519,34 +497,53 @@ export default function EmployeeSelection() {
           : value;
       };
 
+  const getEmployeeList = async () => {
+    setLoading(true);
+    const formValues = {
+      searchText: searchText,
+      pageNumber: pageNumber,
+      recsPerPage: recsPerPage,
+      ...filters,
+    };
+    setFilterData(formValues);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/employees/list/${recsPerPage}/${pageNumber}`,
+        formValues
+      );
+
+      if (response.data) {
       const formattedData = (response.data.tableData || []).map((emp) => ({
         ...emp,
-        employeeID: defaultValue(emp.employeeID),
-        employeeName: defaultValue(emp.employeeName),
+        employeeID: emp.employeeID,
+        employeeName: emp.employeeName,
         businessUnit: defaultBuValue(emp.businessUnit),
         departmentName: defaultDeValue(emp.departmentName),
         subDepartmentName: defaultSdValue(emp.subDepartmentName),
         centerName: defaultLoValue(emp.centerName),
         jobType: defaultTpValue(emp.jobType),
         jobTiming: defaultTmValue(emp.jobTiming),
-        reportingManagerName: defaultValue(emp.reportingManagerName),
-        employeeDesignation: defaultValue(emp.employeeDesignation),
+        reportingManagerName: emp.reportingManagerName,
+        employeeDesignation: emp.employeeDesignation,
         formattedEmpID: `<span style="color:#3b82f6; font-weight:600;">
-            ${defaultValue(emp.employeeID)}
+            ${emp.employeeID}
           </span>`,
 
         employeeEmail: `<div style="display:flex; flex-direction:column; gap:2px;">
             <span style="font-size:13px; color:#111827; font-weight:500;">
-              ${defaultValue(emp.employeeEmail)}
+              ${emp.employeeEmail}
             </span>
             <span style="font-size:12px; color:#6b7280;">
-              ${defaultValue(emp.employeeMobile)}
+              ${emp.employeeMobile}
             </span>
           </div>`,
       }));
+    
 
       setTableData(formattedData);
       setTotalRecs(response.data.totalRecs || 0);
+    }
 
       // if (response.data) {
       //   const formattedData = (response.data.tableData || []).map((emp) => ({

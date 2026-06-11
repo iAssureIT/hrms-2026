@@ -69,29 +69,29 @@ export default function SalaryList() {
           </thead>
 
           <tbody>
-  {records.map((row) => (
-    <tr key={row._id}>
-      <td className="border p-2">{row.employeeId}</td>
+            {records.map((row) => (
+                <tr key={row._id}>
+                <td className="border p-2">{row.employeeId}</td>
 
-      <td className="border p-2">
-        {new Date(row.createdAt).toLocaleDateString()}
-      </td>
+                <td className="border p-2">
+                    {new Date(row.createdAt).toLocaleDateString()}
+                </td>
 
-      <td className="border p-2">
-        {row.salaryData?.length}
-      </td>
+                <td className="border p-2">
+                    {row.salaryData?.length}
+                </td>
 
-      <td className="border p-2">
-        <button
-          onClick={() => handleDelete(row._id)}
-          className="bg-red-500 text-white px-3 py-1 rounded"
-        >
-          Delete
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+                <td className="border p-2">
+                    <button
+                    onClick={() => handleDelete(row._id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                    Delete
+                    </button>
+                </td>
+                </tr>
+            ))}
+            </tbody>
         </table>
       </div>
     </div>
