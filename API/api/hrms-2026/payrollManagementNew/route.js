@@ -11,5 +11,9 @@ router.post("/employeePayrollAttendance", payrollController.getPayrollEmployeeAt
 router.get("/holidaysCount", payrollController.getHolidaysCount);
 router.post("/createPayrollWorkflow", payrollController.createPayrollWorkflowMaster);
 router.get("/patroll-workflow-approvers", payrollController.getWorkflowApproverList);
+router.delete(
+  "/deletePayrollBatch/:id",
+  payrollController.deletePayrollBatch
+);
 
 module.exports = router;

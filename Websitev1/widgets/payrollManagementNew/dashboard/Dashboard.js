@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
   Search,
   ShieldAlert,
@@ -29,6 +29,7 @@ import {
   Banknote,
   ClipboardList,
   UserRound,
+  Trash2,
 } from "lucide-react";
 
 import {
@@ -48,7 +49,23 @@ import {
 } from "recharts";
 
 
+const handleDelete = async (id) => {
+  try {
+    await axios.delete(
+      `/api/payroll-management/deletePayrollBatch/${id}`
+    );
 
+    Swal.fire({
+      icon: "success",
+      title: "Deleted",
+      text: "Payroll batch deleted successfully",
+    });
+
+    fetchPayrollSummary();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export default function Dashboard() {
 
@@ -369,7 +386,7 @@ export default function Dashboard() {
                         <div>{row.payrollMonth} / {row.payrollYear}</div>
                       </td>
 
-                      <td className="px-5 py-5">
+                      <td className="px-5 py-5 flex gap-2">
                         {/* <MoreVertical className="w-4 h-4 text-gray-500" /> */}
                         <SmallBtn
                           icon={RotateCcw}
@@ -378,6 +395,12 @@ export default function Dashboard() {
                             router.push(`/admin/payrollManagementNew/preview/${row._id}`)}
                           }
                         />
+                        <button
+                          onClick={() => handleDelete(row._id)}
+                          className="h-[42px] w-[42px] rounded-xl border border-red-200 bg-red-50 flex items-center justify-center hover:bg-red-100"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600" />
+                        </button>
                       </td>
                     </tr>
                   ))}

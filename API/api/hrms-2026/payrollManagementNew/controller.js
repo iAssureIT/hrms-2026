@@ -520,3 +520,39 @@ exports.getWorkflowApproverList = async (req, res) => {
     });
   }
 };
+
+
+exports.deletePayrollBatch = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Delete from PayrollSummary
+    const summary = await PayrollSummary.findByIdAndDelete(id);
+
+    if (!summary) {
+      return res.status(404).json({
+        success: false,
+        message: "Payroll batch not found",
+      });
+    }
+
+    // Delete related PayrollDetails
+    const detailsResult = await PayrollDetails.deleteMany({
+      payrollBatchId: id,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Payroll batch deleted successfully",
+      deletedSummary: 1,
+      deletedDetails: detailsResult.deletedCount,
+    });
+  } catch (error) {
+    console.error("Delete Payroll Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
