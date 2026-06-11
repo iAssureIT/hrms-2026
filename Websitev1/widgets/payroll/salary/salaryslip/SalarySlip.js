@@ -18,7 +18,7 @@ export default function SalarySlipPage({empId}) {
   const handleSearch = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3050/api/employee-salary/${employeeId}`
+        `/api/employee-salary/${employeeId}`
       );
 
       // MONTHLY CONVERSION
@@ -83,7 +83,7 @@ export default function SalarySlipPage({empId}) {
       };
 
       await axios.post(
-        "http://localhost:3050/api/salary-slips",
+        "/api/salary-slips",
         payload
       );
 

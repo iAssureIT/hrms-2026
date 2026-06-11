@@ -21,7 +21,7 @@ export default function EmployeeSalaryForm({
     try {
 
       const res = await axios.get(
-        "http://localhost:3050/api/salary-components"
+        "/api/salary-components"
       );
 
       const sorted = res.data.sort(
@@ -221,7 +221,7 @@ export default function EmployeeSalaryForm({
       };
 
       await axios.post(
-        "http://localhost:3050/api/employee-salary",
+        "/api/employee-salary",
         payload
       );
 

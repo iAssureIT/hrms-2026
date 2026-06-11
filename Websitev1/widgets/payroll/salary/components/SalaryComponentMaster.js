@@ -19,7 +19,7 @@ export default function SalaryComponentForm() {
   const fetchRecords = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3050/api/salary-components"
+        "/api/salary-components"
       );
       console.log("Fetched Records:", res.data);
       setRecords(res.data || [])
@@ -47,7 +47,7 @@ export default function SalaryComponentForm() {
 
     try {
       await axios.post(
-        "http://localhost:3050/api/salary-components",
+        "/api/salary-components",
         formData
       );
 
@@ -72,7 +72,7 @@ export default function SalaryComponentForm() {
   const handleDelete = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:3050/api/salary-components/${id}`
+        `/api/salary-components/${id}`
       );
 
       // REFRESH DATA AFTER DELETE

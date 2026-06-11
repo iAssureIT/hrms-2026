@@ -19,7 +19,7 @@ export default function EmployeePaySlipHistory() {
     try {
 
         const res = await axios.get(
-            "http://localhost:3050/api/employee-salary"
+            "/api/employee-salary"
         );
 
         const ids = res.data.map(
@@ -41,7 +41,7 @@ export default function EmployeePaySlipHistory() {
   const fetchPaySlips = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3050/api/salary-slip/${selectedEmployee}/${selectedYear}`
+        `/api/salary-slip/${selectedEmployee}/${selectedYear}`
       );
 
       setPaySlips(res.data.data || []);
