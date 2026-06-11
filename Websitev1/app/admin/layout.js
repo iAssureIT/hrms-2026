@@ -1294,13 +1294,13 @@ export default function RootLayout({ children }) {
           title: "Leave Type Master",
           link: "/admin/master-data/leave-types",
         },
-      ],
-    },
-    {
-      title: "Master Data",
-      submenu: true,
-      icon: <BsClipboardDataFill />,
-      submenuItems: [
+    //   ],
+    // },
+    // {
+    //   title: "Master Data",
+    //   submenu: true,
+    //   icon: <BsClipboardDataFill />,
+    //   submenuItems: [
         {
           icon: <FaRegCircle />,
           title: "Salary Components Master",

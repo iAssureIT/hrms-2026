@@ -185,113 +185,6 @@ function CheckboxMultiSelect({
   );
 }
 
-// function CheckboxMultiSelect({
-//   label,
-//   options = [],
-// }) {
-//   const [open, setOpen] = useState(false);
-//   const [selected, setSelected] = useState([]);
-
-//   const dropdownRef = useRef();
-
-//   const toggleOption = (value) => {
-//     if (selected.includes(value)) {
-//       setSelected(
-//         selected.filter(
-//           (item) => item !== value
-//         )
-//       );
-//     } else {
-//       setSelected([
-//         ...selected,
-//         value,
-//       ]);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const handleClickOutside = (event) => {
-//       if (
-//         dropdownRef.current &&
-//         !dropdownRef.current.contains(event.target)
-//       ) {
-//         setOpen(false);
-//       }
-//     };
-
-//     document.addEventListener(
-//       "mousedown",
-//       handleClickOutside
-//     );
-
-//     return () => {
-//       document.removeEventListener(
-//         "mousedown",
-//         handleClickOutside
-//       );
-//     };
-//   }, []);
-
-
-//   return (
-//     <div className="relative flex flex-col gap-2" ref={dropdownRef}>
-//       <label className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
-//         {label}
-//       </label>
-
-//       {/* Trigger */}
-//       <button
-//         type="button"
-//         onClick={() =>
-//           setOpen(!open)
-//         }
-//         className="h-11 px-4 rounded-xl border border-gray-200 bg-white text-sm flex items-center justify-between"
-//       >
-//         <span className="truncate text-left">
-//           {selected.length > 0
-//             ? selected.join(", ")
-//             : `Select ${label}`}
-//         </span>
-
-//         <ChevronDown className="w-4 h-4 text-gray-500" />
-//       </button>
-
-//       {/* Dropdown */}
-//       {open && (
-//         <div className="absolute top-[72px] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-lg z-50 p-4 max-h-[240px] overflow-y-auto">
-//           <div className="flex flex-col gap-3">
-//             {options.map(
-//               (item, index) => (
-//                 <label
-//                   key={index}
-//                   className="flex items-center gap-3 cursor-pointer"
-//                 >
-//                   <input
-//                     type="checkbox"
-//                     checked={selected.includes(
-//                       item
-//                     )}
-//                     onChange={() =>
-//                       toggleOption(
-//                         item
-//                       )
-//                     }
-//                     className="w-4 h-4 rounded border-gray-300 text-blue-600"
-//                   />
-
-//                   <span className="text-sm text-gray-700">
-//                     {item}
-//                   </span>
-//                 </label>
-//               )
-//             )}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
 function StatusBadge({ text }) {
   return (
     <div
@@ -561,26 +454,10 @@ export default function EmployeeSelection() {
     });
   }
 
-  //  old api 
-  // const getEmployeeList = () => {
-  //   axios.post("/api/employees/filter", { ...filters }).then((res) => {
-  //     let empData = res.data.data;
-  //     setEmployeeData(empData || []);
-  //     setSelectedEmployeesCount(empData.length || 0);
-  //     const allEmployeeIds = empData.map((emp) => { return { employeeID: emp.employeeID, employeeName: emp.employeeName }; });
-  //     setSelectedEmployees(allEmployeeIds);
-  //   }).catch((err) => {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error fetching employee count",
-  //       text: err.message,
-  //     });
-
 
   useEffect(() => {
     getEmployeeList();
     getMonthDetails(payrollMonth);
-    console.log("Filters ",)
   }, [pageNumber, recsPerPage, runCount, searchText, filters]);
 
 
@@ -600,21 +477,90 @@ export default function EmployeeSelection() {
         formValues
       );
 
-      if (response.data) {
-        const formattedData = (response.data.tableData || []).map((emp) => ({
-          ...emp,
-          employeeID: emp.employeeID || "-", // Handle null/undefined employeeID
-          formattedEmpID: `<span style="color:#3b82f6; font-weight:600;">${emp.employeeID || "-"}</span>`,
-          employeeEmail: `
-            <div style="display:flex; flex-direction:column; gap:2px;">
-              <span style="font-size:13px; color:#111827; font-weight:500;">${emp.employeeEmail || "-"}</span>
-              <span style="font-size:12px; color:#6b7280;">${emp.employeeMobile || "-"}</span>
-            </div>
-          `,
-        }));
-        setTableData(formattedData);
-        setTotalRecs(response.data.totalRecs || 0);
-      }
+      const defaultValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "-"
+          : value;
+      };
+
+      const defaultBuValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "Operational"
+          : value;
+      };
+
+      const defaultDeValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "IT"
+          : value;
+      };
+
+      const defaultSdValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "Developer"
+          : value;
+      };
+
+      const defaultLoValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "Pune"
+          : value;
+      };
+
+      const defaultTpValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "Regular"
+          : value;
+      };
+
+      const defaultTmValue = (value) => {
+        return value === null || value === undefined || value === ""
+          ? "Full Time"
+          : value;
+      };
+
+      const formattedData = (response.data.tableData || []).map((emp) => ({
+        ...emp,
+        employeeID: defaultValue(emp.employeeID),
+        employeeName: defaultValue(emp.employeeName),
+        businessUnit: defaultBuValue(emp.businessUnit),
+        departmentName: defaultDeValue(emp.departmentName),
+        subDepartmentName: defaultSdValue(emp.subDepartmentName),
+        centerName: defaultLoValue(emp.centerName),
+        jobType: defaultTpValue(emp.jobType),
+        jobTiming: defaultTmValue(emp.jobTiming),
+        reportingManagerName: defaultValue(emp.reportingManagerName),
+        employeeDesignation: defaultValue(emp.employeeDesignation),
+        formattedEmpID: `<span style="color:#3b82f6; font-weight:600;">
+            ${defaultValue(emp.employeeID)}
+          </span>`,
+
+        employeeEmail: `<div style="display:flex; flex-direction:column; gap:2px;">
+            <span style="font-size:13px; color:#111827; font-weight:500;">
+              ${defaultValue(emp.employeeEmail)}
+            </span>
+            <span style="font-size:12px; color:#6b7280;">
+              ${defaultValue(emp.employeeMobile)}
+            </span>
+          </div>`,
+      }));
+
+      setTableData(formattedData);
+      setTotalRecs(response.data.totalRecs || 0);
+
+      // if (response.data) {
+      //   const formattedData = (response.data.tableData || []).map((emp) => ({
+      //     ...emp,
+      //     employeeID: emp.employeeID || "-", // Handle null/undefined employeeID
+      //     formattedEmpID: `<span style="color:#3b82f6; font-weight:600;">${emp.employeeID || "-"}</span>`,
+      //     employeeEmail: `<div style="display:flex; flex-direction:column; gap:2px;">
+      //         <span style="font-size:13px; color:#111827; font-weight:500;">${emp.employeeEmail || "-"}</span>
+      //         <span style="font-size:12px; color:#6b7280;">${emp.employeeMobile || "-"}</span>
+      //       </div>`,
+      //   }));
+      //   setTableData(formattedData);
+      //   setTotalRecs(response.data.totalRecs || 0);
+      // }
     } catch (err) {
       Swal.fire({ icon: "error", title: "Error fetching employees", text: err.message });
     } finally {
@@ -650,7 +596,6 @@ export default function EmployeeSelection() {
     getJobTiming();
     getDesignation();
     getEmployeeCount();
-
   }, []);
 
 
@@ -720,7 +665,7 @@ const validateFields = () => {
         payrollYear: payrollYear,
         payrollStartDate: startDate,
         payrollEndDate: endDate,
-        businessUnits: filters.businessunit,
+        businessUnits: filters.businessUnit,
         locations: filters.location,
         departments: filters.department,
         designations: filters.designation,
@@ -802,6 +747,8 @@ const validateFields = () => {
     titleMsg: "Payroll Employee Selection",
     tableName: "Employee List",
   };
+
+
 
   return (
     <div className="min-h-screen bg-[#f4f6fa]">
@@ -947,11 +894,11 @@ const validateFields = () => {
               options={businessUnits.map(
                 (item) => item.fieldValue
               )}
-              selectedValues={filters.businessunit}
+              selectedValues={filters.businessUnit}
               onChange={(values) =>
                 setFilters((prev) => ({
                   ...prev,
-                  businessunit: values,
+                  businessUnit: values,
                 }))
               }
             />
@@ -973,7 +920,6 @@ const validateFields = () => {
             />
 
             {/* Department */}
-
             <CheckboxMultiSelect
               label="Department"
               name="department"
@@ -1165,179 +1111,6 @@ const validateFields = () => {
                 }}
               />
             </div>
-
-            {/* old table with checkbox  */}
-            {/* <table className="w-full min-w-[1600px] border-collapse table-auto">
-              Head
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left ">
-                    <input
-                      type="checkbox"
-                      checked={
-                        employeeData.length > 0 &&
-                        selectedEmployees.length === employeeData.length
-                      }
-                      onChange={handleSelectAll}
-                      className="w-4 h-4 rounded"
-                    />
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    EMP ID
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Name & Role
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Email & Mobile
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Department
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Business Unit
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Job Timing
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Job Type
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Location
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Attendance
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Salary
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Eligibility
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-[11px] uppercase font-semibold tracking-wide text-gray-500">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-
-              Body
-              <tbody>
-                {employeeData.map((emp, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="px-6 py-5">
-                      <input
-                        type="checkbox"
-                        // defaultChecked
-                        checked={selectedEmployees.includes(emp.employeeID)}
-                        onChange={() => handleSelectEmployee(emp.employeeID)}
-                        className="w-4 h-4 rounded"
-                      />
-                    </td>
-
-                    <td className="px-6 py-5 text-sm font-semibold text-blue-600 whitespace-nowrap">
-                      {emp?.employeeID || "EMP001"}
-                    </td>
-
-                    <td className="px-6 py-5 min-w-[260px]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-full bg-gray-200 shrink-0" >
-                          <FaUser className="w-6 h-6 text-blue-500 mx-auto mt-2" />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-semibold text-gray-900">
-                            {emp?.employeeName || "John Doe"}
-                          </h3>
-
-                          <p className="text-xs text-gray-500 mt-1">
-                            {emp?.employeeDesignation || "Software Engineer"}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="px-6 py-5">
-                      <div>
-                        <p className="text-sm text-gray-900 font-medium">
-                          {emp?.employeeEmail || "-"}
-                        </p>
-
-                        <p className="text-xs text-gray-500 mt-1">
-                          {emp?.employeeMobile || "-"}
-                        </p>
-                      </div>
-                    </td>
-
-                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
-                      {emp?.departmentName || "Engineering"}
-                    </td>
-
-                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
-                      {emp?.businessUnit || "-"}
-                    </td>
-
-                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
-                      {emp?.jobTiming || "-"}
-                    </td>
-
-                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
-                      {emp?.jobType || "Intern"}
-                    </td>
-
-                    <td className="px-6 py-5 text-sm text-gray-700 whitespace-nowrap">
-                      {emp?.centerName || "Pune"}
-                    </td>
-
-                    <td className="px-6 py-5">
-                      <div className="flex flex-col gap-2">
-                        {emp.jobType.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className="px-3 py-1 rounded-full bg-gray-100 text-xs text-gray-700 font-medium w-fit whitespace-nowrap"
-                          >
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-
-                    <td className="px-6 py-5 whitespace-nowrap">
-                      <StatusBadge text={emp?.attendance || "Completed"} />
-                    </td>
-
-                    <td className="px-6 py-5 whitespace-nowrap">
-                      <StatusBadge text={emp?.salary || "Active"} />
-                    </td>
-
-                    <td className="px-6 py-5 whitespace-nowrap">
-                      <StatusBadge text={emp?.eligibility || "Eligible"} />
-                    </td>
-
-                    <td className="px-6 py-5">
-                      <button>
-                        <MoreVertical className="w-4 h-4 text-gray-500" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table> */}
           </div >
         </div >
 
