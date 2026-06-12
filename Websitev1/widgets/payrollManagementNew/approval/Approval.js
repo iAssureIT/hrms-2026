@@ -187,7 +187,7 @@ export default function PayrollApprovalPage() {
 
 
   const handleSubmit = async () => {
-        router.push(`/admin/payrollManagementNew/execution/${batchId}`);
+        router.push(`/admin/payrollManagementNew/execution`);
   }
 
   return (

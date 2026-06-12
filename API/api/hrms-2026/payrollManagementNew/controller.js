@@ -533,7 +533,6 @@ exports.getWorkflowApproverList = async (req, res) => {
   }
 };
 
-
 exports.deletePayrollBatch = async (req, res) => {
   try {
     const { id } = req.params;
@@ -568,7 +567,6 @@ exports.deletePayrollBatch = async (req, res) => {
     });
   }
 };
-
 
 exports.initializeApprovalWorkflow = async (req, res) => {
   try {
